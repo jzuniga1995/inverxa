@@ -1,0 +1,376 @@
+---
+// Header.astro - Inversax
+import { Search, Globe, Menu, TrendingUp, TrendingDown, ChevronDown } from 'lucide-astro';
+
+const mercados = [
+  { label: "Criptomonedas",       href: "/cripto",              desc: "Bitcoin, Ethereum y más"        },
+  { label: "Trading",             href: "/trading",             desc: "Análisis técnico y estrategias" },
+  { label: "Bolsa de Valores",    href: "/bolsa",               desc: "S&P 500 y bolsas latinas"       },
+  { label: "Economía",            href: "/economia",            desc: "Macro, inflación, divisas"      },
+  { label: "Forex",               href: "/forex",               desc: "Mercado de divisas"             },
+  { label: "Finanzas Personales", href: "/finanzas-personales", desc: "Ahorro, deudas y presupuesto"   },
+  { label: "Fintech",             href: "/fintech",             desc: "Neobancos y pagos digitales"    },
+  { label: "Impuestos",           href: "/impuestos",           desc: "Fiscal y tributario por país"   },
+  { label: "Inversiones",         href: "/inversiones",         desc: "ETFs, fondos y estrategias"     },
+];
+
+const navLinks = [
+  { label: "Noticias",     href: "/noticias"     },
+  { label: "Herramientas", href: "/herramientas" },
+  { label: "Países",       href: "/paises"       },
+];
+
+const regiones = [
+  {
+    label: "Latinoamérica",
+    paises: [
+      { code: "ar", label: "Argentina"            },
+      { code: "bo", label: "Bolivia"              },
+      { code: "br", label: "Brasil"               },
+      { code: "cl", label: "Chile"                },
+      { code: "co", label: "Colombia"             },
+      { code: "cu", label: "Cuba"                 },
+      { code: "ec", label: "Ecuador"              },
+      { code: "mx", label: "México"               },
+      { code: "py", label: "Paraguay"             },
+      { code: "pe", label: "Perú"                 },
+      { code: "uy", label: "Uruguay"              },
+      { code: "ve", label: "Venezuela"            },
+    ],
+  },
+  {
+    label: "América Central",
+    paises: [
+      { code: "bz", label: "Belice"               },
+      { code: "cr", label: "Costa Rica"           },
+      { code: "sv", label: "El Salvador"          },
+      { code: "gt", label: "Guatemala"            },
+      { code: "hn", label: "Honduras"             },
+      { code: "ni", label: "Nicaragua"            },
+      { code: "pa", label: "Panamá"               },
+    ],
+  },
+  {
+    label: "Caribe",
+    paises: [
+      { code: "do", label: "República Dominicana" },
+      { code: "pr", label: "Puerto Rico"          },
+    ],
+  },
+  {
+    label: "Norteamérica",
+    paises: [
+      { code: "us", label: "Estados Unidos"       },
+      { code: "ca", label: "Canadá"               },
+    ],
+  },
+  {
+    label: "Europa",
+    paises: [
+      { code: "es", label: "España"               },
+      { code: "ad", label: "Andorra"              },
+      { code: "de", label: "Alemania"             },
+      { code: "fr", label: "Francia"              },
+      { code: "gb", label: "Reino Unido"          },
+      { code: "it", label: "Italia"               },
+      { code: "nl", label: "Países Bajos"         },
+      { code: "pt", label: "Portugal"             },
+      { code: "ch", label: "Suiza"                },
+    ],
+  },
+  {
+    label: "África",
+    paises: [
+      { code: "gq", label: "Guinea Ecuatorial"    },
+      { code: "ma", label: "Marruecos"            },
+    ],
+  },
+  {
+    label: "Oceanía / Asia",
+    paises: [
+      { code: "au", label: "Australia"            },
+      { code: "ph", label: "Filipinas"            },
+    ],
+  },
+];
+
+const ticker = [
+  { symbol: "BTC", price: "$98,420", change: "+2.4%", up: true  },
+  { symbol: "ETH", price: "$3,812",  change: "+1.8%", up: true  },
+  { symbol: "SOL", price: "$192.4",  change: "-0.6%", up: false },
+  { symbol: "BNB", price: "$624.1",  change: "+0.9%", up: true  },
+  { symbol: "XRP", price: "$2.18",   change: "-1.2%", up: false },
+];
+---
+
+<header class="sticky top-0 z-50 bg-[#0A0B0D]" style="font-family: 'DM Sans', sans-serif;">
+
+  <!-- TOP BAR -->
+  <div class="bg-[#111318] border-b border-white/[0.07] h-9 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between">
+
+      <div class="flex-1 overflow-hidden" style="mask-image: linear-gradient(to right, transparent, black 50px, black calc(100% - 50px), transparent);">
+        <div class="ticker-track flex gap-8 whitespace-nowrap w-max">
+          {[...ticker, ...ticker].map((coin) => (
+            <span class="inline-flex items-center gap-1.5 text-[11.5px]">
+              <span class="font-bold text-white/40 tracking-widest text-[10px]">{coin.symbol}</span>
+              <span class="text-white/80 font-medium">{coin.price}</span>
+              <span class={`text-[11px] font-medium flex items-center gap-0.5 ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>
+                {coin.up ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                {coin.change}
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-1.5 pl-6 flex-shrink-0">
+        <Globe size={13} class="text-white/40" />
+        <select
+          id="country-select"
+          class="bg-transparent border-none text-white/40 text-xs cursor-pointer outline-none max-w-[130px]"
+          style="font-family: 'DM Sans', sans-serif;"
+        >
+          <option value="global" class="bg-[#1A1D24] text-white">Global</option>
+          {regiones.map((region) => (
+            <optgroup label={region.label} style="background: #1A1D24; color: rgba(255,255,255,0.4); font-size: 10px;">
+              {region.paises.map((p) => (
+                <option value={p.code} class="bg-[#1A1D24] text-white text-xs">{p.label}</option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN NAV -->
+  <div class="border-b border-white/[0.07]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-6">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 flex-shrink-0 no-underline">
+        <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+          <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#D4A843" stroke-width="2"/>
+          <polyline points="8,16 12,12 16,15 20,10" stroke="#D4A843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-extrabold text-[22px] text-white tracking-tight leading-none" style="font-family: 'Syne', sans-serif;">
+          Inversax<span class="text-[#D4A843] font-normal text-sm">.com</span>
+        </span>
+      </a>
+
+      <!-- Nav desktop -->
+      <nav class="hidden lg:flex items-center gap-1 flex-1">
+
+        <!-- Dropdown Mercados -->
+        <div class="relative" id="mercados-wrapper">
+          <button
+            id="mercados-toggle"
+            class="flex items-center gap-1.5 text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-1.5 rounded-lg transition-colors duration-200 cursor-pointer border-none bg-transparent"
+          >
+            Mercados
+            <ChevronDown size={14} id="mercados-chevron" class="transition-transform duration-200" />
+          </button>
+
+          <!-- Mega dropdown -->
+          <div
+            id="mercados-dropdown"
+            class="absolute top-full left-0 mt-2 w-[500px] bg-[#111318] border border-white/[0.07] rounded-2xl p-3 hidden"
+            style="box-shadow: 0 20px 60px rgba(0,0,0,0.7);"
+          >
+            <div class="grid grid-cols-2 gap-0.5">
+              {mercados.map((m) => (
+                <a
+                  href={m.href}
+                  class="flex flex-col gap-0.5 px-3 py-2.5 rounded-xl no-underline hover:bg-white/5 transition-colors duration-150 group"
+                >
+                  <span class="text-white/80 group-hover:text-white text-sm font-medium transition-colors duration-150">
+                    {m.label}
+                  </span>
+                  <span class="text-white/30 text-xs">{m.desc}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Resto de links -->
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="nav-link text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-1.5 rounded-lg transition-colors duration-200 no-underline whitespace-nowrap"
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Acciones -->
+      <div class="flex items-center gap-2 flex-shrink-0 ml-auto lg:ml-0">
+        <button
+          id="search-toggle"
+          class="w-9 h-9 flex items-center justify-center bg-white/5 border border-white/[0.07] text-white/50 hover:text-white hover:border-white/20 rounded-lg transition-colors duration-200 cursor-pointer"
+        >
+          <Search size={16} />
+        </button>
+        <button
+          id="menu-toggle"
+          class="lg:hidden w-9 h-9 flex items-center justify-center text-white/50 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-none"
+        >
+          <Menu size={20} />
+        </button>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div id="search-bar" class="overflow-hidden border-t border-white/[0.07] bg-[#111318]" style="max-height: 0; transition: max-height 0.3s ease;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3 text-white/40">
+        <Search size={16} />
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Buscar noticias, criptos, indicadores..."
+          class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder:text-white/30"
+          style="font-family: 'DM Sans', sans-serif;"
+        />
+        <kbd class="bg-white/5 border border-white/[0.07] text-white/30 text-[10px] px-1.5 py-0.5 rounded">ESC</kbd>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="lg:hidden overflow-hidden bg-[#111318] border-b border-white/[0.07]" style="max-height: 0; transition: max-height 0.4s ease;">
+    <nav class="flex flex-col px-4 sm:px-6 py-3 gap-0.5">
+
+      <span class="text-white/25 text-[10px] uppercase tracking-widest px-3 pt-2 pb-1">Mercados</span>
+      {mercados.map((m) => (
+        <a
+          href={m.href}
+          class="text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-2 rounded-lg transition-colors duration-200 no-underline"
+        >
+          {m.label}
+        </a>
+      ))}
+
+      <div class="border-t border-white/[0.07] my-2"></div>
+
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-2.5 rounded-lg transition-colors duration-200 no-underline"
+        >
+          {link.label}
+        </a>
+      ))}
+
+      <div class="flex items-center gap-2 px-3 py-2.5 border-t border-white/[0.07] mt-1">
+        <Globe size={14} class="text-white/40 flex-shrink-0" />
+        <select
+          class="bg-transparent border-none text-white/40 text-sm outline-none flex-1"
+          style="font-family: 'DM Sans', sans-serif;"
+        >
+          <option value="global" class="bg-[#1A1D24] text-white">Global</option>
+          {regiones.map((region) => (
+            <optgroup label={region.label} style="background: #1A1D24; color: rgba(255,255,255,0.4);">
+              {region.paises.map((p) => (
+                <option value={p.code} class="bg-[#1A1D24] text-white">{p.label}</option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+    </nav>
+  </div>
+
+</header>
+
+<style>
+  .ticker-track {
+    animation: ticker-scroll 25s linear infinite;
+  }
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes ticker-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+
+<script>
+  // Búsqueda
+  const searchToggle = document.getElementById('search-toggle');
+  const searchBar    = document.getElementById('search-bar') as HTMLElement;
+  const searchInput  = document.getElementById('search-input') as HTMLInputElement;
+
+  searchToggle?.addEventListener('click', () => {
+    const isOpen = searchBar.style.maxHeight !== '0px' && searchBar.style.maxHeight !== '';
+    searchBar.style.maxHeight = isOpen ? '0px' : '56px';
+    if (!isOpen) searchInput?.focus();
+  });
+
+  // Menú móvil
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu') as HTMLElement;
+
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = mobileMenu.style.maxHeight !== '0px' && mobileMenu.style.maxHeight !== '';
+    mobileMenu.style.maxHeight = isOpen ? '0px' : '600px';
+  });
+
+  // Dropdown Mercados
+  const mercadosToggle   = document.getElementById('mercados-toggle');
+  const mercadosDropdown = document.getElementById('mercados-dropdown') as HTMLElement;
+  const mercadosChevron  = document.getElementById('mercados-chevron') as HTMLElement;
+  const mercadosWrapper  = document.getElementById('mercados-wrapper');
+
+  function openDropdown()  {
+    mercadosDropdown.classList.remove('hidden');
+    mercadosChevron.style.transform = 'rotate(180deg)';
+  }
+  function closeDropdown() {
+    mercadosDropdown.classList.add('hidden');
+    mercadosChevron.style.transform = 'rotate(0deg)';
+  }
+
+  mercadosToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mercadosDropdown.classList.contains('hidden') ? openDropdown() : closeDropdown();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!mercadosWrapper?.contains(e.target as Node)) closeDropdown();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      searchBar.style.maxHeight = '0px';
+      closeDropdown();
+    }
+  });
+
+  // Selector de país
+  const countrySelect = document.getElementById('country-select') as HTMLSelectElement;
+  countrySelect?.addEventListener('change', () => {
+    const code = countrySelect.value;
+    window.location.href = code === 'global' ? '/noticias' : `/noticias?pais=${code}`;
+  });
+
+  // Active link
+  const path = window.location.pathname;
+  document.querySelectorAll('.nav-link').forEach((link) => {
+    if (link.getAttribute('href') === path) {
+      link.classList.replace('text-white/50', 'text-[#D4A843]');
+    }
+  });
+
+  // Resaltar "Mercados" si estamos en una categoría
+  const slugsCategorias = [
+    'cripto','trading','bolsa','economia','forex',
+    'finanzas-personales','fintech','impuestos','inversiones'
+  ];
+  if (slugsCategorias.some(c => path.startsWith(`/${c}`))) {
+    mercadosToggle?.classList.add('text-[#D4A843]');
+    mercadosToggle?.classList.remove('text-white/50');
+  }
+</script>

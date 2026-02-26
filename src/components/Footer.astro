@@ -1,0 +1,166 @@
+---
+// Footer.astro - Inversax
+import { Twitter, Youtube, Instagram, Facebook, ArrowRight, TrendingUp } from 'lucide-astro';
+
+const sections = [
+  {
+    title: "Mercados",
+    links: [
+      { label: "Criptomonedas",       href: "/cripto"              },
+      { label: "Trading",             href: "/trading"             },
+      { label: "Bolsa de Valores",    href: "/bolsa"               },
+      { label: "Economía",            href: "/economia"            },
+      { label: "Forex",               href: "/forex"               },
+      { label: "Finanzas Personales", href: "/finanzas-personales" },
+      { label: "Fintech",             href: "/fintech"             },
+      { label: "Impuestos",           href: "/impuestos"           },
+      { label: "Inversiones",         href: "/inversiones"         },
+    ],
+  },
+  {
+    title: "Herramientas",
+    links: [
+      { label: "Calculadora Cripto",  href: "/herramientas/calculadora" },
+      { label: "Conversor Monedas",   href: "/herramientas/conversor"   },
+      { label: "Precio del Dólar",    href: "/herramientas/dolar"       },
+      { label: "Gráficas en vivo",    href: "/herramientas/graficas"    },
+      { label: "Comparar Brokers",    href: "/herramientas/brokers"     },
+    ],
+  },
+  {
+    title: "Por País",
+    links: [
+      { label: "México",              href: "/noticias?pais=mx" },
+      { label: "Argentina",           href: "/noticias?pais=ar" },
+      { label: "Colombia",            href: "/noticias?pais=co" },
+      { label: "Venezuela",           href: "/noticias?pais=ve" },
+      { label: "Chile",               href: "/noticias?pais=cl" },
+      { label: "Perú",                href: "/noticias?pais=pe" },
+      { label: "España",              href: "/noticias?pais=es" },
+      { label: "Estados Unidos",      href: "/noticias?pais=us" },
+      { label: "→ Ver todos los países", href: "/paises"        },
+    ],
+  },
+  {
+    title: "Nosotros",
+    links: [
+      { label: "Acerca de",   href: "/acerca"      },
+      { label: "Contacto",    href: "/contacto"    },
+      { label: "Aviso Legal", href: "/legal"       },
+      { label: "Privacidad",  href: "/privacidad"  },
+      { label: "Publicidad",  href: "/publicidad"  },
+    ],
+  },
+];
+
+const socials = [
+  { icon: "twitter",   href: "#", label: "Twitter"   },
+  { icon: "youtube",   href: "#", label: "YouTube"   },
+  { icon: "instagram", href: "#", label: "Instagram" },
+  { icon: "facebook",  href: "#", label: "Facebook"  },
+];
+---
+
+<footer class="bg-[#0A0B0D] border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+
+  <!-- Main footer -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-12">
+
+      <!-- Brand col -->
+      <div class="col-span-2 sm:col-span-3 lg:col-span-2 flex flex-col gap-5">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2.5 no-underline w-fit">
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+            <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#D4A843" stroke-width="2"/>
+            <polyline points="8,16 12,12 16,15 20,10" stroke="#D4A843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-extrabold text-[20px] text-white tracking-tight" style="font-family: 'Syne', sans-serif;">
+            Inversax<span class="text-[#D4A843] font-normal text-sm">.com</span>
+          </span>
+        </a>
+
+        <p class="text-white/40 text-sm leading-relaxed max-w-xs font-light">
+          Tu fuente de información financiera en español. Cripto, trading y bolsa actualizado cada día para toda la comunidad hispanohablante.
+        </p>
+
+        <!-- Newsletter -->
+        <div class="flex flex-col gap-2.5">
+          <span class="text-white/60 text-xs font-medium tracking-wide uppercase">Newsletter diario</span>
+          <div class="flex items-center gap-2">
+            <input
+              type="email"
+              placeholder="tu@email.com"
+              class="flex-1 bg-white/5 border border-white/[0.07] text-white text-sm px-3.5 py-2.5 rounded-lg outline-none placeholder:text-white/25 focus:border-[#D4A843]/50 transition-colors duration-200 min-w-0"
+              style="font-family: 'DM Sans', sans-serif;"
+            />
+            <button class="flex-shrink-0 bg-[#D4A843] hover:bg-[#E8C060] text-[#0A0B0D] p-2.5 rounded-lg transition-colors duration-200 cursor-pointer border-none">
+              <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        <!-- Socials -->
+        <div class="flex items-center gap-2 pt-1">
+          {socials.map((s) => (
+            <a
+              href={s.href}
+              aria-label={s.label}
+              class="w-8 h-8 flex items-center justify-center bg-white/5 border border-white/[0.07] text-white/40 hover:text-white hover:border-white/20 rounded-lg transition-colors duration-200 no-underline"
+            >
+              {s.icon === "twitter"   && <Twitter   size={14} />}
+              {s.icon === "youtube"   && <Youtube   size={14} />}
+              {s.icon === "instagram" && <Instagram size={14} />}
+              {s.icon === "facebook"  && <Facebook  size={14} />}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Links cols -->
+      {sections.map((section) => (
+        <div class="flex flex-col gap-4">
+          <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
+            {section.title}
+          </span>
+          <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+            {section.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class={`text-sm no-underline transition-colors duration-200 ${
+                    link.label.startsWith('→')
+                      ? 'text-[#D4A843] hover:text-[#E8C060]'
+                      : 'text-white/40 hover:text-white'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="border-t border-white/[0.07]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <p class="text-white/20 text-[11.5px] leading-relaxed text-center">
+        <TrendingUp size={11} class="inline mr-1 opacity-60" />
+        Inversax es un sitio informativo. El contenido no constituye asesoría financiera. Invertir conlleva riesgos. Consulta a un profesional antes de tomar decisiones de inversión.
+      </p>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-white/[0.07]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-center">
+      <span class="text-white/25 text-xs">© {new Date().getFullYear()} Inversax.com — Todos los derechos reservados</span>
+    </div>
+  </div>
+
+</footer>
+

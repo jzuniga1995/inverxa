@@ -1,0 +1,141 @@
+---
+// src/pages/paises.astro
+import Layout from '../layouts/Layout.astro';
+import { getPaises } from '../db/queries';
+import { Globe, ArrowRight, MapPin } from 'lucide-astro';
+
+const todosPaises = await getPaises();
+
+const regiones = [
+  {
+    label: "Latinoamérica",
+    codigos: ["ar","bo","br","cl","co","cu","ec","mx","py","pe","uy","ve"],
+  },
+  {
+    label: "América Central",
+    codigos: ["bz","cr","sv","gt","hn","ni","pa"],
+  },
+  {
+    label: "Caribe",
+    codigos: ["do","pr"],
+  },
+  {
+    label: "Norteamérica",
+    codigos: ["us","ca"],
+  },
+  {
+    label: "Europa",
+    codigos: ["es","ad","de","fr","gb","it","nl","pt","ch"],
+  },
+  {
+    label: "África",
+    codigos: ["gq","ma"],
+  },
+  {
+    label: "Oceanía / Asia",
+    codigos: ["au","ph"],
+  },
+];
+
+// Cruzar regiones con los países reales de la DB
+const regionesConPaises = regiones.map((region) => ({
+  ...region,
+  paises: region.codigos
+    .map((code) => todosPaises.find((p) => p.codigo === code))
+    .filter(Boolean),
+})).filter((r) => r.paises.length > 0);
+
+// País global aparte
+const global = todosPaises.find((p) => p.codigo === 'global');
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>Noticias por País — Inversax</title>
+    <meta name="description" content="Encuentra noticias financieras, cripto y trading organizadas por país. Cobertura en toda Latinoamérica, España, Estados Unidos y más." />
+    <link rel="canonical" href="https://inversax.com/paises" />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+      <!-- Header de página -->
+      <div class="mb-10">
+        <div class="flex items-center gap-2 text-white/30 text-sm mb-3">
+          <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+          <ArrowRight size={13} />
+          <span>Países</span>
+        </div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
+            <Globe size={20} class="text-[#D4A843]" />
+          </div>
+          <h1 class="font-extrabold text-2xl sm:text-3xl text-white" style="font-family: 'Syne', sans-serif;">
+            Noticias por País
+          </h1>
+        </div>
+        <p class="text-white/40 text-sm max-w-xl leading-relaxed">
+          Cobertura financiera para toda la comunidad hispanohablante. Selecciona tu país para ver noticias, precios y análisis relevantes para tu región.
+        </p>
+      </div>
+
+      <!-- Card global -->
+      {global && (
+        <a
+          href="/noticias?pais=global"
+          class="group flex items-center justify-between bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/15 rounded-2xl px-6 py-4 no-underline transition-all duration-200 mb-10"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-[#D4A843]/20 flex items-center justify-center flex-shrink-0">
+              <Globe size={17} class="text-[#D4A843]" />
+            </div>
+            <div>
+              <span class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">Global</span>
+              <p class="text-white/40 text-xs mt-0.5">Noticias que aplican a toda la comunidad hispanohablante</p>
+            </div>
+          </div>
+          <ArrowRight size={16} class="text-[#D4A843] group-hover:translate-x-1 transition-transform duration-200 flex-shrink-0" />
+        </a>
+      )}
+
+      <!-- Regiones -->
+      <div class="flex flex-col gap-12">
+        {regionesConPaises.map((region) => (
+          <div>
+            <!-- Título de región -->
+            <div class="flex items-center gap-2 mb-5">
+              <MapPin size={15} class="text-white/30" />
+              <h2 class="font-bold text-sm text-white/50 uppercase tracking-widest" style="font-family: 'Syne', sans-serif;">
+                {region.label}
+              </h2>
+              <div class="flex-1 h-px bg-white/[0.07] ml-2"></div>
+            </div>
+
+            <!-- Grid de países -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {region.paises.map((pais) => (
+                <a
+                  href={`/noticias?pais=${pais!.codigo}`}
+                  class="group flex items-center justify-between bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 hover:bg-[#D4A843]/5 rounded-xl px-4 py-3.5 no-underline transition-all duration-200"
+                >
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-7 h-7 rounded-md bg-white/5 flex items-center justify-center flex-shrink-0">
+                      <span class="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+                        {pais!.codigo.slice(0, 2)}
+                      </span>
+                    </div>
+                    <span class="text-white/70 group-hover:text-white text-sm font-medium truncate transition-colors duration-200">
+                      {pais!.nombre}
+                    </span>
+                  </div>
+                  <ArrowRight size={13} class="text-white/20 group-hover:text-[#D4A843] flex-shrink-0 ml-1 transition-colors duration-200" />
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</Layout>

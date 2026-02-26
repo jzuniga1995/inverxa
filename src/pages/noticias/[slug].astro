@@ -1,0 +1,276 @@
+---
+// src/pages/noticias/[slug].astro
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import { getArticuloPorSlug, getArticulos } from '../../db/queries';
+import { Clock, ArrowLeft, ArrowRight, Globe } from 'lucide-astro';
+
+const { slug } = Astro.params;
+
+// Si no hay slug redirigir
+if (!slug) return Astro.redirect('/noticias');
+
+const articulo = await getArticuloPorSlug(slug);
+
+// Si no existe el artículo → 404
+if (!articulo) return Astro.redirect('/404');
+
+// Artículos relacionados (misma categoría)
+const relacionados = await getArticulos(10);
+const filtrados = relacionados
+  .filter(a => a.slug !== slug && a.categoria?.slug === articulo.categoria?.slug)
+  .slice(0, 3);
+
+function formatFecha(fecha: Date | null) {
+  if (!fecha) return '';
+  return new Intl.DateTimeFormat('es', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(fecha);
+}
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>{articulo.titulo} — Inversax</title>
+  <meta name="description" content={articulo.resumen ?? ''} />
+
+  <!-- Canonical -->
+  <link rel="canonical" href={`https://inversax.com/noticias/${articulo.slug}`} />
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content={articulo.titulo} />
+  <meta property="og:description" content={articulo.resumen ?? ''} />
+  <meta property="og:type"        content="article" />
+  <meta property="og:url"         content={`https://inversax.com/noticias/${articulo.slug}`} />
+  {articulo.imagen && <meta property="og:image" content={articulo.imagen} />}
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={articulo.titulo} />
+  <meta name="twitter:description" content={articulo.resumen ?? ''} />
+  {articulo.imagen && <meta name="twitter:image" content={articulo.imagen} />}
+
+  <!-- Article meta para Google -->
+  <meta property="article:published_time" content={articulo.creadoEn?.toISOString() ?? ''} />
+  <meta property="article:modified_time"  content={articulo.actualizadoEn?.toISOString() ?? ''} />
+  {articulo.categoria && <meta property="article:section" content={articulo.categoria.nombre} />}
+</slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div class="flex flex-col lg:flex-row gap-10">
+
+        <!-- ARTÍCULO -->
+        <article class="flex-1 min-w-0">
+
+          <!-- Volver -->
+          <a href="/noticias" class="inline-flex items-center gap-1.5 text-white/40 hover:text-white text-sm no-underline transition-colors duration-200 mb-6">
+            <ArrowLeft size={15} /> Volver a noticias
+          </a>
+
+          <!-- Meta -->
+          <div class="flex items-center gap-2 flex-wrap mb-4">
+            {articulo.categoria && (
+              <a
+                href={`/noticias?categoria=${articulo.categoria.slug}`}
+                class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider no-underline hover:bg-[#E8C060] transition-colors duration-200"
+              >
+                {articulo.categoria.nombre}
+              </a>
+            )}
+            {articulo.pais && (
+              <span class="flex items-center gap-1 text-white/30 text-xs border border-white/[0.07] px-2 py-0.5 rounded">
+                <Globe size={10} />
+                {articulo.pais.nombre}
+              </span>
+            )}
+            <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
+              <Clock size={11} />
+              {formatFecha(articulo.creadoEn)}
+            </span>
+          </div>
+
+          <!-- Título -->
+          <h1 class="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white leading-tight mb-4" style="font-family: 'Syne', sans-serif;">
+            {articulo.titulo}
+          </h1>
+
+          <!-- Resumen -->
+          {articulo.resumen && (
+            <p class="text-white/50 text-base sm:text-lg leading-relaxed border-l-2 border-[#D4A843] pl-4 mb-8 font-light">
+              {articulo.resumen}
+            </p>
+          )}
+
+          <!-- Imagen principal -->
+          {articulo.imagen && (
+            <div class="w-full h-56 sm:h-80 rounded-2xl overflow-hidden mb-8 bg-[#1A1D24]">
+              <img
+                src={articulo.imagen}
+                alt={articulo.titulo}
+                class="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          <!-- Contenido del artículo -->
+          <div class="article-content text-white/70 leading-relaxed text-base sm:text-[16.5px]" set:html={articulo.contenido} />
+
+          <!-- Footer del artículo -->
+          <div class="flex items-center justify-between mt-10 pt-6 border-t border-white/[0.07] flex-wrap gap-4">
+            <span class="text-white/25 text-xs">
+              Actualizado: {formatFecha(articulo.actualizadoEn)}
+            </span>
+            <a href="/noticias" class="inline-flex items-center gap-1.5 text-[#D4A843] text-sm font-medium no-underline hover:text-[#E8C060] transition-colors duration-200">
+              <ArrowLeft size={14} /> Ver más noticias
+            </a>
+          </div>
+
+        </article>
+
+        <!-- SIDEBAR -->
+        <aside class="w-full lg:w-72 flex-shrink-0 flex flex-col gap-4">
+
+          <!-- Artículos relacionados -->
+          {filtrados.length > 0 && (
+            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+              <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
+                Relacionados
+              </h3>
+              <div class="flex flex-col gap-4">
+                {filtrados.map((rel) => (
+                  <a href={`/noticias/${rel.slug}`} class="group flex flex-col gap-1.5 no-underline">
+                    {rel.imagen && (
+                      <div class="w-full h-28 rounded-lg overflow-hidden bg-[#1A1D24]">
+                        <img src={rel.imagen} alt={rel.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      </div>
+                    )}
+                    {rel.categoria && (
+                      <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{rel.categoria.nombre}</span>
+                    )}
+                    <span class="text-white/60 group-hover:text-white text-xs leading-snug line-clamp-2 transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+                      {rel.titulo}
+                    </span>
+                    <span class="text-white/25 text-[10px] flex items-center gap-1">
+                      <Clock size={9} /> {formatFecha(rel.creadoEn)}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Explorar categorías -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+            <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
+              Explorar
+            </h3>
+            <div class="flex flex-col gap-1">
+              {[
+                { label: 'Criptomonedas', slug: 'cripto'   },
+                { label: 'Trading',       slug: 'trading'  },
+                { label: 'Bolsa',         slug: 'bolsa'    },
+                { label: 'Economía',      slug: 'economia' },
+                { label: 'Forex',         slug: 'forex'    },
+              ].map((cat) => (
+                <a
+                  href={`/noticias?categoria=${cat.slug}`}
+                  class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/5 no-underline transition-colors duration-200"
+                >
+                  <span>{cat.label}</span>
+                  <ArrowRight size={13} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Estilos para el contenido HTML del artículo */
+  .article-content h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #E8EAF0;
+    margin: 2rem 0 1rem;
+  }
+
+  .article-content h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #E8EAF0;
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  .article-content p {
+    margin-bottom: 1.25rem;
+    line-height: 1.8;
+  }
+
+  .article-content a {
+    color: #D4A843;
+    text-decoration: underline;
+  }
+
+  .article-content ul,
+  .article-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .article-content li {
+    line-height: 1.7;
+  }
+
+  .article-content blockquote {
+    border-left: 3px solid #D4A843;
+    padding-left: 1rem;
+    color: rgba(232,234,240,0.5);
+    font-style: italic;
+    margin: 1.5rem 0;
+  }
+
+  .article-content strong {
+    color: #E8EAF0;
+    font-weight: 600;
+  }
+
+  .article-content img {
+    width: 100%;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+  }
+
+  .article-content code {
+    background: rgba(255,255,255,0.07);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #D4A843;
+  }
+
+  .article-content hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin: 2rem 0;
+  }
+</style>
+

@@ -1,0 +1,327 @@
+---
+// src/pages/[categoria].astro
+import Layout from '../layouts/Layout.astro';
+import { getArticulosPorCategoria, getCategorias } from '../db/queries';
+import { ArrowRight, Clock, Globe, Filter } from 'lucide-astro';
+
+// Categorías válidas — si la URL no coincide, 404
+const SLUGS_VALIDOS = [
+  'cripto', 'trading', 'bolsa', 'economia', 'forex',
+  'finanzas-personales', 'fintech', 'impuestos', 'inversiones',
+];
+
+const { categoria: slugParam } = Astro.params;
+
+if (!slugParam || !SLUGS_VALIDOS.includes(slugParam)) {
+  return Astro.redirect('/404');
+}
+
+// Filtro por país desde query string
+const paisParam = Astro.url.searchParams.get('pais') ?? 'global';
+
+// Obtener artículos y todas las categorías en paralelo
+const [articulos, todasCategorias] = await Promise.all([
+  getArticulosPorCategoria(slugParam, 30),
+  getCategorias(),
+]);
+
+// Filtrar por país si no es global
+const articulosFiltrados = paisParam === 'global'
+  ? articulos
+  : articulos.filter((a) => a.pais?.codigo === paisParam);
+
+// Datos de la categoría actual
+const categoriaActual = todasCategorias.find((c) => c.slug === slugParam);
+
+// Metadatos SEO por categoría
+const seoData: Record<string, { title: string; desc: string }> = {
+  cripto:   {
+    title: 'Criptomonedas',
+    desc:  'Noticias, análisis y precios de Bitcoin, Ethereum y las principales criptomonedas para Latinoamérica.',
+  },
+  trading:  {
+    title: 'Trading',
+    desc:  'Estrategias, análisis técnico y noticias de trading para inversores hispanohablantes.',
+  },
+  bolsa:    {
+    title: 'Bolsa de Valores',
+    desc:  'Noticias del mercado bursátil: S&P 500, bolsas latinoamericanas y análisis de acciones.',
+  },
+  economia: {
+    title: 'Economía',
+    desc:  'Noticias económicas de Latinoamérica: inflación, tipo de cambio, políticas monetarias y más.',
+  },
+  forex:    {
+    title: 'Forex',
+    desc:  'Noticias y análisis del mercado de divisas. Tipos de cambio y estrategias forex en español.',
+  },
+  'finanzas-personales': {
+    title: 'Finanzas Personales',
+    desc:  'Consejos para ahorrar, salir de deudas y manejar mejor tu dinero. Para toda Latinoamérica.',
+  },
+  fintech:  {
+    title: 'Fintech',
+    desc:  'Noticias de neobancos, pagos digitales y tecnología financiera en Latinoamérica: Nubank, Mercado Pago, Bitso y más.',
+  },
+  impuestos: {
+    title: 'Impuestos',
+    desc:  'Cómo declarar criptomonedas, obligaciones fiscales y noticias tributarias por país en Latinoamérica.',
+  },
+  inversiones: {
+    title: 'Inversiones',
+    desc:  'Estrategias de inversión para principiantes y avanzados: ETFs, fondos, bienes raíces y más en español.',
+  },
+};
+
+const seo = seoData[slugParam];
+
+function formatFecha(fecha: Date | null) {
+  if (!fecha) return '';
+  const diff = Date.now() - new Date(fecha).getTime();
+  const horas = Math.floor(diff / 1000 / 60 / 60);
+  if (horas < 1)  return 'Hace unos minutos';
+  if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+  const dias = Math.floor(horas / 24);
+  return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
+}
+
+// Noticia principal y resto
+const [principal, ...resto] = articulosFiltrados;
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>{seo.title} — Inversax</title>
+    <meta name="description" content={seo.desc} />
+    <link rel="canonical" href={`https://inversax.com/${slugParam}`} />
+    <meta property="og:title"       content={`${seo.title} — Inversax`} />
+    <meta property="og:description" content={seo.desc} />
+    <meta property="og:type"        content="website" />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-white/30 text-sm mb-8">
+        <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+        <ArrowRight size={13} />
+        <span class="text-white/60">{seo.title}</span>
+      </div>
+
+      <!-- Header de categoría -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
+        <div>
+          <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider mb-3 inline-block">
+            {categoriaActual?.nombre ?? seo.title}
+          </span>
+          <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+            {seo.title}
+          </h1>
+          <p class="text-white/40 text-sm mt-2 max-w-xl leading-relaxed">{seo.desc}</p>
+        </div>
+
+        <!-- Filtro por país -->
+        <div class="flex items-center gap-2 bg-[#111318] border border-white/[0.07] rounded-xl px-3.5 py-2.5 flex-shrink-0">
+          <Filter size={14} class="text-white/30" />
+          <Globe size={14} class="text-white/30" />
+          <select
+            id="pais-filter"
+            class="bg-transparent border-none text-white/60 text-sm outline-none cursor-pointer"
+            style="font-family: 'DM Sans', sans-serif;"
+          >
+            <option value="global" selected={paisParam === 'global'}>Todos los países</option>
+            <optgroup label="Latinoamérica" style="background:#1A1D24;">
+              <option value="ar" selected={paisParam === 'ar'}>Argentina</option>
+              <option value="bo" selected={paisParam === 'bo'}>Bolivia</option>
+              <option value="br" selected={paisParam === 'br'}>Brasil</option>
+              <option value="cl" selected={paisParam === 'cl'}>Chile</option>
+              <option value="co" selected={paisParam === 'co'}>Colombia</option>
+              <option value="cu" selected={paisParam === 'cu'}>Cuba</option>
+              <option value="ec" selected={paisParam === 'ec'}>Ecuador</option>
+              <option value="mx" selected={paisParam === 'mx'}>México</option>
+              <option value="py" selected={paisParam === 'py'}>Paraguay</option>
+              <option value="pe" selected={paisParam === 'pe'}>Perú</option>
+              <option value="uy" selected={paisParam === 'uy'}>Uruguay</option>
+              <option value="ve" selected={paisParam === 've'}>Venezuela</option>
+            </optgroup>
+            <optgroup label="América Central" style="background:#1A1D24;">
+              <option value="bz" selected={paisParam === 'bz'}>Belice</option>
+              <option value="cr" selected={paisParam === 'cr'}>Costa Rica</option>
+              <option value="sv" selected={paisParam === 'sv'}>El Salvador</option>
+              <option value="gt" selected={paisParam === 'gt'}>Guatemala</option>
+              <option value="hn" selected={paisParam === 'hn'}>Honduras</option>
+              <option value="ni" selected={paisParam === 'ni'}>Nicaragua</option>
+              <option value="pa" selected={paisParam === 'pa'}>Panamá</option>
+            </optgroup>
+            <optgroup label="Caribe" style="background:#1A1D24;">
+              <option value="do" selected={paisParam === 'do'}>República Dominicana</option>
+              <option value="pr" selected={paisParam === 'pr'}>Puerto Rico</option>
+            </optgroup>
+            <optgroup label="Norteamérica" style="background:#1A1D24;">
+              <option value="us" selected={paisParam === 'us'}>Estados Unidos</option>
+              <option value="ca" selected={paisParam === 'ca'}>Canadá</option>
+            </optgroup>
+            <optgroup label="Europa" style="background:#1A1D24;">
+              <option value="es" selected={paisParam === 'es'}>España</option>
+              <option value="ad" selected={paisParam === 'ad'}>Andorra</option>
+              <option value="de" selected={paisParam === 'de'}>Alemania</option>
+              <option value="fr" selected={paisParam === 'fr'}>Francia</option>
+              <option value="gb" selected={paisParam === 'gb'}>Reino Unido</option>
+              <option value="it" selected={paisParam === 'it'}>Italia</option>
+              <option value="nl" selected={paisParam === 'nl'}>Países Bajos</option>
+              <option value="pt" selected={paisParam === 'pt'}>Portugal</option>
+              <option value="ch" selected={paisParam === 'ch'}>Suiza</option>
+            </optgroup>
+            <optgroup label="África" style="background:#1A1D24;">
+              <option value="gq" selected={paisParam === 'gq'}>Guinea Ecuatorial</option>
+              <option value="ma" selected={paisParam === 'ma'}>Marruecos</option>
+            </optgroup>
+            <optgroup label="Oceanía / Asia" style="background:#1A1D24;">
+              <option value="au" selected={paisParam === 'au'}>Australia</option>
+              <option value="ph" selected={paisParam === 'ph'}>Filipinas</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- Nav de categorías -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide">
+        {todasCategorias.map((cat) => (
+          <a
+            href={`/${cat.slug}${paisParam !== 'global' ? `?pais=${paisParam}` : ''}`}
+            class={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium no-underline transition-all duration-200 ${
+              cat.slug === slugParam
+                ? 'bg-[#D4A843] text-[#0A0B0D]'
+                : 'bg-[#111318] border border-white/[0.07] text-white/50 hover:text-white hover:border-white/20'
+            }`}
+          >
+            {cat.nombre}
+          </a>
+        ))}
+      </div>
+
+      <!-- Artículos -->
+      {articulosFiltrados.length === 0 ? (
+        <div class="flex flex-col items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <Globe size={32} class="text-white/10 mb-3" />
+          <p class="text-white/30 text-sm">No hay artículos publicados en esta categoría</p>
+          {paisParam !== 'global' && (
+            <a href={`/${slugParam}`} class="mt-4 text-[#D4A843] text-sm no-underline hover:underline">
+              Ver todos los países
+            </a>
+          )}
+        </div>
+      ) : (
+        <div class="flex flex-col gap-6">
+
+          <!-- Artículo principal grande -->
+          {principal && (
+            <a
+              href={`/noticias/${principal.slug}`}
+              class="group relative rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] hover:border-white/20 no-underline flex flex-col sm:flex-row min-h-[220px] transition-colors duration-300"
+            >
+              {principal.imagen && (
+                <div class="w-full sm:w-72 h-48 sm:h-auto flex-shrink-0 bg-[#1A1D24] overflow-hidden">
+                  <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+              )}
+              <div class="flex flex-col justify-center gap-3 p-6">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                    {principal.categoria?.nombre}
+                  </span>
+                  {principal.pais && (
+                    <span class="flex items-center gap-1 text-white/30 text-xs border border-white/[0.07] px-2 py-0.5 rounded">
+                      <Globe size={10} /> {principal.pais.nombre}
+                    </span>
+                  )}
+                  <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
+                    <Clock size={11} /> {formatFecha(principal.creadoEn)}
+                  </span>
+                </div>
+                <h2 class="font-bold text-white text-xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+                  {principal.titulo}
+                </h2>
+                {principal.resumen && (
+                  <p class="text-white/40 text-sm leading-relaxed line-clamp-2">{principal.resumen}</p>
+                )}
+                <span class="flex items-center gap-1.5 text-[#D4A843] text-sm font-medium mt-1">
+                  Leer artículo <ArrowRight size={14} />
+                </span>
+              </div>
+            </a>
+          )}
+
+          <!-- Grid del resto de artículos -->
+          {resto.length > 0 && (
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {resto.map((art) => (
+                <a
+                  href={`/noticias/${art.slug}`}
+                  class="group flex flex-col bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-200"
+                >
+                  {art.imagen ? (
+                    <div class="w-full h-44 bg-[#1A1D24] overflow-hidden flex-shrink-0">
+                      <img src={art.imagen} alt={art.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                  ) : (
+                    <div class="w-full h-44 bg-[#1A1D24] flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);"></div>
+                  )}
+                  <div class="flex flex-col gap-2 p-4 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      {art.pais && (
+                        <span class="flex items-center gap-1 text-white/25 text-[10px] border border-white/[0.05] px-1.5 py-0.5 rounded">
+                          <Globe size={9} /> {art.pais.nombre}
+                        </span>
+                      )}
+                      <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
+                        <Clock size={9} /> {formatFecha(art.creadoEn)}
+                      </span>
+                    </div>
+                    <h3 class="font-bold text-white text-sm leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-3" style="font-family: 'Syne', sans-serif;">
+                      {art.titulo}
+                    </h3>
+                    {art.resumen && (
+                      <p class="text-white/35 text-xs leading-relaxed line-clamp-2 mt-auto pt-1">{art.resumen}</p>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+  const select = document.getElementById('pais-filter') as HTMLSelectElement;
+  select?.addEventListener('change', () => {
+    const pais = select.value;
+    const categoria = window.location.pathname.replace('/', '');
+    window.location.href = pais === 'global'
+      ? `/${categoria}`
+      : `/${categoria}?pais=${pais}`;
+  });
+</script>
+
