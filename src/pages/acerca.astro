@@ -1,0 +1,291 @@
+---
+// src/pages/acerca.astro
+import Layout from '../layouts/Layout.astro';
+import {
+  Globe, ArrowRight, TrendingUp, Zap, Shield,
+  Users, BarChart2, Newspaper, DollarSign, MapPin,
+  Target, Eye, Heart
+} from 'lucide-astro';
+
+const sitioWeb = "https://inversax.com";
+
+const valores = [
+  {
+    icon: "eye",
+    titulo: "Transparencia",
+    desc: "Siempre somos claros sobre qué es contenido editorial, qué es publicidad y qué son enlaces de afiliado. Sin letra chica.",
+  },
+  {
+    icon: "shield",
+    titulo: "Responsabilidad",
+    desc: "Nunca te venderemos la idea de que invertir es fácil. Los mercados tienen riesgos y lo decimos siempre.",
+  },
+  {
+    icon: "zap",
+    titulo: "Accesibilidad",
+    desc: "Las finanzas no deben ser solo para expertos. Explicamos todo en español claro, sin tecnicismos innecesarios.",
+  },
+  {
+    icon: "heart",
+    titulo: "Comunidad",
+    desc: "Construimos esto para el latinoamericano que quiere entender mejor su dinero y el mundo financiero.",
+  },
+];
+
+const queCubrimos = [
+  { icon: "crypto",   label: "Criptomonedas",         desc: "Precios en tiempo real, análisis y guías para más de 15,000 activos digitales." },
+  { icon: "bolsa",    label: "Bolsa y Acciones",       desc: "NYSE, NASDAQ, S&P 500 y mercados bursátiles internacionales." },
+  { icon: "forex",    label: "Forex y Divisas",        desc: "Tipo de cambio oficial y paralelo para cada país de LATAM." },
+  { icon: "indices",  label: "Índices Financieros",    desc: "Dow Jones, Nasdaq Composite, Russell 2000 y principales índices globales." },
+  { icon: "news",     label: "Noticias y Análisis",    desc: "Cobertura editorial diaria del mundo financiero en español." },
+  { icon: "tools",    label: "Herramientas",           desc: "Calculadoras, gráficas en vivo y recursos para tomar mejores decisiones." },
+];
+
+const regiones = [
+  { label: "Latinoamérica",    count: 12, paises: "Argentina, México, Colombia, Chile, Perú y más" },
+  { label: "América Central",  count: 7,  paises: "Guatemala, Honduras, Costa Rica, Panamá y más" },
+  { label: "Caribe",           count: 2,  paises: "República Dominicana, Puerto Rico" },
+  { label: "Norteamérica",     count: 2,  paises: "Estados Unidos, Canadá" },
+  { label: "Europa",           count: 9,  paises: "España, Portugal, Andorra y más" },
+  { label: "África y Oceanía", count: 4,  paises: "Guinea Ecuatorial, Marruecos, Australia, Filipinas" },
+];
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>Acerca de Inversax — Plataforma Financiera para Latinoamérica</title>
+    <meta name="description" content="Conoce Inversax, la plataforma de información financiera en español para Latinoamérica. Cripto, acciones, forex y más en 37 países." />
+    <link rel="canonical" href={`${sitioWeb}/acerca`} />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+
+    <!-- HERO -->
+    <div class="relative border-b border-white/[0.07] overflow-hidden">
+
+      <!-- Fondo decorativo -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10"
+          style="background: radial-gradient(ellipse, #D4A843 0%, transparent 65%); filter: blur(80px);">
+        </div>
+        <!-- Grid sutil -->
+        <div class="absolute inset-0 opacity-[0.03]"
+          style="background-image: linear-gradient(#D4A843 1px, transparent 1px), linear-gradient(90deg, #D4A843 1px, transparent 1px); background-size: 60px 60px;">
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 relative z-10">
+
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-white/30 text-sm mb-10">
+          <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+          <ArrowRight size={13} />
+          <span>Acerca de</span>
+        </div>
+
+        <!-- Eyebrow -->
+        <div class="inline-flex items-center gap-2 bg-[#D4A843]/10 border border-[#D4A843]/20 rounded-full px-4 py-1.5 mb-6">
+          <Globe size={13} class="text-[#D4A843]" />
+          <span class="text-[#D4A843] text-xs font-bold uppercase tracking-widest">37 países · En español</span>
+        </div>
+
+        <!-- Título -->
+        <h1 class="font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-[1.1] mb-6 max-w-3xl" style="font-family: 'Syne', sans-serif;">
+          Finanzas globales,<br />
+          <span style="color: #D4A843;">voz latinoamericana.</span>
+        </h1>
+
+        <p class="text-white/50 text-lg leading-relaxed max-w-2xl mb-10">
+          Inversax nació con una idea simple: que cualquier persona de habla hispana, sin importar su país, pueda acceder a información financiera de calidad, actualizada y comprensible. Sin barreras de idioma, sin tecnicismos innecesarios.
+        </p>
+
+        <!-- Stats rápidas -->
+        <div class="flex flex-wrap gap-8">
+          {[
+            { valor: "37",    label: "Países cubiertos" },
+            { valor: "15K+",  label: "Criptomonedas" },
+            { valor: "24/7",  label: "Datos en tiempo real" },
+            { valor: "100%",  label: "En español" },
+          ].map((stat) => (
+            <div class="flex flex-col gap-0.5">
+              <span class="font-extrabold text-2xl sm:text-3xl text-white" style="font-family: 'Syne', sans-serif; color: #D4A843;">{stat.valor}</span>
+              <span class="text-white/40 text-sm">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="flex flex-col gap-16">
+
+        <!-- MISIÓN Y VISIÓN -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                <Target size={18} class="text-[#D4A843]" />
+              </div>
+              <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">Nuestra Misión</h2>
+            </div>
+            <p class="text-white/55 text-sm leading-relaxed">
+              Democratizar el acceso a la información financiera en el mundo hispanohablante. Creemos que entender el mercado cripto, las bolsas internacionales o el tipo de cambio de tu país no debería requerir un título universitario ni dominar el inglés.
+            </p>
+            <p class="text-white/55 text-sm leading-relaxed">
+              Cada artículo, cada herramienta y cada dato que publicamos está pensado para ser útil y comprensible para cualquier persona, sea que esté comenzando a ahorrar o gestionando un portafolio diversificado.
+            </p>
+          </div>
+
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                <Eye size={18} class="text-[#D4A843]" />
+              </div>
+              <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">Nuestra Visión</h2>
+            </div>
+            <p class="text-white/55 text-sm leading-relaxed">
+              Ser la plataforma de referencia en información financiera para toda la comunidad hispanohablante del mundo. Un espacio donde los datos, las noticias y las herramientas estén siempre disponibles, actualizados y adaptados a la realidad económica de cada región.
+            </p>
+            <p class="text-white/55 text-sm leading-relaxed">
+              Desde Buenos Aires hasta Madrid, desde Ciudad de México hasta Manila: una sola plataforma, muchas realidades financieras cubiertas con el mismo nivel de calidad y compromiso.
+            </p>
+          </div>
+        </div>
+
+        <!-- QUÉ CUBRIMOS -->
+        <div>
+          <div class="flex items-center gap-3 mb-7">
+            <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
+              <BarChart2 size={17} class="text-[#D4A843]" />
+            </div>
+            <h2 class="font-bold text-xl text-white" style="font-family: 'Syne', sans-serif;">Qué cubrimos</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {queCubrimos.map((item) => (
+              <div class="group bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/25 rounded-2xl p-6 flex flex-col gap-3 transition-all duration-200">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
+                  {item.icon === "crypto"  && <TrendingUp size={16} class="text-[#D4A843]" />}
+                  {item.icon === "bolsa"   && <BarChart2 size={16} class="text-[#D4A843]" />}
+                  {item.icon === "forex"   && <DollarSign size={16} class="text-[#D4A843]" />}
+                  {item.icon === "indices" && <TrendingUp size={16} class="text-[#D4A843]" />}
+                  {item.icon === "news"    && <Newspaper size={16} class="text-[#D4A843]" />}
+                  {item.icon === "tools"   && <Zap size={16} class="text-[#D4A843]" />}
+                </div>
+                <div>
+                  <h3 class="font-bold text-white text-sm mb-1" style="font-family: 'Syne', sans-serif;">{item.label}</h3>
+                  <p class="text-white/40 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- COBERTURA POR REGIÓN -->
+        <div>
+          <div class="flex items-center gap-3 mb-7">
+            <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
+              <MapPin size={17} class="text-[#D4A843]" />
+            </div>
+            <div>
+              <h2 class="font-bold text-xl text-white" style="font-family: 'Syne', sans-serif;">Cobertura geográfica</h2>
+              <p class="text-white/30 text-xs mt-0.5">37 países · Expansión progresiva</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {regiones.map((r) => (
+              <div class="bg-[#111318] border border-white/[0.07] rounded-xl px-5 py-4 flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">{r.label}</span>
+                  <span class="bg-[#D4A843]/10 text-[#D4A843] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {r.count} países
+                  </span>
+                </div>
+                <p class="text-white/35 text-xs leading-relaxed">{r.paises}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-4 bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl px-5 py-4 flex items-center gap-3">
+            <Globe size={15} class="text-[#D4A843] flex-shrink-0" />
+            <p class="text-white/50 text-sm leading-relaxed">
+              Empezamos con cobertura activa en los mercados más grandes de LATAM e iremos expandiendo la cobertura a más países a medida que el sitio crece. <a href="/paises" class="text-[#D4A843] no-underline hover:underline">Ver todos los países</a>.
+            </p>
+          </div>
+        </div>
+
+        <!-- VALORES -->
+        <div>
+          <div class="flex items-center gap-3 mb-7">
+            <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
+              <Heart size={17} class="text-[#D4A843]" />
+            </div>
+            <h2 class="font-bold text-xl text-white" style="font-family: 'Syne', sans-serif;">Nuestros valores</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {valores.map((v) => (
+              <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex gap-4">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {v.icon === "eye"    && <Eye size={15} class="text-[#D4A843]" />}
+                  {v.icon === "shield" && <Shield size={15} class="text-[#D4A843]" />}
+                  {v.icon === "zap"    && <Zap size={15} class="text-[#D4A843]" />}
+                  {v.icon === "heart"  && <Heart size={15} class="text-[#D4A843]" />}
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <h3 class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">{v.titulo}</h3>
+                  <p class="text-white/45 text-sm leading-relaxed">{v.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- AVISO FINANCIERO + CTA -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+          <!-- Aviso -->
+          <div class="lg:col-span-3 bg-[#111318] border border-white/[0.07] rounded-2xl p-7 flex flex-col gap-4">
+            <div class="flex items-center gap-2.5">
+              <Shield size={16} class="text-[#D4A843]" />
+              <h3 class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">Aviso importante</h3>
+            </div>
+            <p class="text-white/45 text-sm leading-relaxed">
+              Inversax es una plataforma de <strong class="text-white/70">información y educación financiera</strong>. No somos asesores de inversión, no gestionamos fondos y no estamos regulados como entidad financiera. Todo el contenido publicado tiene carácter exclusivamente informativo.
+            </p>
+            <p class="text-white/45 text-sm leading-relaxed">
+              Inversax participa en programas de afiliados con exchanges y brokers. Algunos enlaces en el sitio son patrocinados. Esto siempre estará indicado claramente y nunca influye en nuestra línea editorial.
+            </p>
+          </div>
+
+          <!-- CTA -->
+          <div class="lg:col-span-2 bg-[#D4A843]/8 border border-[#D4A843]/20 rounded-2xl p-7 flex flex-col justify-between gap-6">
+            <div class="flex flex-col gap-3">
+              <Users size={20} class="text-[#D4A843]" />
+              <h3 class="font-bold text-white text-lg leading-snug" style="font-family: 'Syne', sans-serif;">
+                ¿Quieres estar en Inversax?
+              </h3>
+              <p class="text-white/45 text-sm leading-relaxed">
+                Si tienes una plataforma financiera o crypto y quieres llegar al mercado hispanohablante, contáctanos.
+              </p>
+            </div>
+            <div class="flex flex-col gap-2.5">
+              <a href="/publicidad" class="flex items-center justify-center gap-2 bg-[#D4A843] text-[#0A0B0D] font-bold text-sm rounded-xl px-5 py-3 no-underline hover:bg-[#D4A843]/90 transition-colors duration-200">
+                Publicitar en Inversax <ArrowRight size={14} />
+              </a>
+              <a href="/contacto" class="flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white/70 hover:text-white font-medium text-sm rounded-xl px-5 py-3 no-underline hover:bg-white/10 transition-all duration-200">
+                Contacto general
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
