@@ -1,325 +1,251 @@
 ---
+// src/pages/contacto.astro
 import Layout from '../layouts/Layout.astro';
+import {
+  Mail, ArrowRight, MessageSquare, Globe,
+  Megaphone, Shield, Clock, Send
+} from 'lucide-astro';
+
+const sitioWeb  = "https://inversax.com";
+const correos = [
+  { tipo: "General",     email: "hola@inversax.com",       icon: "msg"  },
+  { tipo: "Publicidad",  email: "publicidad@inversax.com",  icon: "ads"  },
+  { tipo: "Legal",       email: "legal@inversax.com",       icon: "law"  },
+];
+
+const motivos = [
+  "Consulta general",
+  "Error o problema técnico",
+  "Sugerencia de contenido",
+  "Solicitud de publicidad",
+  "Reporte de información incorrecta",
+  "Otro",
+];
 ---
 
-<Layout title="Contacto | Inversax Honduras">
-  <Fragment slot="head">
-    <meta name="description" content="¿Tienes preguntas sobre los resultados de lotería en Honduras? Contacta con Inversax. Respondemos todas las consultas en 24-48 horas.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://Inversax.com/contacto">
-  </Fragment>
+<Layout>
+  <slot name="head" slot="head">
+    <title>Contacto — Inversax</title>
+    <meta name="description" content="¿Tienes preguntas, sugerencias o quieres anunciarte en Inversax? Escríbenos." />
+    <link rel="canonical" href={`${sitioWeb}/contacto`} />
+  </slot>
 
-  <div class="container">
-    <a href="index" class="back-button">
-      ← Volver al inicio
-    </a>
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
 
-    <div class="header">
-      <h1>📧 Contacto</h1>
-      <p>¿Tienes preguntas? Estamos aquí para ayudarte</p>
+    <!-- HERO -->
+    <div class="relative border-b border-white/[0.07] overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-10"
+          style="background: radial-gradient(ellipse, #D4A843 0%, transparent 70%); filter: blur(70px);">
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 relative z-10">
+        <div class="flex items-center gap-2 text-white/30 text-sm mb-6">
+          <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+          <ArrowRight size={13} />
+          <span>Contacto</span>
+        </div>
+
+        <div class="flex items-start gap-4 mb-5">
+          <div class="w-12 h-12 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center flex-shrink-0 mt-1">
+            <MessageSquare size={22} class="text-[#D4A843]" />
+          </div>
+          <div>
+            <h1 class="font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-2" style="font-family: 'Syne', sans-serif;">
+              Contáctanos
+            </h1>
+            <p class="text-white/40 text-sm flex items-center gap-1.5">
+              <Clock size={12} />
+              Respondemos en menos de 48 horas hábiles
+            </p>
+          </div>
+        </div>
+
+        <p class="text-white/50 text-base leading-relaxed max-w-xl">
+          ¿Tienes una pregunta, encontraste un error o quieres colaborar con nosotros? Completa el formulario o escríbenos directamente al correo que corresponda a tu consulta.
+        </p>
+      </div>
     </div>
 
-    <div class="content">
-      <p style="text-align: center; font-size: 1.1em; margin-bottom: 30px;">
-        Si tienes alguna pregunta, sugerencia o necesitas ayuda, no dudes en contactarnos. 
-        Respondemos todas las consultas en un plazo de 24-48 horas.
-      </p>
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="flex flex-col lg:flex-row gap-10">
 
-      <div class="contact-cards">
-        <div class="contact-card">
-          <div class="icon">📧</div>
-          <h3>Email</h3>
-          <p><a href="mailto:codezun@gmail.com">codezun@gmail.com</a></p>
-          <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.9;">
-            Respuesta en 24-48 horas
-          </p>
-        </div>
+        <!-- SIDEBAR INFO -->
+        <aside class="lg:w-72 flex-shrink-0 flex flex-col gap-4">
 
-        <div class="contact-card">
-          <div class="icon">⏰</div>
-          <h3>Horario</h3>
-          <p>Lunes a Domingo</p>
-          <p style="font-weight: 600;">24/7</p>
-          <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.9;">
-            Servicio automatizado
-          </p>
-        </div>
-      </div>
+          <!-- Correos directos -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex flex-col gap-4">
+            <p class="text-white/30 text-xs font-bold uppercase tracking-widest">Correos directos</p>
+            <div class="flex flex-col gap-3">
+              {correos.map((c) => (
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                    {c.icon === "msg" && <MessageSquare size={13} class="text-[#D4A843]" />}
+                    {c.icon === "ads" && <Megaphone size={13} class="text-[#D4A843]" />}
+                    {c.icon === "law" && <Shield size={13} class="text-[#D4A843]" />}
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-white/30 text-[11px] uppercase tracking-wider leading-none mb-1">{c.tipo}</p>
+                    <a href={`mailto:${c.email}`} class="text-white/70 hover:text-[#D4A843] text-sm no-underline transition-colors duration-200 truncate block">
+                      {c.email}
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-      <div class="info-box">
-        <h3>📝 Antes de contactarnos, verifica:</h3>
-        <ul>
-          <li>Los resultados se actualizan 3 veces al día (11 AM, 3 PM, 9 PM)</li>
-          <li>Siempre verifica los resultados con los canales oficiales de Loto Honduras</li>
-          <li>Los números de la suerte son generados aleatoriamente con fines de entretenimiento</li>
-          <li>Lee nuestros Términos y Condiciones y Política de Privacidad</li>
-        </ul>
-      </div>
+          <!-- Cobertura -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <Globe size={14} class="text-[#D4A843]" />
+              <p class="text-white/30 text-xs font-bold uppercase tracking-widest">Cobertura</p>
+            </div>
+            <p class="text-white/40 text-sm leading-relaxed">
+              Operamos en <span class="text-white/70 font-medium">37 países</span> hispanohablantes. Si tu consulta es específica de un país o región, indícalo en el mensaje.
+            </p>
+            <a href="/paises" class="text-[#D4A843] text-sm flex items-center gap-1 no-underline hover:underline mt-1">
+              Ver países <ArrowRight size={12} />
+            </a>
+          </div>
 
-      <div class="faq-section">
-        <h2 style="color: #2c3e50; margin-bottom: 25px; text-align: center;">
-          ❓ Preguntas Frecuentes Rápidas
-        </h2>
+          <!-- Publicidad -->
+          <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-6 flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <Megaphone size={14} class="text-[#D4A843]" />
+              <p class="text-[#D4A843] text-xs font-bold uppercase tracking-widest">¿Quieres anunciarte?</p>
+            </div>
+            <p class="text-white/40 text-sm leading-relaxed">
+              Si quieres publicitar tu plataforma o broker en Inversax, visita nuestra página de publicidad para ver las opciones disponibles.
+            </p>
+            <a href="/publicidad" class="text-[#D4A843] text-sm flex items-center gap-1 no-underline hover:underline mt-1">
+              Ver opciones <ArrowRight size={12} />
+            </a>
+          </div>
 
-        <div class="faq-item">
-          <h4>¿Los resultados son oficiales?</h4>
-          <p>
-            No, nuestros resultados son informativos. Siempre verifica con los canales oficiales 
-            de Loto Honduras para confirmar los resultados ganadores.
-          </p>
-        </div>
+        </aside>
 
-        <div class="faq-item">
-          <h4>¿Cuándo se actualizan los resultados?</h4>
-          <p>
-            Los resultados se actualizan automáticamente 3 veces al día después de cada sorteo: 
-            11:00 AM, 3:00 PM y 9:00 PM (hora de Honduras).
-          </p>
-        </div>
+        <!-- FORMULARIO -->
+        <main class="flex-1 min-w-0">
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 sm:p-9">
 
-        <div class="faq-item">
-          <h4>¿Cómo funcionan los números de la suerte?</h4>
-          <p>
-            Es una herramienta de entretenimiento que genera números aleatorios. No predice 
-            ganadores ni tiene base matemática. Úsala solo por diversión.
-          </p>
-        </div>
+            <p class="text-white/30 text-xs font-bold uppercase tracking-widest mb-7">Formulario de contacto</p>
 
-        <div class="faq-item">
-          <h4>¿Puedo reportar un error en los resultados?</h4>
-          <p>
-            Sí, si encuentras algún error, por favor envíanos un email a 
-            <a href="mailto:codezun@gmail.com" style="color: #667eea; text-decoration: none;">
-              codezun@gmail.com
-            </a> 
-            con la fecha, juego y resultado incorrecto. Lo corregiremos lo antes posible.
-          </p>
-        </div>
+            {/* TODO: conectar a DB / endpoint cuando esté listo */}
+            <form class="flex flex-col gap-5" action="#" method="POST">
 
-        <div class="faq-item">
-          <h4>¿Tienen app móvil?</h4>
-          <p>
-            Por el momento solo tenemos sitio web, pero está completamente optimizado para 
-            dispositivos móviles. Puedes guardar el sitio en tu pantalla de inicio para 
-            acceso rápido.
-          </p>
-        </div>
+              <!-- Nombre + Email -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="flex flex-col gap-2">
+                  <label for="nombre" class="text-white/50 text-sm font-medium">
+                    Nombre <span class="text-[#D4A843]">*</span>
+                  </label>
+                  <input
+                    id="nombre"
+                    name="nombre"
+                    type="text"
+                    required
+                    placeholder="Tu nombre"
+                    class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200"
+                  />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="email" class="text-white/50 text-sm font-medium">
+                    Correo electrónico <span class="text-[#D4A843]">*</span>
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="tu@correo.com"
+                    class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200"
+                  />
+                </div>
+              </div>
 
-        <div class="faq-item">
-          <h4>¿Puedo sugerir una mejora?</h4>
-          <p>
-            ¡Por supuesto! Nos encanta recibir sugerencias. Envíanos un email con tu idea 
-            y la evaluaremos para futuras actualizaciones.
-          </p>
-        </div>
-      </div>
+              <!-- Motivo -->
+              <div class="flex flex-col gap-2">
+                <label for="motivo" class="text-white/50 text-sm font-medium">
+                  Motivo del contacto <span class="text-[#D4A843]">*</span>
+                </label>
+                <select
+                  id="motivo"
+                  name="motivo"
+                  required
+                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white/70 text-sm transition-colors duration-200 appearance-none cursor-pointer"
+                  style="background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff40' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat: no-repeat; background-position: right 16px center;"
+                >
+                  <option value="" disabled selected>Selecciona un motivo…</option>
+                  {motivos.map((m) => (
+                    <option value={m.toLowerCase().replace(/\s+/g, '-')}>{m}</option>
+                  ))}
+                </select>
+              </div>
 
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                  color: white; padding: 30px; border-radius: 20px; text-align: center; 
-                  margin-top: 40px;">
-        <h3 style="margin-bottom: 15px;">💬 ¡Escríbenos!</h3>
-        <p style="margin-bottom: 20px;">
-          Estamos aquí para ayudarte. Tu opinión es muy importante para nosotros.
-        </p>
-        <a href="mailto:codezun@gmail.com" 
-           style="display: inline-block; background: white; color: #667eea; 
-                  padding: 15px 40px; border-radius: 50px; text-decoration: none; 
-                  font-weight: 700; transition: transform 0.3s ease;">
-          Enviar Email
-        </a>
+              <!-- País (opcional) -->
+              <div class="flex flex-col gap-2">
+                <label for="pais" class="text-white/50 text-sm font-medium">
+                  País <span class="text-white/25 font-normal">(opcional)</span>
+                </label>
+                <input
+                  id="pais"
+                  name="pais"
+                  type="text"
+                  placeholder="Ej: México, Argentina, España…"
+                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200"
+                />
+              </div>
+
+              <!-- Mensaje -->
+              <div class="flex flex-col gap-2">
+                <label for="mensaje" class="text-white/50 text-sm font-medium">
+                  Mensaje <span class="text-[#D4A843]">*</span>
+                </label>
+                <textarea
+                  id="mensaje"
+                  name="mensaje"
+                  required
+                  rows={5}
+                  placeholder="Cuéntanos cómo podemos ayudarte…"
+                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200 resize-none"
+                ></textarea>
+              </div>
+
+              <!-- Aviso privacidad -->
+              <p class="text-white/25 text-xs leading-relaxed">
+                Al enviar este formulario aceptas nuestra{' '}
+                <a href="/privacidad" class="text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">
+                  Política de Privacidad
+                </a>.
+                Tu información nunca será compartida con terceros para fines comerciales.
+              </p>
+
+              <!-- Botón enviar -->
+              <button
+                type="submit"
+                class="flex items-center justify-center gap-2 bg-[#D4A843] hover:bg-[#D4A843]/90 text-[#0A0B0D] font-bold text-sm rounded-xl px-6 py-3.5 transition-colors duration-200 cursor-pointer self-start"
+              >
+                <Send size={14} />
+                Enviar mensaje
+              </button>
+
+            </form>
+          </div>
+
+          <!-- Nota al pie -->
+          <div class="mt-4 flex items-start gap-2.5 bg-[#111318] border border-white/[0.07] rounded-xl px-5 py-4">
+            <Clock size={13} class="text-white/30 flex-shrink-0 mt-0.5" />
+            <p class="text-white/35 text-xs leading-relaxed">
+              Respondemos todos los mensajes en un plazo máximo de <span class="text-white/55">48 horas hábiles</span>. Para consultas urgentes o comerciales escríbenos directamente a los correos listados en la columna izquierda.
+            </p>
+          </div>
+        </main>
+
       </div>
     </div>
   </div>
 </Layout>
 
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-    min-height: 100vh;
-    padding: 40px 20px;
-  }
-
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 25px;
-    padding: 50px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: fadeIn 0.6s ease;
-  }
-
-  .header {
-    text-align: center;
-    margin-bottom: 40px;
-    padding-bottom: 30px;
-    border-bottom: 3px solid #f0f0f0;
-  }
-
-  .header h1 {
-    font-size: 2.5em;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .header p {
-    color: #666;
-    font-size: 1.1em;
-  }
-
-  .back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 12px 25px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    margin-bottom: 30px;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-  }
-
-  .back-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-  }
-
-  .content {
-    color: #333;
-    line-height: 1.8;
-  }
-
-  .contact-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-    margin: 40px 0;
-  }
-
-  .contact-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    color: white;
-    transition: transform 0.3s ease;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-  }
-
-  .contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-  }
-
-  .contact-card .icon {
-    font-size: 3em;
-    margin-bottom: 15px;
-  }
-
-  .contact-card h3 {
-    margin-bottom: 10px;
-    font-size: 1.3em;
-  }
-
-  .contact-card a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    word-break: break-word;
-  }
-
-  .contact-card a:hover {
-    text-decoration: underline;
-  }
-
-  .info-box {
-    background: #f8f9fa;
-    border-left: 4px solid #667eea;
-    padding: 20px;
-    border-radius: 10px;
-    margin: 30px 0;
-  }
-
-  .info-box h3 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-  }
-
-  .info-box ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .info-box li {
-    padding: 8px 0;
-    color: #555;
-  }
-
-  .info-box li::before {
-    content: "✓ ";
-    color: #667eea;
-    font-weight: bold;
-    margin-right: 10px;
-  }
-
-  .faq-section {
-    margin-top: 40px;
-  }
-
-  .faq-item {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-
-  .faq-item h4 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-    font-size: 1.1em;
-  }
-
-  .faq-item p {
-    color: #666;
-    line-height: 1.6;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      padding: 30px 20px;
-    }
-
-    .header h1 {
-      font-size: 2em;
-    }
-
-    .contact-cards {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
