@@ -25,9 +25,9 @@ const secciones = [
 
 <Layout>
   <slot name="head" slot="head">
-    <title>Términos y Condiciones — Inversax</title>
-    <meta name="description" content="Lee los términos y condiciones de uso de Inversax. Conoce tus derechos y responsabilidades al usar nuestra plataforma financiera." />
-    <link rel="canonical" href={`${sitioWeb}/terminos-condiciones`} />
+    <title>Aviso Legal — Inversax</title>
+    <meta name="description" content="Aviso legal de Inversax. Conoce tus derechos y responsabilidades al usar nuestra plataforma financiera." />
+    <link rel="canonical" href={`${sitioWeb}/legal`} />
   </slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
@@ -43,7 +43,7 @@ const secciones = [
         <div class="flex items-center gap-2 text-white/30 text-sm mb-6">
           <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
           <ArrowRight size={13} />
-          <span>Términos y Condiciones</span>
+          <span>Aviso Legal</span>
         </div>
         <div class="flex items-start gap-4 mb-6">
           <div class="w-12 h-12 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center flex-shrink-0 mt-1">
@@ -51,7 +51,7 @@ const secciones = [
           </div>
           <div>
             <h1 class="font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-2" style="font-family: 'Syne', sans-serif;">
-              Términos y Condiciones
+              Aviso Legal
             </h1>
             <p class="text-white/40 text-sm">
               Última actualización: <span class="text-[#D4A843]">{ultimaActualizacion}</span>
@@ -357,12 +357,8 @@ const secciones = [
             <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6">
               <p class="text-white/40 text-xs uppercase tracking-widest font-bold mb-4">Documentos relacionados</p>
               <div class="flex flex-col sm:flex-row gap-3">
-                <a href="/politicas-privacidad" class="group flex items-center justify-between bg-[#0A0B0D] border border-white/[0.05] hover:border-[#D4A843]/30 rounded-xl px-4 py-3 no-underline transition-all duration-200 flex-1">
+                <a href="/privacidad" class="group flex items-center justify-between bg-[#0A0B0D] border border-white/[0.05] hover:border-[#D4A843]/30 rounded-xl px-4 py-3 no-underline transition-all duration-200 flex-1">
                   <span class="text-white/60 group-hover:text-white text-sm transition-colors duration-200">Políticas de Privacidad</span>
-                  <ArrowRight size={14} class="text-white/20 group-hover:text-[#D4A843] transition-colors duration-200" />
-                </a>
-                <a href="/cookies" class="group flex items-center justify-between bg-[#0A0B0D] border border-white/[0.05] hover:border-[#D4A843]/30 rounded-xl px-4 py-3 no-underline transition-all duration-200 flex-1">
-                  <span class="text-white/60 group-hover:text-white text-sm transition-colors duration-200">Política de Cookies</span>
                   <ArrowRight size={14} class="text-white/20 group-hover:text-[#D4A843] transition-colors duration-200" />
                 </a>
               </div>
@@ -374,4 +370,3 @@ const secciones = [
     </div>
   </div>
 </Layout>
-
