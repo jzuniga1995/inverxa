@@ -1,329 +1,377 @@
 ---
-// src/pages/terminos.astro
+// src/pages/terminos-condiciones.astro
 import Layout from '../layouts/Layout.astro';
+import { FileText, ArrowRight, Scale, BookOpen, Ban, AlertTriangle, Globe, RefreshCw, Mail, ChevronRight, ShieldCheck } from 'lucide-astro';
+
+const ultimaActualizacion = "26 de febrero de 2025";
+const sitioWeb = "https://inversax.com";
+const correoContacto = "legal@inversax.com";
+
+const secciones = [
+  { id: "aceptacion",     titulo: "Aceptación de los Términos"        },
+  { id: "servicios",      titulo: "Descripción de los Servicios"      },
+  { id: "uso-permitido",  titulo: "Uso Permitido"                     },
+  { id: "prohibiciones",  titulo: "Conductas Prohibidas"              },
+  { id: "contenido",      titulo: "Propiedad Intelectual"             },
+  { id: "disclaimer",     titulo: "Descargo de Responsabilidad"       },
+  { id: "afiliados",      titulo: "Divulgación de Afiliados"          },
+  { id: "publicidad",     titulo: "Publicidad de Terceros"            },
+  { id: "enlaces",        titulo: "Enlaces a Sitios Externos"         },
+  { id: "modificaciones", titulo: "Modificaciones al Servicio"        },
+  { id: "ley",            titulo: "Ley Aplicable"                     },
+  { id: "contacto",       titulo: "Contacto"                          },
+];
 ---
 
 <Layout>
-    <Fragment slot="head">
-        <title>Términos y Condiciones | Inversax Honduras</title>
-        <meta name="description" content="Términos y Condiciones de uso de Inversax - Resultados Loto Honduras. Información sobre el servicio, disclaimer de resultados, responsabilidades y derechos.">
-        <meta name="robots" content="index, follow">
-        <link rel="canonical" href="https://Inversax.com/terminos">
-    </Fragment>
+  <slot name="head" slot="head">
+    <title>Términos y Condiciones — Inversax</title>
+    <meta name="description" content="Lee los términos y condiciones de uso de Inversax. Conoce tus derechos y responsabilidades al usar nuestra plataforma financiera." />
+    <link rel="canonical" href={`${sitioWeb}/terminos-condiciones`} />
+  </slot>
 
-    <div class="terms-container">
-        <a href="index" class="back-button">
-            ← Volver al inicio
-        </a>
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
 
-        <div class="header">
-            <h1>📜 Términos y Condiciones</h1>
-            <p>Última actualización: 8 de Diciembre de 2025</p>
+    <!-- HERO HEADER -->
+    <div class="relative border-b border-white/[0.07] overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-10"
+          style="background: radial-gradient(ellipse, #D4A843 0%, transparent 70%); filter: blur(60px);">
         </div>
-
-        <div class="content">
-            <div class="section">
-                <h2>1. Aceptación de los Términos</h2>
-                <p>
-                    Al acceder y utilizar <strong>Resultados Loto Honduras</strong>, usted acepta estar sujeto a estos Términos y Condiciones. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro sitio web.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>2. Descripción del Servicio</h2>
-                <p>
-                    Resultados Loto Honduras es un sitio web informativo que proporciona:
-                </p>
-                <ul>
-                    <li>Resultados de sorteos de lotería de Honduras</li>
-                    <li>Información sobre juegos: Jugá 3, Pega 3, Premia 2, La Diaria y Super Premio</li>
-                    <li>Herramienta de generación de números de la suerte</li>
-                    <li>Actualización de resultados 3 veces al día</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>3. Disclaimer de Resultados</h2>
-                <div class="highlight-box">
-                    <p style="margin-bottom: 10px;">
-                        <strong>⚠️ IMPORTANTE:</strong> Los resultados mostrados en este sitio son <strong>únicamente informativos</strong> y no constituyen resultados oficiales.
-                    </p>
-                    <p>
-                        <strong>SIEMPRE</strong> verifique los resultados con los canales oficiales de Loto Honduras. No nos hacemos responsables por:
-                    </p>
-                    <ul style="margin-top: 10px;">
-                        <li>Errores en la publicación de resultados</li>
-                        <li>Retrasos en la actualización</li>
-                        <li>Omisiones o inexactitudes</li>
-                        <li>Pérdidas derivadas del uso de información incorrecta</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>4. Uso Aceptable</h2>
-                <p>Al utilizar nuestro sitio web, usted se compromete a:</p>
-                <ul>
-                    <li>No utilizar el sitio para fines ilegales o no autorizados</li>
-                    <li>No intentar acceder a áreas restringidas del sitio</li>
-                    <li>No interferir con la seguridad del sitio</li>
-                    <li>No copiar, reproducir o distribuir el contenido sin autorización</li>
-                    <li>No usar scrapers, bots o sistemas automatizados sin permiso</li>
-                    <li>No realizar ingeniería inversa del sitio</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>5. Números de la Suerte</h2>
-                <p>
-                    La función de "Números de la Suerte" es una herramienta de <strong>entretenimiento</strong> que genera números aleatorios. Esta función:
-                </p>
-                <ul>
-                    <li>NO predice ni garantiza números ganadores</li>
-                    <li>NO tiene ninguna base matemática o estadística</li>
-                    <li>Es puramente recreativa y aleatoria</li>
-                </ul>
-                <p>
-                    El uso de estos números es bajo su propio riesgo. No somos responsables de ninguna pérdida derivada de su uso.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>6. Propiedad Intelectual</h2>
-                <p>
-                    Todo el contenido del sitio, incluyendo diseño, código, textos, gráficos y logotipos, es propiedad de Resultados Loto Honduras o sus licenciantes y está protegido por leyes de derechos de autor.
-                </p>
-                <p>
-                    Los logos y marcas de Loto Honduras son propiedad de sus respectivos dueños y se utilizan únicamente con fines informativos.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>7. Publicidad</h2>
-                <p>
-                    Nuestro sitio web muestra publicidad de terceros para mantener el servicio gratuito. Al utilizar nuestro sitio:
-                </p>
-                <ul>
-                    <li>Acepta la visualización de anuncios publicitarios</li>
-                    <li>Reconoce que no controlamos el contenido de los anuncios</li>
-                    <li>Entiende que los anunciantes pueden usar cookies y tecnologías de seguimiento</li>
-                </ul>
-                <p>
-                    No somos responsables del contenido, políticas o prácticas de anunciantes terceros.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>8. Enlaces a Sitios de Terceros</h2>
-                <p>
-                    Nuestro sitio puede contener enlaces a sitios web de terceros. Estos enlaces se proporcionan únicamente para su conveniencia. No tenemos control sobre estos sitios y no somos responsables de su contenido.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>9. Limitación de Responsabilidad</h2>
-                <p>
-                    En la máxima medida permitida por la ley, Resultados Loto Honduras y sus operadores NO serán responsables por:
-                </p>
-                <ul>
-                    <li>Daños directos, indirectos, incidentales o consecuentes</li>
-                    <li>Pérdida de beneficios o ingresos</li>
-                    <li>Pérdida de datos o información</li>
-                    <li>Interrupciones del servicio</li>
-                    <li>Errores u omisiones en el contenido</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>10. Disponibilidad del Servicio</h2>
-                <p>
-                    Nos esforzamos por mantener el sitio disponible 24/7, pero:
-                </p>
-                <ul>
-                    <li>No garantizamos disponibilidad continua o ininterrumpida</li>
-                    <li>Podemos suspender el servicio para mantenimiento</li>
-                    <li>No somos responsables por interrupciones técnicas</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>11. Edad Mínima</h2>
-                <p>
-                    Debe tener al menos <strong>18 años</strong> para utilizar este sitio web. Al acceder al sitio, confirma que cumple con este requisito de edad.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>12. Modificaciones</h2>
-                <p>
-                    Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios serán efectivos inmediatamente después de su publicación en el sitio. Su uso continuado constituye la aceptación de los nuevos términos.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>13. Terminación</h2>
-                <p>
-                    Podemos terminar o suspender su acceso al sitio inmediatamente, sin previo aviso, por cualquier razón, incluyendo la violación de estos Términos y Condiciones.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>14. Ley Aplicable</h2>
-                <p>
-                    Estos Términos se rigen por las leyes de Honduras. Cualquier disputa se resolverá en los tribunales competentes de Honduras.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>15. Separabilidad</h2>
-                <p>
-                    Si alguna disposición de estos términos se considera inválida o inaplicable, las disposiciones restantes continuarán en pleno vigor y efecto.
-                </p>
-            </div>
-
-            <div class="contact-info">
-                <h3 style="margin-bottom: 15px;">📧 Contacto</h3>
-                <p>
-                    Si tiene preguntas sobre estos Términos y Condiciones, contáctenos en:
-                </p>
-                <p style="font-size: 1.2em; margin-top: 10px;">
-                    <a href="mailto:codezun@gmail.com">codezun@gmail.com</a>
-                </p>
-            </div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 relative z-10">
+        <div class="flex items-center gap-2 text-white/30 text-sm mb-6">
+          <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+          <ArrowRight size={13} />
+          <span>Términos y Condiciones</span>
         </div>
+        <div class="flex items-start gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center flex-shrink-0 mt-1">
+            <Scale size={22} class="text-[#D4A843]" />
+          </div>
+          <div>
+            <h1 class="font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-2" style="font-family: 'Syne', sans-serif;">
+              Términos y Condiciones
+            </h1>
+            <p class="text-white/40 text-sm">
+              Última actualización: <span class="text-[#D4A843]">{ultimaActualizacion}</span>
+            </p>
+          </div>
+        </div>
+        <p class="text-white/50 text-base leading-relaxed max-w-2xl">
+          Estos Términos y Condiciones regulan el uso de <span class="text-white font-medium">Inversax</span> y todos sus servicios. Por favor léelos detenidamente antes de utilizar nuestra plataforma.
+        </p>
+      </div>
     </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="flex flex-col lg:flex-row gap-10">
+
+        <!-- SIDEBAR -->
+        <aside class="lg:w-64 flex-shrink-0">
+          <div class="sticky top-6">
+            <p class="text-white/30 text-xs font-bold uppercase tracking-widest mb-4 px-1">Contenido</p>
+            <nav class="flex flex-col gap-1">
+              {secciones.map((s) => (
+                <a
+                  href={`#${s.id}`}
+                  class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white hover:bg-white/5 no-underline transition-all duration-200 text-sm"
+                >
+                  <span class="w-5 h-5 rounded-md bg-white/5 group-hover:bg-[#D4A843]/20 flex items-center justify-center flex-shrink-0 transition-colors duration-200">
+                    <ChevronRight size={11} class="text-white/30 group-hover:text-[#D4A843] transition-colors duration-200" />
+                  </span>
+                  <span class="truncate">{s.titulo}</span>
+                </a>
+              ))}
+            </nav>
+
+            <div class="mt-6 bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-4">
+              <p class="text-[#D4A843] text-xs font-bold uppercase tracking-wider mb-2">Legal</p>
+              <p class="text-white/40 text-xs leading-relaxed">
+                ¿Tienes dudas legales? Escríbenos a <span class="text-white/60">{correoContacto}</span>
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- CONTENIDO -->
+        <main class="flex-1 min-w-0">
+          <div class="flex flex-col gap-3">
+
+            <!-- Intro -->
+            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7">
+              <p class="text-white/60 text-sm leading-relaxed">
+                Bienvenido a <strong class="text-white">Inversax</strong>. Al acceder o utilizar nuestro sitio web en <a href={sitioWeb} class="text-[#D4A843] no-underline hover:underline">{sitioWeb}</a> y cualquiera de nuestros servicios asociados, aceptas quedar vinculado por estos Términos y Condiciones de Uso. Si no estás de acuerdo con alguno de estos términos, te pedimos que no utilices nuestros servicios.
+              </p>
+            </div>
+
+            <!-- 1. Aceptación -->
+            <div id="aceptacion" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">1. Aceptación de los Términos</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Al acceder a Inversax, confirmas que tienes al menos 18 años de edad o la mayoría de edad legal en tu país de residencia, que tienes capacidad legal para aceptar estos términos, y que utilizarás el servicio de conformidad con todas las leyes aplicables.</p>
+                <p>El uso continuado de la plataforma tras cualquier modificación de estos términos constituye la aceptación de los nuevos términos. Te recomendamos revisar esta página periódicamente.</p>
+              </div>
+            </div>
+
+            <!-- 2. Servicios -->
+            <div id="servicios" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <BookOpen size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">2. Descripción de los Servicios</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
+                <p>Inversax es una plataforma de información financiera que ofrece los siguientes servicios:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    "Noticias y análisis financieros",
+                    "Precios de criptomonedas en tiempo real",
+                    "Cotizaciones de acciones, forex e índices",
+                    "Tipo de cambio del dólar por país",
+                    "Herramientas y calculadoras financieras",
+                    "Cobertura financiera por país en LATAM y el mundo",
+                  ].map((item) => (
+                    <div class="flex items-start gap-2.5 bg-[#0A0B0D] border border-white/[0.05] rounded-xl px-4 py-3">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#D4A843] mt-1.5 flex-shrink-0"></span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <p>Nos reservamos el derecho de modificar, suspender o discontinuar cualquier parte de los servicios en cualquier momento, con o sin previo aviso.</p>
+              </div>
+            </div>
+
+            <!-- 3. Uso permitido -->
+            <div id="uso-permitido" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <FileText size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">3. Uso Permitido</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Inversax te otorga una licencia limitada, no exclusiva e intransferible para acceder y utilizar el sitio de forma personal y no comercial. Esto incluye:</p>
+                <div class="flex flex-col gap-2">
+                  {[
+                    "Consultar noticias, precios y herramientas para uso personal",
+                    "Compartir enlaces a nuestro contenido con atribución",
+                    "Utilizar nuestras calculadoras y herramientas para tomar decisiones informadas",
+                  ].map((item) => (
+                    <div class="flex items-start gap-2.5 bg-[#0A0B0D] border border-white/[0.05] rounded-xl px-4 py-3">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#D4A843] mt-1.5 flex-shrink-0"></span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Prohibiciones -->
+            <div id="prohibiciones" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <Ban size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">4. Conductas Prohibidas</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
+                <p>Queda estrictamente prohibido:</p>
+                <div class="flex flex-col gap-2">
+                  {[
+                    "Copiar, reproducir o redistribuir nuestro contenido sin autorización escrita",
+                    "Usar robots, scrapers o herramientas automatizadas para extraer datos del sitio",
+                    "Intentar acceder a áreas restringidas o sistemas internos de Inversax",
+                    "Publicar contenido falso, engañoso o que viole derechos de terceros",
+                    "Utilizar el sitio para actividades ilegales o fraudulentas",
+                    "Interferir con el funcionamiento normal del sitio o sus servidores",
+                    "Suplantar la identidad de Inversax o de cualquier persona o entidad",
+                    "Usar el contenido del sitio con fines comerciales sin autorización previa",
+                  ].map((item) => (
+                    <div class="flex items-start gap-2.5 bg-[#0A0B0D] border border-red-500/10 rounded-xl px-4 py-3">
+                      <span class="w-1.5 h-1.5 rounded-full bg-red-400/60 mt-1.5 flex-shrink-0"></span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <p>El incumplimiento de estas normas puede resultar en la suspensión del acceso al sitio y acciones legales si corresponde.</p>
+              </div>
+            </div>
+
+            <!-- 5. Propiedad Intelectual -->
+            <div id="contenido" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">5. Propiedad Intelectual</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Todo el contenido disponible en Inversax, incluyendo pero no limitado a textos, artículos, gráficos, logotipos, íconos, imágenes, clips de audio, descargas digitales y compilaciones de datos, es propiedad de Inversax o de sus proveedores de contenido, y está protegido por las leyes de propiedad intelectual aplicables.</p>
+                <p>La marca <strong class="text-white">Inversax</strong>, su logotipo y todos los nombres de productos y servicios relacionados son marcas comerciales de Inversax. No puedes usar estas marcas sin el consentimiento previo y por escrito de Inversax.</p>
+                <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl p-4">
+                  <p class="text-[#D4A843]/90 text-xs leading-relaxed">
+                    <strong class="text-[#D4A843]">Citas y referencias:</strong> Puedes citar fragmentos breves de nuestro contenido siempre que se incluya un enlace de atribución visible hacia la fuente original en Inversax.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. Disclaimer -->
+            <div id="disclaimer" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">6. Descargo de Responsabilidad</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
+                <div class="bg-red-500/5 border border-red-500/15 rounded-xl p-5">
+                  <p class="text-red-400 font-bold text-sm mb-2" style="font-family: 'Syne', sans-serif;">⚠ No somos asesores financieros</p>
+                  <p class="text-white/50 text-sm leading-relaxed">Todo el contenido publicado en Inversax tiene carácter exclusivamente informativo y educativo. Nada de lo publicado en este sitio constituye asesoramiento financiero, de inversión, tributario o legal. No somos una entidad regulada ni autorizada para prestar servicios de asesoramiento financiero.</p>
+                </div>
+                <p>Los mercados financieros y las criptomonedas son instrumentos de alto riesgo. Los precios y datos mostrados pueden tener retrasos y no deben utilizarse como única base para tomar decisiones de inversión. Inversax no se hace responsable de pérdidas económicas derivadas del uso de la información publicada en este sitio.</p>
+                <p>Siempre consulta con un profesional financiero certificado antes de tomar cualquier decisión de inversión.</p>
+              </div>
+            </div>
+
+            <!-- 7. Afiliados -->
+            <div id="afiliados" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <Globe size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">7. Divulgación de Afiliados</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
+                <p>Inversax participa en programas de marketing de afiliados con plataformas financieras, exchanges de criptomonedas y brokers de inversión. Algunos de los enlaces publicados en nuestro contenido son enlaces de afiliado.</p>
+                <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl p-4">
+                  <p class="text-[#D4A843]/90 text-xs leading-relaxed">
+                    <strong class="text-[#D4A843]">Transparencia:</strong> Cuando hagas clic en un enlace de afiliado y realices una acción como registrarte o depositar fondos, Inversax puede recibir una compensación económica. Esto nunca representa un costo adicional para ti. Todos los enlaces de afiliado están identificados claramente con las etiquetas <strong>"Publicidad"</strong> o <strong>"Patrocinado"</strong>.
+                  </p>
+                </div>
+                <p>Nuestra política editorial es independiente de estas relaciones comerciales. Solo recomendamos plataformas que consideramos legítimas, aunque te instamos a investigar por tu cuenta antes de usar cualquier servicio financiero.</p>
+              </div>
+            </div>
+
+            <!-- 8. Publicidad -->
+            <div id="publicidad" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <FileText size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">8. Publicidad de Terceros</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Inversax muestra anuncios de terceros a través de redes publicitarias como Google AdSense. Estos anunciantes pueden utilizar cookies y tecnologías de seguimiento para personalizar los anuncios que ves.</p>
+                <p>Inversax no es responsable del contenido de los anuncios de terceros ni de las prácticas de privacidad de los anunciantes. El hecho de que un anuncio aparezca en Inversax no implica ningún tipo de respaldo o recomendación de nuestra parte.</p>
+              </div>
+            </div>
+
+            <!-- 9. Enlaces externos -->
+            <div id="enlaces" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <Globe size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">9. Enlaces a Sitios Externos</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Nuestro sitio puede contener enlaces a sitios web de terceros. Estos enlaces se proporcionan únicamente como referencia informativa. Inversax no tiene control sobre el contenido de esos sitios y no asume ninguna responsabilidad por su contenido, políticas de privacidad o prácticas.</p>
+                <p>El acceso a sitios de terceros es bajo tu propio riesgo. Te recomendamos leer los términos y condiciones y políticas de privacidad de cualquier sitio externo que visites.</p>
+              </div>
+            </div>
+
+            <!-- 10. Modificaciones -->
+            <div id="modificaciones" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <RefreshCw size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">10. Modificaciones al Servicio y Términos</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Inversax se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios entrarán en vigor en el momento de su publicación en esta página. La fecha de última actualización al inicio del documento reflejará siempre la versión vigente.</p>
+                <p>Asimismo, podemos modificar, suspender o discontinuar cualquier aspecto del servicio, incluyendo la disponibilidad de funciones, bases de datos o contenido, sin previo aviso ni responsabilidad alguna.</p>
+              </div>
+            </div>
+
+            <!-- 11. Ley aplicable -->
+            <div id="ley" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <Scale size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">11. Ley Aplicable y Jurisdicción</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
+                <p>Estos Términos y Condiciones se rigen e interpretan de conformidad con las leyes aplicables del país de operación de Inversax. Cualquier disputa que surja en relación con estos términos se someterá a la jurisdicción de los tribunales competentes.</p>
+                <p>Si alguna disposición de estos términos fuera declarada inválida o inaplicable por un tribunal competente, las disposiciones restantes continuarán en pleno vigor y efecto.</p>
+              </div>
+            </div>
+
+            <!-- 12. Contacto -->
+            <div id="contacto" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+                  <Mail size={16} class="text-[#D4A843]" />
+                </div>
+                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">12. Contacto</h2>
+              </div>
+              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
+                <p>Si tienes preguntas, inquietudes o comentarios sobre estos Términos y Condiciones, puedes contactarnos a través de:</p>
+                <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5 flex flex-col gap-2.5">
+                  <div class="flex items-center gap-3">
+                    <Mail size={14} class="text-[#D4A843] flex-shrink-0" />
+                    <a href={`mailto:${correoContacto}`} class="text-white/70 hover:text-[#D4A843] no-underline transition-colors duration-200">{correoContacto}</a>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <Globe size={14} class="text-[#D4A843] flex-shrink-0" />
+                    <a href={sitioWeb} class="text-white/70 hover:text-[#D4A843] no-underline transition-colors duration-200">{sitioWeb}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Aviso final -->
+            <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-6">
+              <div class="flex items-start gap-3">
+                <AlertTriangle size={16} class="text-[#D4A843] flex-shrink-0 mt-0.5" />
+                <div class="flex flex-col gap-1.5">
+                  <p class="text-[#D4A843] font-bold text-sm" style="font-family: 'Syne', sans-serif;">Recuerda siempre</p>
+                  <p class="text-white/50 text-sm leading-relaxed">
+                    Invertir en criptomonedas, acciones u otros activos financieros conlleva riesgos significativos incluyendo la pérdida total del capital invertido. Toda la información en Inversax es de carácter informativo únicamente. Nunca inviertas dinero que no puedas permitirte perder.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Links a otras políticas -->
+            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6">
+              <p class="text-white/40 text-xs uppercase tracking-widest font-bold mb-4">Documentos relacionados</p>
+              <div class="flex flex-col sm:flex-row gap-3">
+                <a href="/politicas-privacidad" class="group flex items-center justify-between bg-[#0A0B0D] border border-white/[0.05] hover:border-[#D4A843]/30 rounded-xl px-4 py-3 no-underline transition-all duration-200 flex-1">
+                  <span class="text-white/60 group-hover:text-white text-sm transition-colors duration-200">Políticas de Privacidad</span>
+                  <ArrowRight size={14} class="text-white/20 group-hover:text-[#D4A843] transition-colors duration-200" />
+                </a>
+                <a href="/cookies" class="group flex items-center justify-between bg-[#0A0B0D] border border-white/[0.05] hover:border-[#D4A843]/30 rounded-xl px-4 py-3 no-underline transition-all duration-200 flex-1">
+                  <span class="text-white/60 group-hover:text-white text-sm transition-colors duration-200">Política de Cookies</span>
+                  <ArrowRight size={14} class="text-white/20 group-hover:text-[#D4A843] transition-colors duration-200" />
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
 </Layout>
-
-<style>
-    .terms-container {
-        max-width: 900px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 25px;
-        padding: 50px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        animation: fadeIn 0.6s ease;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 40px;
-        padding-bottom: 30px;
-        border-bottom: 3px solid #f0f0f0;
-    }
-
-    .header h1 {
-        font-size: 2.5em;
-        color: #2c3e50;
-        margin-bottom: 10px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .header p {
-        color: #666;
-        font-size: 1.1em;
-    }
-
-    .back-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 12px 25px;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 600;
-        margin-bottom: 30px;
-        transition: transform 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .back-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-    }
-
-    .content {
-        color: #333;
-        line-height: 1.8;
-    }
-
-    .section {
-        margin-bottom: 35px;
-    }
-
-    .section h2 {
-        font-size: 1.8em;
-        color: #2c3e50;
-        margin-bottom: 15px;
-        padding-left: 15px;
-        border-left: 5px solid #667eea;
-    }
-
-    .section p {
-        margin-bottom: 15px;
-        text-align: justify;
-    }
-
-    .section ul {
-        margin: 15px 0;
-        padding-left: 40px;
-    }
-
-    .section li {
-        margin-bottom: 10px;
-    }
-
-    .highlight-box {
-        background: #fff3cd;
-        border-left: 4px solid #ffc107;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
-    }
-
-    .contact-info {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 25px;
-        border-radius: 15px;
-        text-align: center;
-        margin-top: 40px;
-    }
-
-    .contact-info a {
-        color: white;
-        text-decoration: underline;
-        font-weight: 600;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .terms-container {
-            padding: 30px 20px;
-        }
-
-        .header h1 {
-            font-size: 2em;
-        }
-
-        .section h2 {
-            font-size: 1.5em;
-        }
-    }
-</style>
 
