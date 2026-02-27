@@ -1,56 +1,27 @@
 ---
 // Footer.astro - Inversax
 import { Twitter, Youtube, Instagram, Facebook, ArrowRight, TrendingUp } from 'lucide-astro';
+import { getCategorias, getPaises } from '../db/queries';
 
-const sections = [
-  {
-    title: "Mercados",
-    links: [
-      { label: "Criptomonedas",       href: "/cripto"              },
-      { label: "Trading",             href: "/trading"             },
-      { label: "Bolsa de Valores",    href: "/bolsa"               },
-      { label: "Economía",            href: "/economia"            },
-      { label: "Forex",               href: "/forex"               },
-      { label: "Finanzas Personales", href: "/finanzas-personales" },
-      { label: "Fintech",             href: "/fintech"             },
-      { label: "Impuestos",           href: "/impuestos"           },
-      { label: "Inversiones",         href: "/inversiones"         },
-    ],
-  },
-  {
-    title: "Herramientas",
-    links: [
-      { label: "Calculadora Cripto",  href: "/herramientas/calculadora" },
-      { label: "Conversor Monedas",   href: "/herramientas/conversor"   },
-      { label: "Precio del Dólar",    href: "/herramientas/dolar"       },
-      { label: "Gráficas en vivo",    href: "/herramientas/graficas"    },
-      { label: "Comparar Brokers",    href: "/herramientas/brokers"     },
-    ],
-  },
-  {
-    title: "Por País",
-    links: [
-      { label: "México",              href: "/noticias?pais=mx" },
-      { label: "Argentina",           href: "/noticias?pais=ar" },
-      { label: "Colombia",            href: "/noticias?pais=co" },
-      { label: "Venezuela",           href: "/noticias?pais=ve" },
-      { label: "Chile",               href: "/noticias?pais=cl" },
-      { label: "Perú",                href: "/noticias?pais=pe" },
-      { label: "España",              href: "/noticias?pais=es" },
-      { label: "Estados Unidos",      href: "/noticias?pais=us" },
-      { label: "→ Ver todos los países", href: "/paises"        },
-    ],
-  },
-  {
-    title: "Nosotros",
-    links: [
-      { label: "Acerca de",   href: "/acerca"      },
-      { label: "Contacto",    href: "/contacto"    },
-      { label: "Aviso Legal", href: "/legal"       },
-      { label: "Privacidad",  href: "/privacidad"  },
-      { label: "Publicidad",  href: "/publicidad"  },
-    ],
-  },
+const categorias = await getCategorias();
+const paises     = await getPaises();
+
+const paisesLocales = paises.filter(p => p.codigo !== 'global').slice(0, 8);
+
+const herramientas = [
+  { label: "Calculadora Cripto", href: "/herramientas/calculadora" },
+  { label: "Conversor Monedas",  href: "/herramientas/conversor"   },
+  { label: "Precio del Dólar",   href: "/herramientas/dolar"       },
+  { label: "Gráficas en vivo",   href: "/herramientas/graficas"    },
+  { label: "Comparar Brokers",   href: "/herramientas/brokers"     },
+];
+
+const nosotros = [
+  { label: "Acerca de",   href: "/acerca"     },
+  { label: "Contacto",    href: "/contacto"   },
+  { label: "Aviso Legal", href: "/legal"      },
+  { label: "Privacidad",  href: "/privacidad" },
+  { label: "Publicidad",  href: "/publicidad" },
 ];
 
 const socials = [
@@ -118,30 +89,81 @@ const socials = [
         </div>
       </div>
 
-      <!-- Links cols -->
-      {sections.map((section) => (
-        <div class="flex flex-col gap-4">
-          <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
-            {section.title}
-          </span>
-          <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
-            {section.links.map((link) => (
-              <li>
-                <a
-                  href={link.href}
-                  class={`text-sm no-underline transition-colors duration-200 ${
-                    link.label.startsWith('→')
-                      ? 'text-[#D4A843] hover:text-[#E8C060]'
-                      : 'text-white/40 hover:text-white'
-                  }`}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <!-- Mercados (desde DB) -->
+      <div class="flex flex-col gap-4">
+        <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
+          Mercados
+        </span>
+        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+          {categorias.map((cat) => (
+            <li>
+              <a
+                href={`/noticias?categoria=${cat.slug}`}
+                class="text-sm text-white/40 hover:text-white no-underline transition-colors duration-200"
+              >
+                {cat.nombre}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Herramientas -->
+      <div class="flex flex-col gap-4">
+        <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
+          Herramientas
+        </span>
+        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+          {herramientas.map((link) => (
+            <li>
+              <a href={link.href} class="text-sm text-white/40 hover:text-white no-underline transition-colors duration-200">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Por País (desde DB) -->
+      <div class="flex flex-col gap-4">
+        <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
+          Por País
+        </span>
+        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+          {paisesLocales.map((p) => (
+            <li>
+              <a
+                href={`/noticias?pais=${p.codigo}`}
+                class="text-sm text-white/40 hover:text-white no-underline transition-colors duration-200"
+              >
+                {p.nombre}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href="/paises" class="text-sm text-[#D4A843] hover:text-[#E8C060] no-underline transition-colors duration-200">
+              → Ver todos los países
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Nosotros -->
+      <div class="flex flex-col gap-4">
+        <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
+          Nosotros
+        </span>
+        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+          {nosotros.map((link) => (
+            <li>
+              <a href={link.href} class="text-sm text-white/40 hover:text-white no-underline transition-colors duration-200">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
     </div>
   </div>
 

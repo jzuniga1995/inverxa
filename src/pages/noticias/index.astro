@@ -5,17 +5,20 @@ import Layout from '../../layouts/Layout.astro';
 import { getArticulos, getCategorias } from '../../db/queries';
 import { Clock, ArrowRight, Filter } from 'lucide-astro';
 
-const articulos    = await getArticulos(30);
-const categorias   = await getCategorias();
+const articulos  = await getArticulos(30);
+const categorias = await getCategorias();
 
-// Categoría activa desde query param ?categoria=cripto
 const categoriaActiva = Astro.url.searchParams.get('categoria') ?? 'todas';
 const paisActivo      = Astro.url.searchParams.get('pais') ?? 'global';
 
-// Filtrar en el servidor si hay categoría activa
-const articulosFiltrados = categoriaActiva === 'todas'
-  ? articulos
-  : articulos.filter(a => a.categoria?.slug === categoriaActiva);
+// Filtrar por categoría + país (país viene del header)
+const articulosFiltrados = articulos.filter(a => {
+  const matchCategoria = categoriaActiva === 'todas' || a.categoria?.slug === categoriaActiva;
+  const matchPais = paisActivo === 'global'
+    ? (a.pais?.codigo === 'global' || !a.pais)
+    : (a.pais?.codigo === paisActivo || a.pais?.codigo === 'global');
+  return matchCategoria && matchPais;
+});
 
 const [principal, ...resto] = articulosFiltrados;
 
@@ -48,69 +51,88 @@ function formatFecha(fecha: Date | null) {
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+      <!-- FILTROS DE CATEGORÍA (horizontal) -->
+      <div class="flex items-center gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide">
+        <Filter size={14} class="text-white/30 flex-shrink-0" />
+        <a
+          href={`/noticias${paisActivo !== 'global' ? `?pais=${paisActivo}` : ''}`}
+          class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
+            categoriaActiva === 'todas'
+              ? 'bg-[#D4A843] text-[#0A0B0D]'
+              : 'bg-white/5 border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/10'
+          }`}
+        >
+          Todas
+        </a>
+        {categorias.map((cat) => (
+          <a
+            href={`/noticias?categoria=${cat.slug}${paisActivo !== 'global' ? `&pais=${paisActivo}` : ''}`}
+            class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
+              categoriaActiva === cat.slug
+                ? 'bg-[#D4A843] text-[#0A0B0D]'
+                : 'bg-white/5 border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            {cat.nombre}
+          </a>
+        ))}
+      </div>
+
+      <!-- LAYOUT PRINCIPAL -->
       <div class="flex flex-col lg:flex-row gap-8">
 
-        <!-- CONTENIDO PRINCIPAL -->
+        <!-- CONTENIDO -->
         <div class="flex-1 min-w-0">
 
-          <!-- Filtros de categoría -->
-          <div class="flex items-center gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-            <Filter size={14} class="text-white/30 flex-shrink-0" />
-            <a
-              href="/noticias"
-              class={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
-                categoriaActiva === 'todas'
-                  ? 'bg-[#D4A843] text-[#0A0B0D]'
-                  : 'bg-white/5 border border-white/[0.07] text-white/50 hover:text-white'
-              }`}
-            >
-              Todas
-            </a>
-            {categorias.map((cat) => (
-              <a
-                href={`/noticias?categoria=${cat.slug}`}
-                class={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
-                  categoriaActiva === cat.slug
-                    ? 'bg-[#D4A843] text-[#0A0B0D]'
-                    : 'bg-white/5 border border-white/[0.07] text-white/50 hover:text-white'
-                }`}
-              >
-                {cat.nombre}
-              </a>
-            ))}
-          </div>
-
           {articulosFiltrados.length === 0 ? (
+
             <!-- Sin resultados -->
-            <div class="flex flex-col items-center justify-center py-24 gap-3">
-              <span class="text-white/20 text-5xl">📭</span>
-              <p class="text-white/40 text-sm">No hay artículos en esta categoría todavía.</p>
+            <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
+              <span class="text-5xl">🌎</span>
+              {paisActivo !== 'global' ? (
+                <>
+                  <p class="text-white/60 text-base font-medium" style="font-family: 'Syne', sans-serif;">
+                    Próximamente en esta región
+                  </p>
+                  <p class="text-white/30 text-sm max-w-xs leading-relaxed">
+                    Estamos trabajando para traerte contenido local. Por ahora puedes explorar las noticias globales.
+                  </p>
+                  <a href="/noticias" class="mt-2 text-[#D4A843] text-sm font-medium hover:underline no-underline">
+                    Ver noticias globales →
+                  </a>
+                </>
+              ) : (
+                <p class="text-white/40 text-sm">No hay artículos en esta categoría todavía.</p>
+              )}
             </div>
+
           ) : (
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-5 sm:gap-6">
 
               <!-- Artículo principal destacado -->
               {principal && (
                 <a
                   href={`/noticias/${principal.slug}`}
-                  class="group relative flex flex-col sm:flex-row gap-0 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-300"
+                  class="group flex flex-col sm:flex-row bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-300"
                 >
                   <!-- Imagen -->
-                  <div class="sm:w-80 h-48 sm:h-auto flex-shrink-0 bg-[#1A1D24]" style="background: linear-gradient(135deg, #1A1D24, #23272F);">
-                    {principal.imagen && (
-                      <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover" />
-                    )}
+                  <div class="w-full sm:w-72 lg:w-80 h-48 sm:h-auto flex-shrink-0 bg-[#1A1D24]">
+                    {principal.imagen
+                      ? <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover" />
+                      : <div class="w-full h-full" style="background: linear-gradient(135deg, #1A1D24, #23272F);" />
+                    }
                   </div>
                   <!-- Contenido -->
-                  <div class="flex flex-col gap-3 p-5 sm:p-6 justify-center">
+                  <div class="flex flex-col gap-3 p-5 sm:p-6 lg:p-7 justify-center">
                     <div class="flex items-center gap-2 flex-wrap">
                       {principal.categoria && (
                         <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
                           {principal.categoria.nombre}
                         </span>
                       )}
-                      {principal.pais && (
+                      {principal.pais && principal.pais.codigo !== 'global' && (
                         <span class="text-white/30 text-[10px] border border-white/[0.07] px-2 py-0.5 rounded uppercase">
                           {principal.pais.nombre}
                         </span>
@@ -120,7 +142,7 @@ function formatFecha(fecha: Date | null) {
                         {formatFecha(principal.creadoEn)}
                       </span>
                     </div>
-                    <h2 class="font-bold text-lg sm:text-xl text-white group-hover:text-[#D4A843] transition-colors duration-200 leading-snug" style="font-family: 'Syne', sans-serif;">
+                    <h2 class="font-bold text-lg sm:text-xl lg:text-2xl text-white group-hover:text-[#D4A843] transition-colors duration-200 leading-snug" style="font-family: 'Syne', sans-serif;">
                       {principal.titulo}
                     </h2>
                     {principal.resumen && (
@@ -140,7 +162,6 @@ function formatFecha(fecha: Date | null) {
                     href={`/noticias/${articulo.slug}`}
                     class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-4 sm:p-5 no-underline transition-colors duration-200"
                   >
-                    <!-- Imagen pequeña -->
                     {articulo.imagen && (
                       <div class="w-full h-36 rounded-lg overflow-hidden bg-[#1A1D24]">
                         <img src={articulo.imagen} alt={articulo.titulo} class="w-full h-full object-cover" />
@@ -177,34 +198,12 @@ function formatFecha(fecha: Date | null) {
         </div>
 
         <!-- SIDEBAR -->
-        <aside class="w-full lg:w-72 flex-shrink-0 flex flex-col gap-4">
-
-          <!-- Categorías -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-            <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Categorías</h3>
-            <div class="flex flex-col gap-1">
-              {categorias.map((cat) => (
-                <a
-                  href={`/noticias?categoria=${cat.slug}`}
-                  class={`flex items-center justify-between px-3 py-2 rounded-lg text-sm no-underline transition-colors duration-200 ${
-                    categoriaActiva === cat.slug
-                      ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                      : 'text-white/50 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span>{cat.nombre}</span>
-                  <ArrowRight size={13} />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <!-- Artículos recientes -->
+        <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4">
           {resto.length > 0 && (
             <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
               <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Más recientes</h3>
-              <div class="flex flex-col gap-3">
-                {resto.slice(0, 5).map((a) => (
+              <div class="flex flex-col gap-4">
+                {resto.slice(0, 6).map((a) => (
                   <a href={`/noticias/${a.slug}`} class="group flex flex-col gap-1 no-underline">
                     {a.categoria && (
                       <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{a.categoria.nombre}</span>
@@ -212,13 +211,16 @@ function formatFecha(fecha: Date | null) {
                     <span class="text-white/60 group-hover:text-white text-xs leading-snug line-clamp-2 transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
                       {a.titulo}
                     </span>
+                    <span class="text-white/25 text-[10px] flex items-center gap-1">
+                      <Clock size={9} /> {formatFecha(a.creadoEn)}
+                    </span>
                   </a>
                 ))}
               </div>
             </div>
           )}
-
         </aside>
+
       </div>
     </div>
   </div>

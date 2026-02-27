@@ -30,11 +30,12 @@ const { bodyClass = '' } = Astro.props;
 
   <Header />
 
-  <main>
-    <slot />
-  </main>
-
-  <Footer />
+  <div style="overflow-x: hidden;">
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </div>
 
 </body>
 </html>
@@ -48,11 +49,6 @@ const { bodyClass = '' } = Astro.props;
 
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
-
-  body {
-    overflow-x: hidden;
   }
 
   body {
@@ -60,22 +56,11 @@ const { bodyClass = '' } = Astro.props;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Scrollbar personalizado */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0A0B0D;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #23272F;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #D4A843;
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0A0B0D; }
+  ::-webkit-scrollbar-thumb { background: #23272F; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #D4A843; }
 
-  /* Selección de texto */
   ::selection {
     background: rgba(212, 168, 67, 0.25);
     color: #E8EAF0;

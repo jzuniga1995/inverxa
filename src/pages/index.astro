@@ -2,49 +2,220 @@
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import { TrendingUp, TrendingDown, ArrowRight, Calculator, DollarSign, BarChart2, Clock, Flame } from 'lucide-astro';
+import { TrendingUp, TrendingDown, ArrowRight, Calculator, DollarSign, BarChart2, Clock, Flame, BookOpen, Star, ExternalLink } from 'lucide-astro';
 import { getArticulos, getArticulosDestacados, getCategorias } from '../db/queries';
 
-// ── Datos reales desde Neon ──────────────────────────────────
-const [todasNoticias, destacados, categoriasDB] = await Promise.all([
-  getArticulos(5),
-  getArticulosDestacados(1),
+const [todasNoticias, destacados] = await Promise.all([
+  getArticulos(20),
+  getArticulosDestacados(3),
   getCategorias(),
 ]);
 
-// Noticia principal: primero intentamos un destacado, si no el más reciente
 const noticiaPrincipal = destacados[0] ?? todasNoticias[0] ?? null;
-
-// Noticias secundarias: las 4 siguientes excluyendo la principal
 const noticiasSecundarias = todasNoticias
   .filter(n => n.slug !== noticiaPrincipal?.slug)
-  .slice(0, 4);
+  .slice(0, 7);
 
-// Precios hardcodeados por ahora — en el futuro vendrán de una API como CoinGecko
-const precios = [
-  { symbol: "BTC",  name: "Bitcoin",   price: "$98,420",  change: "+2.4%",  cap: "$1.94T", up: true  },
-  { symbol: "ETH",  name: "Ethereum",  price: "$3,812",   change: "+1.8%",  cap: "$458B",  up: true  },
-  { symbol: "BNB",  name: "BNB",       price: "$624.1",   change: "+0.9%",  cap: "$90B",   up: true  },
-  { symbol: "SOL",  name: "Solana",    price: "$192.4",   change: "-0.6%",  cap: "$88B",   up: false },
-  { symbol: "XRP",  name: "XRP",       price: "$2.18",    change: "-1.2%",  cap: "$124B",  up: false },
-  { symbol: "ADA",  name: "Cardano",   price: "$0.84",    change: "+3.1%",  cap: "$29B",   up: true  },
+// ── PRECIOS COINGECKO ──────────────────────────────────────────
+type CoinGeckoItem = {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  market_cap: number;
+};
+
+type Precio = {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  price: string;
+  change: string;
+  cap: string;
+  up: boolean;
+};
+
+let precios: Precio[] = [];
+let preciosError = false;
+
+try {
+  const COINGECKO_IDS = 'bitcoin,ethereum,binancecoin,solana,ripple,cardano';
+  const COINGECKO_API_KEY = import.meta.env.COINGECKO_API_KEY;
+
+  const res = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${COINGECKO_IDS}&order=market_cap_desc&per_page=6&page=1&sparkline=false&locale=es`,
+    {
+      headers: {
+        'Accept': 'application/json',
+        'x-cg-demo-api-key': COINGECKO_API_KEY,
+      },
+    }
+  );
+
+  if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
+
+  const data: CoinGeckoItem[] = await res.json();
+
+  const formatCap = (cap: number) => {
+    if (cap >= 1_000_000_000_000) return `$${(cap / 1_000_000_000_000).toFixed(2)}T`;
+    if (cap >= 1_000_000_000)     return `$${(cap / 1_000_000_000).toFixed(0)}B`;
+    return `$${(cap / 1_000_000).toFixed(0)}M`;
+  };
+
+  const formatPrice = (p: number) => {
+    if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  };
+
+  precios = data.map(coin => ({
+    id:     coin.id,
+    symbol: coin.symbol.toUpperCase(),
+    name:   coin.name,
+    image:  coin.image,
+    price:  formatPrice(coin.current_price),
+    change: `${coin.price_change_percentage_24h >= 0 ? '+' : ''}${coin.price_change_percentage_24h.toFixed(2)}%`,
+    cap:    formatCap(coin.market_cap),
+    up:     coin.price_change_percentage_24h >= 0,
+  }));
+} catch (e) {
+  preciosError = true;
+  console.error('[CoinGecko]', e);
+  precios = [
+    { id: 'bitcoin',     symbol: 'BTC', name: 'Bitcoin',  image: '', price: '—', change: '—', cap: '—', up: true },
+    { id: 'ethereum',    symbol: 'ETH', name: 'Ethereum', image: '', price: '—', change: '—', cap: '—', up: true },
+    { id: 'binancecoin', symbol: 'BNB', name: 'BNB',      image: '', price: '—', change: '—', cap: '—', up: true },
+    { id: 'solana',      symbol: 'SOL', name: 'Solana',   image: '', price: '—', change: '—', cap: '—', up: true },
+    { id: 'ripple',      symbol: 'XRP', name: 'XRP',      image: '', price: '—', change: '—', cap: '—', up: true },
+    { id: 'cardano',     symbol: 'ADA', name: 'Cardano',  image: '', price: '—', change: '—', cap: '—', up: true },
+  ];
+}
+
+// ── HERRAMIENTAS ───────────────────────────────────────────────
+const herramientas = [
+  { titulo: "Calculadora Cripto", desc: "Convierte y calcula ganancias al instante",       href: "/herramientas/calculadora", icon: "calc"   },
+  { titulo: "Precio del Dólar",   desc: "Tipo de cambio oficial y paralelo por país",       href: "/herramientas/dolar",       icon: "dollar" },
+  { titulo: "Gráficas en vivo",   desc: "Visualiza movimientos del mercado en tiempo real", href: "/herramientas/graficas",    icon: "chart"  },
 ];
 
-const herramientas = [
-  { titulo: "Calculadora Cripto",  desc: "Convierte y calcula ganancias al instante",        href: "/herramientas/calculadora", icon: "calc"   },
-  { titulo: "Precio del Dólar",    desc: "Tipo de cambio oficial y paralelo por país",        href: "/herramientas/dolar",       icon: "dollar" },
-  { titulo: "Gráficas en vivo",    desc: "Visualiza movimientos del mercado en tiempo real",  href: "/herramientas/graficas",    icon: "chart"  },
+// ── CONCEPTOS DEL DÍA ─────────────────────────────────────────
+const conceptos = [
+  { termino: "Bitcoin (BTC)",           categoria: "Cripto",    definicion: "La primera criptomoneda descentralizada del mundo, creada en 2009 por Satoshi Nakamoto. Opera sin bancos ni gobiernos usando tecnología blockchain.", ejemplo: "Si hubieras invertido $100 en Bitcoin en 2010, hoy tendrías millones." },
+  { termino: "Blockchain",              categoria: "Cripto",    definicion: "Registro digital distribuido e inmutable donde se almacenan transacciones en bloques encadenados. Nadie puede modificar los datos sin consenso de la red.", ejemplo: "Cuando envías Bitcoin, la transacción queda grabada para siempre en la blockchain." },
+  { termino: "Halving",                 categoria: "Cripto",    definicion: "Evento que ocurre cada ~4 años y reduce a la mitad la recompensa que reciben los mineros de Bitcoin. Históricamente dispara el precio por la menor oferta.", ejemplo: "El halving de 2024 redujo la recompensa de 6.25 BTC a 3.125 BTC por bloque." },
+  { termino: "Spread",                  categoria: "Trading",   definicion: "Diferencia entre el precio de compra (ask) y el precio de venta (bid) de un activo. Es el costo implícito de cada operación en muchos brokers.", ejemplo: "Si el EUR/USD tiene un spread de 2 pips, pagas eso solo por abrir la operación." },
+  { termino: "Apalancamiento",          categoria: "Trading",   definicion: "Permite operar con más dinero del que tienes depositado. Un apalancamiento 1:10 significa que con $100 controlas $1,000 en el mercado.", ejemplo: "Con apalancamiento 1:100 y $500, puedes abrir una posición de $50,000 en forex." },
+  { termino: "Stop Loss",               categoria: "Trading",   definicion: "Orden automática que cierra tu posición al alcanzar un precio determinado, limitando tus pérdidas. Es la herramienta de gestión de riesgo más básica.", ejemplo: "Compras BTC a $95,000 y pones un stop loss en $90,000 para no perder más del 5%." },
+  { termino: "ETF",                     categoria: "Bolsa",     definicion: "Fondo cotizado en bolsa que replica el rendimiento de un índice, sector o activo. Permite diversificar comprando un solo instrumento.", ejemplo: "El ETF SPY replica el S&P 500, dándote exposición a las 500 empresas más grandes de EE.UU." },
+  { termino: "Capitalización bursátil", categoria: "Bolsa",     definicion: "Valor total de mercado de una empresa, calculado multiplicando el precio de la acción por el número de acciones en circulación.", ejemplo: "Apple tiene una capitalización de más de $3 billones, siendo la empresa más valiosa del mundo." },
+  { termino: "Inflación",               categoria: "Economía",  definicion: "Aumento sostenido del nivel general de precios con el tiempo, que reduce el poder adquisitivo del dinero. Se mide con el IPC.", ejemplo: "Con una inflación del 10%, lo que hoy cuesta $100 costará $110 el próximo año." },
+  { termino: "Staking",                 categoria: "Cripto",    definicion: "Proceso de bloquear criptomonedas en una red para validar transacciones y obtener recompensas. Similar a un depósito a plazo fijo.", ejemplo: "Al hacer staking de ETH puedes ganar entre 3% y 5% anual en recompensas." },
+  { termino: "DeFi",                    categoria: "Cripto",    definicion: "Finanzas descentralizadas: servicios financieros (préstamos, trading, ahorro) que funcionan en blockchain sin bancos ni intermediarios.", ejemplo: "En Uniswap puedes intercambiar tokens directamente sin crear cuenta ni verificar identidad." },
+  { termino: "Soporte y Resistencia",   categoria: "Trading",   definicion: "Niveles de precio donde históricamente el mercado ha rebotado (soporte) o frenado su subida (resistencia). Claves en análisis técnico.", ejemplo: "Si Bitcoin rebota tres veces en $90,000, ese nivel es un soporte fuerte." },
+  { termino: "Par de divisas",          categoria: "Forex",     definicion: "Cotización de dos monedas entre sí. El EUR/USD indica cuántos dólares cuesta un euro. La primera moneda es la base, la segunda es la cotizada.", ejemplo: "EUR/USD = 1.08 significa que 1 euro vale 1.08 dólares." },
+  { termino: "Vela japonesa",           categoria: "Trading",   definicion: "Representación gráfica del precio que muestra apertura, cierre, máximo y mínimo en un período. Verde significa subida, roja significa bajada.", ejemplo: "Una vela verde con cuerpo largo indica que los compradores dominaron toda la sesión." },
+  { termino: "Altcoin",                 categoria: "Cripto",    definicion: "Cualquier criptomoneda que no sea Bitcoin. El término viene de 'alternative coin'. Ethereum, Solana y XRP son ejemplos populares.", ejemplo: "Ethereum es la altcoin más grande del mercado por capitalización." },
+  { termino: "Diversificación",         categoria: "Inversión", definicion: "Estrategia de distribuir el capital en diferentes activos para reducir el riesgo. Si uno cae, los otros pueden compensar las pérdidas.", ejemplo: "En lugar de poner todo en Bitcoin, distribuyes 40% en BTC, 30% en ETH y 30% en acciones." },
+  { termino: "Liquidez",                categoria: "Mercados",  definicion: "Facilidad con la que un activo puede comprarse o venderse sin afectar significativamente su precio. Mayor volumen = mayor liquidez.", ejemplo: "Bitcoin tiene alta liquidez; una NFT rara puede tener muy poca y tardas semanas en venderla." },
+  { termino: "Whale",                   categoria: "Cripto",    definicion: "Término para referirse a inversores que poseen grandes cantidades de una criptomoneda y cuyas compras o ventas pueden mover el mercado.", ejemplo: "Cuando una wallet mueve 10,000 BTC, el mercado entra en alerta por el posible impacto." },
+  { termino: "IPO",                     categoria: "Bolsa",     definicion: "Oferta Pública Inicial: primera vez que una empresa vende acciones al público en bolsa. Es como la empresa 'debuta' en el mercado.", ejemplo: "Cuando Airbnb hizo su IPO en 2020, las acciones subieron un 113% el primer día." },
+  { termino: "Bull Market",             categoria: "Mercados",  definicion: "Período prolongado de tendencia alcista en los mercados financieros. Se considera bull market cuando los precios suben más del 20% desde mínimos.", ejemplo: "El bull market de Bitcoin en 2020-2021 llevó el precio de $10,000 a casi $70,000." },
+  { termino: "Bear Market",             categoria: "Mercados",  definicion: "Período prolongado de caída de precios, generalmente del 20% o más desde máximos recientes. Puede durar meses o años.", ejemplo: "El bear market cripto de 2022 hizo caer a Bitcoin de $69,000 a menos de $16,000." },
+  { termino: "HODL",                    categoria: "Cripto",    definicion: "Estrategia de mantener criptomonedas a largo plazo sin vender, independientemente de la volatilidad. Nació de un error tipográfico de 'hold'.", ejemplo: "Los HODLers que compraron BTC en 2017 y aguantaron el crash de 2018 obtuvieron grandes ganancias." },
+];
+
+const ahora = new Date();
+const diaDelAno = Math.floor((ahora.getTime() - new Date(ahora.getFullYear(), 0, 0).getTime()) / 86400000);
+const conceptoHoy = conceptos[diaDelAno % conceptos.length];
+
+// ── BROKERS ────────────────────────────────────────────────────
+// TODO: Reemplaza cada `href` con tu URL de afiliado cuando la tengas.
+// Programas de afiliados:
+//   Binance     → https://www.binance.com/es/activity/affiliate
+//   XM          → https://partners.xm.com
+//   XTB         → https://partners.xtb.com
+//   eToro       → https://www.etoro.com/partners
+//   Pepperstone → https://pepperstone.com/es/partners
+const brokers = [
+  {
+    nombre:      "Binance",
+    tipo:        "Exchange Cripto",
+    descripcion: "El exchange de criptomonedas más grande del mundo por volumen. Ideal para operar con cientos de altcoins y futuros cripto.",
+    activos:     ["BTC", "ETH", "BNB", "+350 más"],
+    rating:      4.8,
+    comision:    "0.1% por operación",
+    ideal:       "Traders cripto",
+    href:        "https://www.binance.com",       // TODO: reemplazar con tu link de afiliado
+    color:       "#F0B90B",
+  },
+  {
+    nombre:      "XM",
+    tipo:        "Broker Forex & CFD",
+    descripcion: "Broker global con 15 años en el mercado y fuerte presencia en Latinoamérica. Soporte completo en español y más de 1,000 instrumentos.",
+    activos:     ["Forex", "Cripto", "Acciones", "Índices"],
+    rating:      4.6,
+    comision:    "Desde 0 pips",
+    ideal:       "Traders Forex",
+    href:        "https://www.xm.com",            // TODO: reemplazar con tu link de afiliado
+    color:       "#E84142",
+  },
+  {
+    nombre:      "XTB",
+    tipo:        "Broker Acciones & CFD",
+    descripcion: "Uno de los brokers más populares en LATAM con oficina en Chile. Plataforma xStation con herramientas avanzadas de análisis técnico.",
+    activos:     ["Acciones", "ETFs", "Forex", "Cripto"],
+    rating:      4.5,
+    comision:    "0% en acciones reales",
+    ideal:       "Inversores bolsa",
+    href:        "https://www.xtb.com",           // TODO: reemplazar con tu link de afiliado
+    color:       "#1565C0",
+  },
+  {
+    nombre:      "eToro",
+    tipo:        "Broker Social",
+    descripcion: "Plataforma de trading social que permite copiar las estrategias de inversores exitosos. Muy popular para principiantes.",
+    activos:     ["Acciones", "Cripto", "ETFs", "Forex"],
+    rating:      4.3,
+    comision:    "Sin comisión en acciones",
+    ideal:       "Principiantes",
+    href:        "https://www.etoro.com",         // TODO: reemplazar con tu link de afiliado
+    color:       "#00C853",
+  },
+  {
+    nombre:      "Pepperstone",
+    tipo:        "Broker ECN",
+    descripcion: "Broker australiano regulado con spreads muy competitivos y soporte completo en español. Favorito de traders profesionales en LATAM.",
+    activos:     ["Forex", "Índices", "Materias primas", "Cripto"],
+    rating:      4.7,
+    comision:    "Desde 0.0 pips",
+    ideal:       "Traders profesionales",
+    href:        "https://www.pepperstone.com",   // TODO: reemplazar con tu link de afiliado
+    color:       "#FF6B35",
+  },
 ];
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
-  const diff = Date.now() - new Date(fecha).getTime();
+  const diff  = Date.now() - new Date(fecha).getTime();
   const horas = Math.floor(diff / 1000 / 60 / 60);
   if (horas < 1)  return 'Hace unos minutos';
   if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
   const dias = Math.floor(horas / 24);
   return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
 }
+
+const categoriaColores: Record<string, string> = {
+  'Cripto':     '#F59E0B',
+  'Trading':    '#3B82F6',
+  'Bolsa':      '#10B981',
+  'Economía':   '#8B5CF6',
+  'Forex':      '#EC4899',
+  'Inversión':  '#06B6D4',
+  'Mercados':   '#D4A843',
+};
 ---
 
 <Layout>
@@ -57,7 +228,7 @@ function formatFecha(fecha: Date | null) {
   <!-- HERO -->
   <Hero />
 
-  <!-- NOTICIAS -->
+  <!-- ── 1. ÚLTIMAS NOTICIAS ───────────────────────────────── -->
   <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto">
 
@@ -72,11 +243,14 @@ function formatFecha(fecha: Date | null) {
       </div>
 
       {noticiaPrincipal ? (
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
           <!-- Noticia destacada -->
-          <a href={`/noticias/${noticiaPrincipal.slug}`} class="lg:col-span-2 group relative rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] no-underline flex flex-col min-h-[360px] hover:border-white/20 transition-colors duration-300">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0B0D] via-[#0A0B0D]/60 to-transparent z-10"></div>
+          <a
+            href={`/noticias/${noticiaPrincipal.slug}`}
+            class="lg:col-span-2 group relative rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] no-underline flex flex-col min-h-[380px] hover:border-white/20 transition-colors duration-300"
+          >
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0B0D] via-[#0A0B0D]/50 to-transparent z-10"></div>
             <div class="absolute inset-0">
               {noticiaPrincipal.imagen
                 ? <img src={noticiaPrincipal.imagen} alt={noticiaPrincipal.titulo} class="w-full h-full object-cover" />
@@ -84,40 +258,45 @@ function formatFecha(fecha: Date | null) {
               }
             </div>
             <div class="relative z-20 mt-auto p-6 flex flex-col gap-3">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 {noticiaPrincipal.categoria && (
                   <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
                     {noticiaPrincipal.categoria.nombre}
                   </span>
                 )}
-                <span class="text-white/30 text-xs flex items-center gap-1">
+                {noticiaPrincipal.pais && noticiaPrincipal.pais.codigo !== 'global' && (
+                  <span class="text-white/40 text-[10px] border border-white/20 px-2 py-0.5 rounded uppercase">
+                    {noticiaPrincipal.pais.nombre}
+                  </span>
+                )}
+                <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
                   <Clock size={11} />{formatFecha(noticiaPrincipal.creadoEn)}
                 </span>
               </div>
-              <h3 class="font-bold text-white text-xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+              <h3 class="font-bold text-white text-xl sm:text-2xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
                 {noticiaPrincipal.titulo}
               </h3>
               {noticiaPrincipal.resumen && (
-                <p class="text-white/50 text-sm leading-relaxed">{noticiaPrincipal.resumen}</p>
+                <p class="text-white/50 text-sm leading-relaxed line-clamp-2">{noticiaPrincipal.resumen}</p>
               )}
             </div>
           </a>
 
           <!-- Noticias secundarias -->
-          <div class="flex flex-col gap-4">
-            {noticiasSecundarias.map((n) => (
-              <a href={`/noticias/${n.slug}`} class="group flex gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-4 no-underline transition-colors duration-200">
+          <div class="flex flex-col gap-3">
+            {noticiasSecundarias.slice(0, 4).map((n) => (
+              <a href={`/noticias/${n.slug}`} class="group flex gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-3.5 no-underline transition-colors duration-200">
                 {n.imagen && (
                   <div class="w-16 h-16 rounded-lg overflow-hidden bg-[#1A1D24] flex-shrink-0">
                     <img src={n.imagen} alt={n.titulo} class="w-full h-full object-cover" />
                   </div>
                 )}
                 <div class="flex-1 flex flex-col gap-1.5 min-w-0">
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 flex-wrap">
                     {n.categoria && (
                       <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{n.categoria.nombre}</span>
                     )}
-                    <span class="text-white/25 text-[10px] flex items-center gap-0.5">
+                    <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
                       <Clock size={9} />{formatFecha(n.creadoEn)}
                     </span>
                   </div>
@@ -128,18 +307,85 @@ function formatFecha(fecha: Date | null) {
               </a>
             ))}
           </div>
+
         </div>
       ) : (
-        <!-- Estado vacío -->
         <div class="flex flex-col items-center justify-center py-20 bg-[#111318] border border-white/[0.07] rounded-2xl">
           <Flame size={32} class="text-white/10 mb-3" />
           <p class="text-white/30 text-sm">Aún no hay noticias publicadas</p>
         </div>
       )}
+
+      <!-- Fila extra -->
+      {noticiasSecundarias.length > 4 && (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+          {noticiasSecundarias.slice(4).map((n) => (
+            <a href={`/noticias/${n.slug}`} class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-4 no-underline transition-colors duration-200">
+              {n.imagen && (
+                <div class="w-full h-36 rounded-lg overflow-hidden bg-[#1A1D24]">
+                  <img src={n.imagen} alt={n.titulo} class="w-full h-full object-cover" />
+                </div>
+              )}
+              <div class="flex items-center gap-2">
+                {n.categoria && <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{n.categoria.nombre}</span>}
+                <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto"><Clock size={9} />{formatFecha(n.creadoEn)}</span>
+              </div>
+              <h4 class="text-white text-sm font-medium leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-2" style="font-family: 'Syne', sans-serif;">
+                {n.titulo}
+              </h4>
+            </a>
+          ))}
+        </div>
+      )}
+
     </div>
   </section>
 
-  <!-- PRECIOS DE MERCADO -->
+  <!-- ── 2. CONCEPTO DEL DÍA ───────────────────────────────── -->
+  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="flex items-center gap-2.5 mb-8">
+        <BookOpen size={18} class="text-[#D4A843]" />
+        <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Concepto del Día</h2>
+      </div>
+
+      <div class="relative bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 opacity-[0.03]" style="background: radial-gradient(circle at top right, #D4A843, transparent);"></div>
+
+        <div class="flex flex-col lg:flex-row gap-0">
+          <div class="flex flex-col justify-center gap-4 p-6 sm:p-8 lg:p-10 lg:w-80 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.07]">
+            <div>
+              <span
+                class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3"
+                style={`background: ${categoriaColores[conceptoHoy.categoria] ?? '#D4A843'}20; color: ${categoriaColores[conceptoHoy.categoria] ?? '#D4A843'};`}
+              >
+                {conceptoHoy.categoria}
+              </span>
+              <h3 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+                {conceptoHoy.termino}
+              </h3>
+            </div>
+            <p class="text-white/30 text-xs">Actualizado cada día con un nuevo término</p>
+          </div>
+
+          <div class="flex flex-col gap-5 p-6 sm:p-8 lg:p-10 flex-1">
+            <div>
+              <span class="text-white/40 text-xs uppercase tracking-widest font-medium mb-2 block">Definición</span>
+              <p class="text-white/80 text-base leading-relaxed">{conceptoHoy.definicion}</p>
+            </div>
+            <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl p-4">
+              <span class="text-[#D4A843] text-xs font-bold uppercase tracking-widest mb-2 block">Ejemplo práctico</span>
+              <p class="text-white/60 text-sm leading-relaxed">{conceptoHoy.ejemplo}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 3. PRECIOS DEL MERCADO (CoinGecko) ───────────────── -->
   <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto">
 
@@ -147,6 +393,11 @@ function formatFecha(fecha: Date | null) {
         <div class="flex items-center gap-2.5">
           <BarChart2 size={18} class="text-[#D4A843]" />
           <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Precios del Mercado</h2>
+          {preciosError ? (
+            <span class="text-white/20 text-xs border border-white/10 px-2 py-0.5 rounded">Sin conexión</span>
+          ) : (
+            <span class="text-white/20 text-xs border border-white/10 px-2 py-0.5 rounded">En vivo · CoinGecko</span>
+          )}
         </div>
         <a href="/cripto" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">
           Ver todos <ArrowRight size={14} />
@@ -162,43 +413,139 @@ function formatFecha(fecha: Date | null) {
         </div>
 
         {precios.map((coin) => (
-          <a href={`/cripto/${coin.symbol.toLowerCase()}`} class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline cursor-pointer">
+          <a
+            href={`https://www.coingecko.com/es/monedas/${coin.id}`}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
+          >
+            <!-- Activo: logo + nombre -->
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <span class="text-[10px] font-bold text-white/60">{coin.symbol.slice(0,2)}</span>
+              <div class="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
+                {coin.image
+                  ? <img src={coin.image} alt={coin.name} class="w-full h-full object-cover" loading="lazy" />
+                  : <span class="text-[10px] font-bold text-white/60">{coin.symbol.slice(0, 2)}</span>
+                }
               </div>
               <div class="min-w-0">
-                <div class="font-bold text-sm text-white truncate" style="font-family: 'Syne', sans-serif;">{coin.symbol}</div>
+                <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{coin.symbol}</div>
                 <div class="text-xs text-white/40 truncate">{coin.name}</div>
               </div>
             </div>
+
+            <!-- Precio -->
             <div class="flex items-center justify-end">
               <span class="font-semibold text-sm text-white" style="font-family: 'Syne', sans-serif;">{coin.price}</span>
             </div>
+
+            <!-- Cambio 24h -->
             <div class="flex items-center justify-end">
-              <span class={`flex items-center gap-1 text-sm font-medium ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>
-                {coin.up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
-                {coin.change}
-              </span>
+              {coin.change === '—' ? (
+                <span class="text-sm text-white/30">—</span>
+              ) : (
+                <span class={`flex items-center gap-1 text-sm font-medium ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {coin.up ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
+                  {coin.change}
+                </span>
+              )}
             </div>
+
+            <!-- Cap. Mercado -->
             <div class="hidden sm:flex items-center justify-end">
               <span class="text-sm text-white/50">{coin.cap}</span>
             </div>
           </a>
         ))}
       </div>
+
+      <p class="text-white/15 text-[11px] text-center mt-3">
+        Datos en tiempo real provistos por CoinGecko. Se actualizan con cada carga de página.
+      </p>
+
     </div>
   </section>
 
-  <!-- HERRAMIENTAS RÁPIDAS -->
+  <!-- ── 4. BROKERS DESTACADOS ─────────────────────────────── -->
   <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto">
 
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2.5">
+          <Star size={18} class="text-[#D4A843]" />
+          <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Brokers Destacados</h2>
+        </div>
+        <a href="/herramientas/brokers" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">
+          Comparar todos <ArrowRight size={14} />
+        </a>
+      </div>
+      <p class="text-white/30 text-xs mb-8">Seleccionados por popularidad, regulación y soporte en Latinoamérica. Siempre investiga antes de invertir.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {brokers.map((broker) => (
+          <a
+            href={broker.href}
+            target="_blank"
+            rel="noopener noreferrer nofollow sponsored"
+            class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex flex-col gap-0.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={`background: ${broker.color}20;`}>
+                    <span class="text-[10px] font-bold" style={`color: ${broker.color};`}>{broker.nombre.slice(0, 2).toUpperCase()}</span>
+                  </div>
+                  <span class="font-bold text-white text-base group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">{broker.nombre}</span>
+                </div>
+                <span class="text-white/30 text-[11px] ml-10">{broker.tipo}</span>
+              </div>
+              <ExternalLink size={14} class="text-white/20 group-hover:text-white/50 transition-colors duration-200 flex-shrink-0 mt-1" />
+            </div>
+
+            <p class="text-white/50 text-xs leading-relaxed line-clamp-2">{broker.descripcion}</p>
+
+            <div class="flex flex-wrap gap-1.5">
+              {broker.activos.map((activo) => (
+                <span class="bg-white/5 border border-white/[0.07] text-white/40 text-[10px] px-2 py-0.5 rounded">{activo}</span>
+              ))}
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-white/[0.07]">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-white/25 text-[10px]">Comisión</span>
+                <span class="text-white/60 text-xs font-medium">{broker.comision}</span>
+              </div>
+              <div class="flex flex-col gap-0.5 text-right">
+                <span class="text-white/25 text-[10px]">Ideal para</span>
+                <span class="text-white/60 text-xs font-medium">{broker.ideal}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <div class="flex gap-0.5">
+                {[1,2,3,4,5].map((star) => (
+                  <span class={`text-xs ${star <= Math.round(broker.rating) ? 'text-[#D4A843]' : 'text-white/15'}`}>★</span>
+                ))}
+              </div>
+              <span class="text-white/40 text-xs">{broker.rating}/5</span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <p class="text-white/15 text-[11px] text-center mt-6">
+        Los links a brokers pueden ser de afiliados. Invertir conlleva riesgos. Verifica siempre la regulación antes de abrir una cuenta.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ── 5. HERRAMIENTAS ───────────────────────────────────── -->
+  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-7xl mx-auto">
       <div class="flex items-center gap-2.5 mb-8">
         <Calculator size={18} class="text-[#D4A843]" />
         <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Herramientas</h2>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {herramientas.map((h) => (
           <a href={h.href} class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 rounded-2xl p-6 no-underline transition-all duration-300 hover:-translate-y-0.5">
@@ -213,30 +560,6 @@ function formatFecha(fecha: Date | null) {
             </div>
             <span class="flex items-center gap-1 text-[#D4A843] text-sm font-medium mt-auto">
               Usar ahora <ArrowRight size={14} />
-            </span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- EXPLORAR POR CATEGORÍA -->
-  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
-    <div class="max-w-7xl mx-auto">
-
-      <div class="flex items-center gap-2.5 mb-8">
-        <TrendingUp size={18} class="text-[#D4A843]" />
-        <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Explorar por Categoría</h2>
-      </div>
-
-      <div class="flex flex-wrap gap-3">
-        {categoriasDB.map((cat) => (
-          <a
-            href={`/noticias?categoria=${cat.slug}`}
-            class="group flex items-center gap-2 bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/40 hover:bg-[#D4A843]/5 px-4 py-2.5 rounded-xl no-underline transition-all duration-200"
-          >
-            <span class="text-white/70 group-hover:text-[#D4A843] text-sm font-medium transition-colors duration-200">
-              {cat.nombre}
             </span>
           </a>
         ))}

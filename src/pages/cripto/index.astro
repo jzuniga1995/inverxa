@@ -1,0 +1,338 @@
+---
+// src/pages/cripto/index.astro
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+
+type CoinGeckoItem = {
+  id: string; symbol: string; name: string; image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  price_change_percentage_7d_in_currency: number;
+  market_cap: number; total_volume: number; market_cap_rank: number;
+};
+
+let coins: CoinGeckoItem[] = [];
+let fetchError = false;
+
+const fmt = (p: number) => {
+  if (!p) return '$0.00';
+  if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (p >= 0.01) return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 6, maximumFractionDigits: 6 })}`;
+};
+const fmtL = (n: number) => {
+  if (!n) return '$0';
+  if (n >= 1e12) return `$${(n/1e12).toFixed(2)}T`;
+  if (n >= 1e9)  return `$${(n/1e9).toFixed(2)}B`;
+  if (n >= 1e6)  return `$${(n/1e6).toFixed(1)}M`;
+  return `$${n.toLocaleString('en-US')}`;
+};
+const fmtC = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
+
+try {
+  const KEY = import.meta.env.COINGECKO_API_KEY;
+  const res = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d`,
+    { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': KEY } }
+  );
+  if (!res.ok) throw new Error(`${res.status}`);
+  coins = await res.json();
+} catch (e) { fetchError = true; }
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>Precios Cripto en Vivo — Inversax</title>
+    <meta name="description" content="Precios de las 100 principales criptomonedas en tiempo real." />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
+    <div class="max-w-5xl mx-auto px-4 py-10">
+
+      <!-- Título -->
+      <div class="mb-7">
+        <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
+          Precios de Criptomonedas
+        </h1>
+        <p class="text-white/30 text-sm">Top 100 por capitalización · actualizado en cada visita</p>
+      </div>
+
+      {fetchError ? (
+        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <p class="text-white/30 text-sm">No se pudieron cargar los precios.</p>
+        </div>
+      ) : (
+      <div>
+
+        <!-- Controles -->
+        <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+
+          <!-- Filtros -->
+          <div class="flex gap-2 flex-wrap">
+            <button data-filter="all"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.4);color:#D4A843">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              Todas
+            </button>
+            <button data-filter="gainers"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              Ganadoras
+            </button>
+            <button data-filter="losers"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
+              Perdedoras
+            </button>
+            <button data-filter="top10"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Top 10
+            </button>
+          </div>
+
+          <!-- Búsqueda -->
+          <div class="relative w-48 flex-shrink-0">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input id="search" type="text" placeholder="BTC, Ethereum..."
+              autocomplete="off"
+              class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#D4A843]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
+          </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+
+          <!-- Cabecera -->
+          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
+            style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px">
+            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-center">#</div>
+            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Moneda</div>
+            <button data-sort="price"    class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Precio    <span class="sort-arrow">↕</span></button>
+            <button data-sort="change24" class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">24h       <span class="sort-arrow">↕</span></button>
+            <button data-sort="change7"  class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">7d        <span class="sort-arrow">↕</span></button>
+            <button data-sort="cap"      class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Cap. Mkt  <span class="sort-arrow">↕</span></button>
+            <button data-sort="volume"   class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Volumen   <span class="sort-arrow">↕</span></button>
+          </div>
+
+          <!-- Filas generadas en servidor -->
+          <div id="table-body">
+            {coins.map((c) => {
+              const chg24  = c.price_change_percentage_24h ?? 0;
+              const chg7   = c.price_change_percentage_7d_in_currency ?? 0;
+              const up24   = chg24 >= 0;
+              const up7    = chg7  >= 0;
+              return (
+                <a href={`/cripto/${c.id}`}
+                  class="coin-row grid px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
+                  style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px"
+                  data-name={c.name.toLowerCase()}
+                  data-symbol={c.symbol.toLowerCase()}
+                  data-chg24={chg24}
+                  data-rank={c.market_cap_rank}
+                  data-price={c.current_price}
+                  data-cap={c.market_cap}
+                  data-vol={c.total_volume}
+                  data-chg7={chg7}>
+
+                  <!-- Rank -->
+                  <div class="flex items-center justify-center text-white/20 text-xs" style="font-family:'Syne',sans-serif">
+                    {c.market_cap_rank}
+                  </div>
+
+                  <!-- Nombre -->
+                  <div class="flex items-center gap-2.5 pl-2 min-w-0">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                      {c.image
+                        ? <img src={c.image} alt={c.name} class="w-full h-full object-cover" loading="lazy" />
+                        : <span class="text-[9px] font-bold text-white/40">{c.symbol.slice(0,2).toUpperCase()}</span>
+                      }
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-white font-bold text-sm truncate" style="font-family:'Syne',sans-serif">{c.name}</div>
+                      <div class="text-white/30 text-[11px]">{c.symbol.toUpperCase()}</div>
+                    </div>
+                  </div>
+
+                  <!-- Precio -->
+                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif">
+                    {fmt(c.current_price)}
+                  </div>
+
+                  <!-- 24h -->
+                  <div class={`flex items-center justify-end text-xs font-semibold ${up24 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {up24 ? '▲' : '▼'} {fmtC(chg24)}
+                  </div>
+
+                  <!-- 7d -->
+                  <div class={`flex items-center justify-end text-xs font-semibold ${up7 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {up7 ? '▲' : '▼'} {fmtC(chg7)}
+                  </div>
+
+                  <!-- Cap -->
+                  <div class="flex items-center justify-end text-white/45 text-xs">
+                    {fmtL(c.market_cap)}
+                  </div>
+
+                  <!-- Volumen -->
+                  <div class="flex items-center justify-end text-white/30 text-xs">
+                    {fmtL(c.total_volume)}
+                  </div>
+
+                </a>
+              );
+            })}
+          </div>
+
+          <!-- Empty -->
+          <div id="empty-state" class="hidden items-center justify-center py-14">
+            <p class="text-white/25 text-sm">Sin resultados</p>
+          </div>
+
+        </div>
+      </div>
+      )}
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* Ocultar columnas en móvil — Tailwind no puede hacer esto con grid dinámico */
+  @media (max-width: 767px) {
+    .coin-row, .coin-row > div { all: unset; }
+    .coin-row {
+      display: flex !important;
+      align-items: center;
+      gap: 0;
+      padding: 10px 14px !important;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      text-decoration: none;
+      transition: background .12s;
+    }
+    .coin-row:hover { background: rgba(255,255,255,.025); }
+    /* En móvil: rank | nombre flex | precio */
+    .coin-row > div:nth-child(1) { width:30px;flex-shrink:0;text-align:center;color:rgba(255,255,255,.2);font-size:11px; }
+    .coin-row > div:nth-child(2) { flex:1;display:flex;align-items:center;gap:8px;padding-left:6px;min-width:0; }
+    .coin-row > div:nth-child(3) { flex-shrink:0;font-weight:600;font-size:13px;color:#fff;font-family:'Syne',sans-serif; }
+    /* Ocultar 24h, 7d, cap, vol en móvil */
+    .coin-row > div:nth-child(4),
+    .coin-row > div:nth-child(5),
+    .coin-row > div:nth-child(6),
+    .coin-row > div:nth-child(7) { display:none !important; }
+  }
+
+  .sort-btn { background:none;border:none;cursor:pointer;padding:0; transition:color .15s; }
+  .sort-btn:hover { color: rgba(255,255,255,.8) !important; }
+  .sort-btn.active { color: #D4A843 !important; }
+  .sort-btn.active .sort-arrow { opacity:1 !important; color:#D4A843; }
+  .sort-arrow { opacity:.35;font-size:10px; }
+</style>
+
+<script>
+  const rows     = Array.from(document.querySelectorAll('.coin-row')) as HTMLAnchorElement[];
+  const empty    = document.getElementById('empty-state')!;
+  let   activeFilter = 'all';
+  let   activeSort   = { key: 'cap', dir: -1 };
+  let   query        = '';
+
+  function applyFilters() {
+    const q = query.trim().toLowerCase();
+    let visible = 0;
+
+    rows.forEach(row => {
+      const name   = row.dataset.name  || '';
+      const symbol = row.dataset.symbol || '';
+      const chg24  = parseFloat(row.dataset.chg24 || '0');
+      const rank   = parseInt(row.dataset.rank  || '0');
+
+      const matchSearch = !q || name.includes(q) || symbol.includes(q);
+      const matchFilter =
+        activeFilter === 'all'     ? true :
+        activeFilter === 'gainers' ? chg24 > 0 :
+        activeFilter === 'losers'  ? chg24 < 0 :
+        activeFilter === 'top10'   ? rank <= 10 : true;
+
+      const show = matchSearch && matchFilter;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    empty.classList.toggle('hidden', visible > 0);
+    empty.classList.toggle('flex', visible === 0);
+  }
+
+  function applySort() {
+    const body   = document.getElementById('table-body')!;
+    const sorted = [...rows].sort((a, b) => {
+      const km: Record<string, string> = {
+        price: 'price', change24: 'chg24', change7: 'chg7', cap: 'cap', volume: 'vol'
+      };
+      const attr = km[activeSort.key] || 'cap';
+      const va = parseFloat(a.dataset[attr] || '0');
+      const vb = parseFloat(b.dataset[attr] || '0');
+      return (va - vb) * activeSort.dir;
+    });
+    sorted.forEach(r => body.appendChild(r));
+  }
+
+  function update() {
+    applySort();
+    applyFilters();
+  }
+
+  // Búsqueda
+  document.getElementById('search')!.addEventListener('input', function(this: HTMLInputElement) {
+    query = this.value;
+    applyFilters();
+  });
+
+  // Filtros
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = (btn as HTMLElement).dataset.filter || 'all';
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        const el = b as HTMLElement;
+        if (el.dataset.filter === activeFilter) {
+          el.style.background = 'rgba(212,168,67,.1)';
+          el.style.borderColor = 'rgba(212,168,67,.4)';
+          el.style.color = '#D4A843';
+        } else {
+          el.style.background = '#111318';
+          el.style.borderColor = 'rgba(255,255,255,.08)';
+          el.style.color = 'rgba(255,255,255,.4)';
+        }
+      });
+      applyFilters();
+    });
+  });
+
+  // Sort
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = (btn as HTMLElement).dataset.sort || 'cap';
+      activeSort = activeSort.key === key
+        ? { key, dir: activeSort.dir * -1 }
+        : { key, dir: -1 };
+
+      document.querySelectorAll('.sort-btn').forEach(b => {
+        b.classList.remove('active');
+        const arrow = b.querySelector('.sort-arrow');
+        if (arrow) arrow.textContent = '↕';
+      });
+      btn.classList.add('active');
+      const arrow = btn.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = activeSort.dir === -1 ? '↓' : '↑';
+
+      update();
+    });
+  });
+</script>
+
