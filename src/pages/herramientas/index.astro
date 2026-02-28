@@ -1,0 +1,147 @@
+---
+// src/pages/herramientas.astro
+import Layout from '../../layouts/Layout.astro';
+import { ArrowRight, Calculator, RefreshCw, DollarSign, BarChart2, Shield } from 'lucide-astro';
+
+const herramientas = [
+  {
+    icon: 'calculator',
+    nombre: 'Mercados Cripto',
+    descripcion: 'Precios en tiempo real, gráficos y análisis técnico de las principales criptomonedas.',
+    href: '/herramientas/cripto',
+    disponible: true,
+    badge: 'Disponible',
+  },
+  {
+    icon: 'refresh',
+    nombre: 'Conversor de Monedas',
+    descripcion: 'Convertí entre más de 150 monedas del mundo con tipos de cambio en tiempo real.',
+    href: '#',
+    disponible: false,
+    badge: 'Próximamente',
+  },
+  {
+    icon: 'dollar',
+    nombre: 'Precio del Dólar',
+    descripcion: 'Seguí el precio del dólar oficial, paralelo y blue en todos los países de Latinoamérica.',
+    href: '#',
+    disponible: false,
+    badge: 'Próximamente',
+  },
+  {
+    icon: 'chart',
+    nombre: 'Gráficas en Vivo',
+    descripcion: 'Gráficos de precios en tiempo real para cripto, forex y acciones con análisis técnico.',
+    href: '#',
+    disponible: false,
+    badge: 'Próximamente',
+  },
+  {
+    icon: 'shield',
+    nombre: 'Comparar Brokers',
+    descripcion: 'Compará comisiones, regulaciones y características de los principales brokers para Latinoamérica.',
+    href: '#',
+    disponible: false,
+    badge: 'Próximamente',
+  },
+];
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>Herramientas Financieras — Inversax</title>
+    <meta name="description" content="Calculadoras, conversores y herramientas financieras para inversores en Latinoamérica. Cripto, forex, dólar y más." />
+    <link rel="canonical" href="https://inversax.com/herramientas" />
+    <meta property="og:title"       content="Herramientas Financieras — Inversax" />
+    <meta property="og:description" content="Calculadoras, conversores y herramientas financieras para inversores en Latinoamérica." />
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://inversax.com/herramientas" />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+
+    <!-- PAGE HEADER -->
+    <div class="border-b border-white/[0.07] bg-[#111318]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <h1 class="font-extrabold text-2xl sm:text-4xl text-white mb-2" style="font-family: 'Syne', sans-serif;">
+          Herramientas
+        </h1>
+        <p class="text-white/40 text-sm sm:text-base">
+          Calculadoras, conversores y recursos financieros para inversores en Latinoamérica
+        </p>
+      </div>
+    </div>
+
+    <!-- GRID DE HERRAMIENTAS -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+
+        {herramientas.map((h) => (
+          <div class={`relative flex flex-col gap-4 bg-[#111318] border rounded-2xl p-6 transition-all duration-200 ${
+            h.disponible
+              ? 'border-white/[0.07] hover:border-[#D4A843]/40 cursor-pointer group'
+              : 'border-white/[0.04] opacity-60'
+          }`}>
+
+            <!-- Badge -->
+            <div class="flex items-start justify-between">
+              <div class={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                h.disponible ? 'bg-[#D4A843]/10' : 'bg-white/5'
+              }`}>
+                {h.icon === 'calculator' && <Calculator size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
+                {h.icon === 'refresh'    && <RefreshCw  size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
+                {h.icon === 'dollar'     && <DollarSign size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
+                {h.icon === 'chart'      && <BarChart2  size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
+                {h.icon === 'shield'     && <Shield     size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
+              </div>
+              <span class={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                h.disponible
+                  ? 'bg-[#D4A843]/10 text-[#D4A843]'
+                  : 'bg-white/5 text-white/30'
+              }`}>
+                {h.badge}
+              </span>
+            </div>
+
+            <!-- Texto -->
+            <div class="flex flex-col gap-2 flex-1">
+              <h2 class={`font-bold text-base leading-snug transition-colors duration-200 ${
+                h.disponible ? 'text-white group-hover:text-[#D4A843]' : 'text-white/50'
+              }`} style="font-family: 'Syne', sans-serif;">
+                {h.nombre}
+              </h2>
+              <p class="text-white/35 text-sm leading-relaxed">
+                {h.descripcion}
+              </p>
+            </div>
+
+            <!-- CTA -->
+            {h.disponible
+              ? (
+                <a
+                  href={h.href}
+                  class="flex items-center gap-1.5 text-[#D4A843] text-sm font-medium no-underline mt-auto"
+                >
+                  Abrir herramienta <ArrowRight size={14} />
+                </a>
+              )
+              : (
+                <span class="text-white/20 text-xs mt-auto">
+                  En desarrollo
+                </span>
+              )
+            }
+
+            <!-- Overlay clickeable para toda la card cuando está disponible -->
+            {h.disponible && (
+              <a href={h.href} class="absolute inset-0 rounded-2xl no-underline" aria-label={h.nombre} />
+            )}
+
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+  </div>
+</Layout>

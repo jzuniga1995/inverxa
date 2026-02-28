@@ -9,25 +9,27 @@ const articulos  = await getArticulos(30);
 const categorias = await getCategorias();
 
 const categoriaActiva = Astro.url.searchParams.get('categoria') ?? 'todas';
-const paisActivo      = Astro.url.searchParams.get('pais') ?? 'global';
 
-// Filtrar por categoría + país (país viene del header)
-const articulosFiltrados = articulos.filter(a => {
-  const matchCategoria = categoriaActiva === 'todas' || a.categoria?.slug === categoriaActiva;
-  const matchPais = paisActivo === 'global'
-    ? (a.pais?.codigo === 'global' || !a.pais)
-    : (a.pais?.codigo === paisActivo || a.pais?.codigo === 'global');
-  return matchCategoria && matchPais;
-});
+// Solo artículos globales — los de país específico viven en /pais/[codigo]
+const soloGlobales = articulos.filter(
+  a => !a.pais || a.pais.codigo === 'global'
+);
+
+// Filtrar por categoría sobre los globales
+const articulosFiltrados = categoriaActiva === 'todas'
+  ? soloGlobales
+  : soloGlobales.filter(a => a.categoria?.slug === categoriaActiva);
 
 const [principal, ...resto] = articulosFiltrados;
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
-  return new Intl.RelativeTimeFormat('es', { numeric: 'auto' }).format(
-    Math.round((fecha.getTime() - Date.now()) / (1000 * 60 * 60)),
-    'hours'
-  );
+  const diff  = Date.now() - new Date(fecha).getTime();
+  const horas = Math.floor(diff / 1000 / 60 / 60);
+  if (horas < 1)  return 'Hace unos minutos';
+  if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+  const dias = Math.floor(horas / 24);
+  return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
 }
 ---
 
@@ -35,6 +37,11 @@ function formatFecha(fecha: Date | null) {
   <slot name="head" slot="head">
     <title>Noticias — Inversax</title>
     <meta name="description" content="Últimas noticias de cripto, trading, bolsa y economía para Latinoamérica." />
+    <link rel="canonical" href="https://inversax.com/noticias" />
+    <meta property="og:title"       content="Noticias — Inversax" />
+    <meta property="og:description" content="Últimas noticias de cripto, trading, bolsa y economía para Latinoamérica." />
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://inversax.com/noticias" />
   </slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
@@ -53,11 +60,11 @@ function formatFecha(fecha: Date | null) {
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
-      <!-- FILTROS DE CATEGORÍA (horizontal) -->
+      <!-- FILTROS DE CATEGORÍA -->
       <div class="flex items-center gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide">
         <Filter size={14} class="text-white/30 flex-shrink-0" />
         <a
-          href={`/noticias${paisActivo !== 'global' ? `?pais=${paisActivo}` : ''}`}
+          href="/noticias"
           class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
             categoriaActiva === 'todas'
               ? 'bg-[#D4A843] text-[#0A0B0D]'
@@ -68,7 +75,7 @@ function formatFecha(fecha: Date | null) {
         </a>
         {categorias.map((cat) => (
           <a
-            href={`/noticias?categoria=${cat.slug}${paisActivo !== 'global' ? `&pais=${paisActivo}` : ''}`}
+            href={`/${cat.slug}`}
             class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
               categoriaActiva === cat.slug
                 ? 'bg-[#D4A843] text-[#0A0B0D]'
@@ -87,54 +94,31 @@ function formatFecha(fecha: Date | null) {
         <div class="flex-1 min-w-0">
 
           {articulosFiltrados.length === 0 ? (
-
-            <!-- Sin resultados -->
             <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
-              <span class="text-5xl">🌎</span>
-              {paisActivo !== 'global' ? (
-                <>
-                  <p class="text-white/60 text-base font-medium" style="font-family: 'Syne', sans-serif;">
-                    Próximamente en esta región
-                  </p>
-                  <p class="text-white/30 text-sm max-w-xs leading-relaxed">
-                    Estamos trabajando para traerte contenido local. Por ahora puedes explorar las noticias globales.
-                  </p>
-                  <a href="/noticias" class="mt-2 text-[#D4A843] text-sm font-medium hover:underline no-underline">
-                    Ver noticias globales →
-                  </a>
-                </>
-              ) : (
-                <p class="text-white/40 text-sm">No hay artículos en esta categoría todavía.</p>
-              )}
+              <span class="text-5xl">📰</span>
+              <p class="text-white/40 text-sm">No hay artículos globales en esta categoría todavía.</p>
             </div>
-
           ) : (
             <div class="flex flex-col gap-5 sm:gap-6">
 
-              <!-- Artículo principal destacado -->
+              <!-- Artículo principal -->
               {principal && (
                 <a
                   href={`/noticias/${principal.slug}`}
-                  class="group flex flex-col sm:flex-row bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-300"
+                  class="group flex flex-col sm:flex-row bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-300 sm:min-h-[220px]"
                 >
-                  <!-- Imagen -->
-                  <div class="w-full sm:w-72 lg:w-80 h-48 sm:h-auto flex-shrink-0 bg-[#1A1D24]">
+                  <!-- FIX IMAGEN: h-full en vez de h-auto -->
+                  <div class="w-full sm:w-72 lg:w-80 h-52 sm:h-full flex-shrink-0 bg-[#1A1D24] overflow-hidden">
                     {principal.imagen
-                      ? <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover" />
+                      ? <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
                       : <div class="w-full h-full" style="background: linear-gradient(135deg, #1A1D24, #23272F);" />
                     }
                   </div>
-                  <!-- Contenido -->
                   <div class="flex flex-col gap-3 p-5 sm:p-6 lg:p-7 justify-center">
                     <div class="flex items-center gap-2 flex-wrap">
                       {principal.categoria && (
                         <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
                           {principal.categoria.nombre}
-                        </span>
-                      )}
-                      {principal.pais && principal.pais.codigo !== 'global' && (
-                        <span class="text-white/30 text-[10px] border border-white/[0.07] px-2 py-0.5 rounded uppercase">
-                          {principal.pais.nombre}
                         </span>
                       )}
                       <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
@@ -155,40 +139,42 @@ function formatFecha(fecha: Date | null) {
                 </a>
               )}
 
-              <!-- Grid resto de artículos -->
+              <!-- Grid resto -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {resto.map((articulo) => (
                   <a
                     href={`/noticias/${articulo.slug}`}
-                    class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-4 sm:p-5 no-underline transition-colors duration-200"
+                    class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl overflow-hidden no-underline transition-colors duration-200"
                   >
-                    {articulo.imagen && (
-                      <div class="w-full h-36 rounded-lg overflow-hidden bg-[#1A1D24]">
-                        <img src={articulo.imagen} alt={articulo.titulo} class="w-full h-full object-cover" />
+                    {articulo.imagen
+                      ? (
+                        <div class="w-full h-36 bg-[#1A1D24] overflow-hidden flex-shrink-0">
+                          <img src={articulo.imagen} alt={articulo.titulo} class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
+                        </div>
+                      )
+                      : (
+                        <div class="w-full h-36 flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);" />
+                      )
+                    }
+                    <div class="flex flex-col gap-2 px-4 pb-4">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        {articulo.categoria && (
+                          <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">
+                            {articulo.categoria.nombre}
+                          </span>
+                        )}
+                        <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
+                          <Clock size={9} />
+                          {formatFecha(articulo.creadoEn)}
+                        </span>
                       </div>
-                    )}
-                    <div class="flex items-center gap-2 flex-wrap">
-                      {articulo.categoria && (
-                        <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">
-                          {articulo.categoria.nombre}
-                        </span>
+                      <h3 class="font-bold text-sm text-white group-hover:text-[#D4A843] transition-colors duration-200 leading-snug line-clamp-2" style="font-family: 'Syne', sans-serif;">
+                        {articulo.titulo}
+                      </h3>
+                      {articulo.resumen && (
+                        <p class="text-white/40 text-xs leading-relaxed line-clamp-2">{articulo.resumen}</p>
                       )}
-                      {articulo.pais && articulo.pais.codigo !== 'global' && (
-                        <span class="text-white/25 text-[10px] border border-white/[0.07] px-1.5 py-0.5 rounded uppercase">
-                          {articulo.pais.codigo}
-                        </span>
-                      )}
-                      <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
-                        <Clock size={9} />
-                        {formatFecha(articulo.creadoEn)}
-                      </span>
                     </div>
-                    <h3 class="font-bold text-sm text-white group-hover:text-[#D4A843] transition-colors duration-200 leading-snug line-clamp-2" style="font-family: 'Syne', sans-serif;">
-                      {articulo.titulo}
-                    </h3>
-                    {articulo.resumen && (
-                      <p class="text-white/40 text-xs leading-relaxed line-clamp-2">{articulo.resumen}</p>
-                    )}
                   </a>
                 ))}
               </div>
@@ -199,6 +185,7 @@ function formatFecha(fecha: Date | null) {
 
         <!-- SIDEBAR -->
         <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4">
+
           {resto.length > 0 && (
             <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
               <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Más recientes</h3>
@@ -219,6 +206,22 @@ function formatFecha(fecha: Date | null) {
               </div>
             </div>
           )}
+
+          <!-- Link a países -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+            <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Por País</h3>
+            <p class="text-white/40 text-xs leading-relaxed mb-3">
+              Encuentra noticias específicas de tu región.
+            </p>
+            <a
+              href="/paises"
+              class="flex items-center justify-between w-full bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/40 text-[#D4A843] text-sm px-4 py-2.5 rounded-xl no-underline transition-all duration-200"
+            >
+              Ver todos los países
+              <ArrowRight size={14} />
+            </a>
+          </div>
+
         </aside>
 
       </div>

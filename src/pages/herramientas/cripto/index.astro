@@ -1,17 +1,15 @@
 ---
 // src/pages/cripto/index.astro
 export const prerender = false;
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../../../layouts/Layout.astro';
 
-type CoinGeckoItem = {
+type Coin = {
   id: string; symbol: string; name: string; image: string;
-  current_price: number;
-  price_change_percentage_24h: number;
-  price_change_percentage_7d_in_currency: number;
-  market_cap: number; total_volume: number; market_cap_rank: number;
+  price: number; change24: number; change7: number;
+  marketCap: number; volume: number; rank: number;
 };
 
-let coins: CoinGeckoItem[] = [];
+let coins: Coin[] = [];
 let fetchError = false;
 
 const fmt = (p: number) => {
@@ -31,14 +29,13 @@ const fmtL = (n: number) => {
 const fmtC = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
 
 try {
-  const KEY = import.meta.env.COINGECKO_API_KEY;
-  const res = await fetch(
-    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=7d`,
-    { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': KEY } }
-  );
+  // Llama a tu propio endpoint con caché — no a CoinGecko directamente
+const res = await fetch(new URL('/api/precios', Astro.url));
   if (!res.ok) throw new Error(`${res.status}`);
   coins = await res.json();
-} catch (e) { fetchError = true; }
+} catch (e) {
+  fetchError = true;
+}
 ---
 
 <Layout>
@@ -55,7 +52,7 @@ try {
         <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
           Precios de Criptomonedas
         </h1>
-        <p class="text-white/30 text-sm">Top 100 por capitalización · actualizado en cada visita</p>
+<p class="text-white/30 text-sm">Top 100 por capitalización · actualizado cada 5 minutos</p>
       </div>
 
       {fetchError ? (
@@ -122,68 +119,59 @@ try {
             <button data-sort="volume"   class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Volumen   <span class="sort-arrow">↕</span></button>
           </div>
 
-          <!-- Filas generadas en servidor -->
+          <!-- Filas -->
           <div id="table-body">
             {coins.map((c) => {
-              const chg24  = c.price_change_percentage_24h ?? 0;
-              const chg7   = c.price_change_percentage_7d_in_currency ?? 0;
-              const up24   = chg24 >= 0;
-              const up7    = chg7  >= 0;
+              const up24 = c.change24 >= 0;
+              const up7  = c.change7  >= 0;
               return (
                 <a href={`/cripto/${c.id}`}
                   class="coin-row grid px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
                   style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px"
                   data-name={c.name.toLowerCase()}
                   data-symbol={c.symbol.toLowerCase()}
-                  data-chg24={chg24}
-                  data-rank={c.market_cap_rank}
-                  data-price={c.current_price}
-                  data-cap={c.market_cap}
-                  data-vol={c.total_volume}
-                  data-chg7={chg7}>
+                  data-chg24={c.change24}
+                  data-rank={c.rank}
+                  data-price={c.price}
+                  data-cap={c.marketCap}
+                  data-vol={c.volume}
+                  data-chg7={c.change7}>
 
-                  <!-- Rank -->
                   <div class="flex items-center justify-center text-white/20 text-xs" style="font-family:'Syne',sans-serif">
-                    {c.market_cap_rank}
+                    {c.rank}
                   </div>
 
-                  <!-- Nombre -->
                   <div class="flex items-center gap-2.5 pl-2 min-w-0">
                     <div class="w-8 h-8 rounded-full overflow-hidden bg-white/[0.07] flex-shrink-0 flex items-center justify-center">
                       {c.image
                         ? <img src={c.image} alt={c.name} class="w-full h-full object-cover" loading="lazy" />
-                        : <span class="text-[9px] font-bold text-white/40">{c.symbol.slice(0,2).toUpperCase()}</span>
+                        : <span class="text-[9px] font-bold text-white/40">{c.symbol.slice(0,2)}</span>
                       }
                     </div>
                     <div class="min-w-0">
                       <div class="text-white font-bold text-sm truncate" style="font-family:'Syne',sans-serif">{c.name}</div>
-                      <div class="text-white/30 text-[11px]">{c.symbol.toUpperCase()}</div>
+                      <div class="text-white/30 text-[11px]">{c.symbol}</div>
                     </div>
                   </div>
 
-                  <!-- Precio -->
                   <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif">
-                    {fmt(c.current_price)}
+                    {fmt(c.price)}
                   </div>
 
-                  <!-- 24h -->
                   <div class={`flex items-center justify-end text-xs font-semibold ${up24 ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {up24 ? '▲' : '▼'} {fmtC(chg24)}
+                    {up24 ? '▲' : '▼'} {fmtC(c.change24)}
                   </div>
 
-                  <!-- 7d -->
                   <div class={`flex items-center justify-end text-xs font-semibold ${up7 ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {up7 ? '▲' : '▼'} {fmtC(chg7)}
+                    {up7 ? '▲' : '▼'} {fmtC(c.change7)}
                   </div>
 
-                  <!-- Cap -->
                   <div class="flex items-center justify-end text-white/45 text-xs">
-                    {fmtL(c.market_cap)}
+                    {fmtL(c.marketCap)}
                   </div>
 
-                  <!-- Volumen -->
                   <div class="flex items-center justify-end text-white/30 text-xs">
-                    {fmtL(c.total_volume)}
+                    {fmtL(c.volume)}
                   </div>
 
                 </a>
@@ -191,7 +179,6 @@ try {
             })}
           </div>
 
-          <!-- Empty -->
           <div id="empty-state" class="hidden items-center justify-center py-14">
             <p class="text-white/25 text-sm">Sin resultados</p>
           </div>
@@ -205,7 +192,6 @@ try {
 </Layout>
 
 <style>
-  /* Ocultar columnas en móvil — Tailwind no puede hacer esto con grid dinámico */
   @media (max-width: 767px) {
     .coin-row, .coin-row > div { all: unset; }
     .coin-row {
@@ -218,11 +204,9 @@ try {
       transition: background .12s;
     }
     .coin-row:hover { background: rgba(255,255,255,.025); }
-    /* En móvil: rank | nombre flex | precio */
     .coin-row > div:nth-child(1) { width:30px;flex-shrink:0;text-align:center;color:rgba(255,255,255,.2);font-size:11px; }
     .coin-row > div:nth-child(2) { flex:1;display:flex;align-items:center;gap:8px;padding-left:6px;min-width:0; }
     .coin-row > div:nth-child(3) { flex-shrink:0;font-weight:600;font-size:13px;color:#fff;font-family:'Syne',sans-serif; }
-    /* Ocultar 24h, 7d, cap, vol en móvil */
     .coin-row > div:nth-child(4),
     .coin-row > div:nth-child(5),
     .coin-row > div:nth-child(6),
@@ -248,10 +232,10 @@ try {
     let visible = 0;
 
     rows.forEach(row => {
-      const name   = row.dataset.name  || '';
+      const name   = row.dataset.name   || '';
       const symbol = row.dataset.symbol || '';
       const chg24  = parseFloat(row.dataset.chg24 || '0');
-      const rank   = parseInt(row.dataset.rank  || '0');
+      const rank   = parseInt(row.dataset.rank   || '0');
 
       const matchSearch = !q || name.includes(q) || symbol.includes(q);
       const matchFilter =
@@ -283,18 +267,13 @@ try {
     sorted.forEach(r => body.appendChild(r));
   }
 
-  function update() {
-    applySort();
-    applyFilters();
-  }
+  function update() { applySort(); applyFilters(); }
 
-  // Búsqueda
   document.getElementById('search')!.addEventListener('input', function(this: HTMLInputElement) {
     query = this.value;
     applyFilters();
   });
 
-  // Filtros
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeFilter = (btn as HTMLElement).dataset.filter || 'all';
@@ -314,7 +293,6 @@ try {
     });
   });
 
-  // Sort
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const key = (btn as HTMLElement).dataset.sort || 'cap';
@@ -335,4 +313,3 @@ try {
     });
   });
 </script>
-

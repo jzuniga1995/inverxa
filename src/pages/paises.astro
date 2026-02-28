@@ -54,6 +54,10 @@ const global = todosPaises.find((p) => p.codigo === 'global');
     <title>Noticias por País — Inversax</title>
     <meta name="description" content="Encuentra noticias financieras, cripto y trading organizadas por país. Cobertura en toda Latinoamérica, España, Estados Unidos y más." />
     <link rel="canonical" href="https://inversax.com/paises" />
+    <meta property="og:title"       content="Noticias por País — Inversax" />
+    <meta property="og:description" content="Cobertura financiera para toda la comunidad hispanohablante." />
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://inversax.com/paises" />
   </slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
@@ -82,7 +86,7 @@ const global = todosPaises.find((p) => p.codigo === 'global');
       <!-- Card global -->
       {global && (
         <a
-          href="/noticias?pais=global"
+          href="/noticias"
           class="group flex items-center justify-between bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/15 rounded-2xl px-6 py-4 no-underline transition-all duration-200 mb-10"
         >
           <div class="flex items-center gap-3">
@@ -115,7 +119,7 @@ const global = todosPaises.find((p) => p.codigo === 'global');
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {region.paises.map((pais) => (
                 <a
-                  href={`/noticias?pais=${pais!.codigo}`}
+                  href={`/pais/${pais!.codigo}`}
                   class="group flex items-center justify-between bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 hover:bg-[#D4A843]/5 rounded-xl px-4 py-3.5 no-underline transition-all duration-200"
                 >
                   <div class="flex items-center gap-2.5 min-w-0">
@@ -139,3 +143,4 @@ const global = todosPaises.find((p) => p.codigo === 'global');
     </div>
   </div>
 </Layout>
+

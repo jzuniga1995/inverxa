@@ -1,9 +1,8 @@
-
 ---
 // src/pages/cripto/[id].astro
 export const prerender = false;
 
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink } from 'lucide-astro';
 
 const { id } = Astro.params;
@@ -34,9 +33,16 @@ type CoinDetail = {
   };
 };
 
-let coin: CoinDetail | null = null;
-let fetchError = false;
+// ── Caché por coin — 10 minutos ───────────────────────────────
+const COIN_TTL = 600_000;
+declare global {
+  // eslint-disable-next-line no-var
+  var _coinCache: Map<string, { data: CoinDetail; ts: number }> | undefined;
+}
+if (!globalThis._coinCache) globalThis._coinCache = new Map();
+const coinCache = globalThis._coinCache;
 
+// ── Helpers de formato ────────────────────────────────────────
 const fmt = (p: number) => {
   if (!p) return '—';
   if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
@@ -51,17 +57,31 @@ const fmtLarge = (n: number) => {
   if (n >= 1e6)  return `$${(n/1e6).toFixed(1)}M`;
   return `$${n.toLocaleString('en-US')}`;
 };
-const fmtChg = (c: number) => c != null ? `${c >= 0 ? '+' : ''}${c.toFixed(2)}%` : '—';
+const fmtChg    = (c: number) => c != null ? `${c >= 0 ? '+' : ''}${c.toFixed(2)}%` : '—';
 const fmtSupply = (n: number) => n ? n.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—';
 
+// ── Fetch con caché ───────────────────────────────────────────
+let coin: CoinDetail | null = null;
+let fetchError = false;
+
 try {
-  const KEY = import.meta.env.COINGECKO_API_KEY;
-  const res = await fetch(
-    `https://api.coingecko.com/api/v3/coins/${id}?localization=true&tickers=false&market_data=true&community_data=false&developer_data=false`,
-    { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': KEY } }
-  );
-  if (!res.ok) throw new Error(`${res.status}`);
-  coin = await res.json();
+  const cached = coinCache.get(id!);
+
+  if (cached && Date.now() - cached.ts < COIN_TTL) {
+    // Caché válida — no toca CoinGecko
+    coin = cached.data;
+  } else {
+    // Caché expirada o inexistente — llama a CoinGecko
+    const KEY = import.meta.env.COINGECKO_API_KEY;
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${id}?localization=true&tickers=false&market_data=true&community_data=false&developer_data=false`,
+      { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': KEY } }
+    );
+    if (!res.ok) throw new Error(`${res.status}`);
+    coin = await res.json();
+    // Guarda en caché
+    coinCache.set(id!, { data: coin!, ts: Date.now() });
+  }
 } catch (e) {
   fetchError = true;
   console.error('[CoinDetail]', e);
@@ -71,14 +91,12 @@ if (!coin && !fetchError) {
   return Astro.redirect('/cripto');
 }
 
-const price    = coin?.market_data?.current_price?.usd ?? 0;
-const chg24    = coin?.market_data?.price_change_percentage_24h ?? 0;
-const isUp     = chg24 >= 0;
-const symbol   = coin?.symbol?.toUpperCase() ?? '';
-// TradingView usa símbolos como BINANCE:BTCUSDT
-// Construimos el par automáticamente
-const tvSymbol = `BINANCE:${symbol}USDT`;
-const desc     = coin?.description?.es || coin?.description?.en || '';
+const price     = coin?.market_data?.current_price?.usd ?? 0;
+const chg24     = coin?.market_data?.price_change_percentage_24h ?? 0;
+const isUp      = chg24 >= 0;
+const symbol    = coin?.symbol?.toUpperCase() ?? '';
+const tvSymbol  = `BINANCE:${symbol}USDT`;
+const desc      = coin?.description?.es || coin?.description?.en || '';
 const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
 ---
 
@@ -220,25 +238,25 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
     script.src = 'https://s3.tradingview.com/tv.js';
     script.onload = () => {
       new TradingView.widget({
-        container_id: 'tv-chart',
-        symbol:       tvSymbol,
-        interval:     'D',
-        timezone:     'America/Tegucigalpa',
-        theme:        'dark',
-        style:        '1',       // velas japonesas
-        locale:       'es',
-        toolbar_bg:   '#111318',
-        enable_publishing: false,
-        hide_top_toolbar: false,
-        hide_legend:  false,
-        save_image:   false,
-        backgroundColor: '#111318',
-        gridColor:    'rgba(255,255,255,0.03)',
-        width:        '100%',
-        height:       460,
-        withdateranges: true,
+        container_id:        'tv-chart',
+        symbol:              tvSymbol,
+        interval:            'D',
+        timezone:            'America/Tegucigalpa',
+        theme:               'dark',
+        style:               '1',
+        locale:              'es',
+        toolbar_bg:          '#111318',
+        enable_publishing:   false,
+        hide_top_toolbar:    false,
+        hide_legend:         false,
+        save_image:          false,
+        backgroundColor:     '#111318',
+        gridColor:           'rgba(255,255,255,0.03)',
+        width:               '100%',
+        height:              460,
+        withdateranges:      true,
         allow_symbol_change: false,
-        studies: [],
+        studies:             [],
       });
     };
     document.head.appendChild(script);

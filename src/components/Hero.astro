@@ -4,17 +4,39 @@ import { TrendingUp, TrendingDown, Globe, Users, FileText, BarChart2, ArrowRight
 
 const stats = [
   { label: "Criptomonedas", value: "500+",  icon: "chart" },
-  { label: "Países",        value: "12",     icon: "globe" },
+  { label: "Países",        value: "36",     icon: "globe" },
   { label: "Lectores/mes",  value: "50K+",   icon: "users" },
   { label: "Artículos",     value: "1,200+", icon: "file"  },
 ];
 
-const trending = [
-  { name: "Bitcoin",  symbol: "BTC", price: "$98,420", change: "+2.4%", up: true  },
-  { name: "Ethereum", symbol: "ETH", price: "$3,812",  change: "+1.8%", up: true  },
-  { name: "Solana",   symbol: "SOL", price: "$192.4",  change: "-0.6%", up: false },
-  { name: "BNB",      symbol: "BNB", price: "$624.1",  change: "+0.9%", up: true  },
-];
+// ── TRENDING — carga inicial SSR ───────────────────────────────
+type TrendingItem = { name: string; symbol: string; price: string; change: string; up: boolean };
+let trending: TrendingItem[] = [];
+
+const HERO_IDS = ['bitcoin', 'ethereum', 'solana', 'binancecoin'];
+
+try {
+  const res  = await fetch(new URL('/api/precios', Astro.url));
+  const data = await res.json();
+  trending = data
+    .filter((c: any) => HERO_IDS.includes(c.id))
+    .map((c: any) => ({
+      name:   c.name,
+      symbol: c.symbol,
+      price:  c.price >= 1000
+                ? `$${c.price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`
+                : `$${c.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
+      up:     c.change24 >= 0,
+    }));
+} catch (e) {
+  trending = [
+    { name: "Bitcoin",  symbol: "BTC", price: "—", change: "—", up: true },
+    { name: "Ethereum", symbol: "ETH", price: "—", change: "—", up: true },
+    { name: "Solana",   symbol: "SOL", price: "—", change: "—", up: true },
+    { name: "BNB",      symbol: "BNB", price: "—", change: "—", up: true },
+  ];
+}
 ---
 
 <section
@@ -53,7 +75,6 @@ const trending = [
       <!-- IZQUIERDA -->
       <div class="flex flex-col gap-6">
 
-        <!-- Badge -->
         <div
           class="inline-flex items-center gap-2 self-start px-3 py-1.5 rounded-full border text-xs sm:text-[12.5px] font-medium text-[#E8C060]"
           style="background: rgba(212,168,67,0.1); border-color: rgba(212,168,67,0.25);"
@@ -62,7 +83,6 @@ const trending = [
           Finanzas en tiempo real para Latinoamérica
         </div>
 
-        <!-- Título -->
         <h1
           class="font-extrabold leading-[1.08] tracking-tight text-white text-[36px] sm:text-[52px] lg:text-[64px]"
           style="font-family: 'Syne', sans-serif;"
@@ -73,15 +93,13 @@ const trending = [
           </span>
         </h1>
 
-        <!-- Descripción -->
         <p class="text-white/50 text-base sm:text-[17px] leading-relaxed font-light max-w-md">
           Noticias, análisis y herramientas de cripto, trading y bolsa actualizadas cada día. Todo en español, para tu país.
         </p>
 
-        <!-- Botones -->
         <div class="flex flex-wrap items-center gap-3">
           <a
-            href="/cripto"
+            href="/herramientas/cripto"
             class="inline-flex items-center gap-2 bg-[#D4A843] hover:bg-[#E8C060] text-[#0A0B0D] font-semibold text-sm px-5 py-3 rounded-xl transition-all duration-200 no-underline hover:-translate-y-px"
           >
             Explorar mercados <ArrowRight size={15} />
@@ -94,7 +112,6 @@ const trending = [
           </a>
         </div>
 
-        <!-- Stats -->
         <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-4 sm:gap-6 pt-3 border-t border-white/[0.07]">
           {stats.map((stat) => (
             <div class="flex items-center gap-2.5">
@@ -116,7 +133,6 @@ const trending = [
       <!-- DERECHA: Card de precios -->
       <div class="relative w-full lg:justify-self-end lg:max-w-[420px]">
 
-        <!-- Glow detrás de la card -->
         <div
           class="absolute inset-0 rounded-full pointer-events-none hidden lg:block"
           style="background: radial-gradient(ellipse at center, rgba(212,168,67,0.12), transparent 70%); transform: scale(1.4);"
@@ -124,7 +140,6 @@ const trending = [
 
         <div class="relative bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden card-float">
 
-          <!-- Cabecera card -->
           <div class="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-white/[0.07]">
             <span class="font-bold text-sm sm:text-[15px] text-white" style="font-family: 'Syne', sans-serif;">Mercado ahora</span>
             <span class="flex items-center gap-1.5 text-xs font-medium text-emerald-400">
@@ -133,26 +148,29 @@ const trending = [
             </span>
           </div>
 
-          <!-- Lista de precios -->
-          {trending.map((coin) => (
-            <div class="flex items-center justify-between px-5 sm:px-6 py-3 sm:py-3.5 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 cursor-default">
-              <div class="flex flex-col gap-0.5 min-w-0">
-                <span class="font-bold text-sm text-white truncate" style="font-family: 'Syne', sans-serif;">{coin.symbol}</span>
-                <span class="text-xs text-white/40 truncate">{coin.name}</span>
+          <div id="hero-precios">
+            {trending.map((coin) => (
+              <div
+                class="hero-coin flex items-center justify-between px-5 sm:px-6 py-3 sm:py-3.5 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 cursor-default"
+                data-symbol={coin.symbol}
+              >
+                <div class="flex flex-col gap-0.5 min-w-0">
+                  <span class="font-bold text-sm text-white truncate" style="font-family: 'Syne', sans-serif;">{coin.symbol}</span>
+                  <span class="text-xs text-white/40 truncate">{coin.name}</span>
+                </div>
+                <div class="flex flex-col items-end gap-0.5 flex-shrink-0 pl-4">
+                  <span class="hero-price font-semibold text-sm sm:text-[15px] text-white" style="font-family: 'Syne', sans-serif;">{coin.price}</span>
+                  <span class={`hero-change flex items-center gap-1 text-xs font-medium ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {coin.change}
+                  </span>
+                </div>
               </div>
-              <div class="flex flex-col items-end gap-0.5 flex-shrink-0 pl-4">
-                <span class="font-semibold text-sm sm:text-[15px] text-white" style="font-family: 'Syne', sans-serif;">{coin.price}</span>
-                <span class={`flex items-center gap-1 text-xs font-medium ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {coin.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                  {coin.change}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          <!-- Footer card -->
+          <!-- Link a herramientas/cripto para ver todos los precios -->
           <a
-            href="/cripto"
+            href="/herramientas/cripto"
             class="flex items-center justify-center gap-1.5 px-6 py-3.5 bg-white/5 hover:bg-white/10 text-[#D4A843] text-sm font-medium no-underline transition-colors duration-200 border-t border-white/[0.07]"
           >
             Ver todos los precios <ArrowRight size={14} />
@@ -165,7 +183,6 @@ const trending = [
 </section>
 
 <style>
-  /* Línea dorada bajo el título */
   .hero-underline::after {
     content: '';
     position: absolute;
@@ -177,7 +194,6 @@ const trending = [
     border-radius: 2px;
   }
 
-  /* Card flotante — solo en desktop para no molestar en móvil */
   @media (min-width: 1024px) {
     .card-float {
       animation: card-float 5s ease-in-out infinite;
@@ -189,7 +205,6 @@ const trending = [
     50%       { transform: translateY(-8px); }
   }
 
-  /* Punto pulsante En vivo */
   .live-dot {
     animation: pulse-dot 1.5s ease-in-out infinite;
   }
@@ -200,3 +215,44 @@ const trending = [
   }
 </style>
 
+<script>
+  const HERO_SYMBOLS = ['BTC', 'ETH', 'SOL', 'BNB'];
+
+  function formatPrice(p: number): string {
+    if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  }
+
+  async function actualizarHero() {
+    try {
+      const res = await fetch('/api/precios');
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const heroData = data.filter((c: any) => HERO_SYMBOLS.includes(c.symbol));
+
+      heroData.forEach((coin: any) => {
+        const fila = document.querySelector(`[data-symbol="${coin.symbol}"]`);
+        if (!fila) return;
+
+        const up     = coin.change24 >= 0;
+        const precio = formatPrice(coin.price);
+        const cambio = `${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
+
+        const priceEl  = fila.querySelector('.hero-price');
+        const changeEl = fila.querySelector('.hero-change');
+
+        if (priceEl)  priceEl.textContent = precio;
+        if (changeEl) {
+          changeEl.textContent = cambio;
+          changeEl.className = `hero-change flex items-center gap-1 text-xs font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
+        }
+      });
+    } catch (e) {
+      console.warn('[Hero polling]', e);
+    }
+  }
+
+  setInterval(actualizarHero, 300_000);
+</script>

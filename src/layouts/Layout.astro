@@ -16,6 +16,9 @@ const { bodyClass = '' } = Astro.props;
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
 
+  <!-- Sitemap -->
+  <link rel="sitemap" href="/sitemap.xml" />
+
   <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,12 +33,12 @@ const { bodyClass = '' } = Astro.props;
 
   <Header />
 
-  <div style="overflow-x: hidden;">
-    <main>
-      <slot />
-    </main>
-    <Footer />
-  </div>
+  <!-- pt-[100px] compensa el header fijo: 36px topbar + 64px nav = 100px -->
+  <main class="pt-[100px]">
+    <slot />
+  </main>
+
+  <Footer />
 
 </body>
 </html>
@@ -49,9 +52,11 @@ const { bodyClass = '' } = Astro.props;
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -66,4 +71,3 @@ const { bodyClass = '' } = Astro.props;
     color: #E8EAF0;
   }
 </style>
-

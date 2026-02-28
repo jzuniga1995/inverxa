@@ -1,0 +1,278 @@
+---
+// src/pages/pais/[codigo].astro
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import { getArticulosPorPais, getCategorias, getPaises } from '../../db/queries';
+import { ArrowRight, Clock, MapPin, Filter } from 'lucide-astro';
+
+const { codigo } = Astro.params;
+if (!codigo) return Astro.redirect('/paises');
+
+const todosPaises = await getPaises();
+const paisActual  = todosPaises.find((p) => p.codigo === codigo && p.codigo !== 'global');
+if (!paisActual) return Astro.redirect('/paises');
+
+const categoriaParam = Astro.url.searchParams.get('categoria') ?? 'todas';
+
+const [articulos, categorias] = await Promise.all([
+  getArticulosPorPais(codigo, 50),
+  getCategorias(),
+]);
+
+const articulosFiltrados = categoriaParam === 'todas'
+  ? articulos
+  : articulos.filter((a) => a.categoria?.slug === categoriaParam);
+
+const [principal, ...resto] = articulosFiltrados;
+
+const regiones: Record<string, string> = {
+  ar: 'Latinoamérica', bo: 'Latinoamérica', br: 'Latinoamérica',
+  cl: 'Latinoamérica', co: 'Latinoamérica', cu: 'Latinoamérica',
+  ec: 'Latinoamérica', mx: 'Latinoamérica', py: 'Latinoamérica',
+  pe: 'Latinoamérica', uy: 'Latinoamérica', ve: 'Latinoamérica',
+  bz: 'América Central', cr: 'América Central', sv: 'América Central',
+  gt: 'América Central', hn: 'América Central', ni: 'América Central', pa: 'América Central',
+  do: 'Caribe', pr: 'Caribe',
+  us: 'Norteamérica', ca: 'Norteamérica',
+  es: 'Europa', ad: 'Europa', de: 'Europa', fr: 'Europa',
+  gb: 'Europa', it: 'Europa', nl: 'Europa', pt: 'Europa', ch: 'Europa',
+  gq: 'África', ma: 'África',
+  au: 'Oceanía / Asia', ph: 'Oceanía / Asia',
+};
+
+const region = regiones[codigo] ?? 'Internacional';
+
+function formatFecha(fecha: Date | null) {
+  if (!fecha) return '';
+  const diff  = Date.now() - new Date(fecha).getTime();
+  const horas = Math.floor(diff / 1000 / 60 / 60);
+  if (horas < 1)  return 'Hace unos minutos';
+  if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+  const dias = Math.floor(horas / 24);
+  return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
+}
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>{paisActual.nombre} — Inversax</title>
+    <meta name="description" content={`Finanzas, cripto, trading y economía en ${paisActual.nombre}. Contenido financiero actualizado para tu región en Inversax.`} />
+    <link rel="canonical" href={`https://inversax.com/pais/${codigo}`} />
+    <meta property="og:title"       content={`${paisActual.nombre} — Inversax`} />
+    <meta property="og:description" content={`Finanzas, cripto, trading y economía en ${paisActual.nombre}.`} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content={`https://inversax.com/pais/${codigo}`} />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-white/30 text-sm mb-8 flex-wrap">
+        <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+        <ArrowRight size={13} />
+        <a href="/paises" class="hover:text-white transition-colors duration-200 no-underline">Países</a>
+        <ArrowRight size={13} />
+        <span class="text-white/25 text-xs">{region}</span>
+        <ArrowRight size={13} />
+        <span class="text-white/60">{paisActual.nombre}</span>
+      </div>
+
+      <!-- Header -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
+            <MapPin size={18} class="text-[#D4A843]" />
+          </div>
+          <div>
+            <span class="text-white/30 text-xs uppercase tracking-widest">{region}</span>
+            <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+              {paisActual.nombre}
+            </h1>
+          </div>
+        </div>
+        <p class="text-white/40 text-sm max-w-xl leading-relaxed">
+          Finanzas, cripto, trading y economía en {paisActual.nombre}. Contenido actualizado para tu región.
+        </p>
+      </div>
+
+      <!-- Filtro por categoría (único, solo pills) -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide">
+        <Filter size={14} class="text-white/30 flex-shrink-0" />
+        <a
+          href={`/pais/${codigo}`}
+          class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium no-underline transition-all duration-200 ${
+            categoriaParam === 'todas'
+              ? 'bg-[#D4A843] text-[#0A0B0D]'
+              : 'bg-[#111318] border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          Todas
+        </a>
+        {categorias.map((cat) => (
+          <a
+            href={`/pais/${codigo}?categoria=${cat.slug}`}
+            class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium no-underline transition-all duration-200 ${
+              categoriaParam === cat.slug
+                ? 'bg-[#D4A843] text-[#0A0B0D]'
+                : 'bg-[#111318] border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            {cat.nombre}
+          </a>
+        ))}
+      </div>
+
+      <!-- Sin artículos -->
+      {articulosFiltrados.length === 0 ? (
+        <div class="flex flex-col items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl gap-4 text-center">
+          <MapPin size={32} class="text-white/10" />
+          <p class="text-white/50 text-base font-medium" style="font-family: 'Syne', sans-serif;">
+            Próximamente en {paisActual.nombre}
+          </p>
+          <p class="text-white/30 text-sm max-w-xs leading-relaxed">
+            Estamos trabajando para traerte contenido local. Por ahora podés explorar las noticias globales.
+          </p>
+          <a href="/noticias" class="mt-2 text-[#D4A843] text-sm font-medium hover:underline no-underline">
+            Ver noticias globales →
+          </a>
+        </div>
+
+      ) : (
+        <div class="flex flex-col lg:flex-row gap-8">
+
+          <!-- CONTENIDO -->
+          <div class="flex-1 min-w-0 flex flex-col gap-6">
+
+            <!-- Artículo principal -->
+            {principal && (
+              <a
+                href={`/noticias/${principal.slug}`}
+                class="group rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] hover:border-white/20 no-underline flex flex-col sm:flex-row sm:min-h-[220px] transition-colors duration-300"
+              >
+                <div class="w-full sm:w-72 lg:w-80 h-52 sm:h-full flex-shrink-0 bg-[#1A1D24] overflow-hidden">
+                  {principal.imagen
+                    ? <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
+                    : <div class="w-full h-full" style="background: linear-gradient(135deg, #1A1D24, #23272F);" />
+                  }
+                </div>
+                <div class="flex flex-col justify-center gap-3 p-6">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    {principal.categoria && (
+                      <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                        {principal.categoria.nombre}
+                      </span>
+                    )}
+                    <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
+                      <Clock size={11} /> {formatFecha(principal.creadoEn)}
+                    </span>
+                  </div>
+                  <h2 class="font-bold text-white text-xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+                    {principal.titulo}
+                  </h2>
+                  {principal.resumen && (
+                    <p class="text-white/40 text-sm leading-relaxed line-clamp-2">{principal.resumen}</p>
+                  )}
+                  <span class="flex items-center gap-1.5 text-[#D4A843] text-sm font-medium mt-1">
+                    Leer artículo <ArrowRight size={14} />
+                  </span>
+                </div>
+              </a>
+            )}
+
+            <!-- Grid resto -->
+            {resto.length > 0 && (
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {resto.map((art) => (
+                  <a
+                    href={`/noticias/${art.slug}`}
+                    class="group flex flex-col bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-200"
+                  >
+                    {art.imagen
+                      ? (
+                        <div class="w-full h-44 bg-[#1A1D24] overflow-hidden flex-shrink-0">
+                          <img src={art.imagen} alt={art.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        </div>
+                      ) : (
+                        <div class="w-full h-44 flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);"></div>
+                      )
+                    }
+                    <div class="flex flex-col gap-2 p-4 flex-1">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        {art.categoria && (
+                          <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">
+                            {art.categoria.nombre}
+                          </span>
+                        )}
+                        <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
+                          <Clock size={9} /> {formatFecha(art.creadoEn)}
+                        </span>
+                      </div>
+                      <h3 class="font-bold text-white text-sm leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-3" style="font-family: 'Syne', sans-serif;">
+                        {art.titulo}
+                      </h3>
+                      {art.resumen && (
+                        <p class="text-white/35 text-xs leading-relaxed line-clamp-2 mt-auto pt-1">{art.resumen}</p>
+                      )}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+
+          </div>
+
+          <!-- SIDEBAR — solo países de la región -->
+          <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0">
+            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+              <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
+                {region}
+              </h3>
+              <div class="flex flex-col gap-1">
+                {todosPaises
+                  .filter((p) => p.codigo !== 'global' && p.codigo !== codigo && regiones[p.codigo] === region)
+                  .slice(0, 8)
+                  .map((p) => (
+                    <a
+                      href={`/pais/${p.codigo}`}
+                      class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/5 no-underline transition-colors duration-200"
+                    >
+                      <span>{p.nombre}</span>
+                      <ArrowRight size={13} />
+                    </a>
+                  ))
+                }
+                <a
+                  href="/paises"
+                  class="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#D4A843] hover:bg-white/5 no-underline transition-colors duration-200 mt-1 border-t border-white/[0.07] pt-3"
+                >
+                  Ver todos los países
+                  <ArrowRight size={12} />
+                </a>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      )}
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
