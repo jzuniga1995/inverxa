@@ -1,0 +1,308 @@
+---
+// src/pages/herramientas/acciones/index.astro
+export const prerender = false;
+import Layout from '../../../layouts/Layout.astro';
+
+type Accion = {
+  nombre: string;
+  ticker: string;
+  slug: string;
+  sector: string;
+  icono: string;
+  color: string;
+  tradingviewSimbolo: string;
+  precio: number;
+  cambioPct: number;
+  alza: boolean;
+};
+
+let acciones: Accion[] = [];
+let fetchError = false;
+
+const fmt = (p: number) => {
+  if (!p || p <= 0) return '—';
+  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+const fmtC = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
+
+const dominiosPorTicker: Record<string, string> = {
+  // Big Tech
+  AAPL:  'apple.com',           MSFT:  'microsoft.com',        GOOGL: 'google.com',
+  AMZN:  'amazon.com',          NVDA:  'nvidia.com',            META:  'meta.com',
+  TSLA:  'tesla.com',           ORCL:  'oracle.com',            CRM:   'salesforce.com',
+  ADBE:  'adobe.com',
+  // Semiconductores
+  INTC:  'intel.com',           AMD:   'amd.com',               TSM:   'tsmc.com',
+  AVGO:  'broadcom.com',        QCOM:  'qualcomm.com',
+  // Finanzas
+  JPM:   'jpmorganchase.com',   BAC:   'bankofamerica.com',     GS:    'goldmansachs.com',
+  MS:    'morganstanley.com',   V:     'visa.com',              MA:    'mastercard.com',
+  PYPL:  'paypal.com',          'BRK.B': 'berkshirehathaway.com',
+  // Salud
+  JNJ:   'jnj.com',             UNH:   'unitedhealthgroup.com', PFE:   'pfizer.com',
+  ABBV:  'abbvie.com',          MRK:   'merck.com',             LLY:   'lilly.com',
+  // Energía
+  XOM:   'exxonmobil.com',      CVX:   'chevron.com',
+  // Consumo
+  KO:    'coca-cola.com',       PEP:   'pepsico.com',           MCD:   'mcdonalds.com',
+  WMT:   'walmart.com',         COST:  'costco.com',            NKE:   'nike.com',
+  SBUX:  'starbucks.com',
+  // Entretenimiento
+  NFLX:  'netflix.com',         DIS:   'disney.com',            SPOT:  'spotify.com',
+  // Transporte
+  UBER:  'uber.com',            ABNB:  'airbnb.com',
+  // Automotriz
+  F:     'ford.com',            GM:    'gm.com',
+  // Aeroespacial
+  BA:    'boeing.com',
+  // Telecom
+  T:     'att.com',             VZ:    'verizon.com',
+  // ETFs
+  SPY:   'ssga.com',            QQQ:   'invesco.com',
+};
+
+try {
+  const res = await fetch(new URL('/api/acciones', Astro.url));
+  if (!res.ok) throw new Error(`${res.status}`);
+  const json = await res.json();
+  if (json.ok) acciones = json.data;
+} catch (e) {
+  fetchError = true;
+}
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>Acciones en Tiempo Real — Inversax</title>
+    <meta name="description" content="Cotizaciones en vivo de las principales acciones del mercado estadounidense. AAPL, NVDA, TSLA, MSFT y más." />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
+    <div class="max-w-5xl mx-auto px-4 py-10">
+
+      <!-- Título -->
+      <div class="mb-7">
+        <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
+          Acciones
+        </h1>
+        <p class="text-white/30 text-sm">Mercado estadounidense · cotizaciones en tiempo real</p>
+      </div>
+
+      {fetchError ? (
+        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <p class="text-white/30 text-sm">No se pudieron cargar los precios.</p>
+        </div>
+      ) : (
+        <div>
+
+          <!-- Controles -->
+          <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+            <div class="flex gap-2 flex-wrap">
+              <button data-filter="all"
+                class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+                style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.4);color:#10B981">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Todas
+              </button>
+              <button data-filter="gainers"
+                class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+                style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                Ganadoras
+              </button>
+              <button data-filter="losers"
+                class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+                style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
+                Perdedoras
+              </button>
+            </div>
+
+            <!-- Búsqueda -->
+            <div class="relative w-48 flex-shrink-0">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <input id="search" type="text" placeholder="AAPL, Tesla..."
+                autocomplete="off"
+                class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#10B981]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
+            </div>
+          </div>
+
+          <!-- Tabla -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+
+            <!-- Cabecera -->
+            <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
+              style="grid-template-columns: 1fr 130px 100px 140px">
+              <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Empresa</div>
+              <button data-sort="price"  class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Precio <span class="sort-arrow">↕</span></button>
+              <button data-sort="change" class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Cambio <span class="sort-arrow">↕</span></button>
+              <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right pr-1">Sector</div>
+            </div>
+
+            <!-- Filas -->
+            <div id="table-body">
+              {acciones.map((a) => (
+                <a href={`/herramientas/acciones/${a.slug}`}
+                  class="accion-row grid px-4 py-3.5 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
+                  style="grid-template-columns: 1fr 130px 100px 140px"
+                  data-nombre={a.nombre.toLowerCase()}
+                  data-ticker={a.ticker.toLowerCase()}
+                  data-change={a.cambioPct}
+                  data-price={a.precio}>
+
+                  <div class="flex items-center gap-3 pl-2 min-w-0">
+                    <div class="w-9 h-9 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                      {dominiosPorTicker[a.ticker] ? (
+                        <img
+                          src={`https://www.google.com/s2/favicons?domain=${dominiosPorTicker[a.ticker]}&sz=64`}
+                          alt={a.nombre}
+                          class="w-5 h-5 object-contain"
+                          loading="lazy"
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        />
+                      ) : null}
+                      <span class="text-[9px] font-bold text-white/50" style={dominiosPorTicker[a.ticker] ? 'display:none' : ''}>
+                        {a.ticker.slice(0, 2)}
+                      </span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif">{a.ticker}</div>
+                      <div class="text-white/30 text-[11px] truncate">{a.nombre}</div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif">
+                    {fmt(a.precio)}
+                  </div>
+
+                  <div class={`flex items-center justify-end text-xs font-semibold ${a.alza ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {a.precio > 0 ? (`${a.alza ? '▲' : '▼'} ${fmtC(a.cambioPct)}`) : '—'}
+                  </div>
+
+                  <div class="hidden md:flex items-center justify-end">
+                    <span class="text-[10px] text-white/30 bg-white/5 px-2 py-0.5 rounded truncate max-w-[130px]">{a.sector}</span>
+                  </div>
+
+                </a>
+              ))}
+            </div>
+
+            <div id="empty-state" class="hidden items-center justify-center py-14">
+              <p class="text-white/25 text-sm">Sin resultados</p>
+            </div>
+
+          </div>
+
+          <!-- Nota mercado -->
+          <p class="text-white/15 text-[11px] text-center mt-5">
+            Precios con retraso de 15 min. Datos provistos por Finnhub. No constituyen asesoramiento financiero.
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  @media (max-width: 767px) {
+    .accion-row {
+      display: flex !important;
+      align-items: center;
+      gap: 0;
+      padding: 10px 14px !important;
+    }
+    .accion-row > div:nth-child(1) { flex: 1; min-width: 0; }
+    .accion-row > div:nth-child(2) { flex-shrink: 0; }
+    .accion-row > div:nth-child(3) { flex-shrink: 0; min-width: 70px; justify-content: flex-end; display: flex; }
+    .accion-row > div:nth-child(4) { display: none !important; }
+  }
+  .sort-btn { background: none; border: none; cursor: pointer; padding: 0; transition: color .15s; }
+  .sort-btn:hover { color: rgba(255,255,255,.8) !important; }
+  .sort-btn.active { color: #10B981 !important; }
+  .sort-btn.active .sort-arrow { opacity: 1 !important; color: #10B981; }
+  .sort-arrow { opacity: .35; font-size: 10px; }
+</style>
+
+<script>
+  const rows = Array.from(document.querySelectorAll('.accion-row')) as HTMLAnchorElement[];
+  const empty = document.getElementById('empty-state')!;
+  let activeFilter = 'all';
+  let activeSort = { key: 'price', dir: -1 };
+  let query = '';
+
+  function applyFilters() {
+    const q = query.trim().toLowerCase();
+    let visible = 0;
+
+    rows.forEach(row => {
+      const nombre  = row.dataset.nombre  || '';
+      const ticker  = row.dataset.ticker  || '';
+      const change  = parseFloat(row.dataset.change || '0');
+
+      const matchSearch = !q || nombre.includes(q) || ticker.includes(q);
+      const matchFilter =
+        activeFilter === 'all'     ? true :
+        activeFilter === 'gainers' ? change > 0 :
+        activeFilter === 'losers'  ? change < 0 : true;
+
+      const show = matchSearch && matchFilter;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    empty.classList.toggle('hidden', visible > 0);
+    empty.classList.toggle('flex',   visible === 0);
+  }
+
+  function applySort() {
+    const body   = document.getElementById('table-body')!;
+    const sorted = [...rows].sort((a, b) => {
+      const attr = activeSort.key === 'change' ? 'change' : 'price';
+      const va = parseFloat(a.dataset[attr] || '0');
+      const vb = parseFloat(b.dataset[attr] || '0');
+      return (va - vb) * activeSort.dir;
+    });
+    sorted.forEach(r => body.appendChild(r));
+  }
+
+  document.getElementById('search')!.addEventListener('input', function(this: HTMLInputElement) {
+    query = this.value;
+    applyFilters();
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = (btn as HTMLElement).dataset.filter || 'all';
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        const el = b as HTMLElement;
+        const isActive = el.dataset.filter === activeFilter;
+        el.style.background   = isActive ? 'rgba(16,185,129,.1)' : '#111318';
+        el.style.borderColor  = isActive ? 'rgba(16,185,129,.4)' : 'rgba(255,255,255,.08)';
+        el.style.color        = isActive ? '#10B981' : 'rgba(255,255,255,.4)';
+      });
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = (btn as HTMLElement).dataset.sort || 'price';
+      activeSort = activeSort.key === key
+        ? { key, dir: activeSort.dir * -1 }
+        : { key, dir: -1 };
+
+      document.querySelectorAll('.sort-btn').forEach(b => {
+        b.classList.remove('active');
+        const arrow = b.querySelector('.sort-arrow');
+        if (arrow) arrow.textContent = '↕';
+      });
+      btn.classList.add('active');
+      const arrow = btn.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = activeSort.dir === -1 ? '↓' : '↑';
+
+      applySort();
+    });
+  });
+</script>

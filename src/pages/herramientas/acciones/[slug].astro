@@ -1,0 +1,355 @@
+---
+// src/pages/herramientas/acciones/[slug].astro
+export const prerender = false;
+
+import Layout from '../../../layouts/Layout.astro';
+import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink } from 'lucide-astro';
+
+const { slug } = Astro.params;
+
+// ── Caché por acción — 5 minutos ──────────────────────────────
+const ACCION_TTL = 300_000;
+declare global {
+  var _accionCache: Map<string, { data: any; ts: number }> | undefined;
+}
+if (!globalThis._accionCache) globalThis._accionCache = new Map();
+const accionCache = globalThis._accionCache;
+
+// ── Dominios para logos (Google Favicons) ─────────────────────
+const dominiosPorTicker: Record<string, string> = {
+  // Big Tech
+  AAPL:  'apple.com',
+  MSFT:  'microsoft.com',
+  GOOGL: 'google.com',
+  AMZN:  'amazon.com',
+  NVDA:  'nvidia.com',
+  META:  'meta.com',
+  TSLA:  'tesla.com',
+  ORCL:  'oracle.com',
+  CRM:   'salesforce.com',
+  ADBE:  'adobe.com',
+  // Semiconductores
+  INTC:  'intel.com',
+  AMD:   'amd.com',
+  TSM:   'tsmc.com',
+  AVGO:  'broadcom.com',
+  QCOM:  'qualcomm.com',
+  // Finanzas
+  JPM:   'jpmorganchase.com',
+  BAC:   'bankofamerica.com',
+  GS:    'goldmansachs.com',
+  MS:    'morganstanley.com',
+  V:     'visa.com',
+  MA:    'mastercard.com',
+  PYPL:  'paypal.com',
+  'BRK.B': 'berkshirehathaway.com',
+  // Salud
+  JNJ:   'jnj.com',
+  UNH:   'unitedhealthgroup.com',
+  PFE:   'pfizer.com',
+  ABBV:  'abbvie.com',
+  MRK:   'merck.com',
+  LLY:   'lilly.com',
+  // Energía
+  XOM:   'exxonmobil.com',
+  CVX:   'chevron.com',
+  // Consumo
+  KO:    'coca-cola.com',
+  PEP:   'pepsico.com',
+  MCD:   'mcdonalds.com',
+  WMT:   'walmart.com',
+  COST:  'costco.com',
+  NKE:   'nike.com',
+  SBUX:  'starbucks.com',
+  // Entretenimiento
+  NFLX:  'netflix.com',
+  DIS:   'disney.com',
+  SPOT:  'spotify.com',
+  // Transporte
+  UBER:  'uber.com',
+  ABNB:  'airbnb.com',
+  // Automotriz
+  F:     'ford.com',
+  GM:    'gm.com',
+  // Aeroespacial
+  BA:    'boeing.com',
+  // Telecom
+  T:     'att.com',
+  VZ:    'verizon.com',
+  // ETFs
+  SPY:   'ssga.com',
+  QQQ:   'invesco.com',
+};
+
+// ── Descripciones completas de todas las empresas ─────────────
+const descripciones: Record<string, string> = {
+  // Big Tech
+  AAPL:  'Apple Inc. diseña, fabrica y vende teléfonos inteligentes, computadoras personales, tablets, wearables y accesorios, además de servicios digitales como iCloud, App Store y Apple Pay. Es la empresa más valiosa del mundo por capitalización bursátil.',
+  MSFT:  'Microsoft Corporation desarrolla y licencia software, hardware y servicios en la nube. Sus productos incluyen Windows, Office 365, Azure (líder en cloud computing), Xbox y LinkedIn. Es una de las empresas más influyentes del mundo tecnológico.',
+  GOOGL: 'Alphabet Inc. es la matriz de Google, líder mundial en búsqueda en internet, publicidad digital y computación en la nube con Google Cloud. También opera YouTube, Android, Waymo (vehículos autónomos) y desarrolla modelos de inteligencia artificial como Gemini.',
+  AMZN:  'Amazon.com es el mayor retailer en línea del mundo y líder en servicios de computación en la nube a través de AWS, que representa la mayor parte de sus ganancias. También opera Prime Video, Alexa y una creciente red logística propia.',
+  NVDA:  'NVIDIA Corporation diseña unidades de procesamiento gráfico (GPU) y sistemas en chip. Lidera el mercado de hardware para inteligencia artificial y centros de datos con sus chips H100 y Blackwell, convirtiéndola en una de las empresas más valiosas del mundo.',
+  META:  'Meta Platforms opera las redes sociales más grandes del mundo: Facebook, Instagram y WhatsApp, con más de 3,000 millones de usuarios activos diarios. También invierte en realidad virtual y aumentada a través de Meta Quest y el proyecto Metaverse.',
+  TSLA:  'Tesla Inc. diseña, desarrolla y vende vehículos eléctricos, sistemas de almacenamiento de energía y paneles solares. También ofrece servicios de conducción autónoma (Autopilot/FSD) y opera una red global de supercargadores.',
+  ORCL:  'Oracle Corporation es uno de los mayores proveedores de software empresarial y bases de datos del mundo. Sus productos incluyen Oracle Database, Java y una creciente oferta de servicios en la nube (Oracle Cloud Infrastructure).',
+  CRM:   'Salesforce es el líder mundial en software de gestión de relaciones con clientes (CRM). Su plataforma en la nube ayuda a empresas a gestionar ventas, marketing y atención al cliente. También integra inteligencia artificial a través de Einstein AI.',
+  ADBE:  'Adobe Inc. es el líder mundial en software creativo y de diseño digital, con productos como Photoshop, Illustrator, Premiere y Acrobat. Su transición a la nube con Creative Cloud ha convertido sus ingresos en recurrentes y altamente predecibles.',
+  // Semiconductores
+  INTC:  'Intel Corporation es uno de los mayores fabricantes de procesadores del mundo, conocido por los chips de las series Core y Xeon. Aunque perdió participación frente a AMD y Apple Silicon, está invirtiendo fuertemente en recuperar el liderazgo en manufactura de semiconductores.',
+  AMD:   'Advanced Micro Devices (AMD) diseña procesadores (CPUs) y tarjetas gráficas (GPUs) que compiten directamente con Intel y NVIDIA. Sus chips Ryzen y EPYC han ganado participación de mercado significativa, especialmente en servidores y centros de datos.',
+  TSM:   'Taiwan Semiconductor Manufacturing Company (TSMC) es la mayor fundición de chips del mundo por ingresos. Fabrica semiconductores para Apple, NVIDIA, AMD y otras empresas tecnológicas. Controla cerca del 90% del mercado de chips avanzados.',
+  AVGO:  'Broadcom Inc. diseña y vende semiconductores y software de infraestructura. Sus productos incluyen chips para redes, almacenamiento, banda ancha y conectividad inalámbrica. También adquirió VMware en 2023, expandiéndose al software empresarial.',
+  QCOM:  'Qualcomm Incorporated diseña chips Snapdragon para teléfonos móviles y dispositivos de conectividad 5G. Es el principal proveedor de módem y procesadores para la mayoría de los smartphones Android de gama alta a nivel mundial.',
+  // Finanzas
+  JPM:   'JPMorgan Chase & Co. es el banco más grande de Estados Unidos por activos totales, con más de $3.7 billones. Ofrece servicios de banca de inversión, banca comercial, gestión de activos, tarjetas de crédito y servicios al consumidor a nivel global.',
+  BAC:   'Bank of America es uno de los mayores grupos bancarios del mundo, con más de 66 millones de clientes. Ofrece servicios de banca de consumo, gestión patrimonial (Merrill Lynch), banca de inversión y mercados de capitales.',
+  GS:    'The Goldman Sachs Group es uno de los bancos de inversión más prestigiosos del mundo. Presta servicios de banca de inversión, trading de valores, gestión de activos y finanzas corporativas para gobiernos, instituciones y grandes empresas.',
+  MS:    'Morgan Stanley es un banco de inversión global con fuerte presencia en gestión patrimonial (Wealth Management), banca de inversión y mercados de capitales. Gestiona más de $5 billones en activos de clientes a nivel mundial.',
+  V:     'Visa Inc. opera la red de pagos digitales más grande del mundo, procesando miles de millones de transacciones al año. No emite tarjetas ni asume riesgo crediticio; en su lugar conecta a bancos emisores, comerciantes e instituciones financieras.',
+  MA:    'Mastercard Incorporated es una empresa global de tecnología de pagos que conecta a consumidores, bancos y comerciantes en más de 210 países. Al igual que Visa, opera como red de pagos sin asumir directamente el riesgo crediticio.',
+  PYPL:  'PayPal Holdings es una plataforma de pagos digitales con más de 430 millones de cuentas activas. Sus productos incluyen PayPal, Venmo (pagos entre personas) y Braintree (procesamiento para empresas). Es un pionero del comercio electrónico.',
+  'BRK.B': 'Berkshire Hathaway es el conglomerado liderado por Warren Buffett, considerado el mayor inversor de la historia. Posee empresas completas como GEICO y BNSF Railway, además de grandes posiciones en Apple, Bank of America y otras compañías.',
+  // Salud
+  JNJ:   'Johnson & Johnson es uno de los conglomerados de salud más grandes del mundo, con operaciones en productos farmacéuticos, dispositivos médicos y productos de consumo (como Band-Aid y Neutrogena). Tiene más de 135 años de historia.',
+  UNH:   'UnitedHealth Group es la mayor empresa de seguros de salud de Estados Unidos por ingresos. Opera a través de UnitedHealthcare (seguros) y Optum (servicios de salud y tecnología), atendiendo a más de 50 millones de personas.',
+  PFE:   'Pfizer Inc. es una de las compañías farmacéuticas más grandes del mundo. Desarrolló la vacuna contra el COVID-19 con BioNTech y posee un amplio portafolio de medicamentos en oncología, cardiología, infecciosas y vacunas.',
+  ABBV:  'AbbVie Inc. es una biofarmacéutica especializada en enfermedades inflamatorias, oncología y neurología. Su producto estrella es Humira, que fue durante años el medicamento más vendido del mundo, aunque ahora enfrenta competencia genérica.',
+  MRK:   'Merck & Co. es una de las farmacéuticas líderes a nivel mundial, con productos destacados como Keytruda (tratamiento contra el cáncer más vendido del mundo), vacunas como Gardasil y medicamentos para diabetes y enfermedades cardíacas.',
+  LLY:   'Eli Lilly and Company es una de las farmacéuticas de mayor crecimiento gracias a sus medicamentos para diabetes y obesidad como Mounjaro y Zepbound (tirzepatida), que se han convertido en los más demandados del mercado en los últimos años.',
+  // Energía
+  XOM:   'ExxonMobil es una de las mayores compañías de petróleo y gas del mundo, con operaciones en exploración, producción, refinación, distribución y productos petroquímicos. Tiene presencia en más de 60 países y produce más de 3 millones de barriles diarios.',
+  CVX:   'Chevron Corporation es una compañía energética multinacional con operaciones en petróleo, gas natural y energías renovables. Opera en más de 180 países y es una de las mayores empresas del mundo por capitalización bursátil.',
+  // Consumo
+  KO:    'The Coca-Cola Company es la mayor empresa de bebidas no alcohólicas del mundo con más de 200 marcas, incluyendo Sprite, Fanta, Powerade y Minute Maid. Tiene presencia en prácticamente todos los países del mundo.',
+  PEP:   'PepsiCo Inc. es un gigante global de alimentos y bebidas que posee marcas icónicas como Pepsi, Gatorade, Tropicana, Lay\'s, Doritos y Quaker. A diferencia de Coca-Cola, tiene una diversificación mayor en el segmento de snacks y alimentos.',
+  MCD:   'McDonald\'s Corporation opera la cadena de restaurantes de comida rápida más grande del mundo con más de 40,000 ubicaciones en más de 100 países. La mayoría son franquicias, lo que hace su modelo de negocio altamente rentable y escalable.',
+  WMT:   'Walmart Inc. es la mayor empresa minorista del mundo por ingresos, con más de 10,500 tiendas en 24 países bajo marcas como Walmart, Sam\'s Club y Flipkart. También tiene una creciente operación de comercio electrónico y publicidad digital.',
+  COST:  'Costco Wholesale es una cadena de almacenes mayoristas por membresía con más de 130 millones de miembros en todo el mundo. Su modelo de negocio basado en cuotas anuales genera ingresos recurrentes y alta fidelidad de clientes.',
+  NKE:   'Nike Inc. es la mayor empresa de ropa y calzado deportivo del mundo, con marcas como Nike, Jordan y Converse. Vende en más de 190 países y ha construido una de las identidades de marca más reconocibles de la historia.',
+  SBUX:  'Starbucks Corporation opera más de 36,000 cafeterías en 80 países, siendo la mayor cadena de café del mundo. Además de café, ofrece té, bebidas de temporada y alimentos. Su programa de lealtad cuenta con millones de miembros activos.',
+  // Entretenimiento
+  NFLX:  'Netflix es el servicio de streaming líder mundial con más de 260 millones de suscriptores en 190 países. Produce contenido original en múltiples idiomas y géneros, incluyendo series, películas y documentales premiados globalmente.',
+  DIS:   'The Walt Disney Company es un conglomerado de entretenimiento con parques temáticos (Disneyland, Disney World), estudios de cine (Marvel, Pixar, Star Wars), televisión (ABC, ESPN) y la plataforma de streaming Disney+.',
+  SPOT:  'Spotify Technology es el servicio de streaming de música más grande del mundo con más de 600 millones de usuarios y 240 millones de suscriptores. Ofrece música, podcasts y audiolibros, y ha expandido su presencia en contenido exclusivo.',
+  // Transporte
+  UBER:  'Uber Technologies opera la mayor plataforma de transporte bajo demanda del mundo, con servicios de viajes compartidos, entrega de comida (Uber Eats) y logística de mercancías en más de 70 países y 10,000 ciudades.',
+  ABNB:  'Airbnb Inc. opera la plataforma de alojamiento alternativo más grande del mundo, conectando a más de 4 millones de anfitriones con viajeros en más de 220 países. También ofrece "Experiences", actividades organizadas por locales.',
+  // Automotriz
+  F:     'Ford Motor Company es uno de los fabricantes de automóviles más antiguos y reconocidos del mundo, conocido por marcas como Ford y Lincoln. Está invirtiendo fuertemente en vehículos eléctricos con su división Ford Model e.',
+  GM:    'General Motors es uno de los mayores fabricantes de automóviles del mundo, con marcas como Chevrolet, GMC, Buick y Cadillac. Está apostando por la transición eléctrica con su plataforma Ultium y la división de vehículos autónomos Cruise.',
+  // Aeroespacial
+  BA:    'Boeing Company es uno de los mayores fabricantes de aeronaves del mundo, con aviones comerciales (737, 787 Dreamliner), militares y de defensa. Enfrenta desafíos de calidad y certificación con su modelo 737 MAX tras accidentes fatales.',
+  // Telecom
+  T:     'AT&T Inc. es una de las mayores compañías de telecomunicaciones de Estados Unidos, con servicios de telefonía móvil, banda ancha e internet. Tras vender sus activos de medios (Warner Media), se enfoca exclusivamente en conectividad.',
+  VZ:    'Verizon Communications es el mayor operador de red inalámbrica de Estados Unidos por suscriptores. Ofrece servicios de telefonía móvil, internet de banda ancha y empresarial. Está invirtiendo fuertemente en la expansión de redes 5G.',
+  // ETFs
+  SPY:   'SPDR S&P 500 ETF Trust (SPY) replica el índice S&P 500, que incluye las 500 empresas más grandes de Estados Unidos por capitalización bursátil. Es el ETF con mayor volumen de negociación del mundo y es ampliamente usado por inversores de todo tipo.',
+  QQQ:   'Invesco QQQ Trust replica el índice Nasdaq-100, que incluye las 100 mayores empresas no financieras del Nasdaq, con alta concentración en tecnología. Es el ETF de referencia para obtener exposición al sector tecnológico estadounidense.',
+};
+
+const fmt = (p: number) => {
+  if (!p || p <= 0) return '—';
+  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+const fmtChg = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
+
+let accion: any = null;
+let quote: any = null;
+let fetchError = false;
+
+try {
+  const cached = accionCache.get(slug!);
+
+  if (cached && Date.now() - cached.ts < ACCION_TTL) {
+    accion = cached.data.accion;
+    quote  = cached.data.quote;
+  } else {
+    const KEY = import.meta.env.FINNHUB_API_KEY;
+
+    // Busca por slug en la lista completa de la API
+    const listRes = await fetch(new URL('/api/acciones', Astro.url));
+    if (!listRes.ok) throw new Error(`${listRes.status}`);
+    const listJson = await listRes.json();
+    const found = listJson.ok ? listJson.data.find((a: any) => a.slug === slug) : null;
+
+    if (!found) throw new Error('Acción no encontrada');
+    accion = found;
+
+    // Quote detallado desde Finnhub
+    const qRes = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${found.ticker}&token=${KEY}`
+    );
+    if (qRes.ok) {
+      const qData = await qRes.json();
+      quote = {
+        precio:     qData.c,
+        apertura:   qData.o,
+        maximo:     qData.h,
+        minimo:     qData.l,
+        prevCierre: qData.pc,
+        cambioPct:  qData.pc > 0 ? ((qData.c - qData.pc) / qData.pc) * 100 : 0,
+      };
+    }
+
+    accionCache.set(slug!, { data: { accion, quote }, ts: Date.now() });
+  }
+} catch (e) {
+  fetchError = true;
+  console.error('[AccionDetail]', e);
+}
+
+if (!accion && !fetchError) {
+  return Astro.redirect('/herramientas/acciones');
+}
+
+const precio    = quote?.precio    ?? accion?.precio    ?? 0;
+const cambioPct = quote?.cambioPct ?? accion?.cambioPct ?? 0;
+const isUp      = cambioPct >= 0;
+const ticker    = accion?.ticker ?? '';
+const tvSymbol  = accion?.tradingviewSimbolo ?? `NASDAQ:${ticker}`;
+const desc      = descripciones[ticker] ?? '';
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>{accion?.nombre ?? ticker} ({ticker}) — Precio Hoy · Inversax</title>
+    <meta name="description" content={`Cotización de ${accion?.nombre} (${ticker}) en tiempo real. Precio, gráfica y datos del mercado.`} />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+      <!-- Back -->
+      <a href="/herramientas/acciones" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+        <ArrowLeft size={15} /> Volver a Acciones
+      </a>
+
+      {fetchError || !accion ? (
+        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <p class="text-white/30 text-sm">No se pudo cargar la información. <a href="/herramientas/acciones" class="text-[#10B981]">Volver</a></p>
+        </div>
+      ) : (
+        <div class="flex flex-col gap-6">
+
+          <!-- Header: logo + precio + cambio -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                {dominiosPorTicker[ticker] ? (
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${dominiosPorTicker[ticker]}&sz=128`}
+                    alt={accion.nombre}
+                    class="w-8 h-8 object-contain"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                  />
+                ) : null}
+                <span class="text-sm font-bold text-white/50" style={dominiosPorTicker[ticker] ? 'display:none' : ''}>{ticker.slice(0, 2)}</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{accion.nombre}</h1>
+                  <span class="text-white/30 text-sm font-medium bg-white/5 px-2 py-0.5 rounded">{ticker}</span>
+                  <span class="text-[10px] font-medium bg-white/5 border border-white/10 text-white/40 px-2 py-0.5 rounded">{accion.sector}</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1.5">
+                  <span id="precio-live" class="text-white font-bold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">{fmt(precio)}</span>
+                  <span id="cambio-live" class={`flex items-center gap-1 text-sm font-bold ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {isUp ? <TrendingUp size={14}/> : <TrendingDown size={14}/>}
+                    {fmtChg(cambioPct)} hoy
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Links externos -->
+            <div class="flex gap-2 flex-wrap">
+              {dominiosPorTicker[ticker] && (
+                <a href={`https://www.${dominiosPorTicker[ticker]}`} target="_blank" rel="noopener noreferrer nofollow"
+                   class="flex items-center gap-1.5 text-xs text-white/40 hover:text-white bg-white/5 border border-white/[0.07] hover:border-white/20 px-3 py-1.5 rounded-lg no-underline transition-all">
+                  <ExternalLink size={11}/> Web oficial
+                </a>
+              )}
+              <a href={`https://finance.yahoo.com/quote/${ticker}`} target="_blank" rel="noopener noreferrer nofollow"
+                 class="flex items-center gap-1.5 text-xs text-white/40 hover:text-white bg-white/5 border border-white/[0.07] hover:border-white/20 px-3 py-1.5 rounded-lg no-underline transition-all">
+                <ExternalLink size={11}/> Yahoo Finance
+              </a>
+            </div>
+          </div>
+
+          <!-- Stats rápidos del día -->
+          {quote && (
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: 'Apertura',        val: fmt(quote.apertura)   },
+                { label: 'Máximo del día',  val: fmt(quote.maximo)     },
+                { label: 'Mínimo del día',  val: fmt(quote.minimo)     },
+                { label: 'Cierre anterior', val: fmt(quote.prevCierre) },
+              ].map(({ label, val }) => (
+                <div class="bg-[#111318] border border-white/[0.07] rounded-xl p-4">
+                  <div class="text-white/30 text-xs mb-1.5">{label}</div>
+                  <div class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">{val}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <!-- Gráfico TradingView -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-white/[0.07] flex items-center justify-between">
+              <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Gráfica de precio</h2>
+              <span class="text-white/25 text-xs">TradingView</span>
+            </div>
+            <div id="tv-chart" style="height: 460px;"></div>
+          </div>
+
+          <!-- Descripción -->
+          {desc && (
+            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
+              <h2 class="text-white font-bold text-base mb-3" style="font-family:'Syne',sans-serif;">¿Qué es {accion.nombre}?</h2>
+              <p class="text-white/50 text-sm leading-relaxed">{desc}</p>
+            </div>
+          )}
+
+          <!-- Disclaimer -->
+          <p class="text-white/15 text-[11px] text-center">
+            Precios con posible retraso de hasta 15 min. No constituyen asesoramiento financiero. Verifica siempre con tu broker.
+          </p>
+
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<!-- TradingView Widget -->
+<script define:vars={{ tvSymbol }}>
+  const container = document.getElementById('tv-chart');
+  if (container) {
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/tv.js';
+    script.onload = () => {
+      new TradingView.widget({
+        container_id:        'tv-chart',
+        symbol:              tvSymbol,
+        interval:            'D',
+        timezone:            'America/Tegucigalpa',
+        theme:               'dark',
+        style:               '1',
+        locale:              'es',
+        toolbar_bg:          '#111318',
+        enable_publishing:   false,
+        hide_top_toolbar:    false,
+        hide_legend:         false,
+        save_image:          false,
+        backgroundColor:     '#111318',
+        gridColor:           'rgba(255,255,255,0.03)',
+        width:               '100%',
+        height:              460,
+        withdateranges:      true,
+        allow_symbol_change: false,
+        studies:             [],
+      });
+    };
+    document.head.appendChild(script);
+  }
+</script>

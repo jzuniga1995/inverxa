@@ -1,0 +1,208 @@
+---
+// src/pages/herramientas/metales/index.astro
+export const prerender = false;
+import Layout from '../../../layouts/Layout.astro';
+import { ArrowLeft, Layers } from 'lucide-astro';
+
+type MetalData = {
+  nombre: string; simbolo: string; icono: string;
+  color: string; precio: number; unidad: string;
+  tradingviewSimbolo: string; slug: string;
+};
+
+let metales: MetalData[] = [];
+let fetchError = false;
+
+try {
+  const res  = await fetch(new URL('/api/metales', Astro.url));
+  if (!res.ok) throw new Error(`${res.status}`);
+  const json = await res.json();
+  if (json.ok) metales = json.data;
+} catch (e) {
+  fetchError = true;
+}
+
+const formatMetal = (p: number) =>
+  p > 0 ? `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
+
+const infoMetal: Record<string, { descripcion: string; usos: string[] }> = {
+  XAU: {
+    descripcion: 'El oro es el metal precioso por excelencia, utilizado como reserva de valor y refugio seguro en momentos de incertidumbre económica.',
+    usos: ['Reserva de valor', 'Joyería', 'Electrónica', 'Inversión'],
+  },
+  XAG: {
+    descripcion: 'La plata combina su rol como metal precioso con un alto valor industrial, siendo clave en paneles solares y electrónica.',
+    usos: ['Paneles solares', 'Electrónica', 'Joyería', 'Fotografía'],
+  },
+  XPT: {
+    descripcion: 'El platino es más raro que el oro y tiene alta demanda industrial, especialmente en la industria automotriz para catalizadores.',
+    usos: ['Catalizadores', 'Joyería', 'Industria química', 'Médico'],
+  },
+  XPD: {
+    descripcion: 'El paladio es uno de los metales más escasos del mundo, con uso crítico en convertidores catalíticos de automóviles.',
+    usos: ['Convertidores catalíticos', 'Electrónica', 'Química', 'Dental'],
+  }
+};
+
+const colorPorSimbolo: Record<string, string> = {
+  XAU: '#F59E0B',
+  XAG: '#94A3B8',
+  XPT: '#7DD3FC',
+  XPD: '#C084FC',
+};
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>Metales Preciosos — Precios en Tiempo Real | Inversax</title>
+    <meta name="description" content="Precios actualizados de oro, plata, platino, paladio y cobre. Gráficas en vivo y análisis para inversores en Latinoamérica." />
+    <link rel="canonical" href="https://inversax.com/herramientas/metales" />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+    <div class="max-w-5xl mx-auto px-4 py-10">
+
+      <!-- Breadcrumb -->
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+        <ArrowLeft size={15} /> Herramientas
+      </a>
+
+      <!-- Título -->
+      <div class="mb-7">
+        <div class="flex items-center gap-2.5 mb-1">
+          <div class="w-9 h-9 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
+            <Layers size={18} class="text-[#F59E0B]" />
+          </div>
+          <h1 class="text-white font-extrabold text-3xl" style="font-family:'Syne',sans-serif;">
+            Metales Preciosos
+          </h1>
+        </div>
+        <p class="text-white/30 text-sm ml-11">{metales.length} metales · Precio USD por onza troy · Actualización diaria</p>
+      </div>
+
+      {fetchError ? (
+        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <p class="text-white/30 text-sm">No se pudieron cargar los precios. Intenta de nuevo.</p>
+        </div>
+      ) : (
+        <div class="flex flex-col gap-5">
+
+          <!-- Cards visuales -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {metales.map((m) => {
+              const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
+              const info  = infoMetal[m.simbolo];
+              return (
+                <a href={`/herramientas/metales/${m.slug}`}
+                  class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5">
+
+                  <div class="flex items-start justify-between">
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={`background: ${color}15;`}>
+                      <span class="font-extrabold text-sm" style={`color: ${color};`}>{m.simbolo}</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
+                      style={`background: ${color}15; color: ${color};`}>
+                      USD/oz
+                    </span>
+                  </div>
+
+                  <div>
+                    <div class="text-white font-extrabold text-2xl" style="font-family:'Syne',sans-serif;">
+                      {formatMetal(m.precio)}
+                    </div>
+                    <div class="text-white/50 text-sm font-medium mt-0.5">{m.nombre}</div>
+                  </div>
+
+                  {info && (
+                    <p class="text-white/30 text-xs leading-relaxed line-clamp-2">{info.descripcion}</p>
+                  )}
+
+                  <div class="flex flex-wrap gap-1.5 mt-auto">
+                    {(info?.usos ?? []).slice(0, 3).map(uso => (
+                      <span class="text-[10px] px-2 py-0.5 rounded border"
+                        style={`background: ${color}08; border-color: ${color}20; color: ${color}80;`}>
+                        {uso}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div class="flex items-center gap-1 pt-2 border-t border-white/[0.07]">
+                    <span class="text-xs font-medium group-hover:opacity-70 transition-opacity" style={`color: ${color};`}>
+                      Ver gráfica →
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+
+          <!-- Tabla detallada -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-white/[0.07]">
+              <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Resumen de precios</h2>
+            </div>
+            <div class="hidden md:grid border-b border-white/[0.07] px-5 py-3"
+              style="grid-template-columns: 1fr 160px 160px 200px">
+              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">Metal</div>
+              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio / oz</div>
+              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Símbolo</div>
+              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Fuente</div>
+            </div>
+            {metales.map((m) => {
+              const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
+              return (
+                <a href={`/herramientas/metales/${m.slug}`}
+                  class="grid px-5 py-4 border-b border-white/[0.04] last:border-none hover:bg-white/[0.025] transition-colors no-underline"
+                  style="grid-template-columns: 1fr 160px 160px 200px">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={`background: ${color}15;`}>
+                      <span class="text-[10px] font-bold" style={`color: ${color};`}>{m.simbolo.slice(1,3)}</span>
+                    </div>
+                    <div>
+                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{m.nombre}</div>
+                      <div class="text-white/30 text-[11px]">{m.simbolo}</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">
+                    {formatMetal(m.precio)}
+                  </div>
+                  <div class="hidden md:flex items-center justify-end text-white/30 text-xs">
+                    {m.simbolo}/USD
+                  </div>
+                  <div class="hidden md:flex items-center justify-end text-white/20 text-xs">
+                    fawazahmed0 API
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+
+          <!-- Nota -->
+          <div class="bg-[#F59E0B]/5 border border-[#F59E0B]/10 rounded-xl p-4">
+            <p class="text-white/40 text-xs leading-relaxed">
+              <span class="text-[#F59E0B] font-bold">Nota:</span> Los precios son tasas de referencia en USD por onza troy con actualización diaria.
+              Para trading activo de metales, consultá los precios en tiempo real de tu broker o exchange.
+            </p>
+          </div>
+
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  @media (max-width: 767px) {
+    .grid { grid-template-columns: 1fr 130px !important; }
+    .grid > div:nth-child(3),
+    .grid > div:nth-child(4) { display: none !important; }
+  }
+</style>

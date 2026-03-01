@@ -2,7 +2,7 @@
 // src/pages/noticias/[slug].astro
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
-import { getArticuloPorSlug, getArticulos } from '../../db/queries';
+import { getArticuloPorSlug, getArticulosPorCategoria } from '../../db/queries';
 import { Clock, ArrowLeft, ArrowRight, Globe } from 'lucide-astro';
 
 const { slug } = Astro.params;
@@ -16,10 +16,11 @@ const articulo = await getArticuloPorSlug(slug);
 if (!articulo) return Astro.redirect('/404');
 
 // Artículos relacionados (misma categoría)
-const relacionados = await getArticulos(10);
-const filtrados = relacionados
-  .filter(a => a.slug !== slug && a.categoria?.slug === articulo.categoria?.slug)
-  .slice(0, 3);
+const filtrados = articulo.categoria?.slug
+  ? (await getArticulosPorCategoria(articulo.categoria.slug, 4))
+      .filter(a => a.slug !== slug)
+      .slice(0, 3)
+  : [];
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';

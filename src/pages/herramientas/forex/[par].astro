@@ -1,0 +1,261 @@
+---
+// src/pages/herramientas/forex/[par].astro
+export const prerender = false;
+
+import Layout from '../../../layouts/Layout.astro';
+import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-astro';
+
+const { par } = Astro.params;
+
+// Convertir slug a formato par: eur-usd → EUR/USD
+const parFormateado = par!.replace('-', '/').toUpperCase();
+
+type ForexData = {
+  par: string; base: string; cotizada: string;
+  banderaBase: string; banderaCotizada: string;
+  precio: number; tradingviewSimbolo: string;
+};
+
+let parData: ForexData & { tvDisponible: boolean } | null = null;
+let fetchError = false;
+
+try {
+  const res  = await fetch(new URL('/api/forex', Astro.url));
+  if (!res.ok) throw new Error(`${res.status}`);
+  const json = await res.json();
+  if (json.ok) {
+    parData = json.data.find((f: ForexData) => f.par === parFormateado) ?? null;
+  }
+} catch (e) {
+  fetchError = true;
+}
+
+if (!parData && !fetchError) {
+  return Astro.redirect('/herramientas/forex');
+}
+
+const formatForex = (p: number) => {
+  if (!p) return '—';
+  if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+};
+
+const nombrePar: Record<string, string> = {
+  'EUR/USD': 'Euro / Dólar Estadounidense',
+  'GBP/USD': 'Libra Esterlina / Dólar',
+  'USD/JPY': 'Dólar / Yen Japonés',
+  'USD/CHF': 'Dólar / Franco Suizo',
+  'USD/CAD': 'Dólar / Dólar Canadiense',
+  'AUD/USD': 'Dólar Australiano / Dólar',
+  'USD/MXN': 'Dólar / Peso Mexicano',
+  'USD/COP': 'Dólar / Peso Colombiano',
+  'USD/ARS': 'Dólar / Peso Argentino',
+  'USD/CLP': 'Dólar / Peso Chileno',
+  'USD/PEN': 'Dólar / Sol Peruano',
+  'USD/BRL': 'Dólar / Real Brasileño',
+  'USD/BOB': 'Dólar / Boliviano',
+  'USD/GTQ': 'Dólar / Quetzal Guatemalteco',
+  'USD/HNL': 'Dólar / Lempira Hondureño',
+  'USD/NIO': 'Dólar / Córdoba Nicaragüense',
+  'USD/CRC': 'Dólar / Colón Costarricense',
+  'USD/DOP': 'Dólar / Peso Dominicano',
+  'USD/PYG': 'Dólar / Guaraní Paraguayo',
+  'USD/UYU': 'Dólar / Peso Uruguayo',
+  'USD/VES': 'Dólar / Bolívar Venezolano',
+  'USD/PAB': 'Dólar / Balboa Panameño',
+  'NZD/USD': 'Dólar Neozelandés / Dólar',
+  'USD/CNY': 'Dólar / Yuan Chino',
+  'USD/CUP': 'Dólar / Peso Cubano',
+  'USD/JMD': 'Dólar / Dólar Jamaicano',
+  'USD/TTD': 'Dólar / Dólar Trinidad y Tobago',
+  'USD/BBD': 'Dólar / Dólar de Barbados',
+  'USD/HTG': 'Dólar / Gourde Haitiano',
+};
+
+const infoMoneda: Record<string, { nombre: string; descripcion: string }> = {
+  USD: { nombre: 'Dólar Estadounidense', descripcion: 'La moneda de reserva mundial, emitida por la Reserva Federal de EE.UU.' },
+  EUR: { nombre: 'Euro',                 descripcion: 'Moneda oficial de 20 países de la Unión Europea, segunda más transada del mundo.' },
+  GBP: { nombre: 'Libra Esterlina',      descripcion: 'Una de las monedas más antiguas y la cuarta más transada globalmente.' },
+  JPY: { nombre: 'Yen Japonés',          descripcion: 'Moneda de Japón, considerada refugio de valor en momentos de incertidumbre global.' },
+  CHF: { nombre: 'Franco Suizo',         descripcion: 'Moneda de Suiza, considerada la más estable del mundo por la solidez del sistema financiero helvético.' },
+  CAD: { nombre: 'Dólar Canadiense',     descripcion: 'Llamado "Loonie", está fuertemente influenciado por los precios del petróleo.' },
+  AUD: { nombre: 'Dólar Australiano',    descripcion: 'Correlacionado con los precios de materias primas como oro y hierro.' },
+  MXN: { nombre: 'Peso Mexicano',        descripcion: 'La moneda más transada de Latinoamérica, influenciada por la relación comercial con EE.UU.' },
+  COP: { nombre: 'Peso Colombiano',      descripcion: 'Moneda de Colombia, sensible a los precios del petróleo por ser el país un exportador.' },
+  ARS: { nombre: 'Peso Argentino',       descripcion: 'Ha sufrido alta inflación históricamente. Existen múltiples tipos de cambio oficiales y paralelos.' },
+  CLP: { nombre: 'Peso Chileno',         descripcion: 'Ligado al precio del cobre dado que Chile es el mayor productor mundial.' },
+  PEN: { nombre: 'Sol Peruano',          descripcion: 'Considerada una de las monedas más estables de Sudamérica.' },
+  BRL: { nombre: 'Real Brasileño',       descripcion: 'Moneda de la mayor economía de Latinoamérica, sensible a factores políticos.' },
+  GTQ: { nombre: 'Quetzal Guatemalteco', descripcion: 'Moneda de Guatemala, relativamente estable gracias a las remesas del exterior.' },
+  HNL: { nombre: 'Lempira Hondureño',    descripcion: 'Moneda de Honduras, cuyo tipo de cambio es administrado por el Banco Central.' },
+};
+
+const tvSymbol      = parData?.tradingviewSimbolo ?? '';
+const tvDisponible  = parData?.tvDisponible ?? false;
+const precioFmt = parData ? formatForex(parData.precio) : '—';
+const nombre    = parData ? (nombrePar[parData.par] ?? parData.par) : parFormateado;
+const baseInfo  = parData ? (infoMoneda[parData.base.toUpperCase()]  ?? null) : null;
+const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null) : null;
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>{parFormateado} — Tipo de Cambio en Vivo · Inversax</title>
+    <meta name="description" content={`Tipo de cambio ${parFormateado} (${nombre}) en tiempo real con gráfica histórica.`} />
+    <link rel="canonical" href={`https://inversax.com/herramientas/forex/${par}`} />
+  </slot>
+
+  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+      <!-- Breadcrumb -->
+      <a href="/herramientas/forex" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+        <ArrowLeft size={15} /> Forex
+      </a>
+
+      {fetchError || !parData ? (
+        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <p class="text-white/30 text-sm">No se pudo cargar la información. <a href="/herramientas/forex" class="text-[#EC4899]">Volver</a></p>
+        </div>
+      ) : (
+        <div class="flex flex-col gap-6">
+
+          <!-- Header: banderas + precio -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
+            <div class="flex items-center gap-4">
+              <!-- Banderas solapadas grandes -->
+              <div class="relative w-14 h-10 flex-shrink-0">
+                <img
+                  src={`https://flagcdn.com/w80/${parData.banderaBase.toLowerCase()}.png`}
+                  alt={parData.banderaBase}
+                  class="absolute top-0 left-0 w-10 h-10 rounded-full object-cover border-2 border-[#111318] shadow-lg"
+                  onerror="this.style.display='none'"
+                />
+                <img
+                  src={`https://flagcdn.com/w80/${parData.banderaCotizada.toLowerCase()}.png`}
+                  alt={parData.banderaCotizada}
+                  class="absolute bottom-0 right-0 w-10 h-10 rounded-full object-cover border-2 border-[#111318] shadow-lg"
+                  onerror="this.style.display='none'"
+                />
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{parData.par}</h1>
+                  <span class="text-white/30 text-sm bg-white/5 px-2 py-0.5 rounded">{nombre}</span>
+                </div>
+                <div class="flex items-center gap-3 mt-1">
+                  <span class="text-white font-bold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">{precioFmt}</span>
+                  <span class="text-white/30 text-xs bg-[#EC4899]/10 text-[#EC4899] px-2 py-0.5 rounded font-medium">Precio de referencia</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-white/20 text-xs text-right leading-relaxed">
+              Fuente: fawazahmed0 API<br/>
+              Actualización diaria
+            </div>
+          </div>
+
+          <!-- Gráfico TradingView -->
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+            <div class="px-5 py-4 border-b border-white/[0.07] flex items-center justify-between">
+              <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Gráfica de precio</h2>
+              <span class="text-white/25 text-xs">TradingView</span>
+            </div>
+            {parData.tvDisponible ? (
+              <div id="tv-chart" style="height: 460px;"></div>
+            ) : (
+              <div class="flex flex-col items-center justify-center py-16 gap-3">
+                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
+                  <TrendingUp size={22} class="text-white/20" />
+                </div>
+                <p class="text-white/30 text-sm font-medium">Gráfica no disponible para {parData.par}</p>
+                <p class="text-white/20 text-xs text-center max-w-xs">TradingView no tiene datos históricos para esta moneda. El precio de referencia se muestra arriba.</p>
+              </div>
+            )}
+          </div>
+
+          <!-- Info monedas -->
+          {(baseInfo || cotInfo) && (
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {baseInfo && (
+                <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+                  <div class="flex items-center gap-3 mb-3">
+                    <img
+                      src={`https://flagcdn.com/w40/${parData.banderaBase.toLowerCase()}.png`}
+                      alt={parData.banderaBase}
+                      class="w-7 h-7 rounded-full object-cover"
+                      onerror="this.style.display='none'"
+                    />
+                    <div>
+                      <div class="text-white/30 text-[10px] uppercase tracking-widest">Moneda base</div>
+                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{baseInfo.nombre} ({parData.base.toUpperCase()})</div>
+                    </div>
+                  </div>
+                  <p class="text-white/40 text-sm leading-relaxed">{baseInfo.descripcion}</p>
+                </div>
+              )}
+              {cotInfo && (
+                <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+                  <div class="flex items-center gap-3 mb-3">
+                    <img
+                      src={`https://flagcdn.com/w40/${parData.banderaCotizada.toLowerCase()}.png`}
+                      alt={parData.banderaCotizada}
+                      class="w-7 h-7 rounded-full object-cover"
+                      onerror="this.style.display='none'"
+                    />
+                    <div>
+                      <div class="text-white/30 text-[10px] uppercase tracking-widest">Moneda cotizada</div>
+                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{cotInfo.nombre} ({parData.cotizada.toUpperCase()})</div>
+                    </div>
+                  </div>
+                  <p class="text-white/40 text-sm leading-relaxed">{cotInfo.descripcion}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <!-- Nota sobre datos -->
+          <div class="bg-[#EC4899]/5 border border-[#EC4899]/10 rounded-xl p-4">
+            <p class="text-white/40 text-xs leading-relaxed">
+              <span class="text-[#EC4899] font-bold">Nota:</span> Los precios mostrados son tasas de referencia con actualización diaria.
+              Para trading activo, consultá los precios en tiempo real de tu broker. Las tasas de cambio oficiales pueden diferir.
+            </p>
+          </div>
+
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<!-- TradingView Widget -->
+<script define:vars={{ tvSymbol, tvDisponible }}>
+  const container = document.getElementById('tv-chart');
+  if (container && tvSymbol && tvDisponible) {
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/tv.js';
+    script.onload = () => {
+      new TradingView.widget({
+        container_id:        'tv-chart',
+        symbol:              tvSymbol,
+        interval:            'D',
+        timezone:            'America/Tegucigalda',
+        theme:               'dark',
+        style:               '1',
+        locale:              'es',
+        toolbar_bg:          '#111318',
+        enable_publishing:   false,
+        hide_top_toolbar:    false,
+        hide_legend:         false,
+        save_image:          false,
+        backgroundColor:     '#111318',
+        gridColor:           'rgba(255,255,255,0.03)',
+        width:               '100%',
+        height:              460,
+        withdateranges:      true,
+        allow_symbol_change: false,
+      });
+    };
+    document.head.appendChild(script);
+  }
+</script>

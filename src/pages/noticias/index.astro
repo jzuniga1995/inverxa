@@ -5,22 +5,22 @@ import Layout from '../../layouts/Layout.astro';
 import { getArticulos, getCategorias } from '../../db/queries';
 import { Clock, ArrowRight, Filter } from 'lucide-astro';
 
-const articulos  = await getArticulos(30);
-const categorias = await getCategorias();
+const LIMIT = 12;
 
+const categorias      = await getCategorias();
 const categoriaActiva = Astro.url.searchParams.get('categoria') ?? 'todas';
 
-// Solo artículos globales — los de país específico viven en /pais/[codigo]
-const soloGlobales = articulos.filter(
-  a => !a.pais || a.pais.codigo === 'global'
-);
+// Carga inicial SSR
+const todosArticulos = await getArticulos(LIMIT + 1);
+const soloGlobales   = todosArticulos.filter(a => !a.pais || a.pais.codigo === 'global');
 
-// Filtrar por categoría sobre los globales
 const articulosFiltrados = categoriaActiva === 'todas'
   ? soloGlobales
   : soloGlobales.filter(a => a.categoria?.slug === categoriaActiva);
 
-const [principal, ...resto] = articulosFiltrados;
+const hayMasInicial  = articulosFiltrados.length > LIMIT;
+const articulosInit  = articulosFiltrados.slice(0, LIMIT);
+const [principal, ...resto] = articulosInit;
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
@@ -96,7 +96,7 @@ function formatFecha(fecha: Date | null) {
           {articulosFiltrados.length === 0 ? (
             <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
               <span class="text-5xl">📰</span>
-              <p class="text-white/40 text-sm">No hay artículos globales en esta categoría todavía.</p>
+              <p class="text-white/40 text-sm">No hay artículos en esta categoría todavía.</p>
             </div>
           ) : (
             <div class="flex flex-col gap-5 sm:gap-6">
@@ -107,7 +107,6 @@ function formatFecha(fecha: Date | null) {
                   href={`/noticias/${principal.slug}`}
                   class="group flex flex-col sm:flex-row bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-300 sm:min-h-[220px]"
                 >
-                  <!-- FIX IMAGEN: h-full en vez de h-auto -->
                   <div class="w-full sm:w-72 lg:w-80 h-52 sm:h-full flex-shrink-0 bg-[#1A1D24] overflow-hidden">
                     {principal.imagen
                       ? <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
@@ -140,7 +139,7 @@ function formatFecha(fecha: Date | null) {
               )}
 
               <!-- Grid resto -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div id="noticias-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {resto.map((articulo) => (
                   <a
                     href={`/noticias/${articulo.slug}`}
@@ -177,6 +176,19 @@ function formatFecha(fecha: Date | null) {
                     </div>
                   </a>
                 ))}
+              </div>
+
+              <!-- BOTÓN CARGAR MÁS -->
+              <div id="load-more-wrapper" class={hayMasInicial ? '' : 'hidden'}>
+                <button
+                  id="btn-cargar-mas"
+                  data-offset={LIMIT}
+                  data-categoria={categoriaActiva === 'todas' ? '' : categoriaActiva}
+                  class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border border-white/[0.07] hover:border-[#D4A843]/40 text-white/40 hover:text-[#D4A843] text-sm font-medium transition-all duration-200 bg-transparent cursor-pointer"
+                >
+                  <span id="btn-texto">Cargar más noticias</span>
+                  <ArrowRight size={14} id="btn-icon" />
+                </button>
               </div>
 
             </div>
@@ -228,6 +240,93 @@ function formatFecha(fecha: Date | null) {
     </div>
   </div>
 </Layout>
+
+<script>
+  const btn      = document.getElementById('btn-cargar-mas') as HTMLButtonElement | null;
+  const grid     = document.getElementById('noticias-grid');
+  const wrapper  = document.getElementById('load-more-wrapper');
+  const btnTexto = document.getElementById('btn-texto');
+  const btnIcon  = document.getElementById('btn-icon');
+
+  function formatFecha(fechaStr: string) {
+    const fecha = new Date(fechaStr);
+    const diff  = Date.now() - fecha.getTime();
+    const horas = Math.floor(diff / 1000 / 60 / 60);
+    if (horas < 1)  return 'Hace unos minutos';
+    if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+    const dias = Math.floor(horas / 24);
+    return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
+  }
+
+  function crearCard(a: any): string {
+    return `
+      <a
+        href="/noticias/${a.slug}"
+        class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl overflow-hidden no-underline transition-colors duration-200"
+      >
+        ${a.imagen
+          ? `<div class="w-full h-36 bg-[#1A1D24] overflow-hidden flex-shrink-0">
+               <img src="${a.imagen}" alt="${a.titulo}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+             </div>`
+          : `<div class="w-full h-36 flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);"></div>`
+        }
+        <div class="flex flex-col gap-2 px-4 pb-4">
+          <div class="flex items-center gap-2 flex-wrap">
+            ${a.categoria ? `<span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">${a.categoria.nombre}</span>` : ''}
+            <span class="text-white/25 text-[10px] ml-auto">${formatFecha(a.creadoEn)}</span>
+          </div>
+          <h3 class="font-bold text-sm text-white group-hover:text-[#D4A843] transition-colors duration-200 leading-snug line-clamp-2" style="font-family: 'Syne', sans-serif;">
+            ${a.titulo}
+          </h3>
+          ${a.resumen ? `<p class="text-white/40 text-xs leading-relaxed line-clamp-2">${a.resumen}</p>` : ''}
+        </div>
+      </a>
+    `;
+  }
+
+  btn?.addEventListener('click', async () => {
+    if (!btn || !grid) return;
+
+    const offset    = parseInt(btn.dataset.offset ?? '12');
+    const categoria = btn.dataset.categoria ?? '';
+
+    // Estado cargando
+    if (btnTexto) btnTexto.textContent = 'Cargando...';
+    btn.disabled = true;
+
+    try {
+      const params = new URLSearchParams({ offset: String(offset), limit: '10' });
+      if (categoria) params.set('categoria', categoria);
+
+      const res  = await fetch(`/api/noticias?${params}`);
+      const json = await res.json();
+
+      if (!json.ok || !json.data.length) {
+        if (wrapper) wrapper.classList.add('hidden');
+        return;
+      }
+
+      // Agregar cards al grid
+      json.data.forEach((a: any) => {
+        grid.insertAdjacentHTML('beforeend', crearCard(a));
+      });
+
+      // Actualizar offset
+      btn.dataset.offset = String(offset + json.data.length);
+
+      // Ocultar botón si no hay más
+      if (!json.hayMas) {
+        if (wrapper) wrapper.classList.add('hidden');
+      }
+
+    } catch (e) {
+      console.error('[cargar más]', e);
+    } finally {
+      if (btnTexto) btnTexto.textContent = 'Cargar más noticias';
+      btn.disabled = false;
+    }
+  });
+</script>
 
 <style>
   .scrollbar-hide::-webkit-scrollbar { display: none; }

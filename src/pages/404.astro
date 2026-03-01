@@ -1,0 +1,185 @@
+---
+// src/pages/404.astro
+import Layout from '../layouts/Layout.astro';
+import { ArrowRight, TrendingDown, Home, Search, BarChart2 } from 'lucide-astro';
+---
+
+<Layout>
+  <slot name="head" slot="head">
+    <title>404 — Página no encontrada | Inversax</title>
+    <meta name="description" content="Esta página no existe o fue movida." />
+    <meta name="robots" content="noindex" />
+  </slot>
+
+  <main
+    class="relative min-h-screen bg-[#0A0B0D] flex items-center justify-center overflow-hidden px-4"
+    style="font-family: 'DM Sans', sans-serif;"
+  >
+
+    <!-- Fondo grid -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 60px 60px;"
+    ></div>
+
+    <!-- Glow dorado izquierda -->
+    <div
+      class="absolute top-1/4 left-0 w-[500px] h-[500px] rounded-full pointer-events-none"
+      style="background: rgba(212,168,67,0.06); filter: blur(120px); transform: translateX(-40%);"
+    ></div>
+
+    <!-- Glow rojo derecha (mercado en caída) -->
+    <div
+      class="absolute bottom-1/4 right-0 w-[400px] h-[400px] rounded-full pointer-events-none"
+      style="background: rgba(239,68,68,0.05); filter: blur(120px); transform: translateX(30%);"
+    ></div>
+
+    <!-- Candlestick decorativo de fondo -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
+      <svg viewBox="0 0 800 400" class="w-full max-w-4xl" fill="none">
+        <!-- Velas bajistas en rojo -->
+        <line x1="80"  y1="60"  x2="80"  y2="340" stroke="#EF4444" stroke-width="1"/>
+        <rect x="65"   y="100" width="30" height="180" fill="#EF4444"/>
+        <line x1="160" y1="80"  x2="160" y2="300" stroke="#EF4444" stroke-width="1"/>
+        <rect x="145"  y="120" width="30" height="140" fill="#EF4444"/>
+        <line x1="240" y1="120" x2="240" y2="340" stroke="#EF4444" stroke-width="1"/>
+        <rect x="225"  y="160" width="30" height="150" fill="#EF4444"/>
+        <line x1="320" y1="90"  x2="320" y2="320" stroke="#EF4444" stroke-width="1"/>
+        <rect x="305"  y="130" width="30" height="160" fill="#EF4444"/>
+        <line x1="400" y1="110" x2="400" y2="350" stroke="#EF4444" stroke-width="1"/>
+        <rect x="385"  y="150" width="30" height="170" fill="#EF4444"/>
+        <line x1="480" y1="140" x2="480" y2="360" stroke="#EF4444" stroke-width="1"/>
+        <rect x="465"  y="180" width="30" height="150" fill="#EF4444"/>
+        <line x1="560" y1="160" x2="560" y2="370" stroke="#EF4444" stroke-width="1"/>
+        <rect x="545"  y="200" width="30" height="140" fill="#EF4444"/>
+        <line x1="640" y1="180" x2="640" y2="380" stroke="#EF4444" stroke-width="1"/>
+        <rect x="625"  y="220" width="30" height="130" fill="#EF4444"/>
+        <line x1="720" y1="200" x2="720" y2="390" stroke="#EF4444" stroke-width="1"/>
+        <rect x="705"  y="240" width="30" height="120" fill="#EF4444"/>
+      </svg>
+    </div>
+
+    <!-- Contenido central -->
+    <div class="relative z-10 flex flex-col items-center text-center max-w-xl gap-8">
+
+      <!-- Badge -->
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium"
+        style="background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); color: #F87171;"
+      >
+        <TrendingDown size={12} />
+        Error 404 · Página no encontrada
+      </div>
+
+      <!-- Número grande -->
+      <div class="relative select-none">
+        <div
+          id="counter-404"
+          class="font-extrabold leading-none tracking-tighter text-transparent"
+          style="font-family: 'Syne', sans-serif; font-size: clamp(100px, 22vw, 200px); background: linear-gradient(135deg, #1A1D24 0%, #2A2D34 50%, #1A1D24 100%); -webkit-background-clip: text; background-clip: text;"
+        >
+          404
+        </div>
+        <!-- Línea de "caída" animada sobre el 404 -->
+        <svg
+          class="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 300 150"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <path
+            id="crash-line"
+            d="M0,30 L60,28 L90,25 L110,60 L140,90 L170,120 L200,130 L250,135 L300,140"
+            stroke="#EF4444"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-dasharray="600"
+            stroke-dashoffset="600"
+            opacity="0.6"
+          />
+          <circle id="crash-dot" cx="0" cy="30" r="3" fill="#EF4444" opacity="0"/>
+        </svg>
+      </div>
+
+      <!-- Texto -->
+      <div class="flex flex-col gap-3">
+        <h1
+          class="font-extrabold text-2xl sm:text-3xl text-white leading-tight"
+          style="font-family: 'Syne', sans-serif;"
+        >
+          Esta página entró en colapso
+        </h1>
+        <p class="text-white/40 text-base leading-relaxed max-w-sm mx-auto">
+          La URL que buscas no existe o fue movida. Puede que el mercado la haya liquidado.
+        </p>
+      </div>
+
+      <!-- Mini ticker falso -->
+      <div
+        class="flex items-center gap-4 px-5 py-3 rounded-2xl border text-xs overflow-hidden"
+        style="background: rgba(17,19,24,0.8); border-color: rgba(255,255,255,0.07); backdrop-filter: blur(10px);"
+      >
+        <span class="text-white/25 flex-shrink-0">ERROR</span>
+        <span class="text-white/50 font-bold flex-shrink-0">404</span>
+        <span class="text-red-400 font-medium flex-shrink-0">▼ -100%</span>
+        <span class="text-white/10">·</span>
+        <span class="text-white/25 flex-shrink-0">NOT_FOUND</span>
+        <span class="text-white/50 font-bold flex-shrink-0">PAGE</span>
+        <span class="text-red-400 font-medium flex-shrink-0">▼ -∞%</span>
+      </div>
+
+      <!-- CTAs -->
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 bg-[#D4A843] hover:bg-[#E8C060] text-[#0A0B0D] font-semibold text-sm px-5 py-3 rounded-xl transition-all duration-200 no-underline hover:-translate-y-px"
+        >
+          <Home size={15} />
+          Ir al inicio
+        </a>
+        <a
+          href="/herramientas"
+          class="inline-flex items-center gap-2 bg-white/5 border border-white/[0.07] hover:bg-white/10 hover:border-white/20 text-white/50 hover:text-white text-sm px-5 py-3 rounded-xl transition-all duration-200 no-underline"
+        >
+          <BarChart2 size={15} />
+          Ver mercados
+        </a>
+        <a
+          href="/noticias"
+          class="inline-flex items-center gap-2 bg-white/5 border border-white/[0.07] hover:bg-white/10 hover:border-white/20 text-white/50 hover:text-white text-sm px-5 py-3 rounded-xl transition-all duration-200 no-underline"
+        >
+          Últimas noticias <ArrowRight size={14} />
+        </a>
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<style>
+  @keyframes draw-line {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes fade-dot {
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+  @keyframes float-404 {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-8px); }
+  }
+
+  #crash-line {
+    animation: draw-line 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+  }
+  #crash-dot {
+    animation: fade-dot 0.4s ease 1.6s forwards;
+    offset-path: path("M0,30 L60,28 L90,25 L110,60 L140,90 L170,120 L200,130 L250,135 L300,140");
+    offset-distance: 100%;
+  }
+  #counter-404 {
+    animation: float-404 5s ease-in-out infinite;
+  }
+</style>

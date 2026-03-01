@@ -1,40 +1,62 @@
 ---
-// src/pages/herramientas.astro
+// src/pages/herramientas/index.astro
 import Layout from '../../layouts/Layout.astro';
-import { ArrowRight, Calculator, RefreshCw, DollarSign, BarChart2, Shield } from 'lucide-astro';
+import { ArrowRight, Calculator, DollarSign, BarChart2, Shield, TrendingUp, Layers, Landmark } from 'lucide-astro';
 
 const herramientas = [
   {
-    icon: 'calculator',
+    icon: 'chart',
     nombre: 'Mercados Cripto',
-    descripcion: 'Precios en tiempo real, gráficos y análisis técnico de las principales criptomonedas.',
+    descripcion: 'Precios en tiempo real, gráficos TradingView y análisis técnico de las principales criptomonedas.',
     href: '/herramientas/cripto',
     disponible: true,
-    badge: 'Disponible',
+    badge: 'En vivo',
+    color: '#F59E0B',
   },
   {
-    icon: 'refresh',
-    nombre: 'Conversor de Monedas',
-    descripcion: 'Convertí entre más de 150 monedas del mundo con tipos de cambio en tiempo real.',
-    href: '#',
-    disponible: false,
-    badge: 'Próximamente',
+    icon: 'forex',
+    nombre: 'Forex',
+    descripcion: 'Tipos de cambio en tiempo real de los principales pares de divisas globales y monedas de Latinoamérica.',
+    href: '/herramientas/forex',
+    disponible: true,
+    badge: 'En vivo',
+    color: '#EC4899',
+  },
+  {
+    icon: 'layers',
+    nombre: 'Metales Preciosos',
+    descripcion: 'Precios actualizados de oro, plata, platino y paladio por onza troy con gráficas en vivo.',
+    href: '/herramientas/metales',
+    disponible: true,
+    badge: 'En vivo',
+    color: '#F59E0B',
+  },
+  {
+    icon: 'acciones',
+    nombre: 'Acciones',
+    descripcion: 'Cotizaciones en tiempo real de las principales empresas del mercado estadounidense.',
+    href: '/herramientas/acciones',
+    disponible: true,
+    badge: 'En vivo',
+    color: '#10B981',
   },
   {
     icon: 'dollar',
     nombre: 'Precio del Dólar',
-    descripcion: 'Seguí el precio del dólar oficial, paralelo y blue en todos los países de Latinoamérica.',
-    href: '#',
-    disponible: false,
-    badge: 'Próximamente',
+    descripcion: 'Precio del dólar oficial y paralelo (blue en Argentina) en todos los países de Latinoamérica.',
+    href: '/herramientas/dolar',
+    disponible: true,
+    badge: 'En vivo',
+    color: '#D4A843',
   },
   {
-    icon: 'chart',
-    nombre: 'Gráficas en Vivo',
-    descripcion: 'Gráficos de precios en tiempo real para cripto, forex y acciones con análisis técnico.',
+    icon: 'calculator',
+    nombre: 'Calculadora Cripto',
+    descripcion: 'Convertí y calculá ganancias entre criptomonedas y monedas fiat al instante.',
     href: '#',
     disponible: false,
     badge: 'Próximamente',
+    color: '#D4A843',
   },
   {
     icon: 'shield',
@@ -43,6 +65,7 @@ const herramientas = [
     href: '#',
     disponible: false,
     badge: 'Próximamente',
+    color: '#D4A843',
   },
 ];
 ---
@@ -50,10 +73,10 @@ const herramientas = [
 <Layout>
   <slot name="head" slot="head">
     <title>Herramientas Financieras — Inversax</title>
-    <meta name="description" content="Calculadoras, conversores y herramientas financieras para inversores en Latinoamérica. Cripto, forex, dólar y más." />
+    <meta name="description" content="Precios en vivo de cripto, forex, metales y acciones. Calculadoras y herramientas financieras para inversores en Latinoamérica." />
     <link rel="canonical" href="https://inversax.com/herramientas" />
     <meta property="og:title"       content="Herramientas Financieras — Inversax" />
-    <meta property="og:description" content="Calculadoras, conversores y herramientas financieras para inversores en Latinoamérica." />
+    <meta property="og:description" content="Precios en vivo de cripto, forex, metales y acciones para inversores en Latinoamérica." />
     <meta property="og:type"        content="website" />
     <meta property="og:url"         content="https://inversax.com/herramientas" />
   </slot>
@@ -67,38 +90,39 @@ const herramientas = [
           Herramientas
         </h1>
         <p class="text-white/40 text-sm sm:text-base">
-          Calculadoras, conversores y recursos financieros para inversores en Latinoamérica
+          Precios en vivo, gráficas y recursos financieros para inversores en Latinoamérica
         </p>
       </div>
     </div>
 
-    <!-- GRID DE HERRAMIENTAS -->
+    <!-- GRID -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
 
         {herramientas.map((h) => (
           <div class={`relative flex flex-col gap-4 bg-[#111318] border rounded-2xl p-6 transition-all duration-200 ${
             h.disponible
-              ? 'border-white/[0.07] hover:border-[#D4A843]/40 cursor-pointer group'
-              : 'border-white/[0.04] opacity-60'
+              ? 'border-white/[0.07] hover:border-white/20 cursor-pointer group hover:-translate-y-0.5'
+              : 'border-white/[0.04] opacity-50'
           }`}>
 
-            <!-- Badge -->
+            <!-- Icono + Badge -->
             <div class="flex items-start justify-between">
-              <div class={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                h.disponible ? 'bg-[#D4A843]/10' : 'bg-white/5'
-              }`}>
-                {h.icon === 'calculator' && <Calculator size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
-                {h.icon === 'refresh'    && <RefreshCw  size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
-                {h.icon === 'dollar'     && <DollarSign size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
-                {h.icon === 'chart'      && <BarChart2  size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
-                {h.icon === 'shield'     && <Shield     size={20} class={h.disponible ? 'text-[#D4A843]' : 'text-white/30'} />}
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={h.disponible ? `background: ${h.color}15;` : 'background: rgba(255,255,255,0.05);'}>
+                {h.icon === 'calculator' && <Calculator  size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+                {h.icon === 'dollar'     && <DollarSign  size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+                {h.icon === 'chart'      && <BarChart2   size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+                {h.icon === 'forex'      && <TrendingUp  size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+                {h.icon === 'layers'     && <Layers      size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+                {h.icon === 'acciones'   && <Landmark    size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+                {h.icon === 'shield'     && <Shield      size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
               </div>
-              <span class={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
-                h.disponible
-                  ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                  : 'bg-white/5 text-white/30'
-              }`}>
+              <span class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider"
+                style={h.disponible
+                  ? `background: ${h.color}15; color: ${h.color};`
+                  : 'background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);'
+                }>
                 {h.badge}
               </span>
             </div>
@@ -106,7 +130,7 @@ const herramientas = [
             <!-- Texto -->
             <div class="flex flex-col gap-2 flex-1">
               <h2 class={`font-bold text-base leading-snug transition-colors duration-200 ${
-                h.disponible ? 'text-white group-hover:text-[#D4A843]' : 'text-white/50'
+                h.disponible ? 'text-white group-hover:text-[#D4A843]' : 'text-white/40'
               }`} style="font-family: 'Syne', sans-serif;">
                 {h.nombre}
               </h2>
@@ -116,23 +140,15 @@ const herramientas = [
             </div>
 
             <!-- CTA -->
-            {h.disponible
-              ? (
-                <a
-                  href={h.href}
-                  class="flex items-center gap-1.5 text-[#D4A843] text-sm font-medium no-underline mt-auto"
-                >
-                  Abrir herramienta <ArrowRight size={14} />
-                </a>
-              )
-              : (
-                <span class="text-white/20 text-xs mt-auto">
-                  En desarrollo
-                </span>
-              )
-            }
+            {h.disponible ? (
+              <span class="flex items-center gap-1.5 text-sm font-medium no-underline mt-auto" style={`color: ${h.color};`}>
+                Abrir herramienta <ArrowRight size={14} />
+              </span>
+            ) : (
+              <span class="text-white/20 text-xs mt-auto">En desarrollo</span>
+            )}
 
-            <!-- Overlay clickeable para toda la card cuando está disponible -->
+            <!-- Overlay clickeable -->
             {h.disponible && (
               <a href={h.href} class="absolute inset-0 rounded-2xl no-underline" aria-label={h.nombre} />
             )}
