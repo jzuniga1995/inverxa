@@ -193,7 +193,7 @@ function formatFecha(fecha: Date | null) {
   </div>
 </Layout>
 
-<style>
+<style is:global>
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -201,7 +201,6 @@ function formatFecha(fecha: Date | null) {
     overflow: hidden;
   }
 
-  /* Estilos para el contenido HTML del artículo */
   .article-content h2 {
     font-family: 'Syne', sans-serif;
     font-size: 1.4rem;
@@ -218,6 +217,14 @@ function formatFecha(fecha: Date | null) {
     margin: 1.5rem 0 0.75rem;
   }
 
+  .article-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #E8EAF0;
+    margin: 1.25rem 0 0.5rem;
+  }
+
   .article-content p {
     margin-bottom: 1.25rem;
     line-height: 1.8;
@@ -226,6 +233,10 @@ function formatFecha(fecha: Date | null) {
   .article-content a {
     color: #D4A843;
     text-decoration: underline;
+  }
+
+  .article-content a:hover {
+    color: #E8C060;
   }
 
   .article-content ul,
@@ -237,8 +248,23 @@ function formatFecha(fecha: Date | null) {
     gap: 0.5rem;
   }
 
+  .article-content ul {
+    list-style-type: disc;
+  }
+
+  .article-content ol {
+    list-style-type: decimal;
+  }
+
   .article-content li {
     line-height: 1.7;
+  }
+
+  /* Listas anidadas */
+  .article-content li ul,
+  .article-content li ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
   }
 
   .article-content blockquote {
@@ -254,6 +280,11 @@ function formatFecha(fecha: Date | null) {
     font-weight: 600;
   }
 
+  .article-content em {
+    font-style: italic;
+    color: rgba(232,234,240,0.8);
+  }
+
   .article-content img {
     width: 100%;
     border-radius: 12px;
@@ -266,6 +297,24 @@ function formatFecha(fecha: Date | null) {
     border-radius: 4px;
     font-size: 0.875rem;
     color: #D4A843;
+    font-family: monospace;
+  }
+
+  /* Bloque de código */
+  .article-content pre {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .article-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 0.85rem;
+    color: #E8EAF0;
   }
 
   .article-content hr {
@@ -273,5 +322,33 @@ function formatFecha(fecha: Date | null) {
     border-top: 1px solid rgba(255,255,255,0.07);
     margin: 2rem 0;
   }
+
+  /* Tablas */
+  .article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .article-content th {
+    background: rgba(212,168,67,0.1);
+    color: #D4A843;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .article-content td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.7);
+  }
+
+  .article-content tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
 </style>
+
 
