@@ -60,7 +60,7 @@ const colorPorSimbolo: Record<string, string> = {
   </slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
-    <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
       <!-- Breadcrumb -->
       <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
@@ -70,10 +70,10 @@ const colorPorSimbolo: Record<string, string> = {
       <!-- Título -->
       <div class="mb-7">
         <div class="flex items-center gap-2.5 mb-1">
-          <div class="w-9 h-9 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
+          <div class="w-9 h-9 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center flex-shrink-0">
             <Layers size={18} class="text-[#F59E0B]" />
           </div>
-          <h1 class="text-white font-extrabold text-3xl" style="font-family:'Syne',sans-serif;">
+          <h1 class="text-white font-extrabold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">
             Metales Preciosos
           </h1>
         </div>
@@ -89,26 +89,31 @@ const colorPorSimbolo: Record<string, string> = {
 
           <!-- Cards visuales -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {metales.map((m) => {
+            {metales.map((m: any) => {
               const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
               const info  = infoMetal[m.simbolo];
               return (
-                <a href={`/herramientas/metales/${m.slug}`}
-                  class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5">
-
+                <a
+                  href={`/herramientas/metales/${m.slug}`}
+                  class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+                >
                   <div class="flex items-start justify-between">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={`background: ${color}15;`}>
+                    <div
+                      class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={`background: ${color}15;`}
+                    >
                       <span class="font-extrabold text-sm" style={`color: ${color};`}>{m.simbolo}</span>
                     </div>
-                    <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
-                      style={`background: ${color}15; color: ${color};`}>
+                    <span
+                      class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
+                      style={`background: ${color}15; color: ${color};`}
+                    >
                       USD/oz
                     </span>
                   </div>
 
                   <div>
-                    <div class="text-white font-extrabold text-2xl" style="font-family:'Syne',sans-serif;">
+                    <div class="text-white font-extrabold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">
                       {formatMetal(m.precio)}
                     </div>
                     <div class="text-white/50 text-sm font-medium mt-0.5">{m.nombre}</div>
@@ -119,9 +124,11 @@ const colorPorSimbolo: Record<string, string> = {
                   )}
 
                   <div class="flex flex-wrap gap-1.5 mt-auto">
-                    {(info?.usos ?? []).slice(0, 3).map(uso => (
-                      <span class="text-[10px] px-2 py-0.5 rounded border"
-                        style={`background: ${color}08; border-color: ${color}20; color: ${color}80;`}>
+                    {(info?.usos ?? []).slice(0, 3).map((uso: any) => (
+                      <span
+                        class="text-[10px] px-2 py-0.5 rounded border"
+                        style={`background: ${color}08; border-color: ${color}20; color: ${color}80;`}
+                      >
                         {uso}
                       </span>
                     ))}
@@ -142,35 +149,47 @@ const colorPorSimbolo: Record<string, string> = {
             <div class="px-5 py-4 border-b border-white/[0.07]">
               <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Resumen de precios</h2>
             </div>
-            <div class="hidden md:grid border-b border-white/[0.07] px-5 py-3"
-              style="grid-template-columns: 1fr 160px 160px 200px">
+
+            <!-- Encabezados solo desktop -->
+            <div class="hidden md:grid border-b border-white/[0.07] px-5 py-3 table-cols">
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">Metal</div>
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio / oz</div>
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Símbolo</div>
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Fuente</div>
             </div>
-            {metales.map((m) => {
+
+            {metales.map((m: any) => {
               const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
               return (
-                <a href={`/herramientas/metales/${m.slug}`}
-                  class="grid px-5 py-4 border-b border-white/[0.04] last:border-none hover:bg-white/[0.025] transition-colors no-underline"
-                  style="grid-template-columns: 1fr 160px 160px 200px">
-                  <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={`background: ${color}15;`}>
-                      <span class="text-[10px] font-bold" style={`color: ${color};`}>{m.simbolo.slice(1,3)}</span>
+                <a
+                  href={`/herramientas/metales/${m.slug}`}
+                  class="flex md:grid items-center px-5 py-4 border-b border-white/[0.04] last:border-none hover:bg-white/[0.025] transition-colors no-underline gap-3 md:gap-0 table-cols"
+                >
+                  <!-- Metal info -->
+                  <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <div
+                      class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={`background: ${color}15;`}
+                    >
+                      <span class="text-[10px] font-bold" style={`color: ${color};`}>{m.simbolo.slice(1, 3)}</span>
                     </div>
-                    <div>
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{m.nombre}</div>
+                    <div class="min-w-0">
+                      <div class="text-white font-bold text-sm truncate" style="font-family:'Syne',sans-serif;">{m.nombre}</div>
                       <div class="text-white/30 text-[11px]">{m.simbolo}</div>
                     </div>
                   </div>
-                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">
+
+                  <!-- Precio (siempre visible, alineado a la derecha en móvil) -->
+                  <div class="flex items-center md:justify-end text-white font-semibold text-sm flex-shrink-0" style="font-family:'Syne',sans-serif;">
                     {formatMetal(m.precio)}
                   </div>
+
+                  <!-- Símbolo (solo desktop) -->
                   <div class="hidden md:flex items-center justify-end text-white/30 text-xs">
                     {m.simbolo}/USD
                   </div>
+
+                  <!-- Fuente (solo desktop) -->
                   <div class="hidden md:flex items-center justify-end text-white/20 text-xs">
                     fawazahmed0 API
                   </div>
@@ -200,9 +219,12 @@ const colorPorSimbolo: Record<string, string> = {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  @media (max-width: 767px) {
-    .grid { grid-template-columns: 1fr 130px !important; }
-    .grid > div:nth-child(3),
-    .grid > div:nth-child(4) { display: none !important; }
+
+  /* Columnas de la tabla solo en desktop */
+  @media (min-width: 768px) {
+    .table-cols {
+      grid-template-columns: 1fr 160px 160px 200px;
+    }
   }
 </style>
+

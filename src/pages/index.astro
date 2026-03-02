@@ -76,6 +76,7 @@ try {
     { id: 'cardano',     symbol: 'ADA', name: 'Cardano',  image: '', price: '—', change: '—', cap: '—', up: true },
   ];
 }
+
 // ── FOREX ─────────────────────────────────────────────────────
 type ForexRow = { par: string; base: string; cotizada: string; banderaBase: string; banderaCotizada: string; precio: number; precioFmt: string; tradingviewSimbolo: string; };
 let forexData: ForexRow[] = [];
@@ -124,36 +125,9 @@ try {
   console.error('[Home] metales error:', e);
 }
 
-// ── ACCIONES ──────────────────────────────────────────────────
-type AccionRow = { nombre: string; ticker: string; slug: string; sector: string; icono: string; color: string; tradingviewSimbolo: string; precio: number; cambioPct: number; alza: boolean; precioFmt: string; cambioPctFmt: string; };
-let accionesData: AccionRow[] = [];
-
-try {
-  const res  = await fetch(new URL('/api/acciones?limit=6', Astro.url));
-  if (!res.ok) throw new Error(`/api/acciones ${res.status}`);
-  const json = await res.json();
-  if (json.ok) {
-    accionesData = json.data.map((a: any) => ({
-      ...a,
-      precioFmt:    a.precio > 0 ? `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—',
-      cambioPctFmt: a.precio > 0 ? `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%` : '—',
-    }));
-  }
-} catch (e) {
-  console.error('[Home] acciones error:', e);
-}
-
-// ── LOGOS ACCIONES ────────────────────────────────────────────
-const dominiosPorTicker: Record<string, string> = {
-  AAPL:  'apple.com',        MSFT:  'microsoft.com', GOOGL: 'google.com',
-  AMZN:  'amazon.com',       NVDA:  'nvidia.com',    META:  'meta.com',
-  TSLA:  'tesla.com',        JPM:   'jpmorganchase.com', BAC: 'bankofamerica.com',
-  GS:    'goldmansachs.com', XOM:   'exxonmobil.com',CVX:  'chevron.com',
-  KO:    'coca-cola.com',    MCD:   'mcdonalds.com', SPY:  'ssga.com', QQQ: 'invesco.com',
-};
+// ── ACCIONES: eliminado SSR, se carga client-side ─────────────
 
 // ── HERRAMIENTAS ─────────────────────────────────────────────
-// FIX: 5 herramientas disponibles, sin calculadora (pendiente)
 const herramientas = [
   { titulo: "Mercados Cripto",   desc: "Precios en vivo y gráficas de las principales criptomonedas.", href: "/herramientas/cripto",   icon: "chart"    },
   { titulo: "Forex",             desc: "Tipos de cambio de divisas globales y monedas LATAM.",          href: "/herramientas/forex",    icon: "forex"    },
@@ -548,7 +522,7 @@ const categoriaColores: Record<string, string> = {
         </div>
       </div>
 
-      <!-- ── PANEL ACCIONES ── -->
+      <!-- ── PANEL ACCIONES (carga client-side) ── -->
       <div id="panel-acciones" class="mkt-panel hidden">
         <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
           <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
@@ -557,38 +531,26 @@ const categoriaColores: Record<string, string> = {
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Cambio</span>
             <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Sector</span>
           </div>
-          {accionesData.length > 0 ? accionesData.map((a) => (
-            <a href={`/herramientas/acciones/${a.slug}`} class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
-              <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div class="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
-                  {dominiosPorTicker[a.ticker] ? (
-                    <img src={`https://www.google.com/s2/favicons?domain=${dominiosPorTicker[a.ticker]}&sz=64`} alt={a.nombre} class="w-5 h-5 object-contain" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                  ) : null}
-                  <span class="text-[9px] font-bold text-white/50" style={dominiosPorTicker[a.ticker] ? 'display:none' : ''}>{a.ticker.slice(0,2)}</span>
+          <!-- Skeleton -->
+          <div id="acciones-loading">
+            {[...Array(6)].map(() => (
+              <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                  <div class="flex flex-col gap-1.5">
+                    <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
+                    <div class="w-20 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                  </div>
                 </div>
-                <div class="min-w-0">
-                  <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{a.ticker}</div>
-                  <div class="text-xs text-white/40 truncate">{a.nombre}</div>
-                </div>
+                <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
+                <div class="flex items-center justify-end"><div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div></div>
+                <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div></div>
               </div>
-              <div class="flex items-center justify-end">
-                <span class="font-semibold text-sm text-white">{a.precioFmt}</span>
-              </div>
-              <div class="flex items-center justify-end">
-                {a.precioFmt === '—'
-                  ? <span class="text-sm text-white/30">—</span>
-                  : <span class={`flex items-center gap-1 text-sm font-medium ${a.alza ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {a.alza ? '▲' : '▼'} {a.cambioPctFmt}
-                    </span>
-                }
-              </div>
-              <div class="hidden sm:flex items-center justify-end">
-                <span class="text-xs text-white/40">{a.sector}</span>
-              </div>
-            </a>
-          )) : (
-            <div class="px-6 py-10 text-center text-white/20 text-sm">Cargando datos de acciones...</div>
-          )}
+            ))}
+          </div>
+          <!-- Contenido real inyectado por JS -->
+          <div id="acciones-content" class="hidden"></div>
+          <div id="acciones-error" class="hidden px-6 py-10 text-center text-white/20 text-sm">No se pudieron cargar las cotizaciones</div>
         </div>
         <div class="flex justify-end mt-3">
           <a href="/herramientas/acciones" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#10B981] no-underline transition-colors duration-200">Ver todas <ArrowRight size={14} /></a>
@@ -606,7 +568,6 @@ const categoriaColores: Record<string, string> = {
           <Star size={18} class="text-[#D4A843]" />
           <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Brokers Destacados</h2>
         </div>
-        <!-- FIX: link a /herramientas, brokers aún no tiene página propia -->
         <a href="/herramientas" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">Ver herramientas <ArrowRight size={14} /></a>
       </div>
       <p class="text-white/30 text-xs mb-8">Seleccionados por popularidad, regulación y soporte en Latinoamérica. Siempre investiga antes de invertir.</p>
@@ -664,7 +625,6 @@ const categoriaColores: Record<string, string> = {
           Ver todas <ArrowRight size={14} />
         </a>
       </div>
-      <!-- FIX: grid ajustado para 5 cards, iconos completos -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {herramientas.map((h) => (
           <a href={h.href} class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 rounded-2xl p-6 no-underline transition-all duration-300 hover:-translate-y-0.5">
@@ -696,7 +656,6 @@ const categoriaColores: Record<string, string> = {
   mktTabs.forEach((tab, i) => {
     tab.addEventListener('click', () => {
       mktTabs.forEach(t => {
-        // ← limpiar tanto inline styles COMO clases Tailwind del estado inicial
         t.style.background  = '';
         t.style.borderColor = '';
         t.style.color       = '';
@@ -786,6 +745,73 @@ const categoriaColores: Record<string, string> = {
   setInterval(actualizarPrecios, 300_000);
 </script>
 
+<!-- ── ACCIONES CLIENT-SIDE ───────────────────────────────── -->
+<script>
+  const dominios: Record<string, string> = {
+    AAPL: 'apple.com',        MSFT: 'microsoft.com',     GOOGL: 'google.com',
+    AMZN: 'amazon.com',       NVDA: 'nvidia.com',         META: 'meta.com',
+    TSLA: 'tesla.com',        JPM:  'jpmorganchase.com',  BAC:  'bankofamerica.com',
+    GS:   'goldmansachs.com', XOM:  'exxonmobil.com',     CVX:  'chevron.com',
+    KO:   'coca-cola.com',    MCD:  'mcdonalds.com',       SPY:  'ssga.com',
+    QQQ:  'invesco.com',
+  };
+
+  async function cargarAcciones() {
+    try {
+      const res  = await fetch('/api/acciones?limit=6');
+      const json = await res.json();
+      if (!json.ok) throw new Error();
+
+      const content = document.getElementById('acciones-content')!;
+      content.innerHTML = json.data.map((a: any) => {
+        const precio      = a.precio > 0 ? `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
+        const cambioPct   = a.precio > 0 ? `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%` : '—';
+        const colorCambio = a.alza ? 'text-emerald-400' : 'text-red-400';
+        const flecha      = a.alza ? '▲' : '▼';
+        const dominio     = dominios[a.ticker] ?? '';
+        const logo        = dominio
+          ? `<img src="https://www.google.com/s2/favicons?domain=${dominio}&sz=64" alt="${a.nombre}" class="w-5 h-5 object-contain" onerror="this.style.display='none'" />`
+          : `<span class="text-[9px] font-bold text-white/50">${a.ticker.slice(0, 2)}</span>`;
+
+        return `
+          <a href="/herramientas/acciones/${a.slug}" class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div class="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">${logo}</div>
+              <div class="min-w-0">
+                <div class="font-bold text-sm text-white">${a.ticker}</div>
+                <div class="text-xs text-white/40 truncate">${a.nombre}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-end">
+              <span class="font-semibold text-sm text-white">${precio}</span>
+            </div>
+            <div class="flex items-center justify-end">
+              ${precio === '—'
+                ? '<span class="text-sm text-white/30">—</span>'
+                : `<span class="flex items-center gap-1 text-sm font-medium ${colorCambio}">${flecha} ${cambioPct}</span>`
+              }
+            </div>
+            <div class="hidden sm:flex items-center justify-end">
+              <span class="text-xs text-white/40">${a.sector}</span>
+            </div>
+          </a>`;
+      }).join('');
+
+      document.getElementById('acciones-loading')!.classList.add('hidden');
+      content.classList.remove('hidden');
+    } catch {
+      document.getElementById('acciones-loading')!.classList.add('hidden');
+      document.getElementById('acciones-error')!.classList.remove('hidden');
+    }
+  }
+
+  // Carga solo cuando el usuario hace click en el tab, una sola vez
+  document.getElementById('tab-acciones')?.addEventListener('click', () => {
+    const content = document.getElementById('acciones-content')!;
+    if (content.innerHTML === '') cargarAcciones();
+  }, { once: true });
+</script>
+
 <style>
   .line-clamp-2 {
     display: -webkit-box;
@@ -796,4 +822,4 @@ const categoriaColores: Record<string, string> = {
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
-  
+

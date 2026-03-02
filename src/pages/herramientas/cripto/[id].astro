@@ -72,7 +72,7 @@ try {
     coin = cached.data;
   } else {
     // Caché expirada o inexistente — llama a CoinGecko
-    const KEY = import.meta.env.COINGECKO_API_KEY;
+const KEY = (Astro.locals.runtime?.env as any)?.COINGECKO_API_KEY;    
     const res = await fetch(
       `https://api.coingecko.com/api/v3/coins/${id}?localization=true&tickers=false&market_data=true&community_data=false&developer_data=false`,
       { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': KEY } }

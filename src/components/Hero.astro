@@ -60,16 +60,16 @@ try {
     forexItems = json.data
       .filter((f: any) => FOREX_SHOW.includes(f.par))
       .map((f: any) => ({
-        par:            f.par,
-        precio:         fmtForex(f.precio),
-        banderaBase:    f.banderaBase,
+        par:             f.par,
+        precio:          fmtForex(f.precio),
+        banderaBase:     f.banderaBase,
         banderaCotizada: f.banderaCotizada,
       }));
   }
 } catch { /* silencioso */ }
 
 // ── METALES ───────────────────────────────────────────────────
-type MetalItem = { nombre: string; simbolo: string; precio: string; color: string };
+type MetalItem = { nombre: string; simbolo: string; precio: string; color: string; slug: string };
 let metalItems: MetalItem[] = [];
 
 try {
@@ -81,39 +81,10 @@ try {
       simbolo: m.simbolo,
       precio:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       color:   m.color,
+      slug:    m.slug,
     }));
   }
 } catch { /* silencioso */ }
-
-// ── ACCIONES ──────────────────────────────────────────────────
-type AccionItem = { nombre: string; ticker: string; precio: string; cambio: string; alza: boolean };
-let accionItems: AccionItem[] = [];
-const ACCIONES_SHOW = ['AAPL', 'NVDA', 'TSLA', 'MSFT'];
-
-try {
-  const res  = await fetch(new URL('/api/acciones', Astro.url));
-  const json = await res.json();
-  if (json.ok) {
-    accionItems = json.data
-      .filter((a: any) => ACCIONES_SHOW.includes(a.ticker) && a.precio > 0)
-      .map((a: any) => ({
-        nombre: a.nombre,
-        ticker: a.ticker,
-        precio: `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        cambio: `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`,
-        alza:   a.alza,
-      }));
-  }
-} catch { /* silencioso */ }
-
-// ── DOMINIOS ACCIONES ─────────────────────────────────────────
-const dominiosPorTicker: Record<string, string> = {
-  AAPL: 'apple.com',        MSFT: 'microsoft.com',  GOOGL: 'google.com',
-  AMZN: 'amazon.com',       NVDA: 'nvidia.com',      META: 'meta.com',
-  TSLA: 'tesla.com',        JPM:  'jpmorganchase.com', BAC: 'bankofamerica.com',
-  GS:   'goldmansachs.com', XOM:  'exxonmobil.com',  CVX: 'chevron.com',
-  KO:   'coca-cola.com',    MCD:  'mcdonalds.com',   SPY: 'ssga.com', QQQ: 'invesco.com',
-};
 
 const heroTabs = [
   { id: 'cripto',   label: 'Cripto',   color: '#D4A843', href: '/herramientas/cripto'   },
@@ -195,7 +166,7 @@ const heroTabs = [
         </div>
 
         <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-4 sm:gap-6 pt-3 border-t border-white/[0.07]">
-          {stats.map((stat) => (
+          {stats.map((stat: any) => (
             <div class="flex items-center gap-2.5">
               <span class="text-[#D4A843] opacity-80 flex-shrink-0">
                 {stat.icon === "chart" && <BarChart2 size={15} />}
@@ -233,7 +204,7 @@ const heroTabs = [
 
           <!-- Tabs -->
           <div class="flex border-b border-white/[0.07]">
-            {heroTabs.map((tab, i) => (
+            {heroTabs.map((tab: any, i: number) => (
               <button
                 data-hero-tab={tab.id}
                 data-color={tab.color}
@@ -250,7 +221,7 @@ const heroTabs = [
 
           <!-- Panel CRIPTO -->
           <div id="hero-panel-cripto" class="hero-panel">
-            {cryptoItems.map((coin) => (
+            {cryptoItems.map((coin: any) => (
               <a
                 href={`/herramientas/cripto/${coin.id}`}
                 class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
@@ -278,7 +249,7 @@ const heroTabs = [
 
           <!-- Panel FOREX -->
           <div id="hero-panel-forex" class="hero-panel hidden">
-            {forexItems.length > 0 ? forexItems.map((f) => (
+            {forexItems.length > 0 ? forexItems.map((f: any) => (
               <a
                 href={`/herramientas/forex/${f.par.replace('/', '-').toLowerCase()}`}
                 class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
@@ -307,8 +278,11 @@ const heroTabs = [
 
           <!-- Panel METALES -->
           <div id="hero-panel-metales" class="hero-panel hidden">
-            {metalItems.length > 0 ? metalItems.map((m) => (
-              <div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200">
+            {metalItems.length > 0 ? metalItems.map((m: any) => (
+              <a
+                href={`/herramientas/metales/${m.slug}`}
+                class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
+              >
                 <div class="flex items-center gap-2.5 min-w-0">
                   <div class="w-7 h-7 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
                     <span class={`text-[10px] font-bold ${m.color}`}>{m.simbolo.slice(0,2)}</span>
@@ -319,44 +293,33 @@ const heroTabs = [
                   </div>
                 </div>
                 <span class="font-semibold text-sm text-white">{m.precio}</span>
-              </div>
+              </a>
             )) : (
               <div class="px-5 py-8 text-center text-white/25 text-sm">Cargando metales...</div>
             )}
           </div>
 
-          <!-- Panel ACCIONES -->
+          <!-- Panel ACCIONES (skeleton + carga client-side) -->
           <div id="hero-panel-acciones" class="hero-panel hidden">
-            {accionItems.length > 0 ? accionItems.map((a) => (
-              <a
-                href={`/herramientas/acciones/${a.ticker.toLowerCase()}`}
-                class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
-              >
-                <div class="flex items-center gap-2.5 min-w-0">
-                  <div class="w-7 h-7 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center overflow-hidden">
-                    {dominiosPorTicker[a.ticker]
-                      ? <img
-                          src={`https://www.google.com/s2/favicons?domain=${dominiosPorTicker[a.ticker]}&sz=64`}
-                          alt={a.ticker}
-                          class="w-4 h-4 object-contain"
-                          loading="lazy"
-                        />
-                      : <span class="text-[9px] font-bold text-white/50">{a.ticker.slice(0,2)}</span>
-                    }
+            <div id="hero-acciones-loading">
+              {[...Array(4)].map((_: any, i: number) => (
+                <div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                    <div class="flex flex-col gap-1.5">
+                      <div class="w-10 h-3 bg-white/5 rounded animate-pulse"></div>
+                      <div class="w-16 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                    </div>
                   </div>
-                  <div>
-                    <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{a.ticker}</div>
-                    <div class="text-[11px] text-white/35">{a.nombre}</div>
+                  <div class="flex flex-col items-end gap-1.5">
+                    <div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div>
+                    <div class="w-10 h-2.5 bg-white/5 rounded animate-pulse"></div>
                   </div>
                 </div>
-                <div class="flex flex-col items-end gap-0.5">
-                  <span class="font-semibold text-sm text-white">{a.precio}</span>
-                  <span class={`text-xs font-medium ${a.alza ? 'text-emerald-400' : 'text-red-400'}`}>{a.cambio}</span>
-                </div>
-              </a>
-            )) : (
-              <div class="px-5 py-8 text-center text-white/25 text-sm">Cargando acciones...</div>
-            )}
+              ))}
+            </div>
+            <div id="hero-acciones-content" class="hidden"></div>
+            <div id="hero-acciones-error" class="hidden px-5 py-8 text-center text-white/25 text-sm">No se pudieron cargar las acciones</div>
           </div>
 
           <!-- Footer: link dinámico por tab -->
@@ -416,8 +379,8 @@ const heroTabs = [
     acciones: '/herramientas/acciones',
   };
 
-  const tabs   = document.querySelectorAll<HTMLButtonElement>('.hero-tab');
-  const panels = document.querySelectorAll<HTMLElement>('.hero-panel');
+  const tabs     = document.querySelectorAll<HTMLButtonElement>('.hero-tab');
+  const panels   = document.querySelectorAll<HTMLElement>('.hero-panel');
   const cardLink = document.getElementById('hero-card-link') as HTMLAnchorElement | null;
 
   tabs.forEach((tab) => {
@@ -425,7 +388,6 @@ const heroTabs = [
       const target = tab.dataset.heroTab!;
       const color  = tab.dataset.color ?? '#D4A843';
 
-      // Reset tabs
       tabs.forEach((t) => {
         t.style.color       = '';
         t.style.borderColor = '';
@@ -434,24 +396,84 @@ const heroTabs = [
         t.classList.add('text-white/35');
       });
 
-      // Activar tab
       tab.style.color       = color;
       tab.style.borderColor = color;
       tab.style.background  = `${color}10`;
       tab.classList.add('font-semibold');
       tab.classList.remove('text-white/35');
 
-      // Mostrar panel correcto
       panels.forEach((p) => {
         p.classList.toggle('hidden', p.id !== `hero-panel-${target}`);
       });
 
-      // Actualizar link del footer
       if (cardLink) {
-        cardLink.href = heroLinks[target] ?? '/herramientas';
+        cardLink.href        = heroLinks[target] ?? '/herramientas';
         cardLink.style.color = color;
       }
     });
+  });
+
+  // ── Acciones client-side ──────────────────────────────────────
+  const dominios: Record<string, string> = {
+    AAPL: 'apple.com',        MSFT: 'microsoft.com',    GOOGL: 'google.com',
+    AMZN: 'amazon.com',       NVDA: 'nvidia.com',        META: 'meta.com',
+    TSLA: 'tesla.com',        JPM:  'jpmorganchase.com', BAC:  'bankofamerica.com',
+    GS:   'goldmansachs.com', XOM:  'exxonmobil.com',   CVX:  'chevron.com',
+    KO:   'coca-cola.com',    MCD:  'mcdonalds.com',     SPY:  'ssga.com',
+    QQQ:  'invesco.com',
+  };
+  const ACCIONES_SHOW = ['AAPL', 'NVDA', 'TSLA', 'MSFT'];
+
+  async function cargarHeroAcciones() {
+    try {
+      const res  = await fetch('/api/acciones');
+      const json = await res.json();
+      if (!json.ok) throw new Error();
+
+      const content = document.getElementById('hero-acciones-content')!;
+      const items   = json.data.filter((a: any) => ACCIONES_SHOW.includes(a.ticker) && a.precio > 0);
+
+      content.innerHTML = items.map((a: any) => {
+        const precio  = `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const cambio  = `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`;
+        const color   = a.alza ? 'text-emerald-400' : 'text-red-400';
+        const dominio = dominios[a.ticker] ?? '';
+        const logo    = dominio
+          ? `<img src="https://www.google.com/s2/favicons?domain=${dominio}&sz=64" alt="${a.ticker}" class="w-4 h-4 object-contain" onerror="this.style.display='none'" />`
+          : `<span class="text-[9px] font-bold text-white/50">${a.ticker.slice(0, 2)}</span>`;
+
+        return `
+          <a href="/herramientas/acciones/${a.slug}" class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-7 h-7 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center overflow-hidden">${logo}</div>
+              <div>
+                <div class="font-bold text-sm text-white">${a.ticker}</div>
+                <div class="text-[11px] text-white/35">${a.nombre}</div>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-0.5">
+              <span class="font-semibold text-sm text-white">${precio}</span>
+              <span class="text-xs font-medium ${color}">${cambio}</span>
+            </div>
+          </a>`;
+      }).join('');
+
+      document.getElementById('hero-acciones-loading')!.classList.add('hidden');
+      content.classList.remove('hidden');
+    } catch {
+      document.getElementById('hero-acciones-loading')!.classList.add('hidden');
+      document.getElementById('hero-acciones-error')!.classList.remove('hidden');
+    }
+  }
+
+  // Carga solo cuando el usuario hace click en el tab, una sola vez
+  tabs.forEach((tab) => {
+    if (tab.dataset.heroTab === 'acciones') {
+      tab.addEventListener('click', () => {
+        const content = document.getElementById('hero-acciones-content')!;
+        if (content.innerHTML === '') cargarHeroAcciones();
+      }, { once: true });
+    }
   });
 
   // ── Polling cripto ───────────────────────────────────────────
@@ -474,13 +496,13 @@ const heroTabs = [
         .forEach((coin: any) => {
           const fila = document.querySelector(`[data-hero-symbol="${coin.symbol?.toUpperCase()}"]`);
           if (!fila) return;
-          const up     = coin.change24 >= 0;
+          const up       = coin.change24 >= 0;
           const priceEl  = fila.querySelector('.hero-price');
           const changeEl = fila.querySelector('.hero-change');
           if (priceEl)  priceEl.textContent = formatPrice(coin.price);
           if (changeEl) {
             changeEl.textContent = `${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
-            changeEl.className = `hero-change text-xs font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
+            changeEl.className   = `hero-change text-xs font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
           }
         });
     } catch (e) {
