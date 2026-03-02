@@ -5,10 +5,12 @@ import Hero from '../components/Hero.astro';
 import { TrendingUp, ArrowRight, DollarSign, BarChart2, Clock, Flame, BookOpen, Star, ExternalLink, Layers, Landmark } from 'lucide-astro';
 import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategoria } from '../db/queries';
 
+const db = Astro.locals.db;
+
 const [todasNoticias, destacados, categorias] = await Promise.all([
-  getArticulos(20),
-  getArticulosDestacados(3),
-  getCategorias(),
+  getArticulos(db, 20),
+  getArticulosDestacados(db, 3),
+  getCategorias(db),
 ]);
 
 const noticiaPrincipal    = destacados[0] ?? todasNoticias[0] ?? null;
@@ -16,9 +18,8 @@ const noticiasSecundarias = todasNoticias
   .filter(n => n.slug !== noticiaPrincipal?.slug)
   .slice(0, 7);
 
-// ── NOTICIAS POR CATEGORÍA ────────────────────────────────────
 const noticiasPorCategoriaArr = await Promise.all(
-  categorias.map(cat => getArticulosPorCategoria(cat.slug, 4))
+  categorias.map(cat => getArticulosPorCategoria(db, cat.slug, 4))
 );
 const noticiasPorCategoria: Record<string, Awaited<ReturnType<typeof getArticulosPorCategoria>>> = {};
 categorias.forEach((cat, i) => {
@@ -75,7 +76,6 @@ try {
     { id: 'cardano',     symbol: 'ADA', name: 'Cardano',  image: '', price: '—', change: '—', cap: '—', up: true },
   ];
 }
-
 // ── FOREX ─────────────────────────────────────────────────────
 type ForexRow = { par: string; base: string; cotizada: string; banderaBase: string; banderaCotizada: string; precio: number; precioFmt: string; tradingviewSimbolo: string; };
 let forexData: ForexRow[] = [];

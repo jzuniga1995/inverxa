@@ -1,10 +1,9 @@
 // src/pages/api/buscar.ts
 import type { APIRoute } from 'astro';
-import { db } from '../../db/index';
 import { articulos, categorias, paises } from '../../db/schema';
 import { eq, and, or, ilike, desc } from 'drizzle-orm';
 
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, locals }) => {
   const q = url.searchParams.get('q')?.trim() ?? '';
 
   if (q.length < 2) {
@@ -14,6 +13,7 @@ export const GET: APIRoute = async ({ url }) => {
   }
 
   try {
+    const db      = locals.db;
     const pattern = `%${q}%`;
 
     const resultados = await db
@@ -24,10 +24,7 @@ export const GET: APIRoute = async ({ url }) => {
         resumen:  articulos.resumen,
         imagen:   articulos.imagen,
         creadoEn: articulos.creadoEn,
-        categoria: {
-          nombre: categorias.nombre,
-          slug:   categorias.slug,
-        },
+        categoria: { nombre: categorias.nombre, slug: categorias.slug },
       })
       .from(articulos)
       .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
@@ -36,8 +33,8 @@ export const GET: APIRoute = async ({ url }) => {
         and(
           eq(articulos.publicado, true),
           or(
-            ilike(articulos.titulo,   pattern),
-            ilike(articulos.resumen,  pattern),
+            ilike(articulos.titulo,  pattern),
+            ilike(articulos.resumen, pattern),
           )
         )
       )
@@ -55,3 +52,4 @@ export const GET: APIRoute = async ({ url }) => {
     );
   }
 };
+

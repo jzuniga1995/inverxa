@@ -14,36 +14,25 @@ function url(path: string, lastmod?: Date, priority = 0.5, changefreq = 'weekly'
   </url>`;
 }
 
-// ── Slugs estáticos de cada herramienta ───────────────────────
 const CRYPTO_IDS = [
-  // Top 10
   'bitcoin','ethereum','binancecoin','solana','ripple',
   'cardano','dogecoin','tron','avalanche-2','chainlink',
-  // 11-20
   'polkadot','litecoin','bitcoin-cash','stellar','monero',
   'cosmos','uniswap','aave','filecoin','vechain',
-  // 21-30
   'hedera-hashgraph','fantom','tezos','near','algorand',
   'internet-computer','flow','eos','decentraland','sandbox',
-  // 31-40
   'axie-infinity','the-graph','gala','chiliz','basic-attention-token',
   'enjincoin','stepn','aptos','arbitrum','optimism',
-  // 41-50
   'sui','sei-network','injective-protocol','render-token','helium',
   'livepeer','ocean-protocol','fetch-ai','singularitynet','band-protocol',
-  // 51-60
   'curve-dao-token','compound','maker','synthetix-network-token','yearn-finance',
   'balancer','1inch','loopring','dydx','pancakeswap-token',
-  // 61-70
   'shiba-inu','pepe','floki','bonk','dogwifcoin',
   'worldcoin-wld','blur','immutable-x','ronin','axelar',
-  // 71-80
   'stacks','kaspa','celestia','mantle','pyth-network',
   'jupiter-exchange-solana','jito-governance-token','wormhole','ethena','pendle',
-  // 81-90
   'bitcoin-sv','dash','zcash','iota','ontology',
   'waves','neo','qtum','icon','zilliqa',
-  // 91-100
   'nervos-network','harmony','celo','ankr','storj',
   'request-network','civic','moonbeam','numeraire','orbs',
 ];
@@ -70,11 +59,13 @@ const ACCIONES_SLUGS = [
   'spy','qqq',
 ];
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ locals }) => {
+  const db = locals.db;
+
   const [articulos, categorias, paises] = await Promise.all([
-    getArticulos(1000),
-    getCategorias(),
-    getPaises(),
+    getArticulos(db, 1000),
+    getCategorias(db),
+    getPaises(db),
   ]);
 
   const paisesLocales = paises.filter(p => p.codigo !== 'global');
@@ -146,3 +137,4 @@ export const GET: APIRoute = async () => {
     },
   });
 };
+

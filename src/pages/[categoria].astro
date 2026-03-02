@@ -4,7 +4,6 @@ import Layout from '../layouts/Layout.astro';
 import { getArticulosPorCategoria, getCategorias } from '../db/queries';
 import { ArrowRight, Clock, Globe, Filter } from 'lucide-astro';
 
-// Categorías válidas — si la URL no coincide, 404
 const SLUGS_VALIDOS = [
   'cripto', 'trading', 'bolsa', 'economia', 'forex',
   'finanzas-personales', 'fintech', 'impuestos', 'inversiones',
@@ -16,13 +15,12 @@ if (!slugParam || !SLUGS_VALIDOS.includes(slugParam)) {
   return Astro.redirect('/404');
 }
 
-// Filtro por país desde query string
 const paisParam = Astro.url.searchParams.get('pais') ?? 'global';
 
-// Obtener artículos y todas las categorías en paralelo
+const db = Astro.locals.db;
 const [articulos, todasCategorias] = await Promise.all([
-  getArticulosPorCategoria(slugParam, 30),
-  getCategorias(),
+  getArticulosPorCategoria(db, slugParam, 30),
+  getCategorias(db),
 ]);
 
 // Filtrar por país si no es global

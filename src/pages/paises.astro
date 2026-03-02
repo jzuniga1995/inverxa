@@ -4,7 +4,9 @@ import Layout from '../layouts/Layout.astro';
 import { getPaises } from '../db/queries';
 import { Globe, ArrowRight, MapPin } from 'lucide-astro';
 
-const todosPaises = await getPaises();
+const db = Astro.locals.db;
+const todosPaises = await getPaises(db);
+
 
 const regiones = [
   {

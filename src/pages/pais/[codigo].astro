@@ -8,16 +8,18 @@ import { ArrowRight, Clock, MapPin, Filter } from 'lucide-astro';
 const { codigo } = Astro.params;
 if (!codigo) return Astro.redirect('/paises');
 
-const todosPaises = await getPaises();
+const db          = Astro.locals.db;
+const todosPaises = await getPaises(db);
 const paisActual  = todosPaises.find((p) => p.codigo === codigo && p.codigo !== 'global');
 if (!paisActual) return Astro.redirect('/paises');
 
 const categoriaParam = Astro.url.searchParams.get('categoria') ?? 'todas';
 
 const [articulos, categorias] = await Promise.all([
-  getArticulosPorPais(codigo, 50),
-  getCategorias(),
+  getArticulosPorPais(db, codigo, 50),
+  getCategorias(db),
 ]);
+
 
 const articulosFiltrados = categoriaParam === 'todas'
   ? articulos

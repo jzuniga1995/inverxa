@@ -3,8 +3,9 @@
 import { Search, Globe, Menu, X, ChevronDown } from 'lucide-astro';
 import { getCategorias, getPaises } from '../db/queries';
 
-const categorias    = await getCategorias();
-const paises        = await getPaises();
+const db            = Astro.locals.db;
+const categorias    = await getCategorias(db);
+const paises        = await getPaises(db);
 const paisesLocales = paises.filter(p => p.codigo !== 'global');
 
 // ── TICKER MIXTO ────────────────────────────────────────────────

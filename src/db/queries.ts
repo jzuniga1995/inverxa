@@ -1,29 +1,22 @@
 // src/db/queries.ts
-import { db } from './index';
 import { articulos, categorias, paises } from './schema';
-import { eq, desc, and, like } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
+import type { getDb } from './index';
 
-// ─── ARTÍCULOS ────────────────────────────────────────────────
+type Db = ReturnType<typeof getDb>;
 
-// Todos los artículos publicados (para la home y listados)
-export async function getArticulos(limit = 20) {
+export async function getArticulos(db: Db, limit = 20) {
   return db
     .select({
-      id:         articulos.id,
-      titulo:     articulos.titulo,
-      slug:       articulos.slug,
-      resumen:    articulos.resumen,
-      imagen:     articulos.imagen,
-      destacado:  articulos.destacado,
-      creadoEn:   articulos.creadoEn,
-      categoria: {
-        nombre: categorias.nombre,
-        slug:   categorias.slug,
-      },
-      pais: {
-        nombre: paises.nombre,
-        codigo: paises.codigo,
-      },
+      id:        articulos.id,
+      titulo:    articulos.titulo,
+      slug:      articulos.slug,
+      resumen:   articulos.resumen,
+      imagen:    articulos.imagen,
+      destacado: articulos.destacado,
+      creadoEn:  articulos.creadoEn,
+      categoria: { nombre: categorias.nombre, slug: categorias.slug },
+      pais:      { nombre: paises.nombre, codigo: paises.codigo },
     })
     .from(articulos)
     .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
@@ -33,27 +26,20 @@ export async function getArticulos(limit = 20) {
     .limit(limit);
 }
 
-// Un artículo por slug (para la página individual)
-export async function getArticuloPorSlug(slug: string) {
+export async function getArticuloPorSlug(db: Db, slug: string) {
   const resultado = await db
     .select({
-      id:          articulos.id,
-      titulo:      articulos.titulo,
-      slug:        articulos.slug,
-      resumen:     articulos.resumen,
-      contenido:   articulos.contenido,
-      imagen:      articulos.imagen,
-      destacado:   articulos.destacado,
-      creadoEn:    articulos.creadoEn,
+      id:            articulos.id,
+      titulo:        articulos.titulo,
+      slug:          articulos.slug,
+      resumen:       articulos.resumen,
+      contenido:     articulos.contenido,
+      imagen:        articulos.imagen,
+      destacado:     articulos.destacado,
+      creadoEn:      articulos.creadoEn,
       actualizadoEn: articulos.actualizadoEn,
-      categoria: {
-        nombre: categorias.nombre,
-        slug:   categorias.slug,
-      },
-      pais: {
-        nombre: paises.nombre,
-        codigo: paises.codigo,
-      },
+      categoria: { nombre: categorias.nombre, slug: categorias.slug },
+      pais:      { nombre: paises.nombre, codigo: paises.codigo },
     })
     .from(articulos)
     .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
@@ -64,8 +50,7 @@ export async function getArticuloPorSlug(slug: string) {
   return resultado[0] ?? null;
 }
 
-// Artículos por categoría
-export async function getArticulosPorCategoria(categoriaSlug: string, limit = 20) {
+export async function getArticulosPorCategoria(db: Db, categoriaSlug: string, limit = 20) {
   return db
     .select({
       id:        articulos.id,
@@ -75,14 +60,8 @@ export async function getArticulosPorCategoria(categoriaSlug: string, limit = 20
       imagen:    articulos.imagen,
       destacado: articulos.destacado,
       creadoEn:  articulos.creadoEn,
-      categoria: {
-        nombre: categorias.nombre,
-        slug:   categorias.slug,
-      },
-      pais: {
-        nombre: paises.nombre,
-        codigo: paises.codigo,
-      },
+      categoria: { nombre: categorias.nombre, slug: categorias.slug },
+      pais:      { nombre: paises.nombre, codigo: paises.codigo },
     })
     .from(articulos)
     .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
@@ -92,8 +71,7 @@ export async function getArticulosPorCategoria(categoriaSlug: string, limit = 20
     .limit(limit);
 }
 
-// Artículos por país
-export async function getArticulosPorPais(paisCodigo: string, limit = 20) {
+export async function getArticulosPorPais(db: Db, paisCodigo: string, limit = 20) {
   return db
     .select({
       id:        articulos.id,
@@ -103,14 +81,8 @@ export async function getArticulosPorPais(paisCodigo: string, limit = 20) {
       imagen:    articulos.imagen,
       destacado: articulos.destacado,
       creadoEn:  articulos.creadoEn,
-      categoria: {
-        nombre: categorias.nombre,
-        slug:   categorias.slug,
-      },
-      pais: {
-        nombre: paises.nombre,
-        codigo: paises.codigo,
-      },
+      categoria: { nombre: categorias.nombre, slug: categorias.slug },
+      pais:      { nombre: paises.nombre, codigo: paises.codigo },
     })
     .from(articulos)
     .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
@@ -120,8 +92,7 @@ export async function getArticulosPorPais(paisCodigo: string, limit = 20) {
     .limit(limit);
 }
 
-// Artículos destacados (para el hero de la home)
-export async function getArticulosDestacados(limit = 5) {
+export async function getArticulosDestacados(db: Db, limit = 5) {
   return db
     .select({
       id:        articulos.id,
@@ -130,14 +101,8 @@ export async function getArticulosDestacados(limit = 5) {
       resumen:   articulos.resumen,
       imagen:    articulos.imagen,
       creadoEn:  articulos.creadoEn,
-      categoria: {
-        nombre: categorias.nombre,
-        slug:   categorias.slug,
-      },
-      pais: {
-        nombre: paises.nombre,
-        codigo: paises.codigo,
-      },
+      categoria: { nombre: categorias.nombre, slug: categorias.slug },
+      pais:      { nombre: paises.nombre, codigo: paises.codigo },
     })
     .from(articulos)
     .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
@@ -147,13 +112,11 @@ export async function getArticulosDestacados(limit = 5) {
     .limit(limit);
 }
 
-// ─── CATEGORÍAS Y PAÍSES ──────────────────────────────────────
-
-export async function getCategorias() {
+export async function getCategorias(db: Db) {
   return db.select().from(categorias).orderBy(categorias.nombre);
 }
 
-export async function getPaises() {
+export async function getPaises(db: Db) {
   return db.select().from(paises).orderBy(paises.nombre);
 }
 
