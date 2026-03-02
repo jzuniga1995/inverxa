@@ -125,7 +125,7 @@ const res = await fetch(new URL('/api/precios', Astro.url));
               const up24 = c.change24 >= 0;
               const up7  = c.change7  >= 0;
               return (
-                <a href={`/cripto/${c.id}`}
+                <a href={`/herramientas/cripto/${c.id}`}
                   class="coin-row grid px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
                   style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px"
                   data-name={c.name.toLowerCase()}
