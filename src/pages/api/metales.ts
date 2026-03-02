@@ -27,7 +27,7 @@ async function fetchMetales(): Promise<MetalData[]> {
   const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new Error(`Error al obtener metales: ${res.status}`);
 
-  const json = await res.json();
+const json = await res.json() as Record<string, any>;
   const tasasUSD: Record<string, number> = json['usd'];
 
   return METALES.map(({ nombre, simbolo, display, icono, color, tradingviewSimbolo, slug }) => {
@@ -43,7 +43,7 @@ export const GET: APIRoute = async ({ url, request }) => {
   const limit = limitParam ? parseInt(limitParam, 10) : null;
 
   // Caché separado por limit
-  const cfCache = caches.default;
+const cfCache = (caches as any).default;
   const cacheKey = new Request(`https://cache.local/metales?limit=${limit ?? 'all'}`, request);
 
   const cached = await cfCache.match(cacheKey);

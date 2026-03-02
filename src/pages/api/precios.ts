@@ -1,6 +1,7 @@
+import type { APIRoute } from 'astro';
 export const GET: APIRoute = async ({ locals, request }) => {
   const env = (locals.runtime?.env as any);
-  const cache = caches.default;
+const cache = (caches as any).default;
   const cacheKey = new Request('https://cache.local/precios', request);
 
   // Leer del caché
@@ -13,7 +14,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
       { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': env?.COINGECKO_API_KEY } }
     );
     if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
-    const raw = await res.json();
+ const raw = await res.json() as any[];
     const data = raw.map((c: any) => ({
       id: c.id, name: c.name, symbol: c.symbol.toUpperCase(),
       image: c.image, price: c.current_price,

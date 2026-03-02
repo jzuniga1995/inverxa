@@ -1,10 +1,6 @@
 // src/pages/api/dolar.ts
 import type { APIRoute } from 'astro';
 
-let cache: { data: DolarPais[]; timestamp: number } | null = null;
-const CACHE_TTL = 1000 * 60 * 15; // 15 minutos
-
-// ─── TIPOS ───────────────────────────────────────────────────────
 export interface DolarVariante {
   nombre:     string;
   compra:     number | null;
@@ -21,7 +17,6 @@ export interface DolarPais {
   variantes: DolarVariante[];
 }
 
-// ─── PAÍSES LATAM (tipo oficial desde forex API) ──────────────────
 const PAISES_FOREX = [
   { pais: 'México',     codigo: 'mx', bandera: 'mx', moneda: 'Peso Mexicano',   simbolo: 'MXN', cotizada: 'mxn' },
   { pais: 'Colombia',   codigo: 'co', bandera: 'co', moneda: 'Peso Colombiano', simbolo: 'COP', cotizada: 'cop' },
@@ -38,56 +33,41 @@ const PAISES_FOREX = [
   { pais: 'Rep. Dom.',  codigo: 'do', bandera: 'do', moneda: 'Peso Dominicano', simbolo: 'DOP', cotizada: 'dop' },
 ];
 
-// ─── FETCH FOREX ─────────────────────────────────────────────────
 async function fetchForexUSD(): Promise<Record<string, number>> {
   const url = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
   const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
   if (!res.ok) throw new Error(`forex error: ${res.status}`);
-  const json = await res.json();
+  const json = await res.json() as Record<string, any>;
   return json['usd'] as Record<string, number>;
 }
 
-// ─── FETCH ARGENTINA (bluelytics — oficial + blue) ───────────────
 async function fetchArgentina(): Promise<DolarPais | null> {
   try {
     const res = await fetch('https://api.bluelytics.com.ar/v2/latest', {
       signal: AbortSignal.timeout(6000),
     });
     if (!res.ok) throw new Error(`bluelytics ${res.status}`);
-    const bl = await res.json();
-
-    const variantes: DolarVariante[] = [
-      { nombre: 'Oficial', compra: bl.oficial.value_buy,  venta: bl.oficial.value_sell, esParalelo: false },
-      { nombre: 'Blue',    compra: bl.blue.value_buy,     venta: bl.blue.value_sell,    esParalelo: true  },
-    ];
-
-    return { pais: 'Argentina', codigo: 'ar', bandera: 'ar', moneda: 'Peso Argentino', simbolo: 'ARS', variantes };
+    const bl = await res.json() as any;
+    return {
+      pais: 'Argentina', codigo: 'ar', bandera: 'ar', moneda: 'Peso Argentino', simbolo: 'ARS',
+      variantes: [
+        { nombre: 'Oficial', compra: bl.oficial.value_buy, venta: bl.oficial.value_sell, esParalelo: false },
+        { nombre: 'Blue',    compra: bl.blue.value_buy,    venta: bl.blue.value_sell,    esParalelo: true  },
+      ],
+    };
   } catch (e) {
     console.error('[dolar/ar]', e);
     return null;
   }
 }
 
-// ─── FETCH VENEZUELA (fawazahmed0 — BCV oficial) ─────────────────
-// dolarapi.com no siempre es accesible desde servidores externos,
-// usamos la misma fuente que el resto de LATAM
 async function fetchVenezuela(tasas: Record<string, number> | null): Promise<DolarPais | null> {
   try {
     const ves = tasas?.['ves'];
     if (!ves || ves <= 0) return null;
-
     return {
-      pais:    'Venezuela',
-      codigo:  've',
-      bandera: 've',
-      moneda:  'Bolívar Soberano',
-      simbolo: 'VES',
-      variantes: [{
-        nombre:     'BCV (Oficial)',
-        compra:     null,
-        venta:      parseFloat(ves.toFixed(2)),
-        esParalelo: false,
-      }],
+      pais: 'Venezuela', codigo: 've', bandera: 've', moneda: 'Bolívar Soberano', simbolo: 'VES',
+      variantes: [{ nombre: 'BCV (Oficial)', compra: null, venta: parseFloat(ves.toFixed(2)), esParalelo: false }],
     };
   } catch (e) {
     console.error('[dolar/ve]', e);
@@ -95,80 +75,60 @@ async function fetchVenezuela(tasas: Record<string, number> | null): Promise<Dol
   }
 }
 
-// ─── CONSTRUIR TODOS LOS PAÍSES ───────────────────────────────────
 async function obtenerDolar(): Promise<DolarPais[]> {
   const [tasas, argentina] = await Promise.all([
     fetchForexUSD().catch(() => null),
     fetchArgentina(),
   ]);
-
   const venezuela = await fetchVenezuela(tasas);
-
   const resultado: DolarPais[] = [];
 
-  // Argentina primero (más buscada)
   if (argentina) resultado.push(argentina);
-
-  // Venezuela segundo
   if (venezuela) resultado.push(venezuela);
 
-  // Resto LATAM desde forex
   if (tasas) {
     for (const p of PAISES_FOREX) {
       const tasa = tasas[p.cotizada];
       if (!tasa || tasa <= 0) continue;
       resultado.push({
-        pais:     p.pais,
-        codigo:   p.codigo,
-        bandera:  p.bandera,
-        moneda:   p.moneda,
-        simbolo:  p.simbolo,
-        variantes: [{
-          nombre:     'Oficial',
-          compra:     null,
-          venta:      parseFloat(tasa.toFixed(4)),
-          esParalelo: false,
-        }],
+        pais: p.pais, codigo: p.codigo, bandera: p.bandera, moneda: p.moneda, simbolo: p.simbolo,
+        variantes: [{ nombre: 'Oficial', compra: null, venta: parseFloat(tasa.toFixed(4)), esParalelo: false }],
       });
     }
   }
-
   return resultado;
 }
 
 // ─── HANDLER ─────────────────────────────────────────────────────
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, request }) => {
+  const paisParam = url.searchParams.get('pais');
+
+ const cfCache = (caches as any).default;
+  const cacheKey = new Request(`https://cache.local/dolar?pais=${paisParam ?? 'all'}`, request);
+
+  const cached = await cfCache.match(cacheKey);
+  if (cached) return cached;
+
   try {
-    const paisParam = url.searchParams.get('pais'); // ?pais=ar → filtrar por país
-    const ahora     = Date.now();
-
-    if (cache && ahora - cache.timestamp < CACHE_TTL) {
-      const data = paisParam ? cache.data.filter(p => p.codigo === paisParam) : cache.data;
-      return new Response(JSON.stringify({ ok: true, data, cached: true }), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=900' },
-      });
-    }
-
     const data = await obtenerDolar();
-    cache = { data, timestamp: ahora };
     const resultado = paisParam ? data.filter(p => p.codigo === paisParam) : data;
 
-    return new Response(JSON.stringify({ ok: true, data: resultado, cached: false }), {
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=900' },
+    const response = new Response(JSON.stringify({ ok: true, data: resultado, cached: false }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=900', // 15 minutos
+      },
     });
+
+    await cfCache.put(cacheKey, response.clone());
+    return response;
 
   } catch (error) {
     console.error('[/api/dolar] Error:', error);
-    if (cache) {
-      const paisParam = url.searchParams.get('pais');
-      const data = paisParam ? cache.data.filter(p => p.codigo === paisParam) : cache.data;
-      return new Response(JSON.stringify({ ok: true, data, cached: true, stale: true }), {
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
     return new Response(
       JSON.stringify({ ok: false, error: 'Error al obtener precios del dólar' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 };
+

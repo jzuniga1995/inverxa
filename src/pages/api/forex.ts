@@ -49,7 +49,7 @@ async function fetchTasas(base: string): Promise<Record<string, number>> {
   const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base}.json`;
   const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new Error(`Error tasas ${base}: ${res.status}`);
-  const json = await res.json();
+ const json = await res.json() as Record<string, any>;
   return json[base] as Record<string, number>;
 }
 
@@ -71,7 +71,7 @@ export const GET: APIRoute = async ({ url, request }) => {
   const limitParam = url.searchParams.get('limit');
   const limit = limitParam ? parseInt(limitParam, 10) : null;
 
-  const cfCache = caches.default;
+const cfCache = (caches as any).default;
   const cacheKey = new Request(`https://cache.local/forex?limit=${limit ?? 'all'}`, request);
 
   const cached = await cfCache.match(cacheKey);

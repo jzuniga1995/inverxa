@@ -1,13 +1,14 @@
 // src/pages/api/acciones.ts
 import type { APIRoute } from 'astro';
 
-let cache: { data: AccionData[]; timestamp: number; } | null = null;
-const CACHE_TTL = 1000 * 60 * 60; // 1 hora — el primer fetch es lento, pero solo ocurre 1 vez/hora
-
 export interface AccionData {
   nombre: string; ticker: string; slug: string; sector: string;
   icono: string; color: string; tradingviewSimbolo: string;
   precio: number; cambio: number; cambioPct: number; alza: boolean;
+}
+
+interface FinnhubQuote {
+  c: number; d: number; dp: number; h: number; l: number; o: number; pc: number;
 }
 
 const ACCIONES = [
@@ -63,26 +64,20 @@ const ACCIONES = [
   { ticker: 'QQQ',   nombre: 'Nasdaq ETF',        sector: 'ETF',             icono: 'Activity',        color: 'text-purple-400', tradingviewSimbolo: 'NASDAQ:QQQ',   slug: 'qqq'   },
 ];
 
-interface FinnhubQuote {
-  c: number; d: number; dp: number; h: number; l: number; o: number; pc: number;
-}
-
+// ─── FETCH ───────────────────────────────────────────────────────
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function fetchQuote(ticker: string, apiKey: string): Promise<FinnhubQuote> {
+async function fetchQuote(ticker: string, apiKey: string) {
   const res = await fetch(
     `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${apiKey}`,
     { signal: AbortSignal.timeout(8000) }
   );
   if (!res.ok) throw new Error(`${res.status}`);
-  return res.json();
+return res.json() as Promise<FinnhubQuote>;
 }
 
-// Fetch SECUENCIAL — 1 llamada cada 1100ms para no superar el límite de 60/min de Finnhub.
-// Con 50 tickers: ~55 segundos en el primer fetch. Luego el caché de 1 hora lo sirve todo.
-async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
+export async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
   const results: AccionData[] = [];
-
   for (let i = 0; i < ACCIONES.length; i++) {
     const accion = ACCIONES[i];
     try {
@@ -95,68 +90,50 @@ async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
         alza:      q.dp >= 0,
       });
     } catch {
-      // Si falla un ticker individual, lo agrega con precio 0 y continúa
       results.push({ ...accion, precio: 0, cambio: 0, cambioPct: 0, alza: true });
     }
-
-    // Pausa entre cada llamada excepto después de la última
     if (i < ACCIONES.length - 1) await sleep(1100);
   }
-
   return results;
 }
 
+// ─── HANDLER ─────────────────────────────────────────────────────
 export const GET: APIRoute = async ({ url, locals }) => {
-  const apiKey = (locals.runtime?.env as any)?.FINNHUB_API_KEY;
+  const env = (locals.runtime?.env as any);
+  const KV: KVNamespace = env?.INVERSA_KV;
 
-  if (!apiKey) {
+  if (!env?.FINNHUB_API_KEY) {
     return new Response(
       JSON.stringify({ ok: false, error: 'FINNHUB_API_KEY no configurada' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 
-  // Si hay caché válido, responde de inmediato
-  const ahora = Date.now();
-  if (cache && ahora - cache.timestamp < CACHE_TTL) {
-    const limitParam = url.searchParams.get('limit');
-    const limit = limitParam ? parseInt(limitParam, 10) : null;
-    const data = limit ? cache.data.slice(0, limit) : cache.data;
+  const limitParam = url.searchParams.get('limit');
+  const limit = limitParam ? parseInt(limitParam, 10) : null;
+
+  // Leer de KV (escrito por el cron)
+  const cached = await KV?.get('acciones', 'json') as AccionData[] | null;
+  if (cached) {
+    const data = limit ? cached.slice(0, limit) : cached;
     return new Response(JSON.stringify({ ok: true, data, cached: true }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
     });
   }
 
+  // Fallback: solo si KV está vacío (primera vez)
   try {
-    const data = await fetchAcciones(apiKey);
-    cache = { data, timestamp: ahora };
-
-    const limitParam = url.searchParams.get('limit');
-    const limit = limitParam ? parseInt(limitParam, 10) : null;
+    const data = await fetchAcciones(env.FINNHUB_API_KEY);
+    await KV?.put('acciones', JSON.stringify(data), { expirationTtl: 7200 });
     const resultado = limit ? data.slice(0, limit) : data;
-
     return new Response(JSON.stringify({ ok: true, data: resultado, cached: false }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
     });
-
   } catch (error) {
     console.error('[/api/acciones] Error:', error);
-
-    // Si hay caché aunque sea viejo, úsalo
-    if (cache) {
-      const limitParam = url.searchParams.get('limit');
-      const limit = limitParam ? parseInt(limitParam, 10) : null;
-      const data = limit ? cache.data.slice(0, limit) : cache.data;
-      return new Response(
-        JSON.stringify({ ok: true, data, cached: true, stale: true }),
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
     return new Response(
       JSON.stringify({ ok: false, error: 'Error al obtener cotizaciones' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 };
-
