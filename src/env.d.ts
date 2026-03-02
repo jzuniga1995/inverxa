@@ -7,7 +7,10 @@ declare namespace App {
     runtime: {
       env: {
         DATABASE_URL: string;
+        FINNHUB_API_KEY: string;
+        COINGECKO_API_KEY: string;
       };
     };
   }
 }
+
