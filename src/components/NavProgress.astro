@@ -1,0 +1,123 @@
+---
+// src/components/NavProgress.astro
+// Agrega este componente dentro del <head> o justo antes del </body> en tu Layout.astro:
+// import NavProgress from '../components/NavProgress.astro';
+// <NavProgress />
+---
+
+<!-- Barra de progreso superior -->
+<div id="nav-progress" aria-hidden="true">
+  <div id="nav-bar"></div>
+</div>
+
+<style>
+  #nav-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  #nav-progress.active {
+    opacity: 1;
+  }
+
+  #nav-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #D4A843, #E8C060, #D4A843);
+    background-size: 200% 100%;
+    border-radius: 0 2px 2px 0;
+    transition: width 0.3s ease;
+    animation: shimmer 1.2s ease infinite;
+    box-shadow: 0 0 8px rgba(212, 168, 67, 0.6);
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+</style>
+
+<script>
+  const progress = document.getElementById('nav-progress')!;
+  const bar      = document.getElementById('nav-bar')!;
+
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  function startProgress() {
+    // Limpia cualquier estado previo
+    if (timer) clearTimeout(timer);
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+
+    // Fuerza reflow para que la animación empiece desde 0
+    bar.getBoundingClientRect();
+
+    progress.classList.add('active');
+    bar.style.transition = 'width 0.3s ease';
+
+    // Avanza rápido al 30%, luego lento al 85% (simula carga)
+    requestAnimationFrame(() => {
+      bar.style.width = '30%';
+      timer = setTimeout(() => {
+        bar.style.width = '60%';
+        timer = setTimeout(() => {
+          bar.style.width = '85%';
+        }, 400);
+      }, 200);
+    });
+  }
+
+  function finishProgress() {
+    if (timer) clearTimeout(timer);
+
+    bar.style.transition = 'width 0.2s ease';
+    bar.style.width = '100%';
+
+    setTimeout(() => {
+      progress.classList.remove('active');
+      setTimeout(() => {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+      }, 150);
+    }, 200);
+  }
+
+  // Detecta clicks en links internos
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest('a');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    // Solo links internos (no externos, no anclas, no mailto)
+    const isInternal =
+      href.startsWith('/') &&
+      !href.startsWith('//') &&
+      !link.hasAttribute('target') &&
+      !link.hasAttribute('download');
+
+    if (!isInternal) return;
+
+    // No mostrar si es la misma página
+    if (href === window.location.pathname) return;
+
+    startProgress();
+  });
+
+  // Termina cuando la página carga
+  window.addEventListener('load', finishProgress);
+
+  // Fallback: también termina en popstate (botón atrás/adelante)
+  window.addEventListener('popstate', () => {
+    startProgress();
+    setTimeout(finishProgress, 300);
+  });
+</script>

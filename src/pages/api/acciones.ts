@@ -2,7 +2,7 @@
 import type { APIRoute } from 'astro';
 
 let cache: { data: AccionData[]; timestamp: number; } | null = null;
-const CACHE_TTL = 1000 * 60 * 15;
+const CACHE_TTL = 1000 * 60 * 60; // 1 hora — el primer fetch es lento, pero solo ocurre 1 vez/hora
 
 export interface AccionData {
   nombre: string; ticker: string; slug: string; sector: string;
@@ -67,48 +67,46 @@ interface FinnhubQuote {
   c: number; d: number; dp: number; h: number; l: number; o: number; pc: number;
 }
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function fetchQuote(ticker: string, apiKey: string): Promise<FinnhubQuote> {
   const res = await fetch(
     `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${apiKey}`,
-    { signal: AbortSignal.timeout(5000) }
+    { signal: AbortSignal.timeout(8000) }
   );
   if (!res.ok) throw new Error(`${res.status}`);
   return res.json();
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
+// Fetch SECUENCIAL — 1 llamada cada 1100ms para no superar el límite de 60/min de Finnhub.
+// Con 50 tickers: ~55 segundos en el primer fetch. Luego el caché de 1 hora lo sirve todo.
 async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
-  const BATCH_SIZE = 10;
   const results: AccionData[] = [];
 
-  for (let i = 0; i < ACCIONES.length; i += BATCH_SIZE) {
-    const lote = ACCIONES.slice(i, i + BATCH_SIZE);
-    const quotes = await Promise.all(
-      lote.map(async (accion) => {
-        try {
-          const q = await fetchQuote(accion.ticker, apiKey);
-          return {
-            ...accion,
-            precio:    parseFloat(q.c.toFixed(2)),
-            cambio:    parseFloat(q.d.toFixed(2)),
-            cambioPct: parseFloat(q.dp.toFixed(2)),
-            alza:      q.dp >= 0,
-          };
-        } catch {
-          return { ...accion, precio: 0, cambio: 0, cambioPct: 0, alza: true };
-        }
-      })
-    );
-    results.push(...quotes);
-    if (i + BATCH_SIZE < ACCIONES.length) await sleep(200);
+  for (let i = 0; i < ACCIONES.length; i++) {
+    const accion = ACCIONES[i];
+    try {
+      const q = await fetchQuote(accion.ticker, apiKey);
+      results.push({
+        ...accion,
+        precio:    parseFloat(q.c.toFixed(2)),
+        cambio:    parseFloat(q.d.toFixed(2)),
+        cambioPct: parseFloat(q.dp.toFixed(2)),
+        alza:      q.dp >= 0,
+      });
+    } catch {
+      // Si falla un ticker individual, lo agrega con precio 0 y continúa
+      results.push({ ...accion, precio: 0, cambio: 0, cambioPct: 0, alza: true });
+    }
+
+    // Pausa entre cada llamada excepto después de la última
+    if (i < ACCIONES.length - 1) await sleep(1100);
   }
 
   return results;
 }
 
 export const GET: APIRoute = async ({ url, locals }) => {
-  // ← ÚNICO CAMBIO: obtener apiKey desde locals.runtime.env
   const apiKey = (locals.runtime?.env as any)?.FINNHUB_API_KEY;
 
   if (!apiKey) {
@@ -118,29 +116,33 @@ export const GET: APIRoute = async ({ url, locals }) => {
     );
   }
 
-  try {
+  // Si hay caché válido, responde de inmediato
+  const ahora = Date.now();
+  if (cache && ahora - cache.timestamp < CACHE_TTL) {
     const limitParam = url.searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam, 10) : null;
-    const ahora = Date.now();
+    const data = limit ? cache.data.slice(0, limit) : cache.data;
+    return new Response(JSON.stringify({ ok: true, data, cached: true }), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
+    });
+  }
 
-    if (cache && ahora - cache.timestamp < CACHE_TTL) {
-      const data = limit ? cache.data.slice(0, limit) : cache.data;
-      return new Response(JSON.stringify({ ok: true, data, cached: true }), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=900' },
-      });
-    }
-
+  try {
     const data = await fetchAcciones(apiKey);
     cache = { data, timestamp: ahora };
+
+    const limitParam = url.searchParams.get('limit');
+    const limit = limitParam ? parseInt(limitParam, 10) : null;
     const resultado = limit ? data.slice(0, limit) : data;
 
     return new Response(JSON.stringify({ ok: true, data: resultado, cached: false }), {
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=900' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
     });
 
   } catch (error) {
     console.error('[/api/acciones] Error:', error);
 
+    // Si hay caché aunque sea viejo, úsalo
     if (cache) {
       const limitParam = url.searchParams.get('limit');
       const limit = limitParam ? parseInt(limitParam, 10) : null;

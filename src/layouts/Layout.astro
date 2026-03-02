@@ -2,6 +2,7 @@
 // src/layouts/Layout.astro
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import NavProgress from '../components/NavProgress.astro';
 
 const { bodyClass = '' } = Astro.props;
 ---
@@ -24,6 +25,18 @@ const { bodyClass = '' } = Astro.props;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E8YH3R6PPW"></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E8YH3R6PPW');
+</script>
+
+  <!-- Barra de progreso de navegación -->
+  <NavProgress />
 
   <!-- SEO de cada página -->
   <slot name="head" />
@@ -71,3 +84,4 @@ const { bodyClass = '' } = Astro.props;
     color: #E8EAF0;
   }
 </style>
+
