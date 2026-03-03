@@ -134,7 +134,7 @@ try {
     }
 
     // 4. Guardar en KV con TTL de 5 minutos
-    await KV?.put(cacheKey, JSON.stringify({ accion, quote }), { expirationTtl: 300 });
+    await KV?.put(cacheKey, JSON.stringify({ accion, quote }), { expirationTtl: 3600 });
   }
 } catch (e) {
   fetchError = true;
