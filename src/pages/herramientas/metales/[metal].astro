@@ -118,11 +118,95 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>{metalData?.nombre ?? metal} — Precio en Vivo · Inversax</title>
-    <meta name="description" content={`Precio de ${metalData?.nombre} (${metalData?.simbolo}) en tiempo real con gráfica histórica y análisis para inversores en Latinoamérica.`} />
-    <link rel="canonical" href={`https://inversax.com/herramientas/metales/${metal}`} />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>Precio del {metalData?.nombre} Hoy ({metalData?.simbolo}/USD) — Gráfica en Vivo | Inversax</title>
+  <meta name="description" content={`Precio del ${metalData?.nombre} (${metalData?.simbolo}) hoy: ${precioFmt} USD por onza troy. Gráfica histórica, análisis y datos clave para inversores en Latinoamérica.`} />
+  <meta name="keywords" content={`precio ${metalData?.nombre?.toLowerCase()} hoy, ${metalData?.simbolo} USD, ${metalData?.nombre?.toLowerCase()} onza troy, precio ${metalData?.nombre?.toLowerCase()} tiempo real, invertir en ${metalData?.nombre?.toLowerCase()}`} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href={`https://inversax.com/herramientas/metales/${metal}`} />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content={`Precio del ${metalData?.nombre} Hoy (${metalData?.simbolo}/USD) | Inversax`} />
+  <meta property="og:description"  content={`${metalData?.nombre} cotiza a ${precioFmt} USD por onza troy. Gráfica histórica y análisis para inversores en Latinoamérica.`} />
+  <meta property="og:url"          content={`https://inversax.com/herramientas/metales/${metal}`} />
+  <meta property="og:image"        content={`https://inversax.com/og/herramientas/metales/${metal}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={`Precio del ${metalData?.nombre} hoy — Inversax`} />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content={`Precio del ${metalData?.nombre} Hoy — ${precioFmt} USD/oz | Inversax`} />
+  <meta name="twitter:description" content={`${metalData?.nombre} (${metalData?.simbolo}) cotiza a ${precioFmt} por onza troy. Gráfica y análisis en Inversax.`} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/herramientas/metales/${metal}.png`} />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": `Precio del ${metalData?.nombre} Hoy (${metalData?.simbolo}/USD) — Inversax`,
+    "description": `Precio del ${metalData?.nombre} en tiempo real con gráfica histórica y análisis para inversores en Latinoamérica.`,
+    "url": `https://inversax.com/herramientas/metales/${metal}`,
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": metalData?.nombre }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",            "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",      "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Metales Preciosos", "item": "https://inversax.com/herramientas/metales" },
+      { "@type": "ListItem", "position": 4, "name": metalData?.nombre,   "item": `https://inversax.com/herramientas/metales/${metal}` }
+    ]
+  })} />
+
+  {metalData && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": `¿Cuánto vale una onza de ${metalData.nombre} hoy?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Una onza troy de ${metalData.nombre} (${metalData.simbolo}) cotiza a ${precioFmt} USD. El precio se actualiza diariamente en Inversax.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Cómo invertir en ${metalData.nombre} desde Latinoamérica?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Puedes invertir en ${metalData.nombre} desde Latinoamérica a través de ETFs que replican su precio, contratos de futuros en plataformas como CME, o brokers que ofrecen CFDs sobre metales preciosos como XM o Pepperstone.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Qué factores afectan el precio del ${metalData.nombre}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `El precio del ${metalData.nombre} está influenciado por la demanda industrial, las tasas de interés de la Fed, el valor del dólar, la inflación global y las reservas de los bancos centrales.`
+          }
+        }
+      ]
+    })} />
+  )}
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
