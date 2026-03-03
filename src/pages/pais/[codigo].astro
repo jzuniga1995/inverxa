@@ -56,15 +56,132 @@ function formatFecha(fecha: Date | null) {
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>{paisActual.nombre} — Inversax</title>
-    <meta name="description" content={`Finanzas, cripto, trading y economía en ${paisActual.nombre}. Contenido financiero actualizado para tu región en Inversax.`} />
-    <link rel="canonical" href={`https://inversax.com/pais/${codigo}`} />
-    <meta property="og:title"       content={`${paisActual.nombre} — Inversax`} />
-    <meta property="og:description" content={`Finanzas, cripto, trading y economía en ${paisActual.nombre}.`} />
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content={`https://inversax.com/pais/${codigo}`} />
-  </slot>
+<slot name="head" slot="head">
+
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Finanzas en {paisActual.nombre} — Cripto, Bolsa y Trading | Inversax</title>
+  <meta name="description" content={`Noticias financieras en ${paisActual.nombre}: cripto, forex, bolsa, economía y trading. Todo en español, actualizado cada día para inversores y traders en ${paisActual.nombre}.`} />
+  <meta name="keywords" content={`finanzas ${paisActual.nombre}, cripto ${paisActual.nombre}, trading ${paisActual.nombre}, bolsa ${paisActual.nombre}, inversiones ${paisActual.nombre}, forex ${paisActual.nombre}, economía ${paisActual.nombre}`} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href={`https://inversax.com/pais/${codigo}`} />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content={`Finanzas en ${paisActual.nombre} — Cripto, Bolsa y Trading | Inversax`} />
+  <meta property="og:description" content={`Noticias de cripto, forex, bolsa y economía en ${paisActual.nombre}. Contenido financiero actualizado cada día para inversores en ${region}.`} />
+  <meta property="og:url"         content={`https://inversax.com/pais/${codigo}`} />
+  <meta property="og:image"       content={`https://inversax.com/og/pais/${codigo}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={`Finanzas en ${paisActual.nombre} — Inversax`} />
+
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content={`Finanzas en ${paisActual.nombre} — Cripto, Bolsa y Trading | Inversax`} />
+  <meta name="twitter:description" content={`Noticias de cripto, forex, bolsa y economía en ${paisActual.nombre}. Actualizado cada día en Inversax.`} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/pais/${codigo}.png`} />
+  <meta name="twitter:image:alt"   content={`Finanzas en ${paisActual.nombre} — Inversax`} />
+
+  <!-- ═══════════════════════════════════════
+       GEO TAGS (SEO local)
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content={codigo.toUpperCase()} />
+  <meta name="geo.placename"    content={paisActual.nombre} />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": `Finanzas en ${paisActual.nombre} — Inversax`,
+    "description": `Noticias de cripto, forex, bolsa y economía en ${paisActual.nombre}. Actualizado cada día para inversores en ${region}.`,
+    "url": `https://inversax.com/pais/${codigo}`,
+    "inLanguage": "es",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png"
+      }
+    },
+    "about": {
+      "@type": "Place",
+      "name": paisActual.nombre,
+      "addressCountry": codigo.toUpperCase()
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://inversax.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Países",
+        "item": "https://inversax.com/paises"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": region,
+        "item": `https://inversax.com/paises`
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": paisActual.nombre,
+        "item": `https://inversax.com/pais/${codigo}`
+      }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — CollectionPage (si hay artículos)
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": `Noticias financieras en ${paisActual.nombre}`,
+    "description": `Artículos sobre finanzas, cripto, trading y economía en ${paisActual.nombre}.`,
+    "url": `https://inversax.com/pais/${codigo}`,
+    "inLanguage": "es",
+    "about": {
+      "@type": "Thing",
+      "name": `Finanzas en ${paisActual.nombre}`
+    }
+  })} />
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
