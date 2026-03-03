@@ -10,10 +10,100 @@ import { DollarSign, RefreshCw, Globe } from 'lucide-astro';
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Precio del Dólar hoy — Oficial, Blue y Paralelo en LATAM | Inversax</title>
-    <meta name="description" content="Precio del dólar hoy en Argentina, Venezuela y Latinoamérica. Dólar blue, oficial, MEP, CCL y tipos de cambio actualizados." />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax</title>
+  <meta name="description" content="Precio del dólar hoy en Argentina, Venezuela, México, Colombia y toda Latinoamérica. Dólar blue, oficial, MEP, CCL y paralelo actualizados cada 15 minutos." />
+  <meta name="keywords" content="precio dolar hoy, dolar blue hoy, dolar paralelo, tipo de cambio latinoamerica, dolar oficial argentina, dolar venezuela, dolar mexico hoy, dolar colombia hoy" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href="https://inversax.com/herramientas/dolar" />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax" />
+  <meta property="og:description"  content="Dólar blue, oficial, MEP y paralelo en Argentina, Venezuela, México, Colombia y más. Actualizado cada 15 minutos." />
+  <meta property="og:url"          content="https://inversax.com/herramientas/dolar" />
+  <meta property="og:image"        content="https://inversax.com/og/herramientas/dolar.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Precio del Dólar hoy en Latinoamérica — Inversax" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content="Precio del Dólar Hoy — Oficial, Blue y Paralelo en LATAM | Inversax" />
+  <meta name="twitter:description" content="Dólar blue, oficial y paralelo en toda Latinoamérica. Actualizado cada 15 minutos." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/dolar.png" />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Precio del Dólar Hoy en Latinoamérica — Inversax",
+    "description": "Dólar oficial, blue y paralelo en toda Latinoamérica. Actualizado cada 15 minutos.",
+    "url": "https://inversax.com/herramientas/dolar",
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": "Tipo de cambio del dólar estadounidense" }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",           "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",     "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Precio del Dólar", "item": "https://inversax.com/herramientas/dolar" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cuál es el precio del dólar blue hoy en Argentina?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El dólar blue en Argentina se actualiza cada 15 minutos en Inversax. Es el tipo de cambio informal que opera fuera del sistema bancario oficial."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué diferencia hay entre el dólar oficial y el dólar paralelo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El dólar oficial es el tipo de cambio fijado por el banco central. El paralelo o blue es el precio en el mercado informal, generalmente más alto en países con controles cambiarios como Argentina o Venezuela."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cada cuánto se actualiza el precio del dólar en Inversax?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Los precios se actualizan automáticamente cada 15 minutos. También puedes forzar actualización manual con el botón Actualizar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es el dólar MEP y el CCL en Argentina?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El dólar MEP y CCL son tipos de cambio financieros legales en Argentina que se obtienen comprando y vendiendo bonos en bolsa. Son alternativas legales al dólar blue."
+        }
+      }
+    ]
+  })} />
+
+</slot>
 
   <main class="min-h-screen bg-[#0A0B0D] pt-28 pb-20 px-4 sm:px-6" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-5xl mx-auto">
