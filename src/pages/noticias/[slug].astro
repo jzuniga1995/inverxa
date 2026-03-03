@@ -33,31 +33,129 @@ function formatFecha(fecha: Date | null) {
 
 <Layout>
 <slot name="head" slot="head">
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
   <title>{articulo.titulo} — Inversax</title>
   <meta name="description" content={articulo.resumen ?? ''} />
-
-  <!-- Canonical -->
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href={`https://inversax.com/noticias/${articulo.slug}`} />
 
-  <!-- Open Graph -->
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:type"        content="article" />
   <meta property="og:title"       content={articulo.titulo} />
   <meta property="og:description" content={articulo.resumen ?? ''} />
-  <meta property="og:type"        content="article" />
   <meta property="og:url"         content={`https://inversax.com/noticias/${articulo.slug}`} />
-  {articulo.imagen && <meta property="og:image" content={articulo.imagen} />}
+  {articulo.imagen && <meta property="og:image"       content={articulo.imagen} />}
+  {articulo.imagen && <meta property="og:image:width"  content="1200" />}
+  {articulo.imagen && <meta property="og:image:height" content="630" />}
+  {articulo.imagen && <meta property="og:image:alt"    content={articulo.titulo} />}
 
-  <!-- Twitter Card -->
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:title"       content={articulo.titulo} />
   <meta name="twitter:description" content={articulo.resumen ?? ''} />
   {articulo.imagen && <meta name="twitter:image" content={articulo.imagen} />}
+  {articulo.imagen && <meta name="twitter:image:alt" content={articulo.titulo} />}
 
-  <!-- Article meta para Google -->
+  <!-- ═══════════════════════════════════════
+       ARTICLE META
+  ═══════════════════════════════════════ -->
   <meta property="article:published_time" content={articulo.creadoEn?.toISOString() ?? ''} />
   <meta property="article:modified_time"  content={articulo.actualizadoEn?.toISOString() ?? ''} />
+  <meta property="article:publisher"      content="https://inversax.com" />
   {articulo.categoria && <meta property="article:section" content={articulo.categoria.nombre} />}
-</slot>
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — NewsArticle (Rich Results)
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": articulo.titulo,
+    "description": articulo.resumen ?? '',
+    "url": `https://inversax.com/noticias/${articulo.slug}`,
+    "datePublished": articulo.creadoEn?.toISOString() ?? '',
+    "dateModified": articulo.actualizadoEn?.toISOString() ?? '',
+    "image": articulo.imagen
+      ? {
+          "@type": "ImageObject",
+          "url": articulo.imagen,
+          "width": 1200,
+          "height": 630
+        }
+      : undefined,
+    "author": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png",
+        "width": 200,
+        "height": 60
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://inversax.com/noticias/${articulo.slug}`
+    },
+    "articleSection": articulo.categoria?.nombre ?? '',
+    "inLanguage": "es",
+    "isAccessibleForFree": true
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://inversax.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Noticias",
+        "item": "https://inversax.com/noticias"
+      },
+      ...(articulo.categoria ? [{
+        "@type": "ListItem",
+        "position": 3,
+        "name": articulo.categoria.nombre,
+        "item": `https://inversax.com/${articulo.categoria.slug}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": articulo.titulo,
+        "item": `https://inversax.com/noticias/${articulo.slug}`
+      }] : [{
+        "@type": "ListItem",
+        "position": 3,
+        "name": articulo.titulo,
+        "item": `https://inversax.com/noticias/${articulo.slug}`
+      }])
+    ]
+  })} />
+</slot>
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <div class="flex flex-col lg:flex-row gap-10">
