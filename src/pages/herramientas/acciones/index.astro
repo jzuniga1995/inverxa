@@ -2,6 +2,7 @@
 // src/pages/herramientas/acciones/index.astro
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
+import { ArrowLeft } from 'lucide-astro';
 
 type Accion = {
   nombre: string;
@@ -211,6 +212,11 @@ try {
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
+
+<a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+  <ArrowLeft size={15} /> Herramientas
+</a>
+
 
       <!-- Título -->
       <div class="mb-7">
