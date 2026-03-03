@@ -3,7 +3,8 @@
 export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
-import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-astro';
+import { ArrowLeft, TrendingUp,} from 'lucide-astro';
+import { parseJson } from '../../../lib/utils';
 
 const { par } = Astro.params;
 
@@ -22,7 +23,7 @@ let fetchError = false;
 try {
   const res  = await fetch(new URL('/api/forex', Astro.url));
   if (!res.ok) throw new Error(`${res.status}`);
-  const json = await res.json();
+const json = await parseJson(res);
   if (json.ok) {
     parData = json.data.find((f: ForexData) => f.par === parFormateado) ?? null;
   }

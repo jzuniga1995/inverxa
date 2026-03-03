@@ -2,15 +2,15 @@
 // src/pages/contacto.astro
 import Layout from '../layouts/Layout.astro';
 import {
-  Mail, ArrowRight, MessageSquare, Globe,
+  ArrowRight, MessageSquare, Globe,
   Megaphone, Shield, Clock, Send
 } from 'lucide-astro';
 
-const sitioWeb  = "https://inversax.com";
+const sitioWeb = "https://inversax.com";
 const correos = [
-  { tipo: "General",     email: "hola@inversax.com",       icon: "msg"  },
-  { tipo: "Publicidad",  email: "publicidad@inversax.com",  icon: "ads"  },
-  { tipo: "Legal",       email: "legal@inversax.com",       icon: "law"  },
+  { tipo: "General",    email: "hola@inversax.com",      icon: "msg" },
+  { tipo: "Publicidad", email: "publicidad@inversax.com", icon: "ads" },
+  { tipo: "Legal",      email: "legal@inversax.com",      icon: "law" },
 ];
 
 const motivos = [
@@ -35,60 +35,61 @@ const motivos = [
     <!-- HERO -->
     <div class="relative border-b border-white/[0.07] overflow-hidden">
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-10"
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[200px] sm:h-[300px] rounded-full opacity-10"
           style="background: radial-gradient(ellipse, #D4A843 0%, transparent 70%); filter: blur(70px);">
         </div>
       </div>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-10">
+        <!-- Breadcrumb -->
         <div class="flex items-center gap-2 text-white/30 text-sm mb-6">
           <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
           <ArrowRight size={13} />
           <span>Contacto</span>
         </div>
 
-        <div class="flex items-start gap-4 mb-5">
-          <div class="w-12 h-12 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center flex-shrink-0 mt-1">
-            <MessageSquare size={22} class="text-[#D4A843]" />
+        <div class="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-5">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-1">
+            <MessageSquare size={20} class="text-[#D4A843]" />
           </div>
           <div>
-            <h1 class="font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-2" style="font-family: 'Syne', sans-serif;">
+            <h1 class="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white leading-tight mb-1.5 sm:mb-2" style="font-family: 'Syne', sans-serif;">
               Contáctanos
             </h1>
-            <p class="text-white/40 text-sm flex items-center gap-1.5">
-              <Clock size={12} />
+            <p class="text-white/40 text-xs sm:text-sm flex items-center gap-1.5">
+              <Clock size={11} />
               Respondemos en menos de 48 horas hábiles
             </p>
           </div>
         </div>
 
-        <p class="text-white/50 text-base leading-relaxed max-w-xl">
-          ¿Tienes una pregunta, encontraste un error o quieres colaborar con nosotros? Completa el formulario o escríbenos directamente al correo que corresponda a tu consulta.
+        <p class="text-white/50 text-sm sm:text-base leading-relaxed max-w-xl">
+          ¿Tienes una pregunta, encontraste un error o quieres colaborar con nosotros? Completa el formulario o escríbenos directamente al correo que corresponda.
         </p>
       </div>
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div class="flex flex-col lg:flex-row gap-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
 
         <!-- SIDEBAR INFO -->
-        <aside class="lg:w-72 flex-shrink-0 flex flex-col gap-4">
+        <aside class="w-full lg:w-72 flex-shrink-0 flex flex-col gap-4">
 
           <!-- Correos directos -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex flex-col gap-4">
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
             <p class="text-white/30 text-xs font-bold uppercase tracking-widest">Correos directos</p>
-            <div class="flex flex-col gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
               {correos.map((c) => (
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
                     {c.icon === "msg" && <MessageSquare size={13} class="text-[#D4A843]" />}
-                    {c.icon === "ads" && <Megaphone size={13} class="text-[#D4A843]" />}
-                    {c.icon === "law" && <Shield size={13} class="text-[#D4A843]" />}
+                    {c.icon === "ads" && <Megaphone      size={13} class="text-[#D4A843]" />}
+                    {c.icon === "law" && <Shield         size={13} class="text-[#D4A843]" />}
                   </div>
                   <div class="min-w-0">
                     <p class="text-white/30 text-[11px] uppercase tracking-wider leading-none mb-1">{c.tipo}</p>
-                    <a href={`mailto:${c.email}`} class="text-white/70 hover:text-[#D4A843] text-sm no-underline transition-colors duration-200 truncate block">
+                    <a href={`mailto:${c.email}`} class="text-white/70 hover:text-[#D4A843] text-xs sm:text-sm no-underline transition-colors duration-200 truncate block">
                       {c.email}
                     </a>
                   </div>
@@ -97,47 +98,51 @@ const motivos = [
             </div>
           </div>
 
-          <!-- Cobertura -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex flex-col gap-3">
-            <div class="flex items-center gap-2">
-              <Globe size={14} class="text-[#D4A843]" />
-              <p class="text-white/30 text-xs font-bold uppercase tracking-widest">Cobertura</p>
-            </div>
-            <p class="text-white/40 text-sm leading-relaxed">
-              Operamos en <span class="text-white/70 font-medium">37 países</span> hispanohablantes. Si tu consulta es específica de un país o región, indícalo en el mensaje.
-            </p>
-            <a href="/paises" class="text-[#D4A843] text-sm flex items-center gap-1 no-underline hover:underline mt-1">
-              Ver países <ArrowRight size={12} />
-            </a>
-          </div>
+          <!-- Cobertura + Publicidad: en móvil van en fila -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
 
-          <!-- Publicidad -->
-          <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-6 flex flex-col gap-3">
-            <div class="flex items-center gap-2">
-              <Megaphone size={14} class="text-[#D4A843]" />
-              <p class="text-[#D4A843] text-xs font-bold uppercase tracking-widest">¿Quieres anunciarte?</p>
+            <!-- Cobertura -->
+            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6 flex flex-col gap-3">
+              <div class="flex items-center gap-2">
+                <Globe size={14} class="text-[#D4A843]" />
+                <p class="text-white/30 text-xs font-bold uppercase tracking-widest">Cobertura</p>
+              </div>
+              <p class="text-white/40 text-sm leading-relaxed">
+                Operamos en <span class="text-white/70 font-medium">37 países</span> hispanohablantes. Si tu consulta es de una región, indícalo en el mensaje.
+              </p>
+              <a href="/paises" class="text-[#D4A843] text-sm flex items-center gap-1 no-underline hover:underline mt-1">
+                Ver países <ArrowRight size={12} />
+              </a>
             </div>
-            <p class="text-white/40 text-sm leading-relaxed">
-              Si quieres publicitar tu plataforma o broker en Inversax, visita nuestra página de publicidad para ver las opciones disponibles.
-            </p>
-            <a href="/publicidad" class="text-[#D4A843] text-sm flex items-center gap-1 no-underline hover:underline mt-1">
-              Ver opciones <ArrowRight size={12} />
-            </a>
-          </div>
 
+            <!-- Publicidad -->
+            <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-5 sm:p-6 flex flex-col gap-3">
+              <div class="flex items-center gap-2">
+                <Megaphone size={14} class="text-[#D4A843]" />
+                <p class="text-[#D4A843] text-xs font-bold uppercase tracking-widest">¿Anunciarte?</p>
+              </div>
+              <p class="text-white/40 text-sm leading-relaxed">
+                Si quieres publicitar tu plataforma o broker en Inversax, visita nuestra página de publicidad.
+              </p>
+              <a href="/publicidad" class="text-[#D4A843] text-sm flex items-center gap-1 no-underline hover:underline mt-1">
+                Ver opciones <ArrowRight size={12} />
+              </a>
+            </div>
+
+          </div>
         </aside>
 
         <!-- FORMULARIO -->
         <main class="flex-1 min-w-0">
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 sm:p-9">
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-7 lg:p-9">
 
-            <p class="text-white/30 text-xs font-bold uppercase tracking-widest mb-7">Formulario de contacto</p>
+            <p class="text-white/30 text-xs font-bold uppercase tracking-widest mb-6 sm:mb-7">Formulario de contacto</p>
 
-            {/* TODO: conectar a DB / endpoint cuando esté listo */}
-            <form class="flex flex-col gap-5" action="#" method="POST">
+            <!-- TODO: conectar a DB / endpoint cuando esté listo -->
+            <form class="flex flex-col gap-4 sm:gap-5" action="#" method="POST">
 
               <!-- Nombre + Email -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div class="flex flex-col gap-2">
                   <label for="nombre" class="text-white/50 text-sm font-medium">
                     Nombre <span class="text-[#D4A843]">*</span>
@@ -148,7 +153,7 @@ const motivos = [
                     type="text"
                     required
                     placeholder="Tu nombre"
-                    class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200"
+                    class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200 w-full"
                   />
                 </div>
                 <div class="flex flex-col gap-2">
@@ -161,7 +166,7 @@ const motivos = [
                     type="email"
                     required
                     placeholder="tu@correo.com"
-                    class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200"
+                    class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200 w-full"
                   />
                 </div>
               </div>
@@ -175,10 +180,10 @@ const motivos = [
                   id="motivo"
                   name="motivo"
                   required
-                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white/70 text-sm transition-colors duration-200 appearance-none cursor-pointer"
-                  style="background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff40' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat: no-repeat; background-position: right 16px center;"
+                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white/70 text-sm transition-colors duration-200 appearance-none cursor-pointer w-full"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23ffffff40%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 16px center;"
                 >
-                  <option value="" disabled selected>Selecciona un motivo…</option>
+                  <option value="" disabled selected={true}>Selecciona un motivo…</option>
                   {motivos.map((m) => (
                     <option value={m.toLowerCase().replace(/\s+/g, '-')}>{m}</option>
                   ))}
@@ -195,7 +200,7 @@ const motivos = [
                   name="pais"
                   type="text"
                   placeholder="Ej: México, Argentina, España…"
-                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200"
+                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200 w-full"
                 />
               </div>
 
@@ -210,23 +215,22 @@ const motivos = [
                   required
                   rows={5}
                   placeholder="Cuéntanos cómo podemos ayudarte…"
-                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200 resize-none"
+                  class="bg-[#0A0B0D] border border-white/[0.09] hover:border-white/20 focus:border-[#D4A843]/50 focus:outline-none rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 transition-colors duration-200 resize-none w-full"
                 ></textarea>
               </div>
 
               <!-- Aviso privacidad -->
               <p class="text-white/25 text-xs leading-relaxed">
-                Al enviar este formulario aceptas nuestra{' '}
-                <a href="/privacidad" class="text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">
-                  Política de Privacidad
-                </a>.
+                Al enviar este formulario aceptas nuestra
+                <a href="/privacidad" class="text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200 mx-0.5">
+                  Política de Privacidad</a>.
                 Tu información nunca será compartida con terceros para fines comerciales.
               </p>
 
               <!-- Botón enviar -->
               <button
                 type="submit"
-                class="flex items-center justify-center gap-2 bg-[#D4A843] hover:bg-[#D4A843]/90 text-[#0A0B0D] font-bold text-sm rounded-xl px-6 py-3.5 transition-colors duration-200 cursor-pointer self-start"
+                class="flex items-center justify-center sm:justify-start gap-2 bg-[#D4A843] hover:bg-[#D4A843]/90 text-[#0A0B0D] font-bold text-sm rounded-xl px-6 py-3.5 transition-colors duration-200 cursor-pointer w-full sm:w-auto self-start"
               >
                 <Send size={14} />
                 Enviar mensaje
@@ -236,10 +240,10 @@ const motivos = [
           </div>
 
           <!-- Nota al pie -->
-          <div class="mt-4 flex items-start gap-2.5 bg-[#111318] border border-white/[0.07] rounded-xl px-5 py-4">
+          <div class="mt-4 flex items-start gap-2.5 bg-[#111318] border border-white/[0.07] rounded-xl px-4 sm:px-5 py-4">
             <Clock size={13} class="text-white/30 flex-shrink-0 mt-0.5" />
             <p class="text-white/35 text-xs leading-relaxed">
-              Respondemos todos los mensajes en un plazo máximo de <span class="text-white/55">48 horas hábiles</span>. Para consultas urgentes o comerciales escríbenos directamente a los correos listados en la columna izquierda.
+              Respondemos todos los mensajes en un plazo máximo de <span class="text-white/55">48 horas hábiles</span>. Para consultas urgentes o comerciales escríbenos directamente a los correos listados arriba.
             </p>
           </div>
         </main>

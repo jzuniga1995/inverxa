@@ -3,7 +3,7 @@
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft } from 'lucide-astro';
-
+import { parseJson } from '../../../lib/utils';
 type ForexData = {
   par: string; base: string; cotizada: string;
   banderaBase: string; banderaCotizada: string;
@@ -22,7 +22,7 @@ const formatForex = (p: number) => {
 try {
   const res  = await fetch(new URL('/api/forex', Astro.url));
   if (!res.ok) throw new Error(`${res.status}`);
-  const json = await res.json();
+ const json = await parseJson(res);
   if (json.ok) pares = json.data;
 } catch (e) {
   fetchError = true;

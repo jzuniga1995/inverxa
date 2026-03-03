@@ -4,7 +4,7 @@ export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink } from 'lucide-astro';
-
+import { parseJson } from '../../../lib/utils';
 const { slug } = Astro.params;
 
 // ── Caché por acción — 5 minutos ──────────────────────────────
@@ -169,7 +169,7 @@ try {
     // Busca por slug en la lista completa de la API
     const listRes = await fetch(new URL('/api/acciones', Astro.url));
     if (!listRes.ok) throw new Error(`${listRes.status}`);
-    const listJson = await listRes.json();
+   const listJson = await parseJson(listRes);
     const found = listJson.ok ? listJson.data.find((a: any) => a.slug === slug) : null;
 
     if (!found) throw new Error('Acción no encontrada');
@@ -180,7 +180,7 @@ try {
       `https://finnhub.io/api/v1/quote?symbol=${found.ticker}&token=${KEY}`
     );
     if (qRes.ok) {
-      const qData = await qRes.json();
+    const qData = await parseJson(qRes);
       quote = {
         precio:     qData.c,
         apertura:   qData.o,

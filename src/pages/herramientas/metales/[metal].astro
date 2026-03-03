@@ -4,6 +4,7 @@ export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft } from 'lucide-astro';
+import { parseJson } from '../../../lib/utils';
 
 const { metal } = Astro.params;
 
@@ -18,7 +19,7 @@ let fetchError = false;
 try {
   const res  = await fetch(new URL('/api/metales', Astro.url));
   if (!res.ok) throw new Error(`${res.status}`);
-  const json = await res.json();
+const json = await parseJson(res);
   if (json.ok) {
     metalData = json.data.find((m: MetalData) => m.slug === metal) ?? null;
   }

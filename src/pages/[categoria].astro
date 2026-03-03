@@ -313,7 +313,7 @@ const [principal, ...resto] = articulosFiltrados;
 </style>
 
 <script>
-  const select = document.getElementById('pais-filter') as HTMLSelectElement;
+const select = document.getElementById('pais-filter') as unknown as HTMLSelectElement;
   select?.addEventListener('change', () => {
     const pais = select.value;
     const categoria = window.location.pathname.replace('/', '');

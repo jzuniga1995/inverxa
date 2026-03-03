@@ -4,8 +4,12 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import { TrendingUp, ArrowRight, DollarSign, BarChart2, Clock, Flame, BookOpen, Star, ExternalLink, Layers, Landmark } from 'lucide-astro';
 import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategoria } from '../db/queries';
+import { fetchPrecios } from '../lib/precios';
+import { obtenerForex } from '../lib/forex';
+import { fetchMetales } from '../lib/metales';
 
-const db = Astro.locals.db;
+const db  = Astro.locals.db;
+const env = (Astro.locals.runtime?.env as any);
 
 const [todasNoticias, destacados, categorias] = await Promise.all([
   getArticulos(db, 20),
@@ -27,13 +31,7 @@ categorias.forEach((cat, i) => {
 });
 const primeraConNoticias = categorias.find(c => (noticiasPorCategoria[c.slug]?.length ?? 0) > 0);
 
-// ── PRECIOS CRIPTO ────────────────────────────────────────────
-const HOME_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano'];
-type Precio = { id: string; symbol: string; name: string; image: string; price: string; change: string; cap: string; up: boolean; };
-
-let precios: Precio[] = [];
-let preciosError = false;
-
+// ── FORMATTERS ───────────────────────────────────────────────
 const formatCap = (n: number) => {
   if (!n) return '—';
   if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
@@ -48,25 +46,33 @@ const formatPrice = (p: number) => {
 };
 const formatForex = (p: number) => {
   if (!p) return '—';
-  if (p >= 100)  return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
 };
 
-try {
-  const res  = await fetch(new URL('/api/precios', Astro.url));
-  if (!res.ok) throw new Error(`/api/precios ${res.status}`);
-  const data = await res.json();
-  precios = data
-    .filter((c: any) => HOME_IDS.includes(c.id))
-    .map((c: any) => ({
-      id: c.id, symbol: c.symbol, name: c.name, image: c.image,
-      price:  formatPrice(c.price),
-      change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-      cap:    formatCap(c.marketCap),
-      up:     c.change24 >= 0,
-    }));
-} catch (e) {
-  preciosError = true;
+// ── FETCH EN PARALELO (directo desde lib/, sin HTTP) ─────────
+const HOME_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano'];
+
+const [preciosRaw, forexRaw, metalesRaw] = await Promise.all([
+  fetchPrecios(env?.COINGECKO_API_KEY).catch(() => []),
+  obtenerForex().catch(() => []),
+  fetchMetales().catch(() => []),
+]);
+
+// ── PRECIOS ──────────────────────────────────────────────────
+type Precio = { id: string; symbol: string; name: string; image: string; price: string; change: string; cap: string; up: boolean; };
+
+let precios: Precio[] = preciosRaw
+  .filter(c => HOME_IDS.includes(c.id))
+  .map(c => ({
+    id: c.id, symbol: c.symbol, name: c.name, image: c.image,
+    price:  formatPrice(c.price),
+    change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
+    cap:    formatCap(c.marketCap),
+    up:     c.change24 >= 0,
+  }));
+
+if (precios.length === 0) {
   precios = [
     { id: 'bitcoin',     symbol: 'BTC', name: 'Bitcoin',  image: '', price: '—', change: '—', cap: '—', up: true },
     { id: 'ethereum',    symbol: 'ETH', name: 'Ethereum', image: '', price: '—', change: '—', cap: '—', up: true },
@@ -77,23 +83,11 @@ try {
   ];
 }
 
-// ── FOREX ─────────────────────────────────────────────────────
-type ForexRow = { par: string; base: string; cotizada: string; banderaBase: string; banderaCotizada: string; precio: number; precioFmt: string; tradingviewSimbolo: string; };
-let forexData: ForexRow[] = [];
-
-try {
-  const res  = await fetch(new URL('/api/forex?limit=6', Astro.url));
-  if (!res.ok) throw new Error(`/api/forex ${res.status}`);
-  const json = await res.json();
-  if (json.ok) {
-    forexData = json.data.map((f: any) => ({
-      ...f,
-      precioFmt: formatForex(f.precio),
-    }));
-  }
-} catch (e) {
-  console.error('[Home] forex error:', e);
-}
+// ── FOREX ────────────────────────────────────────────────────
+const forexData = forexRaw.slice(0, 6).map(f => ({
+  ...f,
+  precioFmt: formatForex(f.precio),
+}));
 
 const nombreForex: Record<string, string> = {
   'EUR/USD': 'Euro / Dólar',
@@ -107,25 +101,11 @@ const nombreForex: Record<string, string> = {
   'USD/PEN': 'Dólar / Sol Peruano',
 };
 
-// ── METALES ───────────────────────────────────────────────────
-type MetalRow = { nombre: string; simbolo: string; icono: string; color: string; precio: number; unidad: string; precioFmt: string; tradingviewSimbolo: string; slug: string; };
-let metalesData: MetalRow[] = [];
-
-try {
-  const res  = await fetch(new URL('/api/metales?limit=4', Astro.url));
-  if (!res.ok) throw new Error(`/api/metales ${res.status}`);
-  const json = await res.json();
-  if (json.ok) {
-    metalesData = json.data.map((m: any) => ({
-      ...m,
-      precioFmt: `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-    }));
-  }
-} catch (e) {
-  console.error('[Home] metales error:', e);
-}
-
-// ── ACCIONES: eliminado SSR, se carga client-side ─────────────
+// ── METALES ──────────────────────────────────────────────────
+const metalesData = metalesRaw.slice(0, 4).map(m => ({
+  ...m,
+  precioFmt: `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+}));
 
 // ── HERRAMIENTAS ─────────────────────────────────────────────
 const herramientas = [
@@ -724,7 +704,7 @@ const categoriaColores: Record<string, string> = {
     try {
       const res  = await fetch('/api/precios');
       if (!res.ok) return;
-      const data = await res.json();
+ const data = await res.json() as any;
       data.filter((c: any) => HOME_IDS.includes(c.id)).forEach((coin: any) => {
         const fila = document.querySelector(`[data-coin-id="${coin.id}"]`);
         if (!fila) return;
@@ -759,7 +739,7 @@ const categoriaColores: Record<string, string> = {
   async function cargarAcciones() {
     try {
       const res  = await fetch('/api/acciones?limit=6');
-      const json = await res.json();
+  const json = await res.json() as any;
       if (!json.ok) throw new Error();
 
       const content = document.getElementById('acciones-content')!;

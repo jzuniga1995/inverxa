@@ -2,8 +2,12 @@
 // Header.astro - Inversax
 import { Search, Globe, Menu, X, ChevronDown } from 'lucide-astro';
 import { getCategorias, getPaises } from '../db/queries';
+import { fetchPrecios } from '../lib/precios';
+import { obtenerForex } from '../lib/forex';
+import { fetchMetales } from '../lib/metales';
 
 const db            = Astro.locals.db;
+const env           = (Astro.locals.runtime?.env as any);
 const categorias    = await getCategorias(db);
 const paises        = await getPaises(db);
 const paisesLocales = paises.filter(p => p.codigo !== 'global');
@@ -31,59 +35,48 @@ const formatForex = (p: number) => {
 let ticker: TickerItem[] = [];
 
 try {
-  const [resCripto, resForex, resMetales, resAcciones] = await Promise.allSettled([
-    fetch(new URL('/api/precios', Astro.url)),
-    fetch(new URL('/api/forex?limit=5', Astro.url)),
-    fetch(new URL('/api/metales?limit=2', Astro.url)),
-    fetch(new URL('/api/acciones?limit=5', Astro.url)),
+  // ── DIRECTO desde lib/ (sin HTTP) ──────────────────────────
+  const [preciosRaw, forexRaw, metalesRaw] = await Promise.all([
+    fetchPrecios(env?.COINGECKO_API_KEY).catch(() => []),
+    obtenerForex().catch(() => []),
+    fetchMetales().catch(() => []),
   ]);
 
   // Cripto
-  if (resCripto.status === 'fulfilled' && resCripto.value.ok) {
-    const data = await resCripto.value.json();
-    const cryptoItems: TickerItem[] = data.slice(0, 6).map((c: any) => ({
-      symbol: c.symbol.toUpperCase(),
-      price:  formatPrice(c.price),
-      change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-      up:     c.change24 >= 0,
-      tipo:   'crypto',
-    }));
-    ticker.push(...cryptoItems);
-  }
+  const cryptoItems: TickerItem[] = preciosRaw.slice(0, 6).map(c => ({
+    symbol: c.symbol.toUpperCase(),
+    price:  formatPrice(c.price),
+    change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
+    up:     c.change24 >= 0,
+    tipo:   'crypto' as const,
+  }));
+  ticker.push(...cryptoItems);
 
   // Forex
-  if (resForex.status === 'fulfilled' && resForex.value.ok) {
-    const json = await resForex.value.json();
-    if (json.ok) {
-      const forexItems: TickerItem[] = json.data.map((f: any) => ({
-        symbol: f.par,
-        price:  formatForex(f.precio),
-        change: '',
-        up:     true,
-        tipo:   'forex',
-      }));
-      ticker.push(...forexItems);
-    }
-  }
+  const forexItems: TickerItem[] = forexRaw.slice(0, 5).map(f => ({
+    symbol: f.par,
+    price:  formatForex(f.precio),
+    change: '',
+    up:     true,
+    tipo:   'forex' as const,
+  }));
+  ticker.push(...forexItems);
 
   // Metales
-  if (resMetales.status === 'fulfilled' && resMetales.value.ok) {
-    const json = await resMetales.value.json();
-    if (json.ok) {
-      const metalItems: TickerItem[] = json.data.map((m: any) => ({
-        symbol: m.simbolo,
-        price:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        change: '',
-        up:     true,
-        tipo:   'metal',
-      }));
-      ticker.push(...metalItems);
-    }
-  }
+  const metalItems: TickerItem[] = metalesRaw.slice(0, 2).map(m => ({
+    symbol: m.simbolo,
+    price:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    change: '',
+    up:     true,
+    tipo:   'metal' as const,
+  }));
+  ticker.push(...metalItems);
 
-  // Acciones
-  if (resAcciones.status === 'fulfilled' && resAcciones.value.ok) {
-    const json = await resAcciones.value.json();
+  // Acciones: sigue con fetch (usa KV, no tiene lib/)
+  const resAcciones = await fetch(new URL('/api/acciones?limit=5', Astro.url))
+    .catch(() => null);
+  if (resAcciones?.ok) {
+    const json = await resAcciones.json() as any;
     if (json.ok) {
       const stockItems: TickerItem[] = json.data
         .filter((a: any) => a.precio > 0)
@@ -92,11 +85,12 @@ try {
           price:  `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           change: `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`,
           up:     a.alza,
-          tipo:   'stock',
+          tipo:   'stock' as const,
         }));
       ticker.push(...stockItems);
     }
   }
+
 } catch (e) {
   ticker = ['BTC','ETH','SOL','XRP','ADA'].map(s => ({
     symbol: s, price: '—', change: '—', up: true, tipo: 'crypto' as const,
@@ -129,21 +123,16 @@ const tipoLabel: Record<string, string> = {
         <div id="ticker-track" class="ticker-track flex gap-8 whitespace-nowrap w-max">
           {[...ticker, ...ticker].map((item) => (
             <span class="ticker-item inline-flex items-center gap-1.5 text-[11.5px]">
-              <!-- Badge de tipo -->
               <span class={`text-[9px] font-bold tracking-widest opacity-60 ${tipoBadge[item.tipo]}`}>
                 {tipoLabel[item.tipo]}
               </span>
-              <!-- Símbolo -->
               <span class="font-bold text-white/50 text-[10px] tracking-wider">{item.symbol}</span>
-              <!-- Precio -->
               <span class="ticker-price text-white/85 font-medium">{item.price}</span>
-              <!-- Cambio (solo si existe) -->
               {item.change && (
                 <span class={`ticker-change text-[11px] font-medium ${item.up ? 'text-emerald-400' : 'text-red-400'}`}>
                   {item.change}
                 </span>
               )}
-              <!-- Separador -->
               <span class="text-white/10 text-xs">·</span>
             </span>
           ))}
@@ -186,15 +175,13 @@ const tipoLabel: Record<string, string> = {
       <!-- Divisor -->
       <div class="hidden lg:block h-5 w-px bg-white/10 flex-shrink-0"></div>
 
-      <!-- Nav desktop: top 5 + dropdown "Más" + Herramientas -->
+      <!-- Nav desktop -->
       <nav class="hidden lg:flex items-center gap-0.5 flex-1">
         {(() => {
-          // Prioridad fija — las más relevantes para LATAM
           const PRIORITY = ['criptomonedas', 'trading', 'bolsa', 'forex', 'economia'];
           const top  = PRIORITY
             .map(slug => categorias.find(c => c.slug === slug))
             .filter(Boolean) as typeof categorias;
-          // Añadir las que no estén en top, ordenadas como vengan
           const extra = categorias.filter(c => !PRIORITY.includes(c.slug));
           return (
             <>
@@ -272,7 +259,7 @@ const tipoLabel: Record<string, string> = {
       </div>
     </div>
 
-    <!-- Search bar (solo el input) -->
+    <!-- Search bar -->
     <div id="search-bar" class="border-t border-white/[0.07] bg-[#111318]" style="max-height: 0; transition: max-height 0.25s ease; overflow: hidden;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3 text-white/40">
         <Search size={16} class="flex-shrink-0" />
@@ -288,7 +275,7 @@ const tipoLabel: Record<string, string> = {
       </div>
     </div>
 
-    <!-- Resultados: fuera del contenedor con overflow:hidden -->
+    <!-- Resultados búsqueda -->
     <div
       id="search-results"
       class="hidden bg-[#111318] border-t border-white/[0.07]"
@@ -366,13 +353,13 @@ const tipoLabel: Record<string, string> = {
 
 <script>
   // ── Búsqueda ──────────────────────────────────────────────────
-  const searchToggle      = document.getElementById('search-toggle');
-  const searchBar         = document.getElementById('search-bar') as HTMLElement;
-  const searchInput       = document.getElementById('search-input') as HTMLInputElement;
-  const searchResults     = document.getElementById('search-results') as HTMLElement;
+  const searchToggle       = document.getElementById('search-toggle');
+  const searchBar          = document.getElementById('search-bar') as HTMLElement;
+  const searchInput        = document.getElementById('search-input') as HTMLInputElement;
+  const searchResults      = document.getElementById('search-results') as HTMLElement;
   const searchResultsInner = document.getElementById('search-results-inner') as HTMLElement;
-  const searchEmpty       = document.getElementById('search-empty') as HTMLElement;
-  const searchLoading     = document.getElementById('search-loading') as HTMLElement;
+  const searchEmpty        = document.getElementById('search-empty') as HTMLElement;
+  const searchLoading      = document.getElementById('search-loading') as HTMLElement;
 
   let searchOpen = false;
   let debounceTimer: ReturnType<typeof setTimeout>;
@@ -423,7 +410,6 @@ const tipoLabel: Record<string, string> = {
       return;
     }
 
-    // Mostrar loading
     searchLoading.classList.remove('hidden');
     searchEmpty.classList.add('hidden');
     searchResultsInner.innerHTML = '';
@@ -431,7 +417,7 @@ const tipoLabel: Record<string, string> = {
 
     try {
       const res  = await fetch(`/api/buscar?q=${encodeURIComponent(q)}`);
-      const json = await res.json();
+      const json = await res.json() as any;  // ✅ FIX línea ~432
 
       searchLoading.classList.add('hidden');
 
@@ -538,8 +524,9 @@ const tipoLabel: Record<string, string> = {
   const pathParts = window.location.pathname.split('/');
   const paisEnUrl = pathParts[1] === 'pais' ? pathParts[2] : 'global';
 
-  const selectDesktop = document.getElementById('country-select') as HTMLSelectElement;
-  const selectMobile  = document.getElementById('country-select-mobile') as HTMLSelectElement;
+  // ✅ FIX líneas ~535-536: cast explícito a HTMLSelectElement
+  const selectDesktop = document.getElementById('country-select') as HTMLSelectElement | null;
+  const selectMobile  = document.getElementById('country-select-mobile') as HTMLSelectElement | null;
 
   if (selectDesktop) selectDesktop.value = paisEnUrl;
   if (selectMobile)  selectMobile.value  = paisEnUrl;
@@ -575,14 +562,14 @@ const tipoLabel: Record<string, string> = {
     try {
       const res  = await fetch('/api/precios');
       if (!res.ok) return;
-      const data = await res.json();
-      const items = document.querySelectorAll('#ticker-track .ticker-item');
+      const data = await res.json() as any;  // ✅ FIX línea ~575
 
       data.slice(0, TICKER_COUNT.crypto).forEach((coin: any, i: number) => {
         const up     = coin.change24 >= 0;
         const precio = fmtPrice(coin.price);
         const cambio = `${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
 
+        const items = document.querySelectorAll('#ticker-track .ticker-item');
         [items[i], items[i + TOTAL]].forEach((item) => {
           if (!item) return;
           const priceEl  = item.querySelector('.ticker-price');
@@ -601,3 +588,4 @@ const tipoLabel: Record<string, string> = {
 
   setInterval(actualizarTicker, 300_000);
 </script>
+

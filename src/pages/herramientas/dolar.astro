@@ -2,14 +2,14 @@
 // src/pages/herramientas/dolar.astro
 import Layout from '../../layouts/Layout.astro';
 import { DollarSign, RefreshCw, TrendingUp, Globe } from 'lucide-astro';
-
+import { parseJson } from '../../lib/utils';
 // Carga SSR inicial
 let paisesData: any[] = [];
 let errorInicial = false;
 
 try {
   const res  = await fetch(new URL('/api/dolar', Astro.url));
-  const json = await res.json();
+const json = await parseJson(res);
   if (json.ok) paisesData = json.data;
 } catch {
   errorInicial = true;
@@ -176,7 +176,7 @@ const fmtFecha = () => {
 
     try {
       const res  = await fetch('/api/dolar');
-      const json = await res.json();
+    const json = await res.json() as any;
       if (!json.ok || !json.data.length) return;
 
       grid.innerHTML = json.data.map((pais: any) => `

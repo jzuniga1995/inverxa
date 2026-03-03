@@ -1,6 +1,11 @@
 ---
 // Hero.astro - Inversax — Full Responsive
 import { Globe, Users, FileText, BarChart2, ArrowRight, Zap } from 'lucide-astro';
+import { fetchPrecios } from '../lib/precios';
+import { obtenerForex } from '../lib/forex';
+import { fetchMetales } from '../lib/metales';
+
+const env = (Astro.locals.runtime?.env as any);
 
 const stats = [
   { label: "Activos seguidos", value: "600+",  icon: "chart" },
@@ -9,11 +14,7 @@ const stats = [
   { label: "Artículos",        value: "1,200+", icon: "file"  },
 ];
 
-// ── CRIPTO ────────────────────────────────────────────────────
-type CryptoItem = { name: string; symbol: string; id: string; image: string; price: string; change: string; up: boolean };
-let cryptoItems: CryptoItem[] = [];
-const HERO_IDS = ['bitcoin', 'ethereum', 'solana', 'binancecoin'];
-
+// ── FORMATTERS ───────────────────────────────────────────────
 const fmtPrice = (p: number) =>
   p >= 1000
     ? `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`
@@ -25,21 +26,32 @@ const fmtForex = (p: number) =>
     ? p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
 
-try {
-  const res  = await fetch(new URL('/api/precios', Astro.url));
-  const data = await res.json();
-  cryptoItems = data
-    .filter((c: any) => HERO_IDS.includes(c.id))
-    .map((c: any) => ({
-      id:     c.id,
-      name:   c.name,
-      symbol: c.symbol.toUpperCase(),
-      image:  c.image ?? '',
-      price:  fmtPrice(c.price),
-      change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-      up:     c.change24 >= 0,
-    }));
-} catch {
+// ── FETCH EN PARALELO (directo desde lib/, sin HTTP) ─────────
+const HERO_IDS   = ['bitcoin', 'ethereum', 'solana', 'binancecoin'];
+const FOREX_SHOW = ['EUR/USD', 'USD/MXN', 'USD/ARS', 'USD/BRL'];
+
+const [preciosRaw, forexRaw, metalesRaw] = await Promise.all([
+  fetchPrecios(env?.COINGECKO_API_KEY).catch(() => []),
+  obtenerForex().catch(() => []),
+  fetchMetales().catch(() => []),
+]);
+
+// ── CRIPTO ────────────────────────────────────────────────────
+type CryptoItem = { name: string; symbol: string; id: string; image: string; price: string; change: string; up: boolean };
+
+let cryptoItems: CryptoItem[] = preciosRaw
+  .filter(c => HERO_IDS.includes(c.id))
+  .map(c => ({
+    id:     c.id,
+    name:   c.name,
+    symbol: c.symbol.toUpperCase(),
+    image:  c.image ?? '',
+    price:  fmtPrice(c.price),
+    change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
+    up:     c.change24 >= 0,
+  }));
+
+if (cryptoItems.length === 0) {
   cryptoItems = [
     { id: 'bitcoin',     name: 'Bitcoin',  symbol: 'BTC', image: '', price: '—', change: '—', up: true },
     { id: 'ethereum',    name: 'Ethereum', symbol: 'ETH', image: '', price: '—', change: '—', up: true },
@@ -50,41 +62,26 @@ try {
 
 // ── FOREX ─────────────────────────────────────────────────────
 type ForexItem = { par: string; precio: string; banderaBase: string; banderaCotizada: string };
-let forexItems: ForexItem[] = [];
-const FOREX_SHOW = ['EUR/USD', 'USD/MXN', 'USD/ARS', 'USD/BRL'];
 
-try {
-  const res  = await fetch(new URL('/api/forex', Astro.url));
-  const json = await res.json();
-  if (json.ok) {
-    forexItems = json.data
-      .filter((f: any) => FOREX_SHOW.includes(f.par))
-      .map((f: any) => ({
-        par:             f.par,
-        precio:          fmtForex(f.precio),
-        banderaBase:     f.banderaBase,
-        banderaCotizada: f.banderaCotizada,
-      }));
-  }
-} catch { /* silencioso */ }
+const forexItems: ForexItem[] = forexRaw
+  .filter(f => FOREX_SHOW.includes(f.par))
+  .map(f => ({
+    par:             f.par,
+    precio:          fmtForex(f.precio),
+    banderaBase:     f.banderaBase,
+    banderaCotizada: f.banderaCotizada,
+  }));
 
 // ── METALES ───────────────────────────────────────────────────
 type MetalItem = { nombre: string; simbolo: string; precio: string; color: string; slug: string };
-let metalItems: MetalItem[] = [];
 
-try {
-  const res  = await fetch(new URL('/api/metales', Astro.url));
-  const json = await res.json();
-  if (json.ok) {
-    metalItems = json.data.map((m: any) => ({
-      nombre:  m.nombre,
-      simbolo: m.simbolo,
-      precio:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      color:   m.color,
-      slug:    m.slug,
-    }));
-  }
-} catch { /* silencioso */ }
+const metalItems: MetalItem[] = metalesRaw.map(m => ({
+  nombre:  m.nombre,
+  simbolo: m.simbolo,
+  precio:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+  color:   m.color,
+  slug:    m.slug,
+}));
 
 const heroTabs = [
   { id: 'cripto',   label: 'Cripto',   color: '#D4A843', href: '/herramientas/cripto'   },
@@ -302,7 +299,7 @@ const heroTabs = [
           <!-- Panel ACCIONES (skeleton + carga client-side) -->
           <div id="hero-panel-acciones" class="hero-panel hidden">
             <div id="hero-acciones-loading">
-              {[...Array(4)].map((_: any, i: number) => (
+              {[...Array(4)].map((_: any) => (
                 <div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none">
                   <div class="flex items-center gap-2.5">
                     <div class="w-7 h-7 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
@@ -427,7 +424,7 @@ const heroTabs = [
   async function cargarHeroAcciones() {
     try {
       const res  = await fetch('/api/acciones');
-      const json = await res.json();
+      const json = await res.json() as any;  // ✅ fix ts18046
       if (!json.ok) throw new Error();
 
       const content = document.getElementById('hero-acciones-content')!;
@@ -489,7 +486,7 @@ const heroTabs = [
     try {
       const res = await fetch('/api/precios');
       if (!res.ok) return;
-      const data = await res.json();
+      const data = await res.json() as any;  // ✅ fix ts18046
 
       data
         .filter((c: any) => HERO_SYMBOLS.includes(c.symbol?.toUpperCase()))
@@ -512,3 +509,4 @@ const heroTabs = [
 
   setInterval(actualizarHero, 300_000);
 </script>
+

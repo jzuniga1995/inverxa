@@ -1,5 +1,5 @@
 // src/cron/index.ts
-import { fetchAcciones } from '../pages/api/acciones';
+import { fetchAcciones } from '../lib/acciones';
 
 export default {
   async scheduled(
