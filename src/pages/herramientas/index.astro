@@ -71,15 +71,86 @@ const herramientas = [
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Herramientas Financieras — Inversax</title>
-    <meta name="description" content="Precios en vivo de cripto, forex, metales y acciones. Calculadoras y herramientas financieras para inversores en Latinoamérica." />
-    <link rel="canonical" href="https://inversax.com/herramientas" />
-    <meta property="og:title"       content="Herramientas Financieras — Inversax" />
-    <meta property="og:description" content="Precios en vivo de cripto, forex, metales y acciones para inversores en Latinoamérica." />
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://inversax.com/herramientas" />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>Herramientas Financieras Gratis — Cripto, Forex, Bolsa y Metales en Vivo | Inversax</title>
+  <meta name="description" content="Precios en tiempo real de criptomonedas, forex, acciones y metales preciosos. Herramientas financieras gratuitas para inversores y traders en Latinoamérica." />
+  <meta name="keywords" content="herramientas financieras latam, precio bitcoin tiempo real, forex en vivo, precio oro hoy, acciones en tiempo real, precio dolar latinoamerica, herramientas trading gratis" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href="https://inversax.com/herramientas" />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Herramientas Financieras Gratis — Cripto, Forex, Bolsa y Metales en Vivo | Inversax" />
+  <meta property="og:description"  content="Precios en tiempo real de cripto, forex, acciones y metales. Gratis para toda Latinoamérica." />
+  <meta property="og:url"          content="https://inversax.com/herramientas" />
+  <meta property="og:image"        content="https://inversax.com/og/herramientas.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Herramientas Financieras — Inversax" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content="Herramientas Financieras Gratis — Cripto, Forex, Bolsa | Inversax" />
+  <meta name="twitter:description" content="Precios en tiempo real de cripto, forex, acciones y metales para Latinoamérica. Gratis." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas.png" />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Herramientas Financieras — Inversax",
+    "description": "Precios en tiempo real de cripto, forex, acciones y metales. Gratis para Latinoamérica.",
+    "url": "https://inversax.com/herramientas",
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Herramientas financieras de Inversax",
+    "url": "https://inversax.com/herramientas",
+    "numberOfItems": 5,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Mercados Cripto — Precios en vivo",        "url": "https://inversax.com/herramientas/cripto"   },
+      { "@type": "ListItem", "position": 2, "name": "Forex — Tipos de cambio en tiempo real",   "url": "https://inversax.com/herramientas/forex"    },
+      { "@type": "ListItem", "position": 3, "name": "Metales Preciosos — Precio del oro y plata","url": "https://inversax.com/herramientas/metales"  },
+      { "@type": "ListItem", "position": 4, "name": "Acciones — Cotizaciones en tiempo real",   "url": "https://inversax.com/herramientas/acciones" },
+      { "@type": "ListItem", "position": 5, "name": "Precio del Dólar en Latinoamérica",        "url": "https://inversax.com/herramientas/dolar"    }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Herramientas de mercado en vivo — Inversax",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "url": "https://inversax.com/herramientas",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Precios en tiempo real de cripto, forex, metales y acciones para Latinoamérica.",
+    "inLanguage": "es"
+  })} />
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
 
