@@ -1,5 +1,5 @@
 ---
-// src/pages/cripto/[id].astro
+// src/pages/herramientas/cripto/[id].astro
 export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
@@ -33,15 +33,6 @@ type CoinDetail = {
   };
 };
 
-// ── Caché por coin — 10 minutos ───────────────────────────────
-const COIN_TTL = 600_000;
-declare global {
-  // eslint-disable-next-line no-var
-  var _coinCache: Map<string, { data: CoinDetail; ts: number }> | undefined;
-}
-if (!globalThis._coinCache) globalThis._coinCache = new Map();
-const coinCache = globalThis._coinCache;
-
 // ── Helpers de formato ────────────────────────────────────────
 const fmt = (p: number) => {
   if (!p) return '—';
@@ -60,27 +51,36 @@ const fmtLarge = (n: number) => {
 const fmtChg    = (c: number) => c != null ? `${c >= 0 ? '+' : ''}${c.toFixed(2)}%` : '—';
 const fmtSupply = (n: number) => n ? n.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—';
 
-// ── Fetch con caché ───────────────────────────────────────────
+// ── Fetch con caché KV (10 minutos) ──────────────────────────
+// globalThis._coinCache NO funciona en Cloudflare Workers:
+// cada request puede ir a una instancia diferente del worker.
+// KV es el caché correcto en este entorno.
+const env      = (Astro.locals.runtime?.env as any);
+const KV       = env?.INVERSA_KV as KVNamespace | undefined;
+const KEY      = env?.COINGECKO_API_KEY as string | undefined;
+const cacheKey = `coin:${id}`;
+
 let coin: CoinDetail | null = null;
 let fetchError = false;
 
 try {
-  const cached = coinCache.get(id!);
+  // 1. Intentar leer desde KV
+  const cached = await KV?.get(cacheKey, 'json') as CoinDetail | null;
 
-  if (cached && Date.now() - cached.ts < COIN_TTL) {
+  if (cached) {
     // Caché válida — no toca CoinGecko
-    coin = cached.data;
+    coin = cached;
   } else {
-    // Caché expirada o inexistente — llama a CoinGecko
-const KEY = (Astro.locals.runtime?.env as any)?.COINGECKO_API_KEY;    
+    // Caché vacía o expirada — llama a CoinGecko
     const res = await fetch(
       `https://api.coingecko.com/api/v3/coins/${id}?localization=true&tickers=false&market_data=true&community_data=false&developer_data=false`,
-      { headers: { 'Accept': 'application/json', 'x-cg-demo-api-key': KEY } }
+      { headers: { 'Accept': 'application/json', ...(KEY ? { 'x-cg-demo-api-key': KEY } : {}) } }
     );
-    if (!res.ok) throw new Error(`${res.status}`);
-    coin = await res.json();
-    // Guarda en caché
-    coinCache.set(id!, { data: coin!, ts: Date.now() });
+    if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
+    coin = await res.json() as CoinDetail;
+
+    // Guarda en KV con TTL de 10 minutos
+    await KV?.put(cacheKey, JSON.stringify(coin), { expirationTtl: 600 });
   }
 } catch (e) {
   fetchError = true;
@@ -88,7 +88,7 @@ const KEY = (Astro.locals.runtime?.env as any)?.COINGECKO_API_KEY;
 }
 
 if (!coin && !fetchError) {
-  return Astro.redirect('/cripto');
+  return Astro.redirect('/herramientas/cripto');
 }
 
 const price     = coin?.market_data?.current_price?.usd ?? 0;
@@ -110,13 +110,16 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Back -->
-      <a href="/cripto" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas/cripto" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
         <ArrowLeft size={15} /> Volver a Criptomonedas
       </a>
 
       {fetchError || !coin ? (
         <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">No se pudo cargar la información. <a href="/cripto" class="text-[#D4A843]">Volver</a></p>
+          <p class="text-white/30 text-sm">
+            No se pudo cargar la información.{' '}
+            <a href="/herramientas/cripto" class="text-[#D4A843]">Volver</a>
+          </p>
         </div>
       ) : (
         <div class="flex flex-col gap-6">
@@ -126,14 +129,16 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
             <div class="flex items-center gap-4">
               <img src={coin.image.large} alt={coin.name} class="w-12 h-12 rounded-full" />
               <div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                   <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{coin.name}</h1>
                   <span class="text-white/30 text-sm font-medium bg-white/5 px-2 py-0.5 rounded">{symbol}</span>
                   {coin.market_cap_rank && (
-                    <span class="text-[#D4A843] text-xs font-bold bg-[#D4A843]/10 px-2 py-0.5 rounded border border-[#D4A843]/20">#{coin.market_cap_rank}</span>
+                    <span class="text-[#D4A843] text-xs font-bold bg-[#D4A843]/10 px-2 py-0.5 rounded border border-[#D4A843]/20">
+                      #{coin.market_cap_rank}
+                    </span>
                   )}
                 </div>
-                <div class="flex items-center gap-3 mt-1">
+                <div class="flex items-center gap-3 mt-1 flex-wrap">
                   <span class="text-white font-bold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">{fmt(price)}</span>
                   <span class={`flex items-center gap-1 text-sm font-bold ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
                     {isUp ? <TrendingUp size={14}/> : <TrendingDown size={14}/>}
@@ -163,9 +168,9 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
           <!-- Cambios por período -->
           <div class="grid grid-cols-3 gap-3">
             {[
-              { label: '24 horas', val: coin.market_data.price_change_percentage_24h },
-              { label: '7 días',   val: coin.market_data.price_change_percentage_7d },
-              { label: '30 días',  val: coin.market_data.price_change_percentage_30d },
+              { label: '24 horas', val: coin.market_data.price_change_percentage_24h  },
+              { label: '7 días',   val: coin.market_data.price_change_percentage_7d   },
+              { label: '30 días',  val: coin.market_data.price_change_percentage_30d  },
             ].map(({ label, val }) => (
               <div class="bg-[#111318] border border-white/[0.07] rounded-xl p-4 text-center">
                 <div class="text-white/30 text-xs mb-1">{label}</div>
@@ -188,10 +193,10 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
           <!-- Stats de mercado -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: 'Cap. de Mercado',  val: fmtLarge(coin.market_data.market_cap.usd) },
-              { label: 'Volumen 24h',      val: fmtLarge(coin.market_data.total_volume.usd) },
-              { label: 'Máximo histórico', val: fmt(coin.market_data.ath.usd) },
-              { label: 'Mínimo histórico', val: fmt(coin.market_data.atl.usd) },
+              { label: 'Cap. de Mercado',  val: fmtLarge(coin.market_data.market_cap.usd)    },
+              { label: 'Volumen 24h',      val: fmtLarge(coin.market_data.total_volume.usd)  },
+              { label: 'Máximo histórico', val: fmt(coin.market_data.ath.usd)                },
+              { label: 'Mínimo histórico', val: fmt(coin.market_data.atl.usd)                },
             ].map(({ label, val }) => (
               <div class="bg-[#111318] border border-white/[0.07] rounded-xl p-4">
                 <div class="text-white/30 text-xs mb-1.5">{label}</div>
@@ -205,13 +210,15 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
             <div class="bg-[#111318] border border-white/[0.07] rounded-xl p-4">
               <div class="text-white/30 text-xs mb-1.5">Suministro circulante</div>
               <div class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">
-                {fmtSupply(coin.market_data.circulating_supply)} <span class="text-white/30 text-sm font-normal">{symbol}</span>
+                {fmtSupply(coin.market_data.circulating_supply)}
+                <span class="text-white/30 text-sm font-normal"> {symbol}</span>
               </div>
             </div>
             <div class="bg-[#111318] border border-white/[0.07] rounded-xl p-4">
               <div class="text-white/30 text-xs mb-1.5">Suministro total</div>
               <div class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">
-                {coin.market_data.total_supply ? fmtSupply(coin.market_data.total_supply) : '∞'} <span class="text-white/30 text-sm font-normal">{symbol}</span>
+                {coin.market_data.total_supply ? fmtSupply(coin.market_data.total_supply) : '∞'}
+                <span class="text-white/30 text-sm font-normal"> {symbol}</span>
               </div>
             </div>
           </div>

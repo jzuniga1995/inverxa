@@ -3,8 +3,8 @@
 export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
-import { ArrowLeft, TrendingUp,} from 'lucide-astro';
-import { parseJson } from '../../../lib/utils';
+import { ArrowLeft, TrendingUp } from 'lucide-astro';
+import { obtenerForex } from '../../../lib/forex';
 
 const { par } = Astro.params;
 
@@ -15,26 +15,43 @@ type ForexData = {
   par: string; base: string; cotizada: string;
   banderaBase: string; banderaCotizada: string;
   precio: number; tradingviewSimbolo: string;
+  tvDisponible?: boolean;
 };
 
-let parData: ForexData & { tvDisponible: boolean } | null = null;
+// ── Caché KV (igual que el cron guarda 'cache:forex') ─────────
+const env = (Astro.locals.runtime?.env as any);
+const KV  = env?.INVERSA_KV as KVNamespace | undefined;
+
+let parData: (ForexData & { tvDisponible: boolean }) | null = null;
 let fetchError = false;
 
 try {
-  const res  = await fetch(new URL('/api/forex', Astro.url));
-  if (!res.ok) throw new Error(`${res.status}`);
-const json = await parseJson(res);
-  if (json.ok) {
-    parData = json.data.find((f: ForexData) => f.par === parFormateado) ?? null;
+  // 1. Leer lista completa desde KV (la misma clave que usa el cron)
+  let lista = await KV?.get('cache:forex', 'json') as ForexData[] | null;
+
+  // 2. Si KV está vacío, llamar lib directamente y guardar en KV
+  if (!lista || lista.length === 0) {
+    lista = await obtenerForex();
+    if (lista.length > 0) {
+      await KV?.put('cache:forex', JSON.stringify(lista), { expirationTtl: 3600 });
+    }
+  }
+
+  // 3. Encontrar el par solicitado
+  const found = lista?.find(f => f.par === parFormateado) ?? null;
+  if (found) {
+    parData = { ...found, tvDisponible: found.tvDisponible ?? false };
   }
 } catch (e) {
   fetchError = true;
+  console.error('[Forex detail]', e);
 }
 
 if (!parData && !fetchError) {
   return Astro.redirect('/herramientas/forex');
 }
 
+// ── Helpers ───────────────────────────────────────────────────
 const formatForex = (p: number) => {
   if (!p) return '—';
   if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -91,12 +108,12 @@ const infoMoneda: Record<string, { nombre: string; descripcion: string }> = {
   HNL: { nombre: 'Lempira Hondureño',    descripcion: 'Moneda de Honduras, cuyo tipo de cambio es administrado por el Banco Central.' },
 };
 
-const tvSymbol      = parData?.tradingviewSimbolo ?? '';
-const tvDisponible  = parData?.tvDisponible ?? false;
-const precioFmt = parData ? formatForex(parData.precio) : '—';
-const nombre    = parData ? (nombrePar[parData.par] ?? parData.par) : parFormateado;
-const baseInfo  = parData ? (infoMoneda[parData.base.toUpperCase()]  ?? null) : null;
-const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null) : null;
+const tvSymbol     = parData?.tradingviewSimbolo ?? '';
+const tvDisponible = parData?.tvDisponible ?? false;
+const precioFmt    = parData ? formatForex(parData.precio) : '—';
+const nombre       = parData ? (nombrePar[parData.par] ?? parData.par) : parFormateado;
+const baseInfo     = parData ? (infoMoneda[parData.base.toUpperCase()]     ?? null) : null;
+const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null) : null;
 ---
 
 <Layout>
@@ -116,7 +133,10 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
 
       {fetchError || !parData ? (
         <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">No se pudo cargar la información. <a href="/herramientas/forex" class="text-[#EC4899]">Volver</a></p>
+          <p class="text-white/30 text-sm">
+            No se pudo cargar la información.{' '}
+            <a href="/herramientas/forex" class="text-[#EC4899]">Volver</a>
+          </p>
         </div>
       ) : (
         <div class="flex flex-col gap-6">
@@ -124,7 +144,7 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
           <!-- Header: banderas + precio -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
             <div class="flex items-center gap-4">
-              <!-- Banderas solapadas grandes -->
+              <!-- Banderas solapadas -->
               <div class="relative w-14 h-10 flex-shrink-0">
                 <img
                   src={`https://flagcdn.com/w80/${parData.banderaBase.toLowerCase()}.png`}
@@ -144,9 +164,9 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
                   <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{parData.par}</h1>
                   <span class="text-white/30 text-sm bg-white/5 px-2 py-0.5 rounded">{nombre}</span>
                 </div>
-                <div class="flex items-center gap-3 mt-1">
+                <div class="flex items-center gap-3 mt-1 flex-wrap">
                   <span class="text-white font-bold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">{precioFmt}</span>
-                  <span class="text-white/30 text-xs bg-[#EC4899]/10 text-[#EC4899] px-2 py-0.5 rounded font-medium">Precio de referencia</span>
+                  <span class="text-xs bg-[#EC4899]/10 text-[#EC4899] px-2 py-0.5 rounded font-medium">Precio de referencia</span>
                 </div>
               </div>
             </div>
@@ -189,7 +209,9 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
                     />
                     <div>
                       <div class="text-white/30 text-[10px] uppercase tracking-widest">Moneda base</div>
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{baseInfo.nombre} ({parData.base.toUpperCase()})</div>
+                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">
+                        {baseInfo.nombre} ({parData.base.toUpperCase()})
+                      </div>
                     </div>
                   </div>
                   <p class="text-white/40 text-sm leading-relaxed">{baseInfo.descripcion}</p>
@@ -206,7 +228,9 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
                     />
                     <div>
                       <div class="text-white/30 text-[10px] uppercase tracking-widest">Moneda cotizada</div>
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{cotInfo.nombre} ({parData.cotizada.toUpperCase()})</div>
+                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">
+                        {cotInfo.nombre} ({parData.cotizada.toUpperCase()})
+                      </div>
                     </div>
                   </div>
                   <p class="text-white/40 text-sm leading-relaxed">{cotInfo.descripcion}</p>
@@ -240,7 +264,7 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
         container_id:        'tv-chart',
         symbol:              tvSymbol,
         interval:            'D',
-        timezone:            'America/Tegucigalda',
+        timezone:            'America/Tegucigalpa',
         theme:               'dark',
         style:               '1',
         locale:              'es',
@@ -260,3 +284,4 @@ const cotInfo   = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? null)
     document.head.appendChild(script);
   }
 </script>
+

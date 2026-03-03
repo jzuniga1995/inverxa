@@ -1,11 +1,9 @@
 ---
 // Hero.astro - Inversax — Full Responsive
 import { Globe, Users, FileText, BarChart2, ArrowRight, Zap } from 'lucide-astro';
-import { fetchPrecios } from '../lib/precios';
-import { obtenerForex } from '../lib/forex';
-import { fetchMetales } from '../lib/metales';
 
-const env = (Astro.locals.runtime?.env as any);
+// ── Sin fetch de APIs externas en SSR ───────────────────────────
+// Cripto, forex y metales cargan client-side para no bloquear TTFB.
 
 const stats = [
   { label: "Activos seguidos", value: "600+",  icon: "chart" },
@@ -14,74 +12,25 @@ const stats = [
   { label: "Artículos",        value: "1,200+", icon: "file"  },
 ];
 
-// ── FORMATTERS ───────────────────────────────────────────────
-const fmtPrice = (p: number) =>
-  p >= 1000
-    ? `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`
-    : `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+// Skeletons estáticos — se reemplazan client-side con datos reales
+const CRYPTO_SKELETON = [
+  { id: 'bitcoin',     name: 'Bitcoin',  symbol: 'BTC' },
+  { id: 'ethereum',    name: 'Ethereum', symbol: 'ETH' },
+  { id: 'solana',      name: 'Solana',   symbol: 'SOL' },
+  { id: 'binancecoin', name: 'BNB',      symbol: 'BNB' },
+];
 
-const fmtForex = (p: number) =>
-  !p ? '—'
-  : p >= 100
-    ? p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+const FOREX_SKELETON = [
+  { par: 'EUR/USD', base: 'eu', cotizada: 'us' },
+  { par: 'USD/MXN', base: 'us', cotizada: 'mx' },
+  { par: 'USD/ARS', base: 'us', cotizada: 'ar' },
+  { par: 'USD/BRL', base: 'us', cotizada: 'br' },
+];
 
-// ── FETCH EN PARALELO (directo desde lib/, sin HTTP) ─────────
-const HERO_IDS   = ['bitcoin', 'ethereum', 'solana', 'binancecoin'];
-const FOREX_SHOW = ['EUR/USD', 'USD/MXN', 'USD/ARS', 'USD/BRL'];
-
-const [preciosRaw, forexRaw, metalesRaw] = await Promise.all([
-  fetchPrecios(env?.COINGECKO_API_KEY).catch(() => []),
-  obtenerForex().catch(() => []),
-  fetchMetales().catch(() => []),
-]);
-
-// ── CRIPTO ────────────────────────────────────────────────────
-type CryptoItem = { name: string; symbol: string; id: string; image: string; price: string; change: string; up: boolean };
-
-let cryptoItems: CryptoItem[] = preciosRaw
-  .filter(c => HERO_IDS.includes(c.id))
-  .map(c => ({
-    id:     c.id,
-    name:   c.name,
-    symbol: c.symbol.toUpperCase(),
-    image:  c.image ?? '',
-    price:  fmtPrice(c.price),
-    change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-    up:     c.change24 >= 0,
-  }));
-
-if (cryptoItems.length === 0) {
-  cryptoItems = [
-    { id: 'bitcoin',     name: 'Bitcoin',  symbol: 'BTC', image: '', price: '—', change: '—', up: true },
-    { id: 'ethereum',    name: 'Ethereum', symbol: 'ETH', image: '', price: '—', change: '—', up: true },
-    { id: 'solana',      name: 'Solana',   symbol: 'SOL', image: '', price: '—', change: '—', up: true },
-    { id: 'binancecoin', name: 'BNB',      symbol: 'BNB', image: '', price: '—', change: '—', up: true },
-  ];
-}
-
-// ── FOREX ─────────────────────────────────────────────────────
-type ForexItem = { par: string; precio: string; banderaBase: string; banderaCotizada: string };
-
-const forexItems: ForexItem[] = forexRaw
-  .filter(f => FOREX_SHOW.includes(f.par))
-  .map(f => ({
-    par:             f.par,
-    precio:          fmtForex(f.precio),
-    banderaBase:     f.banderaBase,
-    banderaCotizada: f.banderaCotizada,
-  }));
-
-// ── METALES ───────────────────────────────────────────────────
-type MetalItem = { nombre: string; simbolo: string; precio: string; color: string; slug: string };
-
-const metalItems: MetalItem[] = metalesRaw.map(m => ({
-  nombre:  m.nombre,
-  simbolo: m.simbolo,
-  precio:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-  color:   m.color,
-  slug:    m.slug,
-}));
+const METALES_SKELETON = [
+  { nombre: 'Oro',   simbolo: 'XAU', slug: 'oro',   color: 'text-yellow-400' },
+  { nombre: 'Plata', simbolo: 'XAG', slug: 'plata', color: 'text-slate-300'  },
+];
 
 const heroTabs = [
   { id: 'cripto',   label: 'Cripto',   color: '#D4A843', href: '/herramientas/cripto'   },
@@ -163,7 +112,7 @@ const heroTabs = [
         </div>
 
         <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-4 sm:gap-6 pt-3 border-t border-white/[0.07]">
-          {stats.map((stat: any) => (
+          {stats.map((stat) => (
             <div class="flex items-center gap-2.5">
               <span class="text-[#D4A843] opacity-80 flex-shrink-0">
                 {stat.icon === "chart" && <BarChart2 size={15} />}
@@ -201,7 +150,7 @@ const heroTabs = [
 
           <!-- Tabs -->
           <div class="flex border-b border-white/[0.07]">
-            {heroTabs.map((tab: any, i: number) => (
+            {heroTabs.map((tab, i) => (
               <button
                 data-hero-tab={tab.id}
                 data-color={tab.color}
@@ -216,20 +165,17 @@ const heroTabs = [
             ))}
           </div>
 
-          <!-- Panel CRIPTO -->
+          <!-- Panel CRIPTO (skeleton → datos reales client-side) -->
           <div id="hero-panel-cripto" class="hero-panel">
-            {cryptoItems.map((coin: any) => (
+            {CRYPTO_SKELETON.map((coin) => (
               <a
                 href={`/herramientas/cripto/${coin.id}`}
                 class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
                 data-hero-symbol={coin.symbol}
               >
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <div class="w-7 h-7 rounded-full bg-white/10 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                    {coin.image
-                      ? <img src={coin.image} alt={coin.symbol} class="w-full h-full object-cover" loading="lazy" />
-                      : <span class="text-[9px] font-bold text-white/50">{coin.symbol.slice(0,2)}</span>
-                    }
+                  <div class="w-7 h-7 rounded-full bg-white/10 flex-shrink-0 overflow-hidden flex items-center justify-center" data-coin-img={coin.id}>
+                    <span class="text-[9px] font-bold text-white/30 animate-pulse">{coin.symbol.slice(0,2)}</span>
                   </div>
                   <div>
                     <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{coin.symbol}</div>
@@ -237,48 +183,40 @@ const heroTabs = [
                   </div>
                 </div>
                 <div class="flex flex-col items-end gap-0.5 flex-shrink-0">
-                  <span class="hero-price font-semibold text-sm text-white">{coin.price}</span>
-                  <span class={`hero-change text-xs font-medium ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>{coin.change}</span>
+                  <span class="hero-price font-semibold text-sm text-white/30 animate-pulse">···</span>
+                  <span class="hero-change text-xs font-medium text-white/20">—</span>
                 </div>
               </a>
             ))}
           </div>
 
-          <!-- Panel FOREX -->
+          <!-- Panel FOREX (skeleton → datos reales client-side) -->
           <div id="hero-panel-forex" class="hero-panel hidden">
-            {forexItems.length > 0 ? forexItems.map((f: any) => (
+            {FOREX_SKELETON.map((f) => (
               <a
                 href={`/herramientas/forex/${f.par.replace('/', '-').toLowerCase()}`}
                 class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
+                data-forex-par={f.par}
               >
                 <div class="flex items-center gap-2.5 min-w-0">
                   <div class="relative w-7 h-7 flex-shrink-0">
-                    <img
-                      src={`https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png`}
-                      class="absolute top-0 left-0 w-4 h-4 rounded-full object-cover border border-white/10"
-                      onerror="this.style.display='none'"
-                    />
-                    <img
-                      src={`https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png`}
-                      class="absolute bottom-0 right-0 w-4 h-4 rounded-full object-cover border border-white/10"
-                      onerror="this.style.display='none'"
-                    />
+                    <img src={`https://flagcdn.com/w40/${f.base}.png`} class="absolute top-0 left-0 w-4 h-4 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
+                    <img src={`https://flagcdn.com/w40/${f.cotizada}.png`} class="absolute bottom-0 right-0 w-4 h-4 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
                   </div>
                   <span class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{f.par}</span>
                 </div>
-                <span class="font-semibold text-sm text-white">{f.precio}</span>
+                <span class="forex-price font-semibold text-sm text-white/30 animate-pulse">···</span>
               </a>
-            )) : (
-              <div class="px-5 py-8 text-center text-white/25 text-sm">Cargando datos Forex...</div>
-            )}
+            ))}
           </div>
 
-          <!-- Panel METALES -->
+          <!-- Panel METALES (skeleton → datos reales client-side) -->
           <div id="hero-panel-metales" class="hero-panel hidden">
-            {metalItems.length > 0 ? metalItems.map((m: any) => (
+            {METALES_SKELETON.map((m) => (
               <a
                 href={`/herramientas/metales/${m.slug}`}
                 class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline"
+                data-metal-simbolo={m.simbolo}
               >
                 <div class="flex items-center gap-2.5 min-w-0">
                   <div class="w-7 h-7 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
@@ -289,17 +227,15 @@ const heroTabs = [
                     <div class="text-[11px] text-white/35">{m.simbolo} · oz troy</div>
                   </div>
                 </div>
-                <span class="font-semibold text-sm text-white">{m.precio}</span>
+                <span class="metal-price font-semibold text-sm text-white/30 animate-pulse">···</span>
               </a>
-            )) : (
-              <div class="px-5 py-8 text-center text-white/25 text-sm">Cargando metales...</div>
-            )}
+            ))}
           </div>
 
           <!-- Panel ACCIONES (skeleton + carga client-side) -->
           <div id="hero-panel-acciones" class="hero-panel hidden">
             <div id="hero-acciones-loading">
-              {[...Array(4)].map((_: any) => (
+              {[...Array(4)].map((_) => (
                 <div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.07] last:border-none">
                   <div class="flex items-center gap-2.5">
                     <div class="w-7 h-7 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
@@ -365,10 +301,33 @@ const heroTabs = [
     0%, 100% { opacity: 1;   transform: scale(1);   }
     50%       { opacity: 0.4; transform: scale(0.8); }
   }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
 </style>
 
 <script>
-  // ── Tabs de la card ───────────────────────────────────────────
+  // ── Helpers de formato ────────────────────────────────────────
+  function fmtPrice(p: number): string {
+    if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  }
+  function fmtForex(p: number): string {
+    if (!p) return '—';
+    if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  }
+  function stopPulse(el: Element | null) {
+    if (!el) return;
+    el.classList.remove('animate-pulse', 'text-white/30', 'text-white/20');
+    el.classList.add('text-white');
+  }
+
+  // ── Tabs ──────────────────────────────────────────────────────
   const heroLinks: Record<string, string> = {
     cripto:   '/herramientas/cripto',
     forex:    '/herramientas/forex',
@@ -410,7 +369,104 @@ const heroTabs = [
     });
   });
 
-  // ── Acciones client-side ──────────────────────────────────────
+  // ── Carga cripto ──────────────────────────────────────────────
+  const HERO_SYMBOLS = ['BTC', 'ETH', 'SOL', 'BNB'];
+
+  async function cargarCripto() {
+    try {
+      const res = await fetch('/api/precios');
+      if (!res.ok) return;
+      const data = await res.json() as any;
+
+      data
+        .filter((c: any) => HERO_SYMBOLS.includes(c.symbol?.toUpperCase()))
+        .forEach((coin: any) => {
+          const sym  = coin.symbol?.toUpperCase();
+          const fila = document.querySelector(`[data-hero-symbol="${sym}"]`);
+          if (!fila) return;
+
+          // Actualizar imagen si tenemos URL
+          if (coin.image) {
+            const imgWrap = fila.querySelector('[data-coin-img]') as HTMLElement | null;
+            if (imgWrap) {
+              imgWrap.innerHTML = `<img src="${coin.image}" alt="${sym}" class="w-full h-full object-cover" loading="lazy" />`;
+            }
+          }
+
+          const up       = coin.change24 >= 0;
+          const priceEl  = fila.querySelector('.hero-price');
+          const changeEl = fila.querySelector('.hero-change');
+
+          if (priceEl) {
+            priceEl.textContent = fmtPrice(coin.price);
+            stopPulse(priceEl);
+          }
+          if (changeEl) {
+            changeEl.textContent = `${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
+            changeEl.className   = `hero-change text-xs font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
+          }
+        });
+    } catch (e) {
+      console.warn('[Hero cripto]', e);
+    }
+  }
+
+  // ── Carga forex (solo al abrir el tab, una vez) ───────────────
+  const FOREX_SHOW = ['EUR/USD', 'USD/MXN', 'USD/ARS', 'USD/BRL'];
+  let forexCargado = false;
+
+  async function cargarForex() {
+    if (forexCargado) return;
+    forexCargado = true;
+    try {
+      const res = await fetch('/api/forex');
+      if (!res.ok) return;
+      const json = await res.json() as any;
+      const data = json.data ?? json;
+
+      data
+        .filter((f: any) => FOREX_SHOW.includes(f.par))
+        .forEach((f: any) => {
+          const fila = document.querySelector(`[data-forex-par="${f.par}"]`);
+          if (!fila) return;
+          const el = fila.querySelector('.forex-price');
+          if (el) {
+            el.textContent = fmtForex(f.precio);
+            stopPulse(el);
+          }
+        });
+    } catch (e) {
+      console.warn('[Hero forex]', e);
+    }
+  }
+
+  // ── Carga metales (solo al abrir el tab, una vez) ─────────────
+  let metalesCargado = false;
+
+  async function cargarMetales() {
+    if (metalesCargado) return;
+    metalesCargado = true;
+    try {
+      const res = await fetch('/api/metales');
+      if (!res.ok) return;
+      const json = await res.json() as any;
+      const data = json.data ?? json;
+
+      data.forEach((m: any) => {
+        const fila = document.querySelector(`[data-metal-simbolo="${m.simbolo}"]`);
+        if (!fila) return;
+        const el = fila.querySelector('.metal-price');
+        if (el) {
+          el.textContent = `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          stopPulse(el);
+        }
+      });
+    } catch (e) {
+      console.warn('[Hero metales]', e);
+    }
+  }
+
+  // ── Carga acciones (solo al abrir el tab, una vez) ────────────
   const dominios: Record<string, string> = {
     AAPL: 'apple.com',        MSFT: 'microsoft.com',    GOOGL: 'google.com',
     AMZN: 'amazon.com',       NVDA: 'nvidia.com',        META: 'meta.com',
@@ -421,10 +477,10 @@ const heroTabs = [
   };
   const ACCIONES_SHOW = ['AAPL', 'NVDA', 'TSLA', 'MSFT'];
 
-  async function cargarHeroAcciones() {
+  async function cargarAcciones() {
     try {
       const res  = await fetch('/api/acciones');
-      const json = await res.json() as any;  // ✅ fix ts18046
+      const json = await res.json() as any;
       if (!json.ok) throw new Error();
 
       const content = document.getElementById('hero-acciones-content')!;
@@ -463,50 +519,22 @@ const heroTabs = [
     }
   }
 
-  // Carga solo cuando el usuario hace click en el tab, una sola vez
+  // ── Disparar cargas según tab activo ──────────────────────────
   tabs.forEach((tab) => {
-    if (tab.dataset.heroTab === 'acciones') {
-      tab.addEventListener('click', () => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.heroTab!;
+      if (target === 'forex'    ) cargarForex();
+      if (target === 'metales'  ) cargarMetales();
+      if (target === 'acciones' ) {
         const content = document.getElementById('hero-acciones-content')!;
-        if (content.innerHTML === '') cargarHeroAcciones();
-      }, { once: true });
-    }
+        if (content.innerHTML === '') cargarAcciones();
+      }
+    });
   });
 
-  // ── Polling cripto ───────────────────────────────────────────
-  const HERO_SYMBOLS = ['BTC', 'ETH', 'SOL', 'BNB'];
+  // ── Carga inicial: cripto visible al montar ───────────────────
+  cargarCripto();
 
-  function formatPrice(p: number): string {
-    if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
-  }
-
-  async function actualizarHero() {
-    try {
-      const res = await fetch('/api/precios');
-      if (!res.ok) return;
-      const data = await res.json() as any;  // ✅ fix ts18046
-
-      data
-        .filter((c: any) => HERO_SYMBOLS.includes(c.symbol?.toUpperCase()))
-        .forEach((coin: any) => {
-          const fila = document.querySelector(`[data-hero-symbol="${coin.symbol?.toUpperCase()}"]`);
-          if (!fila) return;
-          const up       = coin.change24 >= 0;
-          const priceEl  = fila.querySelector('.hero-price');
-          const changeEl = fila.querySelector('.hero-change');
-          if (priceEl)  priceEl.textContent = formatPrice(coin.price);
-          if (changeEl) {
-            changeEl.textContent = `${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
-            changeEl.className   = `hero-change text-xs font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
-          }
-        });
-    } catch (e) {
-      console.warn('[Hero polling]', e);
-    }
-  }
-
-  setInterval(actualizarHero, 300_000);
+  // ── Polling: refrescar cripto cada 5 min ─────────────────────
+  setInterval(cargarCripto, 300_000);
 </script>
-

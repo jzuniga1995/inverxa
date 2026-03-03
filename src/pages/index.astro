@@ -4,12 +4,9 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import { TrendingUp, ArrowRight, DollarSign, BarChart2, Clock, Flame, BookOpen, Star, ExternalLink, Layers, Landmark } from 'lucide-astro';
 import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategoria } from '../db/queries';
-import { fetchPrecios } from '../lib/precios';
-import { obtenerForex } from '../lib/forex';
-import { fetchMetales } from '../lib/metales';
 
-const db  = Astro.locals.db;
-const env = (Astro.locals.runtime?.env as any);
+// ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
+const db = Astro.locals.db;
 
 const [todasNoticias, destacados, categorias] = await Promise.all([
   getArticulos(db, 20),
@@ -30,82 +27,6 @@ categorias.forEach((cat, i) => {
   noticiasPorCategoria[cat.slug] = noticiasPorCategoriaArr[i];
 });
 const primeraConNoticias = categorias.find(c => (noticiasPorCategoria[c.slug]?.length ?? 0) > 0);
-
-// ── FORMATTERS ───────────────────────────────────────────────
-const formatCap = (n: number) => {
-  if (!n) return '—';
-  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-  if (n >= 1e9)  return `$${(n / 1e9).toFixed(0)}B`;
-  return `$${(n / 1e6).toFixed(0)}M`;
-};
-const formatPrice = (p: number) => {
-  if (!p) return '—';
-  if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-  if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
-};
-const formatForex = (p: number) => {
-  if (!p) return '—';
-  if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
-};
-
-// ── FETCH EN PARALELO (directo desde lib/, sin HTTP) ─────────
-const HOME_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano'];
-
-const [preciosRaw, forexRaw, metalesRaw] = await Promise.all([
-  fetchPrecios(env?.COINGECKO_API_KEY).catch(() => []),
-  obtenerForex().catch(() => []),
-  fetchMetales().catch(() => []),
-]);
-
-// ── PRECIOS ──────────────────────────────────────────────────
-type Precio = { id: string; symbol: string; name: string; image: string; price: string; change: string; cap: string; up: boolean; };
-
-let precios: Precio[] = preciosRaw
-  .filter(c => HOME_IDS.includes(c.id))
-  .map(c => ({
-    id: c.id, symbol: c.symbol, name: c.name, image: c.image,
-    price:  formatPrice(c.price),
-    change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-    cap:    formatCap(c.marketCap),
-    up:     c.change24 >= 0,
-  }));
-
-if (precios.length === 0) {
-  precios = [
-    { id: 'bitcoin',     symbol: 'BTC', name: 'Bitcoin',  image: '', price: '—', change: '—', cap: '—', up: true },
-    { id: 'ethereum',    symbol: 'ETH', name: 'Ethereum', image: '', price: '—', change: '—', cap: '—', up: true },
-    { id: 'binancecoin', symbol: 'BNB', name: 'BNB',      image: '', price: '—', change: '—', cap: '—', up: true },
-    { id: 'solana',      symbol: 'SOL', name: 'Solana',   image: '', price: '—', change: '—', cap: '—', up: true },
-    { id: 'ripple',      symbol: 'XRP', name: 'XRP',      image: '', price: '—', change: '—', cap: '—', up: true },
-    { id: 'cardano',     symbol: 'ADA', name: 'Cardano',  image: '', price: '—', change: '—', cap: '—', up: true },
-  ];
-}
-
-// ── FOREX ────────────────────────────────────────────────────
-const forexData = forexRaw.slice(0, 6).map(f => ({
-  ...f,
-  precioFmt: formatForex(f.precio),
-}));
-
-const nombreForex: Record<string, string> = {
-  'EUR/USD': 'Euro / Dólar',
-  'GBP/USD': 'Libra / Dólar',
-  'USD/JPY': 'Dólar / Yen',
-  'USD/MXN': 'Dólar / Peso Mexicano',
-  'USD/ARS': 'Dólar / Peso Argentino',
-  'USD/COP': 'Dólar / Peso Colombiano',
-  'USD/CLP': 'Dólar / Peso Chileno',
-  'USD/BRL': 'Dólar / Real Brasileño',
-  'USD/PEN': 'Dólar / Sol Peruano',
-};
-
-// ── METALES ──────────────────────────────────────────────────
-const metalesData = metalesRaw.slice(0, 4).map(m => ({
-  ...m,
-  precioFmt: `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-}));
 
 // ── HERRAMIENTAS ─────────────────────────────────────────────
 const herramientas = [
@@ -270,7 +191,7 @@ const categoriaColores: Record<string, string> = {
     </div>
   </section>
 
-  <!-- ── 2. EXPLORA POR CATEGORÍA (TABS) ───────────────────── -->
+  <!-- ── 2. EXPLORA POR CATEGORÍA ──────────────────────────── -->
   <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center gap-2.5 mb-6">
@@ -375,7 +296,7 @@ const categoriaColores: Record<string, string> = {
     </div>
   </section>
 
-  <!-- ── 4. PRECIOS DEL MERCADO ────────────────────────────── -->
+  <!-- ── 4. PRECIOS DEL MERCADO (todo client-side) ─────────── -->
   <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto">
 
@@ -391,43 +312,49 @@ const categoriaColores: Record<string, string> = {
         <button id="tab-acciones" class="market-tab flex-shrink-0 text-sm px-4 py-2 rounded-lg border cursor-pointer transition-all duration-200 bg-transparent text-white/40 border-white/[0.07] hover:text-white hover:border-white/20">Acciones</button>
       </div>
 
+      <!-- Skeleton reutilizable -->
+      <template id="tpl-skeleton">
+        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+          <div id="sk-rows">
+            <div class="flex items-center gap-4 px-6 py-4 border-b border-white/[0.07]">
+              <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+              <div class="flex-1 flex flex-col gap-2">
+                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-24 h-2.5 bg-white/5 rounded animate-pulse"></div>
+              </div>
+              <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+              <div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </template>
+
       <!-- ── PANEL CRIPTO ── -->
       <div id="panel-cripto" class="mkt-panel">
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div id="cripto-skeleton" class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+          {[...Array(6)].map(() => (
+            <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                <div class="flex flex-col gap-1.5">
+                  <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-20 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                </div>
+              </div>
+              <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="flex items-center justify-end"><div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div></div>
+            </div>
+          ))}
+        </div>
+        <div id="cripto-content" class="hidden bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
           <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Activo</span>
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio</span>
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">24h</span>
             <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Cap. Mercado</span>
           </div>
-          {precios.map((coin) => (
-            <a href={`/herramientas/cripto/${coin.id}`} data-coin-id={coin.id} class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
-              <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div class="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
-                  {coin.image
-                    ? <img src={coin.image} alt={coin.name} class="w-full h-full object-cover" loading="lazy" />
-                    : <span class="text-[10px] font-bold text-white/60">{coin.symbol.slice(0, 2)}</span>
-                  }
-                </div>
-                <div class="min-w-0">
-                  <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{coin.symbol}</div>
-                  <div class="text-xs text-white/40 truncate">{coin.name}</div>
-                </div>
-              </div>
-              <div class="flex items-center justify-end">
-                <span data-field="price" class="font-semibold text-sm text-white" style="font-family: 'Syne', sans-serif;">{coin.price}</span>
-              </div>
-              <div class="flex items-center justify-end">
-                {coin.change === '—'
-                  ? <span data-field="change" class="text-sm text-white/30">—</span>
-                  : <span data-field="change" class={`flex items-center gap-1 text-sm font-medium ${coin.up ? 'text-emerald-400' : 'text-red-400'}`}>{coin.up ? '▲' : '▼'} {coin.change}</span>
-                }
-              </div>
-              <div class="hidden sm:flex items-center justify-end">
-                <span data-field="cap" class="text-sm text-white/50">{coin.cap}</span>
-              </div>
-            </a>
-          ))}
+          <div id="cripto-rows"></div>
         </div>
         <div class="flex justify-end mt-3">
           <a href="/herramientas/cripto" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">Ver todos <ArrowRight size={14} /></a>
@@ -436,31 +363,25 @@ const categoriaColores: Record<string, string> = {
 
       <!-- ── PANEL FOREX ── -->
       <div id="panel-forex" class="mkt-panel hidden">
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div id="forex-skeleton" class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+          {[...Array(6)].map(() => (
+            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                <div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div>
+              </div>
+              <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="hidden sm:flex items-center justify-end"><div class="w-24 h-3 bg-white/5 rounded animate-pulse"></div></div>
+            </div>
+          ))}
+        </div>
+        <div id="forex-content" class="hidden bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
           <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Par</span>
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio</span>
             <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Descripción</span>
           </div>
-          {forexData.length > 0 ? forexData.map((f) => (
-            <a href={`/herramientas/forex/${f.par.replace('/', '-').toLowerCase()}`} class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
-              <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div class="relative w-8 h-8 flex-shrink-0">
-                  <img src={`https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png`} alt={f.banderaBase} class="absolute top-0 left-0 w-5 h-5 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
-                  <img src={`https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png`} alt={f.banderaCotizada} class="absolute bottom-0 right-0 w-5 h-5 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
-                </div>
-                <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{f.par}</div>
-              </div>
-              <div class="flex items-center justify-end">
-                <span class="font-semibold text-sm text-white">{f.precioFmt}</span>
-              </div>
-              <div class="hidden sm:flex items-center justify-end">
-                <span class="text-xs text-white/40 truncate">{nombreForex[f.par] ?? f.par}</span>
-              </div>
-            </a>
-          )) : (
-            <div class="px-6 py-10 text-center text-white/20 text-sm">Cargando datos Forex...</div>
-          )}
+          <div id="forex-rows"></div>
         </div>
         <div class="flex justify-end mt-3">
           <a href="/herramientas/forex" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#EC4899] no-underline transition-colors duration-200">Ver todos <ArrowRight size={14} /></a>
@@ -469,40 +390,32 @@ const categoriaColores: Record<string, string> = {
 
       <!-- ── PANEL METALES ── -->
       <div id="panel-metales" class="mkt-panel hidden">
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div id="metales-skeleton" class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+          {[...Array(4)].map(() => (
+            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                <div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div>
+              </div>
+              <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="hidden sm:flex items-center justify-end"><div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div></div>
+            </div>
+          ))}
+        </div>
+        <div id="metales-content" class="hidden bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
           <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Metal</span>
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio / oz</span>
             <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Símbolo</span>
           </div>
-          {metalesData.length > 0 ? metalesData.map((m) => (
-            <a href={`/herramientas/metales/${m.slug}`} class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
-              <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
-                  <span class={`text-xs font-bold ${m.color}`}>{m.simbolo.slice(0,2)}</span>
-                </div>
-                <div class="min-w-0">
-                  <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{m.nombre}</div>
-                  <div class="text-xs text-white/40">{m.unidad} troy</div>
-                </div>
-              </div>
-              <div class="flex items-center justify-end">
-                <span class="font-semibold text-sm text-white">{m.precioFmt}</span>
-              </div>
-              <div class="hidden sm:flex items-center justify-end">
-                <span class="text-xs text-white/40">{m.simbolo}</span>
-              </div>
-            </a>
-          )) : (
-            <div class="px-6 py-10 text-center text-white/20 text-sm">Cargando datos de metales...</div>
-          )}
+          <div id="metales-rows"></div>
         </div>
         <div class="flex justify-end mt-3">
           <a href="/herramientas/metales" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">Ver todos <ArrowRight size={14} /></a>
         </div>
       </div>
 
-      <!-- ── PANEL ACCIONES (carga client-side) ── -->
+      <!-- ── PANEL ACCIONES ── -->
       <div id="panel-acciones" class="mkt-panel hidden">
         <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
           <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
@@ -511,7 +424,6 @@ const categoriaColores: Record<string, string> = {
             <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Cambio</span>
             <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Sector</span>
           </div>
-          <!-- Skeleton -->
           <div id="acciones-loading">
             {[...Array(6)].map(() => (
               <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
@@ -528,7 +440,6 @@ const categoriaColores: Record<string, string> = {
               </div>
             ))}
           </div>
-          <!-- Contenido real inyectado por JS -->
           <div id="acciones-content" class="hidden"></div>
           <div id="acciones-error" class="hidden px-6 py-10 text-center text-white/20 text-sm">No se pudieron cargar las cotizaciones</div>
         </div>
@@ -553,7 +464,7 @@ const categoriaColores: Record<string, string> = {
       <p class="text-white/30 text-xs mb-8">Seleccionados por popularidad, regulación y soporte en Latinoamérica. Siempre investiga antes de invertir.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {brokers.map((broker) => (
-          <a href={broker.href} target="_blank" rel="noopener noreferrer nofollow " class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5">
+          <a href={broker.href} target="_blank" rel="noopener noreferrer nofollow" class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5">
             <div class="flex items-start justify-between gap-3">
               <div class="flex flex-col gap-0.5">
                 <div class="flex items-center gap-2">
@@ -628,30 +539,6 @@ const categoriaColores: Record<string, string> = {
 
 </Layout>
 
-<!-- ── TABS MERCADO JS ──────────────────────────────────────── -->
-<script>
-  const mktTabs   = document.querySelectorAll<HTMLButtonElement>('.market-tab');
-  const mktPanels = document.querySelectorAll<HTMLElement>('.mkt-panel');
-
-  mktTabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => {
-      mktTabs.forEach(t => {
-        t.style.background  = '';
-        t.style.borderColor = '';
-        t.style.color       = '';
-        t.classList.remove('font-semibold', 'bg-[#D4A843]', 'text-[#0A0B0D]', 'border-[#D4A843]');
-        t.classList.add('text-white/40', 'border-white/[0.07]');
-      });
-      tab.style.background  = '#D4A843';
-      tab.style.borderColor = '#D4A843';
-      tab.style.color       = '#0A0B0D';
-      tab.classList.add('font-semibold');
-      tab.classList.remove('text-white/40', 'border-white/[0.07]');
-      mktPanels.forEach((p, j) => p.classList.toggle('hidden', i !== j));
-    });
-  });
-</script>
-
 <!-- ── TABS CATEGORÍAS JS ─────────────────────────────────── -->
 <script>
   const tabs   = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
@@ -661,100 +548,186 @@ const categoriaColores: Record<string, string> = {
     tab.addEventListener('click', () => {
       const target = tab.dataset.tab!;
       const color  = tab.dataset.color ?? '#D4A843';
-
       tabs.forEach((t) => {
-        t.style.background  = '';
-        t.style.borderColor = '';
-        t.style.color       = '';
+        t.style.background = t.style.borderColor = t.style.color = '';
         t.classList.remove('font-semibold');
         t.classList.add('text-white/40', 'border-white/[0.07]');
       });
-
-      tab.style.background  = color;
-      tab.style.borderColor = color;
-      tab.style.color       = '#0A0B0D';
+      tab.style.background = tab.style.borderColor = color;
+      tab.style.color = '#0A0B0D';
       tab.classList.add('font-semibold');
       tab.classList.remove('text-white/40', 'border-white/[0.07]');
-
-      panels.forEach((p) => {
-        p.classList.toggle('hidden', p.dataset.panel !== target);
-      });
+      panels.forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== target));
     });
   });
 </script>
 
-<!-- ── POLLING CRIPTO ─────────────────────────────────────── -->
+<!-- ── MERCADO: TABS + CARGA CLIENT-SIDE ─────────────────── -->
 <script>
-  const HOME_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano'];
-
-  const formatPrice = (p: number) => {
+  // ── Helpers de formato ───────────────────────────────────
+  const fmtPrice = (p: number) => {
     if (!p) return '—';
     if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
     if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
   };
-  const formatCap = (n: number) => {
+  const fmtCap = (n: number) => {
     if (!n) return '—';
     if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
     if (n >= 1e9)  return `$${(n / 1e9).toFixed(0)}B`;
     return `$${(n / 1e6).toFixed(0)}M`;
   };
-
-  async function actualizarPrecios() {
-    try {
-      const res  = await fetch('/api/precios');
-      if (!res.ok) return;
- const data = await res.json() as any;
-      data.filter((c: any) => HOME_IDS.includes(c.id)).forEach((coin: any) => {
-        const fila = document.querySelector(`[data-coin-id="${coin.id}"]`);
-        if (!fila) return;
-        const up       = coin.change24 >= 0;
-        const elPrice  = fila.querySelector('[data-field="price"]');
-        const elChange = fila.querySelector('[data-field="change"]');
-        const elCap    = fila.querySelector('[data-field="cap"]');
-        if (elPrice)  elPrice.textContent  = formatPrice(coin.price);
-        if (elCap)    elCap.textContent    = formatCap(coin.marketCap);
-        if (elChange) {
-          elChange.textContent = `${up ? '▲' : '▼'} ${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
-          elChange.className   = `flex items-center gap-1 text-sm font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
-        }
-      });
-    } catch (e) { console.error('[Home polling cripto]', e); }
-  }
-
-  setInterval(actualizarPrecios, 300_000);
-</script>
-
-<!-- ── ACCIONES CLIENT-SIDE ───────────────────────────────── -->
-<script>
-  const dominios: Record<string, string> = {
-    AAPL: 'apple.com',        MSFT: 'microsoft.com',     GOOGL: 'google.com',
-    AMZN: 'amazon.com',       NVDA: 'nvidia.com',         META: 'meta.com',
-    TSLA: 'tesla.com',        JPM:  'jpmorganchase.com',  BAC:  'bankofamerica.com',
-    GS:   'goldmansachs.com', XOM:  'exxonmobil.com',     CVX:  'chevron.com',
-    KO:   'coca-cola.com',    MCD:  'mcdonalds.com',       SPY:  'ssga.com',
-    QQQ:  'invesco.com',
+  const fmtForex = (p: number) => {
+    if (!p) return '—';
+    if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
   };
 
+  const nombreForex: Record<string, string> = {
+    'EUR/USD': 'Euro / Dólar', 'GBP/USD': 'Libra / Dólar', 'USD/JPY': 'Dólar / Yen',
+    'USD/MXN': 'Dólar / Peso Mexicano', 'USD/ARS': 'Dólar / Peso Argentino',
+    'USD/COP': 'Dólar / Peso Colombiano', 'USD/CLP': 'Dólar / Peso Chileno',
+    'USD/BRL': 'Dólar / Real Brasileño', 'USD/PEN': 'Dólar / Sol Peruano',
+  };
+
+  const dominiosAcciones: Record<string, string> = {
+    AAPL: 'apple.com', MSFT: 'microsoft.com', GOOGL: 'google.com',
+    AMZN: 'amazon.com', NVDA: 'nvidia.com', META: 'meta.com',
+    TSLA: 'tesla.com', JPM: 'jpmorganchase.com', BAC: 'bankofamerica.com',
+    GS: 'goldmansachs.com', XOM: 'exxonmobil.com', CVX: 'chevron.com',
+    KO: 'coca-cola.com', MCD: 'mcdonalds.com', SPY: 'ssga.com', QQQ: 'invesco.com',
+  };
+
+  // ── Estado de carga por panel ─────────────────────────────
+  const loaded: Record<string, boolean> = { cripto: false, forex: false, metales: false, acciones: false };
+
+  // ── Loaders ───────────────────────────────────────────────
+  async function cargarCripto() {
+    if (loaded.cripto) return;
+    loaded.cripto = true;
+    try {
+      const HOME_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano'];
+      const res  = await fetch('/api/precios');
+      const data = await res.json() as any[];
+      const rows = document.getElementById('cripto-rows')!;
+      rows.innerHTML = data.filter((c: any) => HOME_IDS.includes(c.id)).map((coin: any) => {
+        const up = coin.change24 >= 0;
+        return `
+          <a href="/herramientas/cripto/${coin.id}" data-coin-id="${coin.id}"
+            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div class="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
+                ${coin.image ? `<img src="${coin.image}" alt="${coin.name}" class="w-full h-full object-cover" loading="lazy" />` : `<span class="text-[10px] font-bold text-white/60">${coin.symbol.slice(0,2)}</span>`}
+              </div>
+              <div class="min-w-0">
+                <div class="font-bold text-sm text-white">${coin.symbol.toUpperCase()}</div>
+                <div class="text-xs text-white/40 truncate">${coin.name}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-end">
+              <span data-field="price" class="font-semibold text-sm text-white">${fmtPrice(coin.price)}</span>
+            </div>
+            <div class="flex items-center justify-end">
+              <span data-field="change" class="flex items-center gap-1 text-sm font-medium ${up ? 'text-emerald-400' : 'text-red-400'}">
+                ${up ? '▲' : '▼'} ${up ? '+' : ''}${coin.change24.toFixed(2)}%
+              </span>
+            </div>
+            <div class="hidden sm:flex items-center justify-end">
+              <span data-field="cap" class="text-sm text-white/50">${fmtCap(coin.marketCap)}</span>
+            </div>
+          </a>`;
+      }).join('');
+      document.getElementById('cripto-skeleton')!.classList.add('hidden');
+      document.getElementById('cripto-content')!.classList.remove('hidden');
+    } catch { /* muestra skeleton */ }
+  }
+
+  async function cargarForex() {
+    if (loaded.forex) return;
+    loaded.forex = true;
+    try {
+      const res  = await fetch('/api/forex');
+      const json = await res.json() as any;
+      const data = json.ok ? json.data.slice(0, 6) : [];
+      const rows = document.getElementById('forex-rows')!;
+      rows.innerHTML = data.map((f: any) => `
+        <a href="/herramientas/forex/${f.par.replace('/', '-').toLowerCase()}"
+          class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+          <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div class="relative w-8 h-8 flex-shrink-0">
+              <img src="https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png" class="absolute top-0 left-0 w-5 h-5 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
+              <img src="https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png" class="absolute bottom-0 right-0 w-5 h-5 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
+            </div>
+            <div class="font-bold text-sm text-white">${f.par}</div>
+          </div>
+          <div class="flex items-center justify-end">
+            <span class="font-semibold text-sm text-white">${fmtForex(f.precio)}</span>
+          </div>
+          <div class="hidden sm:flex items-center justify-end">
+            <span class="text-xs text-white/40 truncate">${nombreForex[f.par] ?? f.par}</span>
+          </div>
+        </a>`).join('');
+      document.getElementById('forex-skeleton')!.classList.add('hidden');
+      document.getElementById('forex-content')!.classList.remove('hidden');
+    } catch { /* muestra skeleton */ }
+  }
+
+  async function cargarMetales() {
+    if (loaded.metales) return;
+    loaded.metales = true;
+    try {
+      const res  = await fetch('/api/metales');
+      const json = await res.json() as any;
+      const data = json.ok ? json.data.slice(0, 4) : [];
+      const rows = document.getElementById('metales-rows')!;
+      rows.innerHTML = data.map((m: any) => {
+        const precio = m.precio > 0
+          ? `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          : '—';
+        return `
+          <a href="/herramientas/metales/${m.slug}"
+            class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div class="w-8 h-8 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                <span class="text-xs font-bold text-white/60">${m.simbolo.slice(1,3)}</span>
+              </div>
+              <div class="min-w-0">
+                <div class="font-bold text-sm text-white">${m.nombre}</div>
+                <div class="text-xs text-white/40">${m.unidad} troy</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-end">
+              <span class="font-semibold text-sm text-white">${precio}</span>
+            </div>
+            <div class="hidden sm:flex items-center justify-end">
+              <span class="text-xs text-white/40">${m.simbolo}</span>
+            </div>
+          </a>`;
+      }).join('');
+      document.getElementById('metales-skeleton')!.classList.add('hidden');
+      document.getElementById('metales-content')!.classList.remove('hidden');
+    } catch { /* muestra skeleton */ }
+  }
+
   async function cargarAcciones() {
+    if (loaded.acciones) return;
+    loaded.acciones = true;
     try {
       const res  = await fetch('/api/acciones?limit=6');
-  const json = await res.json() as any;
+      const json = await res.json() as any;
       if (!json.ok) throw new Error();
-
       const content = document.getElementById('acciones-content')!;
       content.innerHTML = json.data.map((a: any) => {
-        const precio      = a.precio > 0 ? `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
-        const cambioPct   = a.precio > 0 ? `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%` : '—';
-        const colorCambio = a.alza ? 'text-emerald-400' : 'text-red-400';
-        const flecha      = a.alza ? '▲' : '▼';
-        const dominio     = dominios[a.ticker] ?? '';
-        const logo        = dominio
+        const precio    = a.precio > 0 ? `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
+        const cambio    = a.precio > 0 ? `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%` : '—';
+        const colorC    = a.alza ? 'text-emerald-400' : 'text-red-400';
+        const dominio   = dominiosAcciones[a.ticker] ?? '';
+        const logo      = dominio
           ? `<img src="https://www.google.com/s2/favicons?domain=${dominio}&sz=64" alt="${a.nombre}" class="w-5 h-5 object-contain" onerror="this.style.display='none'" />`
-          : `<span class="text-[9px] font-bold text-white/50">${a.ticker.slice(0, 2)}</span>`;
-
+          : `<span class="text-[9px] font-bold text-white/50">${a.ticker.slice(0,2)}</span>`;
         return `
-          <a href="/herramientas/acciones/${a.slug}" class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+          <a href="/herramientas/acciones/${a.slug}"
+            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
               <div class="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">${logo}</div>
               <div class="min-w-0">
@@ -766,17 +739,13 @@ const categoriaColores: Record<string, string> = {
               <span class="font-semibold text-sm text-white">${precio}</span>
             </div>
             <div class="flex items-center justify-end">
-              ${precio === '—'
-                ? '<span class="text-sm text-white/30">—</span>'
-                : `<span class="flex items-center gap-1 text-sm font-medium ${colorCambio}">${flecha} ${cambioPct}</span>`
-              }
+              ${precio === '—' ? '<span class="text-sm text-white/30">—</span>' : `<span class="flex items-center gap-1 text-sm font-medium ${colorC}">${a.alza ? '▲' : '▼'} ${cambio}</span>`}
             </div>
             <div class="hidden sm:flex items-center justify-end">
               <span class="text-xs text-white/40">${a.sector}</span>
             </div>
           </a>`;
       }).join('');
-
       document.getElementById('acciones-loading')!.classList.add('hidden');
       content.classList.remove('hidden');
     } catch {
@@ -785,11 +754,29 @@ const categoriaColores: Record<string, string> = {
     }
   }
 
-  // Carga solo cuando el usuario hace click en el tab, una sola vez
-  document.getElementById('tab-acciones')?.addEventListener('click', () => {
-    const content = document.getElementById('acciones-content')!;
-    if (content.innerHTML === '') cargarAcciones();
-  }, { once: true });
+  // ── Tabs lógica + carga lazy ──────────────────────────────
+  const mktTabs   = document.querySelectorAll<HTMLButtonElement>('.market-tab');
+  const mktPanels = document.querySelectorAll<HTMLElement>('.mkt-panel');
+  const loaders   = [cargarCripto, cargarForex, cargarMetales, cargarAcciones];
+
+  mktTabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      mktTabs.forEach(t => {
+        t.style.background = t.style.borderColor = t.style.color = '';
+        t.classList.remove('font-semibold');
+        t.classList.add('text-white/40', 'border-white/[0.07]');
+      });
+      tab.style.background = tab.style.borderColor = '#D4A843';
+      tab.style.color = '#0A0B0D';
+      tab.classList.add('font-semibold');
+      tab.classList.remove('text-white/40', 'border-white/[0.07]');
+      mktPanels.forEach((p, j) => p.classList.toggle('hidden', i !== j));
+      loaders[i]?.();
+    });
+  });
+
+  // Carga cripto al inicio (tab activo por defecto)
+  cargarCripto();
 </script>
 
 <style>

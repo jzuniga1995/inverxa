@@ -3,30 +3,18 @@
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft } from 'lucide-astro';
-import { parseJson } from '../../../lib/utils';
+
 type ForexData = {
   par: string; base: string; cotizada: string;
   banderaBase: string; banderaCotizada: string;
   precio: number; tradingviewSimbolo: string;
 };
 
-let pares: ForexData[] = [];
-let fetchError = false;
-
 const formatForex = (p: number) => {
   if (!p) return '—';
   if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
 };
-
-try {
-  const res  = await fetch(new URL('/api/forex', Astro.url));
-  if (!res.ok) throw new Error(`${res.status}`);
- const json = await parseJson(res);
-  if (json.ok) pares = json.data;
-} catch (e) {
-  fetchError = true;
-}
 
 const nombrePar: Record<string, string> = {
   'EUR/USD': 'Euro / Dólar Estadounidense',
@@ -61,6 +49,24 @@ const nombrePar: Record<string, string> = {
 };
 
 const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/USD','NZD/USD','USD/CNY'];
+
+// ── Lee de KV directamente (clave 'cache:forex' que guarda el cron) ──
+const env = (Astro.locals.runtime?.env as any);
+const KV  = env?.INVERSA_KV as KVNamespace | undefined;
+
+let pares: ForexData[] = [];
+let fetchError = false;
+
+try {
+  const cached = await KV?.get('cache:forex', 'json') as ForexData[] | null;
+  if (cached && cached.length > 0) {
+    pares = cached;
+  }
+  // Si KV vacío el cron lo poblará en el próximo ciclo
+} catch (e) {
+  fetchError = true;
+  console.error('[ForexIndex]', e);
+}
 ---
 
 <Layout>
@@ -84,7 +90,7 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
           <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif;">
             Forex
           </h1>
-          <p class="text-white/30 text-sm">{pares.length} pares de divisas · Actualización diaria</p>
+          <p class="text-white/30 text-sm">{pares.length > 0 ? `${pares.length} pares de divisas` : 'Pares de divisas'} · Actualización diaria</p>
         </div>
 
         <!-- Buscador -->
@@ -118,6 +124,41 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
         <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
           <p class="text-white/30 text-sm">No se pudieron cargar los datos. Intenta de nuevo.</p>
         </div>
+      ) : pares.length === 0 ? (
+        <!-- KV vacío — skeletons mientras el cron corre -->
+        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
+            style="grid-template-columns: 60px 1fr 160px 140px">
+            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">#</div>
+            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider pl-2">Par</div>
+            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio</div>
+            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Descripción</div>
+          </div>
+          {[...Array(10)].map((_, i) => (
+            <div class="grid px-4 py-3.5 border-b border-white/[0.04]"
+              style="grid-template-columns: 60px 1fr 160px 140px">
+              <div class="flex items-center">
+                <div class="w-4 h-3 bg-white/5 rounded animate-pulse"></div>
+              </div>
+              <div class="flex items-center gap-3 pl-2">
+                <div class="relative w-9 h-7 flex-shrink-0">
+                  <div class="absolute top-0 left-0 w-6 h-6 rounded-full bg-white/5 animate-pulse"></div>
+                  <div class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-white/5 animate-pulse"></div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-28 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                </div>
+              </div>
+              <div class="flex items-center justify-end">
+                <div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div>
+              </div>
+              <div class="hidden md:flex items-center justify-end">
+                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
 
@@ -133,8 +174,8 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
           <!-- Filas -->
           <div id="forex-table-body">
             {pares.map((f, i) => {
-              const slug  = f.par.replace('/', '-').toLowerCase();
-              const CARIBE = ['USD/DOP','USD/CUP','USD/JMD','USD/TTD','USD/BBD','USD/HTG'];
+              const slug     = f.par.replace('/', '-').toLowerCase();
+              const CARIBE   = ['USD/DOP','USD/CUP','USD/JMD','USD/TTD','USD/BBD','USD/HTG'];
               const isGlobal = paresGlobales.includes(f.par);
               const isCaribe = CARIBE.includes(f.par);
               return (
@@ -150,7 +191,6 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
                   </div>
 
                   <div class="flex items-center gap-3 pl-2 min-w-0">
-                    <!-- Banderas solapadas -->
                     <div class="relative w-9 h-7 flex-shrink-0">
                       <img
                         src={`https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png`}
@@ -204,11 +244,13 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
     .forex-row > div:nth-child(4) { display: none !important; }
   }
   .filter-btn { transition: all .15s; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
 </style>
 
 <script>
-  const rows    = Array.from(document.querySelectorAll('.forex-row')) as HTMLAnchorElement[];
-  const empty   = document.getElementById('forex-empty')!;
+  const rows  = Array.from(document.querySelectorAll('.forex-row')) as HTMLAnchorElement[];
+  const empty = document.getElementById('forex-empty')!;
   let activeFilter = 'all';
   let query = '';
 
@@ -224,7 +266,7 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
       const matchFilter =
         activeFilter === 'all'    ? true :
         activeFilter === 'global' ? region === 'global' :
-        activeFilter === 'latam'  ? region === 'latam' :
+        activeFilter === 'latam'  ? region === 'latam'  :
         activeFilter === 'caribe' ? region === 'caribe' : true;
 
       const show = matchSearch && matchFilter;
@@ -235,7 +277,8 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
     empty.classList.toggle('flex',   visible === 0);
   }
 
-  document.getElementById('forex-search')!.addEventListener('input', function(this: HTMLInputElement) {
+  const searchEl = document.getElementById('forex-search') as HTMLInputElement | null;
+  searchEl?.addEventListener('input', function() {
     query = this.value;
     applyFilters();
   });
@@ -246,16 +289,17 @@ const paresGlobales = ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/US
       document.querySelectorAll('.filter-btn').forEach(b => {
         const el = b as HTMLElement;
         if (el.dataset.filter === activeFilter) {
-          el.style.background   = 'rgba(236,72,153,.1)';
-          el.style.borderColor  = 'rgba(236,72,153,.4)';
-          el.style.color        = '#EC4899';
+          el.style.background  = 'rgba(236,72,153,.1)';
+          el.style.borderColor = 'rgba(236,72,153,.4)';
+          el.style.color       = '#EC4899';
         } else {
-          el.style.background   = '#111318';
-          el.style.borderColor  = 'rgba(255,255,255,.08)';
-          el.style.color        = 'rgba(255,255,255,.4)';
+          el.style.background  = '#111318';
+          el.style.borderColor = 'rgba(255,255,255,.08)';
+          el.style.color       = 'rgba(255,255,255,.4)';
         }
       });
       applyFilters();
     });
   });
 </script>
+

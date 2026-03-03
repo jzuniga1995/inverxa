@@ -2,100 +2,12 @@
 // Header.astro - Inversax
 import { Search, Globe, Menu, X, ChevronDown } from 'lucide-astro';
 import { getCategorias, getPaises } from '../db/queries';
-import { fetchPrecios } from '../lib/precios';
-import { obtenerForex } from '../lib/forex';
-import { fetchMetales } from '../lib/metales';
 
+// ── Solo queries a DB (rápidas, sin APIs externas) ──────────────
 const db            = Astro.locals.db;
-const env           = (Astro.locals.runtime?.env as any);
 const categorias    = await getCategorias(db);
 const paises        = await getPaises(db);
 const paisesLocales = paises.filter(p => p.codigo !== 'global');
-
-// ── TICKER MIXTO ────────────────────────────────────────────────
-type TickerItem = {
-  symbol: string;
-  price:  string;
-  change: string;
-  up:     boolean;
-  tipo:   'crypto' | 'forex' | 'metal' | 'stock';
-};
-
-const formatPrice = (p: number) => {
-  if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-  if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
-};
-const formatForex = (p: number) => {
-  if (!p) return '—';
-  if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
-};
-
-let ticker: TickerItem[] = [];
-
-try {
-  // ── DIRECTO desde lib/ (sin HTTP) ──────────────────────────
-  const [preciosRaw, forexRaw, metalesRaw] = await Promise.all([
-    fetchPrecios(env?.COINGECKO_API_KEY).catch(() => []),
-    obtenerForex().catch(() => []),
-    fetchMetales().catch(() => []),
-  ]);
-
-  // Cripto
-  const cryptoItems: TickerItem[] = preciosRaw.slice(0, 6).map(c => ({
-    symbol: c.symbol.toUpperCase(),
-    price:  formatPrice(c.price),
-    change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-    up:     c.change24 >= 0,
-    tipo:   'crypto' as const,
-  }));
-  ticker.push(...cryptoItems);
-
-  // Forex
-  const forexItems: TickerItem[] = forexRaw.slice(0, 5).map(f => ({
-    symbol: f.par,
-    price:  formatForex(f.precio),
-    change: '',
-    up:     true,
-    tipo:   'forex' as const,
-  }));
-  ticker.push(...forexItems);
-
-  // Metales
-  const metalItems: TickerItem[] = metalesRaw.slice(0, 2).map(m => ({
-    symbol: m.simbolo,
-    price:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-    change: '',
-    up:     true,
-    tipo:   'metal' as const,
-  }));
-  ticker.push(...metalItems);
-
-  // Acciones: sigue con fetch (usa KV, no tiene lib/)
-  const resAcciones = await fetch(new URL('/api/acciones?limit=5', Astro.url))
-    .catch(() => null);
-  if (resAcciones?.ok) {
-    const json = await resAcciones.json() as any;
-    if (json.ok) {
-      const stockItems: TickerItem[] = json.data
-        .filter((a: any) => a.precio > 0)
-        .map((a: any) => ({
-          symbol: a.ticker,
-          price:  `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-          change: `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`,
-          up:     a.alza,
-          tipo:   'stock' as const,
-        }));
-      ticker.push(...stockItems);
-    }
-  }
-
-} catch (e) {
-  ticker = ['BTC','ETH','SOL','XRP','ADA'].map(s => ({
-    symbol: s, price: '—', change: '—', up: true, tipo: 'crypto' as const,
-  }));
-}
 
 // Colores de badge por tipo
 const tipoBadge: Record<string, string> = {
@@ -110,6 +22,28 @@ const tipoLabel: Record<string, string> = {
   metal:  'M',
   stock:  'S',
 };
+
+// Skeleton: placeholders mientras el cliente carga el ticker real
+const TICKER_SKELETON = [
+  { symbol: 'BTC',     tipo: 'crypto' },
+  { symbol: 'ETH',     tipo: 'crypto' },
+  { symbol: 'SOL',     tipo: 'crypto' },
+  { symbol: 'XRP',     tipo: 'crypto' },
+  { symbol: 'ADA',     tipo: 'crypto' },
+  { symbol: 'BNB',     tipo: 'crypto' },
+  { symbol: 'EUR/USD', tipo: 'forex'  },
+  { symbol: 'GBP/USD', tipo: 'forex'  },
+  { symbol: 'USD/JPY', tipo: 'forex'  },
+  { symbol: 'USD/CHF', tipo: 'forex'  },
+  { symbol: 'AUD/USD', tipo: 'forex'  },
+  { symbol: 'XAU',     tipo: 'metal'  },
+  { symbol: 'XAG',     tipo: 'metal'  },
+  { symbol: 'AAPL',    tipo: 'stock'  },
+  { symbol: 'MSFT',    tipo: 'stock'  },
+  { symbol: 'NVDA',    tipo: 'stock'  },
+  { symbol: 'GOOGL',   tipo: 'stock'  },
+  { symbol: 'AMZN',    tipo: 'stock'  },
+] as const;
 ---
 
 <header class="fixed top-0 left-0 right-0 w-full z-[100] bg-[#0A0B0D]" style="font-family: 'DM Sans', sans-serif;">
@@ -118,21 +52,17 @@ const tipoLabel: Record<string, string> = {
   <div class="bg-[#111318] border-b border-white/[0.07] h-9 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between">
 
-      <!-- Ticker -->
+      <!-- Ticker (skeleton SSR → datos reales client-side) -->
       <div class="flex-1 overflow-hidden" style="mask-image: linear-gradient(to right, transparent, black 50px, black calc(100% - 50px), transparent);">
         <div id="ticker-track" class="ticker-track flex gap-8 whitespace-nowrap w-max">
-          {[...ticker, ...ticker].map((item) => (
-            <span class="ticker-item inline-flex items-center gap-1.5 text-[11.5px]">
+          {[...TICKER_SKELETON, ...TICKER_SKELETON].map((item) => (
+            <span class="ticker-item inline-flex items-center gap-1.5 text-[11.5px]" data-symbol={item.symbol} data-tipo={item.tipo}>
               <span class={`text-[9px] font-bold tracking-widest opacity-60 ${tipoBadge[item.tipo]}`}>
                 {tipoLabel[item.tipo]}
               </span>
               <span class="font-bold text-white/50 text-[10px] tracking-wider">{item.symbol}</span>
-              <span class="ticker-price text-white/85 font-medium">{item.price}</span>
-              {item.change && (
-                <span class={`ticker-change text-[11px] font-medium ${item.up ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {item.change}
-                </span>
-              )}
+              <span class="ticker-price text-white/40 font-medium animate-pulse">···</span>
+              <span class="ticker-change text-[11px] font-medium text-white/20"></span>
               <span class="text-white/10 text-xs">·</span>
             </span>
           ))}
@@ -347,6 +277,11 @@ const tipoLabel: Record<string, string> = {
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
@@ -409,24 +344,19 @@ const tipoLabel: Record<string, string> = {
       searchResults.classList.add('hidden');
       return;
     }
-
     searchLoading.classList.remove('hidden');
     searchEmpty.classList.add('hidden');
     searchResultsInner.innerHTML = '';
     searchResults.classList.remove('hidden');
-
     try {
       const res  = await fetch(`/api/buscar?q=${encodeURIComponent(q)}`);
-      const json = await res.json() as any;  // ✅ FIX línea ~432
-
+      const json = await res.json() as any;
       searchLoading.classList.add('hidden');
-
       if (!json.ok || json.data.length === 0) {
         searchEmpty.classList.remove('hidden');
         searchResultsInner.innerHTML = '';
         return;
       }
-
       searchEmpty.classList.add('hidden');
       searchResultsInner.innerHTML = json.data.map((n: any) => {
         const color = n.categoria ? (categoriaColores[n.categoria.nombre] ?? '#D4A843') : '#D4A843';
@@ -453,7 +383,6 @@ const tipoLabel: Record<string, string> = {
           </a>
         `;
       }).join('');
-
     } catch (e) {
       searchLoading.classList.add('hidden');
       searchEmpty.classList.remove('hidden');
@@ -464,10 +393,7 @@ const tipoLabel: Record<string, string> = {
   searchInput?.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     const q = searchInput.value.trim();
-    if (q.length < 2) {
-      searchResults.classList.add('hidden');
-      return;
-    }
+    if (q.length < 2) { searchResults.classList.add('hidden'); return; }
     debounceTimer = setTimeout(() => buscar(q), 300);
   });
 
@@ -477,20 +403,13 @@ const tipoLabel: Record<string, string> = {
   const masChevron  = document.getElementById('mas-chevron') as HTMLElement | null;
   const masWrapper  = document.getElementById('mas-wrapper');
 
-  function openMas() {
-    masDropdown?.classList.remove('hidden');
-    if (masChevron) masChevron.style.transform = 'rotate(180deg)';
-  }
-  function closeMas() {
-    masDropdown?.classList.add('hidden');
-    if (masChevron) masChevron.style.transform = 'rotate(0deg)';
-  }
+  function openMas()  { masDropdown?.classList.remove('hidden'); if (masChevron) masChevron.style.transform = 'rotate(180deg)'; }
+  function closeMas() { masDropdown?.classList.add('hidden');    if (masChevron) masChevron.style.transform = 'rotate(0deg)';   }
 
   masToggle?.addEventListener('click', (e) => {
     e.stopPropagation();
     masDropdown?.classList.contains('hidden') ? openMas() : closeMas();
   });
-
   document.addEventListener('click', (e) => {
     if (!masWrapper?.contains(e.target as Node)) closeMas();
   });
@@ -507,30 +426,21 @@ const tipoLabel: Record<string, string> = {
   // ── Cierre global ─────────────────────────────────────────────
   document.addEventListener('click', (e) => {
     const header = document.querySelector('header');
-    if (!header?.contains(e.target as Node) && searchOpen) {
-      closeSearch();
-    }
+    if (!header?.contains(e.target as Node) && searchOpen) closeSearch();
   });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeSearch();
-  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
 
   // ── Selector de país ─────────────────────────────────────────
   function onCountryChange(codigo: string) {
     window.location.href = codigo === 'global' ? '/' : `/pais/${codigo}`;
   }
-
   const pathParts = window.location.pathname.split('/');
   const paisEnUrl = pathParts[1] === 'pais' ? pathParts[2] : 'global';
 
-  // ✅ FIX líneas ~535-536: cast explícito a HTMLSelectElement
   const selectDesktop = document.getElementById('country-select') as HTMLSelectElement | null;
   const selectMobile  = document.getElementById('country-select-mobile') as HTMLSelectElement | null;
-
   if (selectDesktop) selectDesktop.value = paisEnUrl;
   if (selectMobile)  selectMobile.value  = paisEnUrl;
-
   selectDesktop?.addEventListener('change', () => onCountryChange(selectDesktop.value));
   selectMobile?.addEventListener('change',  () => onCountryChange(selectMobile.value));
 
@@ -543,49 +453,111 @@ const tipoLabel: Record<string, string> = {
     }
   });
 
-  // ── POLLING TICKER cada 5 min ────────────────────────────────
-  const TICKER_COUNT = {
-    crypto: 6,
-    forex:  5,
-    metal:  2,
-    stock:  5,
-  };
-  const TOTAL = Object.values(TICKER_COUNT).reduce((a, b) => a + b, 0);
+  // ── CARGA Y POLLING DEL TICKER (client-side) ──────────────────
+  // El ticker carga al abrir la página y refresca cada 5 min.
+  // En SSR solo se renderizan los símbolos (skeleton ···) para
+  // no bloquear el TTFB con llamadas a APIs externas.
+  const TICKER_COUNT = { crypto: 6, forex: 5, metal: 2, stock: 5 };
 
   function fmtPrice(p: number): string {
     if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
     if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
   }
+  function fmtForex(p: number): string {
+    if (!p) return '—';
+    if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  }
 
-  async function actualizarTicker() {
-    try {
-      const res  = await fetch('/api/precios');
-      if (!res.ok) return;
-      const data = await res.json() as any;  // ✅ FIX línea ~575
-
-      data.slice(0, TICKER_COUNT.crypto).forEach((coin: any, i: number) => {
-        const up     = coin.change24 >= 0;
-        const precio = fmtPrice(coin.price);
-        const cambio = `${up ? '+' : ''}${coin.change24.toFixed(2)}%`;
-
-        const items = document.querySelectorAll('#ticker-track .ticker-item');
-        [items[i], items[i + TOTAL]].forEach((item) => {
-          if (!item) return;
-          const priceEl  = item.querySelector('.ticker-price');
-          const changeEl = item.querySelector('.ticker-change');
-          if (priceEl)  priceEl.textContent = precio;
-          if (changeEl) {
-            changeEl.textContent = cambio;
+  // Actualiza los nodos del ticker que coincidan con el símbolo dado
+  function patchTicker(items: { symbol: string; price: string; change?: string; up?: boolean }[]) {
+    const nodes = document.querySelectorAll<HTMLElement>('#ticker-track .ticker-item');
+    items.forEach(({ symbol, price, change, up }) => {
+      nodes.forEach((node) => {
+        if (node.dataset.symbol?.toUpperCase() !== symbol.toUpperCase()) return;
+        const priceEl  = node.querySelector('.ticker-price');
+        const changeEl = node.querySelector('.ticker-change');
+        if (priceEl) {
+          priceEl.textContent = price;
+          priceEl.classList.remove('animate-pulse', 'text-white/40');
+          priceEl.classList.add('text-white/85');
+        }
+        if (changeEl) {
+          if (change !== undefined) {
+            changeEl.textContent = change;
             changeEl.className = `ticker-change text-[11px] font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
+          } else {
+            changeEl.textContent = '';
           }
-        });
+        }
       });
-    } catch (e) {
-      console.warn('[Ticker polling]', e);
+    });
+  }
+
+  async function cargarTicker() {
+    const [resCripto, resForex, resMetales, resAcciones] = await Promise.allSettled([
+      fetch('/api/precios'),
+      fetch('/api/forex'),
+      fetch('/api/metales'),
+      fetch('/api/acciones?limit=5'),
+    ]);
+
+    // Cripto
+    if (resCripto.status === 'fulfilled' && resCripto.value.ok) {
+      const data = await resCripto.value.json() as any;
+      patchTicker(
+        data.slice(0, TICKER_COUNT.crypto).map((c: any) => ({
+          symbol: c.symbol.toUpperCase(),
+          price:  fmtPrice(c.price),
+          change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
+          up:     c.change24 >= 0,
+        }))
+      );
+    }
+
+    // Forex
+    if (resForex.status === 'fulfilled' && resForex.value.ok) {
+      const data = await resForex.value.json() as any;
+      const forex = data.data ?? data;
+      patchTicker(
+        forex.slice(0, TICKER_COUNT.forex).map((f: any) => ({
+          symbol: f.par,
+          price:  fmtForex(f.precio),
+        }))
+      );
+    }
+
+    // Metales
+    if (resMetales.status === 'fulfilled' && resMetales.value.ok) {
+      const data = await resMetales.value.json() as any;
+      const metales = data.data ?? data;
+      patchTicker(
+        metales.slice(0, TICKER_COUNT.metal).map((m: any) => ({
+          symbol: m.simbolo,
+          price:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        }))
+      );
+    }
+
+    // Acciones
+    if (resAcciones.status === 'fulfilled' && resAcciones.value.ok) {
+      const json = await resAcciones.value.json() as any;
+      if (json.ok) {
+        patchTicker(
+          json.data.filter((a: any) => a.precio > 0).slice(0, TICKER_COUNT.stock).map((a: any) => ({
+            symbol: a.ticker,
+            price:  `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            change: `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`,
+            up:     a.alza,
+          }))
+        );
+      }
     }
   }
 
-  setInterval(actualizarTicker, 300_000);
+  // Carga inmediata + refresco cada 5 min
+  cargarTicker();
+  setInterval(cargarTicker, 300_000);
 </script>
 

@@ -4,7 +4,7 @@ export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft } from 'lucide-astro';
-import { parseJson } from '../../../lib/utils';
+import { fetchMetales } from '../../../lib/metales';
 
 const { metal } = Astro.params;
 
@@ -13,24 +13,37 @@ type MetalData = {
   precio: number; unidad: string; tradingviewSimbolo: string; slug: string;
 };
 
+// ── Caché KV (misma clave que usa el cron: 'cache:metales') ───
+const env = (Astro.locals.runtime?.env as any);
+const KV  = env?.INVERSA_KV as KVNamespace | undefined;
+
 let metalData: MetalData | null = null;
 let fetchError = false;
 
 try {
-  const res  = await fetch(new URL('/api/metales', Astro.url));
-  if (!res.ok) throw new Error(`${res.status}`);
-const json = await parseJson(res);
-  if (json.ok) {
-    metalData = json.data.find((m: MetalData) => m.slug === metal) ?? null;
+  // 1. Leer desde KV
+  let lista = await KV?.get('cache:metales', 'json') as MetalData[] | null;
+
+  // 2. Si KV vacío → llamar lib directamente y guardar
+  if (!lista || lista.length === 0) {
+    lista = await fetchMetales();
+    if (lista.length > 0) {
+      await KV?.put('cache:metales', JSON.stringify(lista), { expirationTtl: 3600 });
+    }
   }
+
+  // 3. Encontrar el metal solicitado por slug
+  metalData = lista?.find(m => m.slug === metal) ?? null;
 } catch (e) {
   fetchError = true;
+  console.error('[Metal detail]', e);
 }
 
 if (!metalData && !fetchError) {
   return Astro.redirect('/herramientas/metales');
 }
 
+// ── Helpers ───────────────────────────────────────────────────
 const formatMetal = (p: number) =>
   p > 0 ? `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
 
@@ -54,9 +67,9 @@ const infoCompleta: Record<string, {
     latam: 'Perú y Brasil son grandes productores mundiales de oro. Muchos bancos centrales latinoamericanos mantienen reservas en oro como protección frente a la devaluación de sus monedas.',
     usos: ['Reserva de valor', 'Joyería', 'Electrónica', 'Medicina', 'Inversión (ETF, monedas)'],
     datos: [
-      { label: 'Símbolo',         valor: 'XAU' },
-      { label: 'Unidad',          valor: 'Onza troy (31.1g)' },
-      { label: 'Pureza máx.',     valor: '24 quilates (999.9)' },
+      { label: 'Símbolo',                valor: 'XAU' },
+      { label: 'Unidad',                 valor: 'Onza troy (31.1g)' },
+      { label: 'Pureza máx.',            valor: '24 quilates (999.9)' },
       { label: 'Principales productores', valor: 'China, Australia, Rusia, Perú' },
     ],
   },
@@ -66,9 +79,9 @@ const infoCompleta: Record<string, {
     latam: 'México y Perú son los dos mayores productores de plata del mundo. La industria minera es uno de los principales motores económicos de ambos países.',
     usos: ['Paneles solares', 'Electrónica', 'Joyería', 'Fotografía', 'Antibacterial'],
     datos: [
-      { label: 'Símbolo',         valor: 'XAG' },
-      { label: 'Unidad',          valor: 'Onza troy (31.1g)' },
-      { label: 'Conductividad',   valor: 'Mayor que cualquier metal' },
+      { label: 'Símbolo',                valor: 'XAG' },
+      { label: 'Unidad',                 valor: 'Onza troy (31.1g)' },
+      { label: 'Conductividad',          valor: 'Mayor que cualquier metal' },
       { label: 'Principales productores', valor: 'México, Perú, China, Chile' },
     ],
   },
@@ -78,9 +91,9 @@ const infoCompleta: Record<string, {
     latam: 'Colombia tiene depósitos históricos de platino en el Chocó. El metal tiene alta relevancia para países con industria automotriz en crecimiento.',
     usos: ['Convertidores catalíticos', 'Joyería fina', 'Industria química', 'Implantes médicos', 'Electrodos'],
     datos: [
-      { label: 'Símbolo',         valor: 'XPT' },
-      { label: 'Unidad',          valor: 'Onza troy (31.1g)' },
-      { label: 'Punto de fusión', valor: '1.768°C' },
+      { label: 'Símbolo',                valor: 'XPT' },
+      { label: 'Unidad',                 valor: 'Onza troy (31.1g)' },
+      { label: 'Punto de fusión',        valor: '1.768°C' },
       { label: 'Principales productores', valor: 'Sudáfrica (75%), Rusia' },
     ],
   },
@@ -90,18 +103,18 @@ const infoCompleta: Record<string, {
     latam: 'Brasil tiene los únicos depósitos significativos de paladio en Latinoamérica. Su precio impacta directamente el costo de fabricación de automóviles en la región.',
     usos: ['Convertidores catalíticos', 'Electrónica', 'Industria química', 'Odontología'],
     datos: [
-      { label: 'Símbolo',         valor: 'XPD' },
-      { label: 'Unidad',          valor: 'Onza troy (31.1g)' },
-      { label: 'Extracción',      valor: 'Subproducto del níquel' },
+      { label: 'Símbolo',                valor: 'XPD' },
+      { label: 'Unidad',                 valor: 'Onza troy (31.1g)' },
+      { label: 'Extracción',             valor: 'Subproducto del níquel' },
       { label: 'Principales productores', valor: 'Rusia (40%), Sudáfrica (37%)' },
     ],
   },
 };
 
-const color       = metalData ? (colorPorSimbolo[metalData.simbolo] ?? '#D4A843') : '#D4A843';
-const tvSymbol    = metalData?.tradingviewSimbolo ?? '';
-const info        = metalData ? (infoCompleta[metalData.simbolo] ?? null) : null;
-const precioFmt   = metalData ? formatMetal(metalData.precio) : '—';
+const color     = metalData ? (colorPorSimbolo[metalData.simbolo] ?? '#D4A843') : '#D4A843';
+const tvSymbol  = metalData?.tradingviewSimbolo ?? '';
+const info      = metalData ? (infoCompleta[metalData.simbolo] ?? null) : null;
+const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
 ---
 
 <Layout>
@@ -121,7 +134,10 @@ const precioFmt   = metalData ? formatMetal(metalData.precio) : '—';
 
       {fetchError || !metalData ? (
         <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">No se pudo cargar la información. <a href="/herramientas/metales" class="text-[#F59E0B]">Volver</a></p>
+          <p class="text-white/30 text-sm">
+            No se pudo cargar la información.{' '}
+            <a href="/herramientas/metales" class="text-[#F59E0B]">Volver</a>
+          </p>
         </div>
       ) : (
         <div class="flex flex-col gap-6">
@@ -138,7 +154,7 @@ const precioFmt   = metalData ? formatMetal(metalData.precio) : '—';
                   <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{metalData.nombre}</h1>
                   <span class="text-white/30 text-sm bg-white/5 px-2 py-0.5 rounded">{metalData.simbolo}/USD</span>
                 </div>
-                <div class="flex items-center gap-3 mt-1">
+                <div class="flex items-center gap-3 mt-1 flex-wrap">
                   <span class="text-white font-bold text-2xl sm:text-3xl" style={`font-family:'Syne',sans-serif; color: ${color};`}>{precioFmt}</span>
                   <span class="text-white/30 text-xs">por onza troy</span>
                 </div>
@@ -258,3 +274,4 @@ const precioFmt   = metalData ? formatMetal(metalData.precio) : '—';
     document.head.appendChild(script);
   }
 </script>
+

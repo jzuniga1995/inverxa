@@ -3,7 +3,6 @@
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft, Layers } from 'lucide-astro';
-import { parseJson } from '../../../lib/utils';
 
 type MetalData = {
   nombre: string; simbolo: string; icono: string;
@@ -11,20 +10,9 @@ type MetalData = {
   tradingviewSimbolo: string; slug: string;
 };
 
-let metales: MetalData[] = [];
-let fetchError = false;
-
-try {
-  const res  = await fetch(new URL('/api/metales', Astro.url));
-  if (!res.ok) throw new Error(`${res.status}`);
-const json = await parseJson(res);
-  if (json.ok) metales = json.data;
-} catch (e) {
-  fetchError = true;
-}
-
-const formatMetal = (p: number) =>
-  p > 0 ? `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
+const colorPorSimbolo: Record<string, string> = {
+  XAU: '#F59E0B', XAG: '#94A3B8', XPT: '#7DD3FC', XPD: '#C084FC',
+};
 
 const infoMetal: Record<string, { descripcion: string; usos: string[] }> = {
   XAU: {
@@ -42,15 +30,28 @@ const infoMetal: Record<string, { descripcion: string; usos: string[] }> = {
   XPD: {
     descripcion: 'El paladio es uno de los metales más escasos del mundo, con uso crítico en convertidores catalíticos de automóviles.',
     usos: ['Convertidores catalíticos', 'Electrónica', 'Química', 'Dental'],
-  }
+  },
 };
 
-const colorPorSimbolo: Record<string, string> = {
-  XAU: '#F59E0B',
-  XAG: '#94A3B8',
-  XPT: '#7DD3FC',
-  XPD: '#C084FC',
-};
+const formatMetal = (p: number) =>
+  p > 0 ? `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
+
+// ── Lee de KV directamente (clave 'cache:metales' que guarda el cron) ──
+const env = (Astro.locals.runtime?.env as any);
+const KV  = env?.INVERSA_KV as KVNamespace | undefined;
+
+let metales: MetalData[] = [];
+let fetchError = false;
+
+try {
+  const cached = await KV?.get('cache:metales', 'json') as MetalData[] | null;
+  if (cached && cached.length > 0) {
+    metales = cached;
+  }
+} catch (e) {
+  fetchError = true;
+  console.error('[MetalesIndex]', e);
+}
 ---
 
 <Layout>
@@ -78,19 +79,45 @@ const colorPorSimbolo: Record<string, string> = {
             Metales Preciosos
           </h1>
         </div>
-        <p class="text-white/30 text-sm ml-11">{metales.length} metales · Precio USD por onza troy · Actualización diaria</p>
+        <p class="text-white/30 text-sm ml-11">
+          {metales.length > 0 ? `${metales.length} metales · ` : ''}Precio USD por onza troy · Actualización diaria
+        </p>
       </div>
 
       {fetchError ? (
         <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
           <p class="text-white/30 text-sm">No se pudieron cargar los precios. Intenta de nuevo.</p>
         </div>
+      ) : metales.length === 0 ? (
+        <!-- Skeletons mientras el cron llena KV -->
+        <div class="flex flex-col gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(4)].map(() => (
+              <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 flex flex-col gap-4">
+                <div class="flex items-start justify-between">
+                  <div class="w-11 h-11 rounded-xl bg-white/5 animate-pulse"></div>
+                  <div class="w-14 h-5 bg-white/5 rounded-full animate-pulse"></div>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <div class="w-28 h-8 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-20 h-4 bg-white/5 rounded animate-pulse"></div>
+                </div>
+                <div class="w-full h-8 bg-white/5 rounded animate-pulse"></div>
+                <div class="flex gap-1.5">
+                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
         <div class="flex flex-col gap-5">
 
           <!-- Cards visuales -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {metales.map((m: any) => {
+            {metales.map((m) => {
               const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
               const info  = infoMetal[m.simbolo];
               return (
@@ -99,16 +126,12 @@ const colorPorSimbolo: Record<string, string> = {
                   class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
                 >
                   <div class="flex items-start justify-between">
-                    <div
-                      class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={`background: ${color}15;`}
-                    >
+                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={`background: ${color}15;`}>
                       <span class="font-extrabold text-sm" style={`color: ${color};`}>{m.simbolo}</span>
                     </div>
-                    <span
-                      class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
-                      style={`background: ${color}15; color: ${color};`}
-                    >
+                    <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
+                      style={`background: ${color}15; color: ${color};`}>
                       USD/oz
                     </span>
                   </div>
@@ -125,11 +148,9 @@ const colorPorSimbolo: Record<string, string> = {
                   )}
 
                   <div class="flex flex-wrap gap-1.5 mt-auto">
-                    {(info?.usos ?? []).slice(0, 3).map((uso: any) => (
-                      <span
-                        class="text-[10px] px-2 py-0.5 rounded border"
-                        style={`background: ${color}08; border-color: ${color}20; color: ${color}80;`}
-                      >
+                    {(info?.usos ?? []).slice(0, 3).map((uso) => (
+                      <span class="text-[10px] px-2 py-0.5 rounded border"
+                        style={`background: ${color}08; border-color: ${color}20; color: ${color}80;`}>
                         {uso}
                       </span>
                     ))}
@@ -151,7 +172,6 @@ const colorPorSimbolo: Record<string, string> = {
               <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Resumen de precios</h2>
             </div>
 
-            <!-- Encabezados solo desktop -->
             <div class="hidden md:grid border-b border-white/[0.07] px-5 py-3 table-cols">
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">Metal</div>
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio / oz</div>
@@ -159,19 +179,16 @@ const colorPorSimbolo: Record<string, string> = {
               <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Fuente</div>
             </div>
 
-            {metales.map((m: any) => {
+            {metales.map((m) => {
               const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
               return (
                 <a
                   href={`/herramientas/metales/${m.slug}`}
                   class="flex md:grid items-center px-5 py-4 border-b border-white/[0.04] last:border-none hover:bg-white/[0.025] transition-colors no-underline gap-3 md:gap-0 table-cols"
                 >
-                  <!-- Metal info -->
                   <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div
-                      class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={`background: ${color}15;`}
-                    >
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={`background: ${color}15;`}>
                       <span class="text-[10px] font-bold" style={`color: ${color};`}>{m.simbolo.slice(1, 3)}</span>
                     </div>
                     <div class="min-w-0">
@@ -180,17 +197,14 @@ const colorPorSimbolo: Record<string, string> = {
                     </div>
                   </div>
 
-                  <!-- Precio (siempre visible, alineado a la derecha en móvil) -->
                   <div class="flex items-center md:justify-end text-white font-semibold text-sm flex-shrink-0" style="font-family:'Syne',sans-serif;">
                     {formatMetal(m.precio)}
                   </div>
 
-                  <!-- Símbolo (solo desktop) -->
                   <div class="hidden md:flex items-center justify-end text-white/30 text-xs">
                     {m.simbolo}/USD
                   </div>
 
-                  <!-- Fuente (solo desktop) -->
                   <div class="hidden md:flex items-center justify-end text-white/20 text-xs">
                     fawazahmed0 API
                   </div>
@@ -220,12 +234,9 @@ const colorPorSimbolo: Record<string, string> = {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
-  /* Columnas de la tabla solo en desktop */
   @media (min-width: 768px) {
-    .table-cols {
-      grid-template-columns: 1fr 160px 160px 200px;
-    }
+    .table-cols { grid-template-columns: 1fr 160px 160px 200px; }
   }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
 </style>
-
