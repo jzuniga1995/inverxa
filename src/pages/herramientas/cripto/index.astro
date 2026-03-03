@@ -39,10 +39,202 @@ try {
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Precios Cripto en Vivo — Inversax</title>
-    <meta name="description" content="Precios de las 100 principales criptomonedas en tiempo real." />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax</title>
+  <meta name="description" content="Precios de las 100 principales criptomonedas en tiempo real: Bitcoin, Ethereum, Solana, XRP y más. Capitalización, volumen y variación 24h para inversores en Latinoamérica." />
+  <meta name="keywords" content="precio bitcoin hoy, precio ethereum hoy, criptomonedas en tiempo real, top 100 criptomonedas, precio crypto hoy, bitcoin en dolares, crypto latinoamerica, precio BTC ETH SOL XRP" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href="https://inversax.com/herramientas/cripto" />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax" />
+  <meta property="og:description"  content="Bitcoin, Ethereum, Solana y las 100 principales criptomonedas con precios en tiempo real, capitalización y volumen para toda Latinoamérica." />
+  <meta property="og:url"          content="https://inversax.com/herramientas/cripto" />
+  <meta property="og:image"        content="https://inversax.com/og/herramientas/cripto.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Top 100 Criptomonedas en vivo — Inversax" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content="Precios de Criptomonedas Hoy — Top 100 | Inversax" />
+  <meta name="twitter:description" content="Bitcoin, Ethereum, Solana y las 100 principales criptos en tiempo real para Latinoamérica." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/cripto.png" />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Precios de Criptomonedas Hoy — Top 100 | Inversax",
+    "description": "Precios en tiempo real de las 100 principales criptomonedas con capitalización, volumen y variación para inversores en Latinoamérica.",
+    "url": "https://inversax.com/herramientas/cripto",
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": "Criptomonedas" }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Criptomonedas","item": "https://inversax.com/herramientas/cripto" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Top 100 Criptomonedas en Inversax",
+    "url": "https://inversax.com/herramientas/cripto",
+    "numberOfItems": 100,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1,   "name": "Bitcoin (BTC)",          "url": "https://inversax.com/herramientas/cripto/bitcoin" },
+      { "@type": "ListItem", "position": 2,   "name": "Ethereum (ETH)",         "url": "https://inversax.com/herramientas/cripto/ethereum" },
+      { "@type": "ListItem", "position": 3,   "name": "Tether (USDT)",          "url": "https://inversax.com/herramientas/cripto/tether" },
+      { "@type": "ListItem", "position": 4,   "name": "BNB (BNB)",              "url": "https://inversax.com/herramientas/cripto/binancecoin" },
+      { "@type": "ListItem", "position": 5,   "name": "Solana (SOL)",           "url": "https://inversax.com/herramientas/cripto/solana" },
+      { "@type": "ListItem", "position": 6,   "name": "XRP (XRP)",              "url": "https://inversax.com/herramientas/cripto/ripple" },
+      { "@type": "ListItem", "position": 7,   "name": "USDC (USDC)",            "url": "https://inversax.com/herramientas/cripto/usd-coin" },
+      { "@type": "ListItem", "position": 8,   "name": "Cardano (ADA)",          "url": "https://inversax.com/herramientas/cripto/cardano" },
+      { "@type": "ListItem", "position": 9,   "name": "Avalanche (AVAX)",       "url": "https://inversax.com/herramientas/cripto/avalanche-2" },
+      { "@type": "ListItem", "position": 10,  "name": "Dogecoin (DOGE)",        "url": "https://inversax.com/herramientas/cripto/dogecoin" },
+      { "@type": "ListItem", "position": 11,  "name": "Tron (TRX)",             "url": "https://inversax.com/herramientas/cripto/tron" },
+      { "@type": "ListItem", "position": 12,  "name": "Polkadot (DOT)",         "url": "https://inversax.com/herramientas/cripto/polkadot" },
+      { "@type": "ListItem", "position": 13,  "name": "Chainlink (LINK)",       "url": "https://inversax.com/herramientas/cripto/chainlink" },
+      { "@type": "ListItem", "position": 14,  "name": "Polygon (POL)",          "url": "https://inversax.com/herramientas/cripto/matic-network" },
+      { "@type": "ListItem", "position": 15,  "name": "Litecoin (LTC)",         "url": "https://inversax.com/herramientas/cripto/litecoin" },
+      { "@type": "ListItem", "position": 16,  "name": "Shiba Inu (SHIB)",       "url": "https://inversax.com/herramientas/cripto/shiba-inu" },
+      { "@type": "ListItem", "position": 17,  "name": "Dai (DAI)",              "url": "https://inversax.com/herramientas/cripto/dai" },
+      { "@type": "ListItem", "position": 18,  "name": "Uniswap (UNI)",          "url": "https://inversax.com/herramientas/cripto/uniswap" },
+      { "@type": "ListItem", "position": 19,  "name": "Wrapped Bitcoin (WBTC)", "url": "https://inversax.com/herramientas/cripto/wrapped-bitcoin" },
+      { "@type": "ListItem", "position": 20,  "name": "Cosmos (ATOM)",          "url": "https://inversax.com/herramientas/cripto/cosmos" },
+      { "@type": "ListItem", "position": 21,  "name": "Stellar (XLM)",          "url": "https://inversax.com/herramientas/cripto/stellar" },
+      { "@type": "ListItem", "position": 22,  "name": "Monero (XMR)",           "url": "https://inversax.com/herramientas/cripto/monero" },
+      { "@type": "ListItem", "position": 23,  "name": "Ethereum Classic (ETC)", "url": "https://inversax.com/herramientas/cripto/ethereum-classic" },
+      { "@type": "ListItem", "position": 24,  "name": "Filecoin (FIL)",         "url": "https://inversax.com/herramientas/cripto/filecoin" },
+      { "@type": "ListItem", "position": 25,  "name": "Hedera (HBAR)",          "url": "https://inversax.com/herramientas/cripto/hedera-hashgraph" },
+      { "@type": "ListItem", "position": 26,  "name": "VeChain (VET)",          "url": "https://inversax.com/herramientas/cripto/vechain" },
+      { "@type": "ListItem", "position": 27,  "name": "Aave (AAVE)",            "url": "https://inversax.com/herramientas/cripto/aave" },
+      { "@type": "ListItem", "position": 28,  "name": "Algorand (ALGO)",        "url": "https://inversax.com/herramientas/cripto/algorand" },
+      { "@type": "ListItem", "position": 29,  "name": "EOS (EOS)",              "url": "https://inversax.com/herramientas/cripto/eos" },
+      { "@type": "ListItem", "position": 30,  "name": "The Graph (GRT)",        "url": "https://inversax.com/herramientas/cripto/the-graph" },
+      { "@type": "ListItem", "position": 31,  "name": "Quant (QNT)",            "url": "https://inversax.com/herramientas/cripto/quant-network" },
+      { "@type": "ListItem", "position": 32,  "name": "Near Protocol (NEAR)",   "url": "https://inversax.com/herramientas/cripto/near" },
+      { "@type": "ListItem", "position": 33,  "name": "Fantom (FTM)",           "url": "https://inversax.com/herramientas/cripto/fantom" },
+      { "@type": "ListItem", "position": 34,  "name": "Aptos (APT)",            "url": "https://inversax.com/herramientas/cripto/aptos" },
+      { "@type": "ListItem", "position": 35,  "name": "Arbitrum (ARB)",         "url": "https://inversax.com/herramientas/cripto/arbitrum" },
+      { "@type": "ListItem", "position": 36,  "name": "Optimism (OP)",          "url": "https://inversax.com/herramientas/cripto/optimism" },
+      { "@type": "ListItem", "position": 37,  "name": "Lido DAO (LDO)",         "url": "https://inversax.com/herramientas/cripto/lido-dao" },
+      { "@type": "ListItem", "position": 38,  "name": "Maker (MKR)",            "url": "https://inversax.com/herramientas/cripto/maker" },
+      { "@type": "ListItem", "position": 39,  "name": "Injective (INJ)",        "url": "https://inversax.com/herramientas/cripto/injective-protocol" },
+      { "@type": "ListItem", "position": 40,  "name": "Sui (SUI)",              "url": "https://inversax.com/herramientas/cripto/sui" },
+      { "@type": "ListItem", "position": 41,  "name": "Stacks (STX)",           "url": "https://inversax.com/herramientas/cripto/blockstack" },
+      { "@type": "ListItem", "position": 42,  "name": "Immutable (IMX)",        "url": "https://inversax.com/herramientas/cripto/immutable-x" },
+      { "@type": "ListItem", "position": 43,  "name": "Render (RNDR)",          "url": "https://inversax.com/herramientas/cripto/render-token" },
+      { "@type": "ListItem", "position": 44,  "name": "Thorchain (RUNE)",       "url": "https://inversax.com/herramientas/cripto/thorchain" },
+      { "@type": "ListItem", "position": 45,  "name": "Sandbox (SAND)",         "url": "https://inversax.com/herramientas/cripto/the-sandbox" },
+      { "@type": "ListItem", "position": 46,  "name": "Decentraland (MANA)",    "url": "https://inversax.com/herramientas/cripto/decentraland" },
+      { "@type": "ListItem", "position": 47,  "name": "Axie Infinity (AXS)",    "url": "https://inversax.com/herramientas/cripto/axie-infinity" },
+      { "@type": "ListItem", "position": 48,  "name": "Curve DAO (CRV)",        "url": "https://inversax.com/herramientas/cripto/curve-dao-token" },
+      { "@type": "ListItem", "position": 49,  "name": "Chiliz (CHZ)",           "url": "https://inversax.com/herramientas/cripto/chiliz" },
+      { "@type": "ListItem", "position": 50,  "name": "Gala (GALA)",            "url": "https://inversax.com/herramientas/cripto/gala" },
+      { "@type": "ListItem", "position": 51,  "name": "Zcash (ZEC)",            "url": "https://inversax.com/herramientas/cripto/zcash" },
+      { "@type": "ListItem", "position": 52,  "name": "Dash (DASH)",            "url": "https://inversax.com/herramientas/cripto/dash" },
+      { "@type": "ListItem", "position": 53,  "name": "Compound (COMP)",        "url": "https://inversax.com/herramientas/cripto/compound-governance-token" },
+      { "@type": "ListItem", "position": 54,  "name": "1inch (1INCH)",          "url": "https://inversax.com/herramientas/cripto/1inch" },
+      { "@type": "ListItem", "position": 55,  "name": "Yearn Finance (YFI)",    "url": "https://inversax.com/herramientas/cripto/yearn-finance" },
+      { "@type": "ListItem", "position": 56,  "name": "Sushi (SUSHI)",          "url": "https://inversax.com/herramientas/cripto/sushi" },
+      { "@type": "ListItem", "position": 57,  "name": "Balancer (BAL)",         "url": "https://inversax.com/herramientas/cripto/balancer" },
+      { "@type": "ListItem", "position": 58,  "name": "Band Protocol (BAND)",   "url": "https://inversax.com/herramientas/cripto/band-protocol" },
+      { "@type": "ListItem", "position": 59,  "name": "Loopring (LRC)",         "url": "https://inversax.com/herramientas/cripto/loopring" },
+      { "@type": "ListItem", "position": 60,  "name": "Basic Attention (BAT)",  "url": "https://inversax.com/herramientas/cripto/basic-attention-token" },
+      { "@type": "ListItem", "position": 61,  "name": "Storj (STORJ)",          "url": "https://inversax.com/herramientas/cripto/storj" },
+      { "@type": "ListItem", "position": 62,  "name": "Celo (CELO)",            "url": "https://inversax.com/herramientas/cripto/celo" },
+      { "@type": "ListItem", "position": 63,  "name": "Flux (FLUX)",            "url": "https://inversax.com/herramientas/cripto/zelcash" },
+      { "@type": "ListItem", "position": 64,  "name": "Mask Network (MASK)",    "url": "https://inversax.com/herramientas/cripto/mask-network" },
+      { "@type": "ListItem", "position": 65,  "name": "Civic (CVC)",            "url": "https://inversax.com/herramientas/cripto/civic" },
+      { "@type": "ListItem", "position": 66,  "name": "Ankr (ANKR)",            "url": "https://inversax.com/herramientas/cripto/ankr" },
+      { "@type": "ListItem", "position": 67,  "name": "Ocean Protocol (OCEAN)", "url": "https://inversax.com/herramientas/cripto/ocean-protocol" },
+      { "@type": "ListItem", "position": 68,  "name": "Fetch.ai (FET)",         "url": "https://inversax.com/herramientas/cripto/fetch-ai" },
+      { "@type": "ListItem", "position": 69,  "name": "Worldcoin (WLD)",        "url": "https://inversax.com/herramientas/cripto/worldcoin-wld" },
+      { "@type": "ListItem", "position": 70,  "name": "Sei (SEI)",              "url": "https://inversax.com/herramientas/cripto/sei-network" },
+      { "@type": "ListItem", "position": 71,  "name": "Kaspa (KAS)",            "url": "https://inversax.com/herramientas/cripto/kaspa" },
+      { "@type": "ListItem", "position": 72,  "name": "Celestia (TIA)",         "url": "https://inversax.com/herramientas/cripto/celestia" },
+      { "@type": "ListItem", "position": 73,  "name": "Pyth Network (PYTH)",    "url": "https://inversax.com/herramientas/cripto/pyth-network" },
+      { "@type": "ListItem", "position": 74,  "name": "Jupiter (JUP)",          "url": "https://inversax.com/herramientas/cripto/jupiter-exchange-solana" },
+      { "@type": "ListItem", "position": 75,  "name": "Wormhole (W)",           "url": "https://inversax.com/herramientas/cripto/wormhole" },
+      { "@type": "ListItem", "position": 76,  "name": "Pendle (PENDLE)",        "url": "https://inversax.com/herramientas/cripto/pendle" },
+      { "@type": "ListItem", "position": 77,  "name": "Notcoin (NOT)",          "url": "https://inversax.com/herramientas/cripto/notcoin" },
+      { "@type": "ListItem", "position": 78,  "name": "Bonk (BONK)",            "url": "https://inversax.com/herramientas/cripto/bonk" },
+      { "@type": "ListItem", "position": 79,  "name": "dogwifhat (WIF)",        "url": "https://inversax.com/herramientas/cripto/dogwifcoin" },
+      { "@type": "ListItem", "position": 80,  "name": "Pepe (PEPE)",            "url": "https://inversax.com/herramientas/cripto/pepe" },
+      { "@type": "ListItem", "position": 81,  "name": "Floki (FLOKI)",          "url": "https://inversax.com/herramientas/cripto/floki" },
+      { "@type": "ListItem", "position": 82,  "name": "Blur (BLUR)",            "url": "https://inversax.com/herramientas/cripto/blur" },
+      { "@type": "ListItem", "position": 83,  "name": "dYdX (DYDX)",           "url": "https://inversax.com/herramientas/cripto/dydx" },
+      { "@type": "ListItem", "position": 84,  "name": "Rocket Pool (RPL)",      "url": "https://inversax.com/herramientas/cripto/rocket-pool" },
+      { "@type": "ListItem", "position": 85,  "name": "GMX (GMX)",              "url": "https://inversax.com/herramientas/cripto/gmx" },
+      { "@type": "ListItem", "position": 86,  "name": "Kava (KAVA)",            "url": "https://inversax.com/herramientas/cripto/kava" },
+      { "@type": "ListItem", "position": 87,  "name": "Osmosis (OSMO)",         "url": "https://inversax.com/herramientas/cripto/osmosis" },
+      { "@type": "ListItem", "position": 88,  "name": "Frax Share (FXS)",       "url": "https://inversax.com/herramientas/cripto/frax-share" },
+      { "@type": "ListItem", "position": 89,  "name": "Radix (XRD)",            "url": "https://inversax.com/herramientas/cripto/radix" },
+      { "@type": "ListItem", "position": 90,  "name": "Oasis Network (ROSE)",   "url": "https://inversax.com/herramientas/cripto/oasis-network" },
+      { "@type": "ListItem", "position": 91,  "name": "Moonbeam (GLMR)",        "url": "https://inversax.com/herramientas/cripto/moonbeam" },
+      { "@type": "ListItem", "position": 92,  "name": "Conflux (CFX)",          "url": "https://inversax.com/herramientas/cripto/conflux-token" },
+      { "@type": "ListItem", "position": 93,  "name": "Nervos (CKB)",           "url": "https://inversax.com/herramientas/cripto/nervos-network" },
+      { "@type": "ListItem", "position": 94,  "name": "Harmony (ONE)",          "url": "https://inversax.com/herramientas/cripto/harmony" },
+      { "@type": "ListItem", "position": 95,  "name": "Ontology (ONT)",         "url": "https://inversax.com/herramientas/cripto/ontology" },
+      { "@type": "ListItem", "position": 96,  "name": "Ravencoin (RVN)",        "url": "https://inversax.com/herramientas/cripto/ravencoin" },
+      { "@type": "ListItem", "position": 97,  "name": "Horizen (ZEN)",          "url": "https://inversax.com/herramientas/cripto/zencash" },
+      { "@type": "ListItem", "position": 98,  "name": "Syscoin (SYS)",          "url": "https://inversax.com/herramientas/cripto/syscoin" },
+      { "@type": "ListItem", "position": 99,  "name": "Stratis (STRAX)",        "url": "https://inversax.com/herramientas/cripto/stratis" },
+      { "@type": "ListItem", "position": 100, "name": "Vertcoin (VTC)",         "url": "https://inversax.com/herramientas/cripto/vertcoin" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cuánto vale Bitcoin hoy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El precio de Bitcoin (BTC) se actualiza cada 5 minutos en Inversax. Puedes ver el precio en tiempo real junto con la variación 24h y capitalización de mercado."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuáles son las criptomonedas más importantes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Las principales criptomonedas por capitalización de mercado son Bitcoin (BTC), Ethereum (ETH), Tether (USDT), BNB, Solana (SOL) y XRP. Inversax muestra el top 100 en tiempo real."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo comprar criptomonedas desde Latinoamérica?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Puedes comprar criptomonedas desde Latinoamérica usando exchanges como Binance, que acepta depósitos en pesos, reales y otras monedas locales. También puedes usar brokers como eToro que ofrecen acceso a los principales activos cripto."
+        }
+      }
+    ]
+  })} />
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
