@@ -101,10 +101,100 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>{coin?.name ?? id} — Precio en Vivo · Inversax</title>
-    <meta name="description" content={`Precio de ${coin?.name} en tiempo real, gráfica, capitalización y datos del mercado.`} />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>{coin?.name ?? id} — {fmt(price)} hoy · Precio en Vivo | Inversax</title>
+  <meta name="description" content={`Precio de ${coin?.name ?? id} (${symbol}) hoy: ${fmt(price)}. Variación 24h: ${fmtChg(chg24)}. Gráfica en tiempo real, capitalización de mercado y datos actualizados para inversores en Latinoamérica.`} />
+  <meta name="keywords" content={`${coin?.name?.toLowerCase()} precio, ${symbol.toLowerCase()} precio hoy, ${symbol.toLowerCase()} usd, precio ${coin?.name?.toLowerCase()} tiempo real, ${symbol.toLowerCase()} cripto, cuanto vale ${symbol.toLowerCase()}`} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href={`https://inversax.com/herramientas/cripto/${id}`} />
+
+  <!-- Open Graph -->
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content={`${coin?.name ?? id} — ${fmt(price)} hoy | Inversax`} />
+  <meta property="og:description"  content={`${coin?.name} (${symbol}) cotiza a ${fmt(price)} con variación de ${fmtChg(chg24)} en las últimas 24h. Gráfica y datos para inversores en Latinoamérica.`} />
+  <meta property="og:url"          content={`https://inversax.com/herramientas/cripto/${id}`} />
+  <meta property="og:image"        content={`https://inversax.com/og/herramientas/cripto/${id}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={`${coin?.name} (${symbol}) precio hoy — Inversax`} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content={`${symbol} — ${fmt(price)} hoy | Inversax`} />
+  <meta name="twitter:description" content={`${coin?.name} cotiza a ${fmt(price)} (${fmtChg(chg24)} 24h). Gráfica en tiempo real en Inversax.`} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/herramientas/cripto/${id}.png`} />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- JSON-LD: WebPage -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": `${coin?.name ?? id} — Precio en Vivo | Inversax`,
+    "description": `Precio de ${coin?.name} (${symbol}) en tiempo real con gráfica histórica y datos de mercado para inversores en Latinoamérica.`,
+    "url": `https://inversax.com/herramientas/cripto/${id}`,
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": `Criptomoneda ${coin?.name} (${symbol})` }
+  })} />
+
+  <!-- JSON-LD: Breadcrumb -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",         "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",   "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Criptomonedas",  "item": "https://inversax.com/herramientas/cripto" },
+      { "@type": "ListItem", "position": 4, "name": coin?.name ?? id, "item": `https://inversax.com/herramientas/cripto/${id}` }
+    ]
+  })} />
+
+  <!-- JSON-LD: FAQPage -->
+  {coin && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": `¿Cuánto vale ${coin.name} (${symbol}) hoy?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `${coin.name} (${symbol}) cotiza a ${fmt(price)} USD hoy, con una variación de ${fmtChg(chg24)} en las últimas 24 horas según datos actualizados en Inversax.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Dónde comprar ${coin.name} (${symbol}) en Latinoamérica?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Podés comprar ${coin.name} en exchanges como Binance, Bybit o Kraken que operan en Latinoamérica. Verificá los métodos de pago disponibles en tu país antes de registrarte.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Cuál es la capitalización de mercado de ${coin.name}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `La capitalización de mercado de ${coin.name} es de ${fmtLarge(coin.market_data.market_cap.usd)} USD con un volumen de operaciones de ${fmtLarge(coin.market_data.total_volume.usd)} en las últimas 24 horas.`
+          }
+        }
+      ]
+    })} />
+  )}
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
