@@ -52,15 +52,120 @@ const global = todosPaises.find((p) => p.codigo === 'global');
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Noticias por País — Inversax</title>
-    <meta name="description" content="Encuentra noticias financieras, cripto y trading organizadas por país. Cobertura en toda Latinoamérica, España, Estados Unidos y más." />
-    <link rel="canonical" href="https://inversax.com/paises" />
-    <meta property="og:title"       content="Noticias por País — Inversax" />
-    <meta property="og:description" content="Cobertura financiera para toda la comunidad hispanohablante." />
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://inversax.com/paises" />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>Noticias Financieras por País — Cripto, Bolsa y Trading en LATAM | Inversax</title>
+  <meta name="description" content="Noticias de finanzas, cripto, bolsa, forex y trading organizadas por país. Cobertura completa para Latinoamérica, España, Estados Unidos y toda la comunidad hispanohablante." />
+  <meta name="keywords" content="noticias financieras latinoamerica, cripto por pais, trading latam, finanzas hispanas, bolsa latinoamerica, economia por pais, inversiones latam" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href="https://inversax.com/paises" />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Noticias Financieras por País — Cripto, Bolsa y Trading en LATAM | Inversax" />
+  <meta property="og:description"  content="Encuentra noticias de cripto, bolsa, forex y economía organizadas por país. 36 países cubiertos, en español, actualizadas cada día." />
+  <meta property="og:url"          content="https://inversax.com/paises" />
+  <meta property="og:image"        content="https://inversax.com/og/paises.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Inversax — Noticias financieras por país en LATAM" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content="Noticias Financieras por País — Cripto, Bolsa y Trading | Inversax" />
+  <meta name="twitter:description" content="36 países cubiertos. Cripto, bolsa, forex y economía en español, actualizado cada día para toda Latinoamérica." />
+  <meta name="twitter:image"       content="https://inversax.com/og/paises.png" />
+  <meta name="twitter:image:alt"   content="Inversax — Finanzas por país en LATAM" />
+
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Noticias Financieras por País — Inversax",
+    "description": "Noticias de finanzas, cripto, bolsa, forex y trading organizadas por país.",
+    "url": "https://inversax.com/paises",
+    "inLanguage": "es",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://inversax.com/noticias?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",  "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Países",  "item": "https://inversax.com/paises" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Países con cobertura financiera en Inversax",
+    "description": "Lista de países con noticias de cripto, bolsa, forex y economía en Inversax.",
+    "url": "https://inversax.com/paises",
+    "numberOfItems": 36,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1,  "name": "Argentina",            "url": "https://inversax.com/pais/ar" },
+      { "@type": "ListItem", "position": 2,  "name": "Bolivia",              "url": "https://inversax.com/pais/bo" },
+      { "@type": "ListItem", "position": 3,  "name": "Brasil",               "url": "https://inversax.com/pais/br" },
+      { "@type": "ListItem", "position": 4,  "name": "Chile",                "url": "https://inversax.com/pais/cl" },
+      { "@type": "ListItem", "position": 5,  "name": "Colombia",             "url": "https://inversax.com/pais/co" },
+      { "@type": "ListItem", "position": 6,  "name": "Cuba",                 "url": "https://inversax.com/pais/cu" },
+      { "@type": "ListItem", "position": 7,  "name": "Ecuador",              "url": "https://inversax.com/pais/ec" },
+      { "@type": "ListItem", "position": 8,  "name": "México",               "url": "https://inversax.com/pais/mx" },
+      { "@type": "ListItem", "position": 9,  "name": "Paraguay",             "url": "https://inversax.com/pais/py" },
+      { "@type": "ListItem", "position": 10, "name": "Perú",                 "url": "https://inversax.com/pais/pe" },
+      { "@type": "ListItem", "position": 11, "name": "Uruguay",              "url": "https://inversax.com/pais/uy" },
+      { "@type": "ListItem", "position": 12, "name": "Venezuela",            "url": "https://inversax.com/pais/ve" },
+      { "@type": "ListItem", "position": 13, "name": "Belice",               "url": "https://inversax.com/pais/bz" },
+      { "@type": "ListItem", "position": 14, "name": "Costa Rica",           "url": "https://inversax.com/pais/cr" },
+      { "@type": "ListItem", "position": 15, "name": "El Salvador",          "url": "https://inversax.com/pais/sv" },
+      { "@type": "ListItem", "position": 16, "name": "Guatemala",            "url": "https://inversax.com/pais/gt" },
+      { "@type": "ListItem", "position": 17, "name": "Honduras",             "url": "https://inversax.com/pais/hn" },
+      { "@type": "ListItem", "position": 18, "name": "Nicaragua",            "url": "https://inversax.com/pais/ni" },
+      { "@type": "ListItem", "position": 19, "name": "Panamá",               "url": "https://inversax.com/pais/pa" },
+      { "@type": "ListItem", "position": 20, "name": "República Dominicana", "url": "https://inversax.com/pais/do" },
+      { "@type": "ListItem", "position": 21, "name": "Puerto Rico",          "url": "https://inversax.com/pais/pr" },
+      { "@type": "ListItem", "position": 22, "name": "Estados Unidos",       "url": "https://inversax.com/pais/us" },
+      { "@type": "ListItem", "position": 23, "name": "Canadá",               "url": "https://inversax.com/pais/ca" },
+      { "@type": "ListItem", "position": 24, "name": "España",               "url": "https://inversax.com/pais/es" },
+      { "@type": "ListItem", "position": 25, "name": "Andorra",              "url": "https://inversax.com/pais/ad" },
+      { "@type": "ListItem", "position": 26, "name": "Alemania",             "url": "https://inversax.com/pais/de" },
+      { "@type": "ListItem", "position": 27, "name": "Francia",              "url": "https://inversax.com/pais/fr" },
+      { "@type": "ListItem", "position": 28, "name": "Reino Unido",          "url": "https://inversax.com/pais/gb" },
+      { "@type": "ListItem", "position": 29, "name": "Italia",               "url": "https://inversax.com/pais/it" },
+      { "@type": "ListItem", "position": 30, "name": "Países Bajos",         "url": "https://inversax.com/pais/nl" },
+      { "@type": "ListItem", "position": 31, "name": "Portugal",             "url": "https://inversax.com/pais/pt" },
+      { "@type": "ListItem", "position": 32, "name": "Suiza",                "url": "https://inversax.com/pais/ch" },
+      { "@type": "ListItem", "position": 33, "name": "Guinea Ecuatorial",    "url": "https://inversax.com/pais/gq" },
+      { "@type": "ListItem", "position": 34, "name": "Marruecos",            "url": "https://inversax.com/pais/ma" },
+      { "@type": "ListItem", "position": 35, "name": "Australia",            "url": "https://inversax.com/pais/au" },
+      { "@type": "ListItem", "position": 36, "name": "Filipinas",            "url": "https://inversax.com/pais/ph" }
+    ]
+  })} />
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
