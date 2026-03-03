@@ -1,7 +1,7 @@
 ---
 // src/pages/herramientas/dolar.astro
 import Layout from '../../layouts/Layout.astro';
-import { DollarSign, RefreshCw, Globe } from 'lucide-astro';
+import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
 
 // ── Sin fetch en SSR ──────────────────────────────────────────
 // Los datos del dólar cargan client-side al montar la página
@@ -107,6 +107,12 @@ import { DollarSign, RefreshCw, Globe } from 'lucide-astro';
 
   <main class="min-h-screen bg-[#0A0B0D] pt-28 pb-20 px-4 sm:px-6" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-5xl mx-auto">
+
+<a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+  <ArrowLeft size={15} /> Herramientas
+</a>
+
+
 
       <!-- Encabezado -->
       <div class="mb-10">
