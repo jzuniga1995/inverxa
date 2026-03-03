@@ -58,10 +58,156 @@ try {
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Acciones en Tiempo Real — Inversax</title>
-    <meta name="description" content="Cotizaciones en vivo de las principales acciones del mercado estadounidense. AAPL, NVDA, TSLA, MSFT y más." />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>Acciones en Tiempo Real — AAPL, NVDA, TSLA y más | Inversax</title>
+  <meta name="description" content="Cotizaciones en tiempo real de las principales acciones del mercado estadounidense. Apple, NVIDIA, Tesla, Microsoft, Amazon y más de 50 empresas. Precios actualizados para inversores en Latinoamérica." />
+  <meta name="keywords" content="acciones en tiempo real, precio AAPL hoy, precio NVDA hoy, precio TSLA hoy, bolsa de valores hoy, acciones USA, cotizaciones bolsa americana, invertir en acciones desde latinoamerica, S&P 500 hoy" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href="https://inversax.com/herramientas/acciones" />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Acciones en Tiempo Real — AAPL, NVDA, TSLA y más | Inversax" />
+  <meta property="og:description"  content="Cotizaciones en vivo de Apple, NVIDIA, Tesla, Microsoft y más de 50 acciones del mercado estadounidense. Datos para inversores en Latinoamérica." />
+  <meta property="og:url"          content="https://inversax.com/herramientas/acciones" />
+  <meta property="og:image"        content="https://inversax.com/og/herramientas/acciones.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Acciones en tiempo real — Inversax" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content="Acciones en Tiempo Real — AAPL, NVDA, TSLA | Inversax" />
+  <meta name="twitter:description" content="Más de 50 acciones del mercado estadounidense con precios en tiempo real. Para inversores en Latinoamérica." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/acciones.png" />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- JSON-LD: WebPage -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Acciones en Tiempo Real — Inversax",
+    "description": "Cotizaciones en tiempo real de las principales acciones del mercado estadounidense para inversores en Latinoamérica.",
+    "url": "https://inversax.com/herramientas/acciones",
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": "Mercado de acciones estadounidense" }
+  })} />
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Acciones",     "item": "https://inversax.com/herramientas/acciones" }
+    ]
+  })} />
+
+  <!-- JSON-LD: ItemList — cada acción indexable por Google -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Acciones del mercado estadounidense en Inversax",
+    "url": "https://inversax.com/herramientas/acciones",
+    "numberOfItems": 50,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1,  "name": "Apple (AAPL)",              "url": "https://inversax.com/herramientas/acciones/aapl" },
+      { "@type": "ListItem", "position": 2,  "name": "Microsoft (MSFT)",          "url": "https://inversax.com/herramientas/acciones/msft" },
+      { "@type": "ListItem", "position": 3,  "name": "NVIDIA (NVDA)",             "url": "https://inversax.com/herramientas/acciones/nvda" },
+      { "@type": "ListItem", "position": 4,  "name": "Alphabet (GOOGL)",          "url": "https://inversax.com/herramientas/acciones/googl" },
+      { "@type": "ListItem", "position": 5,  "name": "Amazon (AMZN)",             "url": "https://inversax.com/herramientas/acciones/amzn" },
+      { "@type": "ListItem", "position": 6,  "name": "Meta Platforms (META)",     "url": "https://inversax.com/herramientas/acciones/meta" },
+      { "@type": "ListItem", "position": 7,  "name": "Tesla (TSLA)",              "url": "https://inversax.com/herramientas/acciones/tsla" },
+      { "@type": "ListItem", "position": 8,  "name": "Berkshire Hathaway (BRK.B)","url": "https://inversax.com/herramientas/acciones/brk.b" },
+      { "@type": "ListItem", "position": 9,  "name": "Visa (V)",                  "url": "https://inversax.com/herramientas/acciones/v" },
+      { "@type": "ListItem", "position": 10, "name": "JPMorgan Chase (JPM)",      "url": "https://inversax.com/herramientas/acciones/jpm" },
+      { "@type": "ListItem", "position": 11, "name": "Mastercard (MA)",           "url": "https://inversax.com/herramientas/acciones/ma" },
+      { "@type": "ListItem", "position": 12, "name": "UnitedHealth (UNH)",        "url": "https://inversax.com/herramientas/acciones/unh" },
+      { "@type": "ListItem", "position": 13, "name": "Eli Lilly (LLY)",           "url": "https://inversax.com/herramientas/acciones/lly" },
+      { "@type": "ListItem", "position": 14, "name": "Oracle (ORCL)",             "url": "https://inversax.com/herramientas/acciones/orcl" },
+      { "@type": "ListItem", "position": 15, "name": "Broadcom (AVGO)",           "url": "https://inversax.com/herramientas/acciones/avgo" },
+      { "@type": "ListItem", "position": 16, "name": "Netflix (NFLX)",            "url": "https://inversax.com/herramientas/acciones/nflx" },
+      { "@type": "ListItem", "position": 17, "name": "Salesforce (CRM)",          "url": "https://inversax.com/herramientas/acciones/crm" },
+      { "@type": "ListItem", "position": 18, "name": "Adobe (ADBE)",              "url": "https://inversax.com/herramientas/acciones/adbe" },
+      { "@type": "ListItem", "position": 19, "name": "Taiwan Semiconductor (TSM)","url": "https://inversax.com/herramientas/acciones/tsm" },
+      { "@type": "ListItem", "position": 20, "name": "Qualcomm (QCOM)",           "url": "https://inversax.com/herramientas/acciones/qcom" },
+      { "@type": "ListItem", "position": 21, "name": "AMD (AMD)",                 "url": "https://inversax.com/herramientas/acciones/amd" },
+      { "@type": "ListItem", "position": 22, "name": "Intel (INTC)",              "url": "https://inversax.com/herramientas/acciones/intc" },
+      { "@type": "ListItem", "position": 23, "name": "Goldman Sachs (GS)",        "url": "https://inversax.com/herramientas/acciones/gs" },
+      { "@type": "ListItem", "position": 24, "name": "Bank of America (BAC)",     "url": "https://inversax.com/herramientas/acciones/bac" },
+      { "@type": "ListItem", "position": 25, "name": "Morgan Stanley (MS)",       "url": "https://inversax.com/herramientas/acciones/ms" },
+      { "@type": "ListItem", "position": 26, "name": "PayPal (PYPL)",             "url": "https://inversax.com/herramientas/acciones/pypl" },
+      { "@type": "ListItem", "position": 27, "name": "Johnson & Johnson (JNJ)",   "url": "https://inversax.com/herramientas/acciones/jnj" },
+      { "@type": "ListItem", "position": 28, "name": "Pfizer (PFE)",              "url": "https://inversax.com/herramientas/acciones/pfe" },
+      { "@type": "ListItem", "position": 29, "name": "AbbVie (ABBV)",             "url": "https://inversax.com/herramientas/acciones/abbv" },
+      { "@type": "ListItem", "position": 30, "name": "Merck (MRK)",               "url": "https://inversax.com/herramientas/acciones/mrk" },
+      { "@type": "ListItem", "position": 31, "name": "ExxonMobil (XOM)",          "url": "https://inversax.com/herramientas/acciones/xom" },
+      { "@type": "ListItem", "position": 32, "name": "Chevron (CVX)",             "url": "https://inversax.com/herramientas/acciones/cvx" },
+      { "@type": "ListItem", "position": 33, "name": "Coca-Cola (KO)",            "url": "https://inversax.com/herramientas/acciones/ko" },
+      { "@type": "ListItem", "position": 34, "name": "PepsiCo (PEP)",             "url": "https://inversax.com/herramientas/acciones/pep" },
+      { "@type": "ListItem", "position": 35, "name": "McDonald's (MCD)",          "url": "https://inversax.com/herramientas/acciones/mcd" },
+      { "@type": "ListItem", "position": 36, "name": "Walmart (WMT)",             "url": "https://inversax.com/herramientas/acciones/wmt" },
+      { "@type": "ListItem", "position": 37, "name": "Costco (COST)",             "url": "https://inversax.com/herramientas/acciones/cost" },
+      { "@type": "ListItem", "position": 38, "name": "Nike (NKE)",                "url": "https://inversax.com/herramientas/acciones/nke" },
+      { "@type": "ListItem", "position": 39, "name": "Starbucks (SBUX)",          "url": "https://inversax.com/herramientas/acciones/sbux" },
+      { "@type": "ListItem", "position": 40, "name": "Disney (DIS)",              "url": "https://inversax.com/herramientas/acciones/dis" },
+      { "@type": "ListItem", "position": 41, "name": "Spotify (SPOT)",            "url": "https://inversax.com/herramientas/acciones/spot" },
+      { "@type": "ListItem", "position": 42, "name": "Uber (UBER)",               "url": "https://inversax.com/herramientas/acciones/uber" },
+      { "@type": "ListItem", "position": 43, "name": "Airbnb (ABNB)",             "url": "https://inversax.com/herramientas/acciones/abnb" },
+      { "@type": "ListItem", "position": 44, "name": "Ford (F)",                  "url": "https://inversax.com/herramientas/acciones/f" },
+      { "@type": "ListItem", "position": 45, "name": "General Motors (GM)",       "url": "https://inversax.com/herramientas/acciones/gm" },
+      { "@type": "ListItem", "position": 46, "name": "Boeing (BA)",               "url": "https://inversax.com/herramientas/acciones/ba" },
+      { "@type": "ListItem", "position": 47, "name": "AT&T (T)",                  "url": "https://inversax.com/herramientas/acciones/t" },
+      { "@type": "ListItem", "position": 48, "name": "Verizon (VZ)",              "url": "https://inversax.com/herramientas/acciones/vz" },
+      { "@type": "ListItem", "position": 49, "name": "SPDR S&P 500 ETF (SPY)",    "url": "https://inversax.com/herramientas/acciones/spy" },
+      { "@type": "ListItem", "position": 50, "name": "Invesco QQQ (QQQ)",         "url": "https://inversax.com/herramientas/acciones/qqq" }
+    ]
+  })} />
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cómo comprar acciones desde Latinoamérica?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Podés comprar acciones del mercado estadounidense desde Latinoamérica usando brokers internacionales como Interactive Brokers, eToro o Charles Schwab que permiten abrir cuentas desde la región. Algunos países también tienen plataformas locales habilitadas para operar en NYSE y NASDAQ."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿A qué hora abre la bolsa de valores de Estados Unidos?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La Bolsa de Nueva York (NYSE) y el NASDAQ abren de lunes a viernes de 9:30 a 16:00 hora del Este (ET). Para Honduras (UTC-6) eso equivale de 8:30 a 15:00. Los precios mostrados en Inversax tienen un retraso de 15 minutos."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué son las acciones más populares para invertir?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Las acciones más seguidas por inversores en Latinoamérica son Apple (AAPL), NVIDIA (NVDA), Tesla (TSLA), Microsoft (MSFT) y Amazon (AMZN), por ser empresas globales conocidas con alta liquidez en el mercado."
+        }
+      }
+    ]
+  })} />
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
