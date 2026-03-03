@@ -1,27 +1,27 @@
 import type { APIRoute } from 'astro';
 import { fetchPrecios } from '../../lib/precios';
 
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET: APIRoute = async ({ locals }) => {
   const env = (locals.runtime?.env as any);
-  const cache = (caches as any).default;
-  const cacheKey = new Request('https://cache.local/precios', request);
+  const KV  = env?.INVERSA_KV as KVNamespace | undefined;
 
-  const cached = await cache.match(cacheKey);
-  if (cached) return cached;
+  // 1. KV hit → instantáneo
+  const cached = await KV?.get('cache:precios', 'json') as any[] | null;
+  if (cached && cached.length > 0) {
+    return Response.json(cached, {
+      headers: { 'Cache-Control': 'public, max-age=300' },
+    });
+  }
 
+  // 2. KV vacío → llamar lib + guardar en KV
   try {
     const data = await fetchPrecios(env?.COINGECKO_API_KEY);
-
-    const response = Response.json(data, {
-      headers: { 'Cache-Control': 'public, max-age=300' }
+    await KV?.put('cache:precios', JSON.stringify(data), { expirationTtl: 3600 });
+    return Response.json(data, {
+      headers: { 'Cache-Control': 'public, max-age=300' },
     });
-
-    await cache.put(cacheKey, response.clone());
-    return response;
-
   } catch (e) {
     console.error('[API /precios]', e);
     return Response.json({ error: 'No se pudo obtener precios' }, { status: 503 });
   }
 };
-
