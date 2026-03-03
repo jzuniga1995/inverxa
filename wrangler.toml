@@ -1,14 +1,12 @@
-name = "inversa"
+name = "inversa-cron"
+main = "cron-worker.ts"
 compatibility_date = "2024-01-01"
 
-# ← Agregar estas dos líneas
-main = "dist/_worker.js"
-[assets]
-directory = "./dist"
-
+# KV namespace
 [[kv_namespaces]]
 binding = "INVERSA_KV"
 id = "b9da83be43594a6f9cc0354d1472d13f"
 
+# Cron trigger: cada 20 minutos
 [triggers]
-crons = ["0 * * * *"]
+crons = ["*/20 * * * *"]
