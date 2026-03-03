@@ -80,7 +80,7 @@ try {
     coin = await res.json() as CoinDetail;
 
     // Guarda en KV con TTL de 10 minutos
-    await KV?.put(cacheKey, JSON.stringify(coin), { expirationTtl: 600 });
+  await KV?.put(cacheKey, JSON.stringify(coin), { expirationTtl: 3600 });
   }
 } catch (e) {
   fetchError = true;
