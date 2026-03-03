@@ -12,7 +12,7 @@ const TOP_COINS: string[] = [
 const TOP_ACCIONES: string[] = [
   'aapl', 'nvda', 'tsla', 'msft', 'amzn',
   'meta', 'googl', 'spy',  'qqq',  'amd',
-  'jpm',  'v',    'nflx', 'brk.b','lly'
+  'jpm',  'v',    'nflx', 'brkb', 'lly'
 ];
 
 export default {
@@ -28,12 +28,14 @@ export default {
     console.log('[CRON] Iniciando actualización de mercados...');
 
     // ── 1. Listas generales (paralelo) ────────────────────────
+    // Guardamos la promise para reutilizarla en el paso 3
+    const accionesPromise = fetchAcciones(env.FINNHUB_API_KEY);
+
     const results = await Promise.allSettled([
-      fetchAcciones(env.FINNHUB_API_KEY)
-        .then(data =>
-          env.INVERSA_KV.put('acciones', JSON.stringify(data), { expirationTtl: 7200 })
-            .then(() => console.log(`[CRON] ✓ Acciones — ${data.length} registros`))
-        ),
+      accionesPromise.then(data =>
+        env.INVERSA_KV.put('acciones', JSON.stringify(data), { expirationTtl: 7200 })
+          .then(() => console.log(`[CRON] ✓ Acciones — ${data.length} registros`))
+      ),
       fetchPrecios(env.COINGECKO_API_KEY)
         .then(data =>
           env.INVERSA_KV.put('cache:precios', JSON.stringify(data), { expirationTtl: 7200 })
@@ -90,7 +92,9 @@ export default {
 
     // ── 3. Pre-calentar detalle de top acciones (1 sola key) ──
     console.log('[CRON] Pre-calentando top acciones...');
-    const listaAcciones = await env.INVERSA_KV.get('acciones', 'json') as any[] | null;
+
+    // Usamos el resultado directo de accionesPromise, sin leer KV
+    const listaAcciones = await accionesPromise.catch(() => null);
 
     if (!listaAcciones || listaAcciones.length === 0) {
       console.warn('[CRON] Lista de acciones vacía, saltando pre-calentamiento');
@@ -138,3 +142,4 @@ export default {
     console.log('[CRON] Finalizado.');
   }
 };
+

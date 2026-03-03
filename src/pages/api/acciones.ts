@@ -17,8 +17,10 @@ export const GET: APIRoute = async ({ url, locals }) => {
   const limit = limitParam ? parseInt(limitParam, 10) : null;
 
   const cached = await KV?.get('acciones', 'json') as AccionData[] | null;
-  if (cached) {
-    const data = limit ? cached.slice(0, limit) : cached;
+  if (cached && cached.length > 0) {
+    // Filtramos las que fallaron en el cron (precio: -1)
+    const validas = cached.filter(a => a.precio > 0);
+    const data = limit ? validas.slice(0, limit) : validas;
     return new Response(JSON.stringify({ ok: true, data, cached: true }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
     });
@@ -26,8 +28,9 @@ export const GET: APIRoute = async ({ url, locals }) => {
 
   try {
     const data = await fetchAcciones(env.FINNHUB_API_KEY);
-    await KV?.put('acciones', JSON.stringify(data), { expirationTtl: 7200 });
-    const resultado = limit ? data.slice(0, limit) : data;
+    const validas = data.filter(a => a.precio > 0);
+    await KV?.put('acciones', JSON.stringify(validas), { expirationTtl: 7200 });
+    const resultado = limit ? validas.slice(0, limit) : validas;
     return new Response(JSON.stringify({ ok: true, data: resultado, cached: false }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
     });
@@ -39,3 +42,4 @@ export const GET: APIRoute = async ({ url, locals }) => {
     );
   }
 };
+
