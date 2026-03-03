@@ -9,4 +9,4 @@ id = "b9da83be43594a6f9cc0354d1472d13f"
 
 # Cron trigger: cada 20 minutos
 [triggers]
-crons = ["*/20 * * * *"]
+crons = ["0 * * * *"]
