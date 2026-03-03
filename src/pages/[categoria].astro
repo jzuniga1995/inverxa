@@ -88,15 +88,77 @@ const [principal, ...resto] = articulosFiltrados;
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>{seo.title} — Inversax</title>
-    <meta name="description" content={seo.desc} />
-    <link rel="canonical" href={`https://inversax.com/${slugParam}`} />
-    <meta property="og:title"       content={`${seo.title} — Inversax`} />
-    <meta property="og:description" content={seo.desc} />
-    <meta property="og:type"        content="website" />
-  </slot>
+<slot name="head" slot="head">
 
+  <title>{seo.title} en Latinoamérica — Noticias y Análisis | Inversax</title>
+  <meta name="description" content={seo.desc} />
+  <meta name="keywords" content={`${seo.title.toLowerCase()} latinoamerica, ${seo.title.toLowerCase()} en español, noticias ${seo.title.toLowerCase()}, ${seo.title.toLowerCase()} hoy`} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href={`https://inversax.com/${slugParam}`} />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content={`${seo.title} en Latinoamérica — Noticias y Análisis | Inversax`} />
+  <meta property="og:description"  content={seo.desc} />
+  <meta property="og:url"          content={`https://inversax.com/${slugParam}`} />
+  <meta property="og:image"        content={`https://inversax.com/og/categoria/${slugParam}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={`${seo.title} — Inversax`} />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content={`${seo.title} en Latinoamérica — Inversax`} />
+  <meta name="twitter:description" content={seo.desc} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/categoria/${slugParam}.png`} />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": `${seo.title} en Latinoamérica — Inversax`,
+    "description": seo.desc,
+    "url": `https://inversax.com/${slugParam}`,
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": seo.title }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",   "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Noticias", "item": "https://inversax.com/noticias" },
+      { "@type": "ListItem", "position": 3, "name": seo.title,  "item": `https://inversax.com/${slugParam}` }
+    ]
+  })} />
+
+  {articulosFiltrados.length > 0 && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": `Artículos de ${seo.title} en Inversax`,
+      "url": `https://inversax.com/${slugParam}`,
+      "numberOfItems": articulosFiltrados.length,
+      "itemListElement": articulosFiltrados.slice(0, 10).map((art, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "name": art.titulo,
+        "url": `https://inversax.com/noticias/${art.slug}`
+      }))
+    })} />
+  )}
+
+</slot>
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
