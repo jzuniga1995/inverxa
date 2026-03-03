@@ -1,7 +1,6 @@
 ---
 // src/pages/herramientas/cripto/[id].astro
 export const prerender = false;
-
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink } from 'lucide-astro';
 
@@ -51,36 +50,30 @@ const fmtLarge = (n: number) => {
 const fmtChg    = (c: number) => c != null ? `${c >= 0 ? '+' : ''}${c.toFixed(2)}%` : '—';
 const fmtSupply = (n: number) => n ? n.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—';
 
-// ── Fetch con caché KV (10 minutos) ──────────────────────────
-// globalThis._coinCache NO funciona en Cloudflare Workers:
-// cada request puede ir a una instancia diferente del worker.
-// KV es el caché correcto en este entorno.
-const env      = (Astro.locals.runtime?.env as any);
-const KV       = env?.INVERSA_KV as KVNamespace | undefined;
-const KEY      = env?.COINGECKO_API_KEY as string | undefined;
-const cacheKey = `coin:${id}`;
+// ── Fetch con caché KV ────────────────────────────────────────
+const env = (Astro.locals.runtime?.env as any);
+const KV  = env?.INVERSA_KV as KVNamespace | undefined;
+const KEY = env?.COINGECKO_API_KEY as string | undefined;
 
 let coin: CoinDetail | null = null;
 let fetchError = false;
 
 try {
-  // 1. Intentar leer desde KV
-  const cached = await KV?.get(cacheKey, 'json') as CoinDetail | null;
+  // 1. Leer del objeto agrupado que escribe el cron
+  const topCoins = await KV?.get('cache:top-coins', 'json') as Record<string, CoinDetail> | null;
+  const cached = topCoins?.[id as string] ?? null;
 
   if (cached) {
-    // Caché válida — no toca CoinGecko
     coin = cached;
   } else {
-    // Caché vacía o expirada — llama a CoinGecko
+    // 2. Fallback: llamar CoinGecko directamente (sin escribir en KV)
     const res = await fetch(
       `https://api.coingecko.com/api/v3/coins/${id}?localization=true&tickers=false&market_data=true&community_data=false&developer_data=false`,
       { headers: { 'Accept': 'application/json', ...(KEY ? { 'x-cg-demo-api-key': KEY } : {}) } }
     );
     if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
     coin = await res.json() as CoinDetail;
-
-    // Guarda en KV con TTL de 10 minutos
-  await KV?.put(cacheKey, JSON.stringify(coin), { expirationTtl: 3600 });
+    // ⚠️ Sin KV.put — el cron es el único que escribe
   }
 } catch (e) {
   fetchError = true;
