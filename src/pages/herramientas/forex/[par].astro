@@ -117,11 +117,95 @@ const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? nu
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>{parFormateado} — Tipo de Cambio en Vivo · Inversax</title>
-    <meta name="description" content={`Tipo de cambio ${parFormateado} (${nombre}) en tiempo real con gráfica histórica.`} />
-    <link rel="canonical" href={`https://inversax.com/herramientas/forex/${par}`} />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>{parFormateado} Hoy — {nombre} en Tiempo Real | Inversax</title>
+  <meta name="description" content={`Tipo de cambio ${parFormateado} hoy: ${precioFmt}. ${nombre} con gráfica histórica y análisis para inversores en Latinoamérica. Actualizado diariamente.`} />
+  <meta name="keywords" content={`${parFormateado} hoy, ${parFormateado.toLowerCase()} precio, tipo de cambio ${parData?.base.toLowerCase()} ${parData?.cotizada.toLowerCase()}, ${nombre.toLowerCase()}, cambio ${parData?.cotizada.toLowerCase()} hoy`} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href={`https://inversax.com/herramientas/forex/${par}`} />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content={`${parFormateado} Hoy — ${nombre} | Inversax`} />
+  <meta property="og:description"  content={`${parFormateado} cotiza a ${precioFmt}. ${nombre} con gráfica histórica para inversores en Latinoamérica.`} />
+  <meta property="og:url"          content={`https://inversax.com/herramientas/forex/${par}`} />
+  <meta property="og:image"        content={`https://inversax.com/og/herramientas/forex/${par}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={`${parFormateado} tipo de cambio hoy — Inversax`} />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content={`${parFormateado} Hoy — ${precioFmt} | Inversax`} />
+  <meta name="twitter:description" content={`${nombre}. Tipo de cambio ${parFormateado}: ${precioFmt}. Gráfica y análisis en Inversax.`} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/herramientas/forex/${par}.png`} />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": `${parFormateado} Hoy — ${nombre} | Inversax`,
+    "description": `Tipo de cambio ${parFormateado} (${nombre}) actualizado diariamente con gráfica histórica para inversores en Latinoamérica.`,
+    "url": `https://inversax.com/herramientas/forex/${par}`,
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": `Par de divisas ${parFormateado}` }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Forex",        "item": "https://inversax.com/herramientas/forex" },
+      { "@type": "ListItem", "position": 4, "name": parFormateado,  "item": `https://inversax.com/herramientas/forex/${par}` }
+    ]
+  })} />
+
+  {parData && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": `¿Cuánto vale 1 ${parData.base.toUpperCase()} en ${parData.cotizada.toUpperCase()} hoy?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `1 ${parData.base.toUpperCase()} equivale a ${precioFmt} ${parData.cotizada.toUpperCase()} hoy según la tasa de referencia actualizada en Inversax.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Qué factores afectan el tipo de cambio ${parFormateado}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `El tipo de cambio ${parFormateado} está influenciado por las tasas de interés de los bancos centrales, la inflación, el comercio internacional, la confianza del mercado y las decisiones de política monetaria de cada país.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Cómo hacer trading con el par ${parFormateado}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Puedes operar el par ${parFormateado} desde Latinoamérica usando brokers regulados como XM, Pepperstone o eToro que ofrecen este par con spreads competitivos y soporte en español.`
+          }
+        }
+      ]
+    })} />
+  )}
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
