@@ -154,10 +154,98 @@ const desc      = descripciones[ticker] ?? '';
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>{accion?.nombre ?? ticker} ({ticker}) — Precio Hoy · Inversax</title>
-    <meta name="description" content={`Cotización de ${accion?.nombre} (${ticker}) en tiempo real. Precio, gráfica y datos del mercado.`} />
-  </slot>
+<slot name="head" slot="head">
+
+  <title>{accion?.nombre ?? ticker} ({ticker}) — {fmt(precio)} hoy | Inversax</title>
+  <meta name="description" content={`Cotización de ${accion?.nombre} (${ticker}) hoy: ${fmt(precio)}, variación de ${fmtChg(cambioPct)}. Gráfica en tiempo real, apertura, máximo, mínimo y datos del mercado para inversores en Latinoamérica.`} />
+  <meta name="keywords" content={`${ticker} precio hoy, ${accion?.nombre?.toLowerCase()} acción, ${ticker.toLowerCase()} bolsa, cotización ${ticker.toLowerCase()}, comprar ${ticker.toLowerCase()} desde latinoamerica, ${accion?.nombre?.toLowerCase()} hoy`} />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href={`https://inversax.com/herramientas/acciones/${slug}`} />
+
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content={`${accion?.nombre ?? ticker} (${ticker}) — ${fmt(precio)} hoy | Inversax`} />
+  <meta property="og:description"  content={`${accion?.nombre} (${ticker}) cotiza a ${fmt(precio)} (${fmtChg(cambioPct)}). Gráfica y datos en tiempo real para inversores en Latinoamérica.`} />
+  <meta property="og:url"          content={`https://inversax.com/herramientas/acciones/${slug}`} />
+  <meta property="og:image"        content={`https://inversax.com/og/herramientas/acciones/${slug}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={`${accion?.nombre} (${ticker}) precio hoy — Inversax`} />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content={`${ticker} — ${fmt(precio)} hoy | Inversax`} />
+  <meta name="twitter:description" content={`${accion?.nombre} cotiza a ${fmt(precio)} (${fmtChg(cambioPct)}). Gráfica en tiempo real en Inversax.`} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/herramientas/acciones/${slug}.png`} />
+
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- JSON-LD: WebPage -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": `${accion?.nombre ?? ticker} (${ticker}) — Precio en Vivo | Inversax`,
+    "description": `Cotización de ${accion?.nombre} (${ticker}) en tiempo real con gráfica histórica y datos del mercado para inversores en Latinoamérica.`,
+    "url": `https://inversax.com/herramientas/acciones/${slug}`,
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+    },
+    "about": { "@type": "Thing", "name": `Acción ${accion?.nombre} (${ticker})` }
+  })} />
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Acciones",     "item": "https://inversax.com/herramientas/acciones" },
+      { "@type": "ListItem", "position": 4, "name": `${accion?.nombre ?? ticker} (${ticker})`, "item": `https://inversax.com/herramientas/acciones/${slug}` }
+    ]
+  })} />
+
+  <!-- JSON-LD: FAQPage -->
+  {accion && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": `¿Cuánto vale la acción de ${accion.nombre} (${ticker}) hoy?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `La acción de ${accion.nombre} (${ticker}) cotiza a ${fmt(precio)} hoy, con una variación de ${fmtChg(cambioPct)} respecto al cierre anterior, según datos actualizados en Inversax.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Cómo comprar acciones de ${accion.nombre} (${ticker}) desde Latinoamérica?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Podés comprar acciones de ${accion.nombre} (${ticker}) desde Latinoamérica usando brokers internacionales como Interactive Brokers, eToro o Charles Schwab, que permiten abrir cuentas desde la región y operar en el mercado estadounidense.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿En qué sector opera ${accion.nombre}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `${accion.nombre} (${ticker}) opera en el sector de ${accion.sector}. ${desc ? desc.slice(0, 200) + '...' : ''}`
+          }
+        }
+      ]
+    })} />
+  )}
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
