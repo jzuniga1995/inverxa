@@ -102,11 +102,169 @@ const categoriaColores: Record<string, string> = {
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Inversax — Cripto, Trading y Finanzas en Español</title>
-    <meta name="description" content="Noticias, precios y herramientas de cripto, trading, bolsa, forex y economía actualizadas para Latinoamérica. Todo en español." />
-    <link rel="canonical" href="https://inversax.com" />
-  </slot>
+<slot name="head" slot="head">
+
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Inversax — Cripto, Trading y Finanzas en Español para Latinoamérica</title>
+  <meta name="description" content="Noticias, precios en vivo y herramientas de cripto, forex, bolsa y metales en español. La fuente de información financiera para inversores y traders en Latinoamérica." />
+  <meta name="keywords" content="cripto latinoamerica, trading en español, bolsa latam, forex latino, precio bitcoin hoy, finanzas personales latam, inversiones latinoamerica, noticias financieras español" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Inversax" />
+  <link rel="canonical" href="https://inversax.com" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:locale"       content="es_LA" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Inversax — Cripto, Trading y Finanzas en Español para Latinoamérica" />
+  <meta property="og:description"  content="Precios en vivo, noticias y herramientas de cripto, forex, bolsa y metales. Todo en español, para toda Latinoamérica." />
+  <meta property="og:url"          content="https://inversax.com" />
+  <meta property="og:image"        content="https://inversax.com/og/home.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Inversax — Cripto, Trading y Finanzas en Español" />
+
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:title"       content="Inversax — Cripto, Trading y Finanzas en Español" />
+  <meta name="twitter:description" content="Precios en vivo, noticias y herramientas de cripto, forex, bolsa y metales para Latinoamérica." />
+  <meta name="twitter:image"       content="https://inversax.com/og/home.png" />
+  <meta name="twitter:image:alt"   content="Inversax — Finanzas en Español" />
+
+  <!-- ═══════════════════════════════════════
+       EXTRA SEO
+  ═══════════════════════════════════════ -->
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+  <meta name="rating"           content="general" />
+  <meta name="category"         content="finance, crypto, trading, investing" />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "alternateName": "Inversax.com",
+    "description": "Noticias, precios en vivo y herramientas de cripto, forex, bolsa y metales en español para Latinoamérica.",
+    "url": "https://inversax.com",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://inversax.com/noticias?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — Organization
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://inversax.com/favicon.png",
+      "width": 512,
+      "height": 512
+    },
+    "sameAs": [
+      "https://twitter.com/inversax",
+      "https://www.instagram.com/inversax",
+      "https://www.youtube.com/@inversax"
+    ],
+"areaServed": [
+  "AR","BO","BR","CL","CO","CU","EC","MX","PY","PE","UY","VE",
+  "BZ","CR","SV","GT","HN","NI","PA",
+  "DO","PR",
+  "US","CA",
+  "ES","AD","DE","FR","GB","IT","NL","PT","CH",
+  "GQ","MA",
+  "AU","PH"
+],
+    "knowsLanguage": "es",
+    "description": "Fuente de información financiera en español. Cripto, trading, bolsa y economía actualizado cada día para toda la comunidad hispanohablante."
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Inversax — Cripto, Trading y Finanzas en Español",
+    "description": "Noticias, precios en vivo y herramientas de cripto, forex, bolsa y metales en español para Latinoamérica.",
+    "url": "https://inversax.com",
+    "inLanguage": "es",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png"
+      }
+    },
+    "about": [
+      { "@type": "Thing", "name": "Criptomonedas" },
+      { "@type": "Thing", "name": "Trading" },
+      { "@type": "Thing", "name": "Bolsa de valores" },
+      { "@type": "Thing", "name": "Forex" },
+      { "@type": "Thing", "name": "Metales preciosos" },
+      { "@type": "Thing", "name": "Finanzas personales" }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — ItemList de herramientas
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Herramientas financieras de Inversax",
+    "url": "https://inversax.com/herramientas",
+    "numberOfItems": 5,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Mercados Cripto",    "url": "https://inversax.com/herramientas/cripto"   },
+      { "@type": "ListItem", "position": 2, "name": "Forex",              "url": "https://inversax.com/herramientas/forex"    },
+      { "@type": "ListItem", "position": 3, "name": "Metales Preciosos",  "url": "https://inversax.com/herramientas/metales"  },
+      { "@type": "ListItem", "position": 4, "name": "Acciones",           "url": "https://inversax.com/herramientas/acciones" },
+      { "@type": "ListItem", "position": 5, "name": "Precio del Dólar",   "url": "https://inversax.com/herramientas/dolar"    }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — SiteNavigationElement
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SiteLinksSearchBox",
+    "url": "https://inversax.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://inversax.com/noticias?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
+</slot>
 
   <Hero />
 
