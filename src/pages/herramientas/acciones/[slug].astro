@@ -86,36 +86,31 @@ const descripciones: Record<string, string> = {
 const fmt    = (p: number) => (!p || p <= 0) ? '—' : `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtChg = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
 
-// ── Caché KV ──────────────────────────────────────────────────
-// Fix 1: globalThis._accionCache NO funciona en Cloudflare Workers
-//        (cada request puede ir a una instancia diferente).
-// Fix 2: import.meta.env.FINNHUB_API_KEY no funciona en SSR de
-//        Workers — debe usarse Astro.locals.runtime.env.
 const env      = (Astro.locals.runtime?.env as any);
 const KV       = env?.INVERSA_KV as KVNamespace | undefined;
 const FINN_KEY = env?.FINNHUB_API_KEY as string | undefined;
-const cacheKey = `accion:${slug}`;
 
 let accion: any = null;
 let quote: any  = null;
 let fetchError  = false;
 
 try {
-  // 1. Intentar leer desde KV (TTL 5 min)
   type CachedAccion = { accion: any; quote: any };
-  const cached = await KV?.get(cacheKey, 'json') as CachedAccion | null;
+
+  // 1. Leer del objeto agrupado que escribe el cron
+  const topAcciones = await KV?.get('cache:top-acciones', 'json') as Record<string, CachedAccion> | null;
+  const cached = topAcciones?.[slug as string] ?? null;
 
   if (cached) {
     accion = cached.accion;
     quote  = cached.quote;
   } else {
-    // 2. Buscar la acción en la lista cacheada por el cron
+    // 2. Fallback: buscar en lista y llamar Finnhub directamente
     const lista = await KV?.get('acciones', 'json') as any[] | null;
     const found = lista?.find((a: any) => a.slug === slug) ?? null;
     if (!found) throw new Error('Acción no encontrada');
     accion = found;
 
-    // 3. Quote detallado desde Finnhub (precio live, apertura, máx, mín)
     if (FINN_KEY) {
       const qRes = await fetch(
         `https://finnhub.io/api/v1/quote?symbol=${found.ticker}&token=${FINN_KEY}`
@@ -132,9 +127,7 @@ try {
         };
       }
     }
-
-    // 4. Guardar en KV con TTL de 5 minutos
-    await KV?.put(cacheKey, JSON.stringify({ accion, quote }), { expirationTtl: 3600 });
+    // ⚠️ Sin KV.put — el cron es el único que escribe
   }
 } catch (e) {
   fetchError = true;
@@ -151,7 +144,7 @@ const isUp      = cambioPct >= 0;
 const ticker    = accion?.ticker ?? '';
 const tvSymbol  = accion?.tradingviewSimbolo ?? `NASDAQ:${ticker}`;
 const desc      = descripciones[ticker] ?? '';
----
+--- 
 
 <Layout>
 <slot name="head" slot="head">
