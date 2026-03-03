@@ -912,20 +912,22 @@ const categoriaColores: Record<string, string> = {
     }
   }
 
-  // ── Tabs lógica + carga lazy ──────────────────────────────
+// ── Tabs lógica + carga lazy ──────────────────────────────
   const mktTabs   = document.querySelectorAll<HTMLButtonElement>('.market-tab');
   const mktPanels = document.querySelectorAll<HTMLElement>('.mkt-panel');
   const loaders   = [cargarCripto, cargarForex, cargarMetales, cargarAcciones];
 
-mktTabs.forEach(t => {
-  t.style.background = t.style.borderColor = t.style.color = '';
-  t.classList.remove('font-semibold', 'bg-[#D4A843]', 'text-[#0A0B0D]', 'border-[#D4A843]');
-  t.classList.add('text-white/40', 'border-white/[0.07]', 'bg-transparent');
-});
+  mktTabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      mktTabs.forEach(t => {
+        t.style.background = t.style.borderColor = t.style.color = '';
+        t.classList.remove('font-semibold', 'bg-[#D4A843]', 'text-[#0A0B0D]', 'border-[#D4A843]');
+        t.classList.add('text-white/40', 'border-white/[0.07]', 'bg-transparent');
+      });
       tab.style.background = tab.style.borderColor = '#D4A843';
       tab.style.color = '#0A0B0D';
       tab.classList.add('font-semibold');
-      tab.classList.remove('text-white/40', 'border-white/[0.07]');
+      tab.classList.remove('text-white/40', 'border-white/[0.07]', 'bg-transparent');
       mktPanels.forEach((p, j) => p.classList.toggle('hidden', i !== j));
       loaders[i]?.();
     });
@@ -933,6 +935,7 @@ mktTabs.forEach(t => {
 
   // Carga cripto al inicio (tab activo por defecto)
   cargarCripto();
+
 </script>
 
 <style>
