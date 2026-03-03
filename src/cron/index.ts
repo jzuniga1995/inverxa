@@ -6,8 +6,7 @@ import { fetchMetales   } from '../lib/metales';
 
 const TOP_COINS: string[] = [
   'bitcoin', 'ethereum', 'tether', 'solana', 'xrp',
-  'cardano', 'dogecoin', 'binancecoin', 'tron', 'avalanche-2',
-  'shiba-inu', 'polkadot', 'chainlink', 'uniswap', 'litecoin'
+  'cardano', 'dogecoin', 'binancecoin', 'tron', 'litecoin'
 ];
 
 const TOP_ACCIONES: string[] = [
