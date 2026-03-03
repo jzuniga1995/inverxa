@@ -2,6 +2,8 @@
 // src/pages/cripto/index.astro
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
+import { ArrowLeft } from 'lucide-astro';
+
 const env = (Astro.locals.runtime?.env as any);
 const KV  = env?.INVERSA_KV as KVNamespace | undefined;
 
@@ -238,6 +240,9 @@ try {
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
+<a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+  <ArrowLeft size={15} /> Herramientas
+</a>
 
       <!-- Título -->
       <div class="mb-7">
