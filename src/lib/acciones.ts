@@ -60,7 +60,6 @@ export const ACCIONES = [
   { ticker: 'VZ',    nombre: 'Verizon',             sector: 'Telecom',        icono: 'Signal',     color: 'text-red-500',    tradingviewSimbolo: 'NYSE:VZ',      slug: 'vz'    },
   { ticker: 'T',     nombre: 'AT&T',                sector: 'Telecom',        icono: 'Signal',     color: 'text-blue-400',   tradingviewSimbolo: 'NYSE:T',       slug: 't'     },
   { ticker: 'NKE',   nombre: 'Nike',                sector: 'Consumo',        icono: 'Shoe',       color: 'text-red-500',    tradingviewSimbolo: 'NYSE:NKE',     slug: 'nke'   },
-  { ticker: 'SNE',   nombre: 'Sony',                sector: 'Tecnología',     icono: 'Tv',         color: 'text-purple-500', tradingviewSimbolo: 'NYSE:SNE',     slug: 'sne'   },
   { ticker: 'BA',    nombre: 'Boeing',              sector: 'Aeroespacial',   icono: 'Plane',      color: 'text-gray-500',   tradingviewSimbolo: 'NYSE:BA',      slug: 'ba'    },
   { ticker: 'CAT',   nombre: 'Caterpillar',         sector: 'Industria',      icono: 'Gear',       color: 'text-orange-500', tradingviewSimbolo: 'NYSE:CAT',     slug: 'cat'   },
   { ticker: 'DE',    nombre: 'Deere',               sector: 'Industria',      icono: 'Tractor',    color: 'text-green-500',  tradingviewSimbolo: 'NYSE:DE',      slug: 'de'    },
@@ -71,7 +70,6 @@ export const ACCIONES = [
   { ticker: 'TXN',   nombre: 'Texas Instruments',   sector: 'Tecnología',     icono: 'Chip',       color: 'text-green-400',  tradingviewSimbolo: 'NASDAQ:TXN',   slug: 'txn'   },
   { ticker: 'INTU',  nombre: 'Intuit',              sector: 'Tecnología',     icono: 'Calculator', color: 'text-blue-400',   tradingviewSimbolo: 'NASDAQ:INTU',  slug: 'intu'  },
   { ticker: 'CSCO',  nombre: 'Cisco',               sector: 'Tecnología',     icono: 'Network',    color: 'text-blue-500',   tradingviewSimbolo: 'NASDAQ:CSCO',  slug: 'csco'  },
-  { ticker: 'VMW',   nombre: 'VMware',              sector: 'Tecnología',     icono: 'Cloud',      color: 'text-gray-500',   tradingviewSimbolo: 'NYSE:VMW',     slug: 'vmw'   },
   { ticker: 'SAP',   nombre: 'SAP',                 sector: 'Tecnología',     icono: 'Cloud',      color: 'text-green-500',  tradingviewSimbolo: 'NYSE:SAP',     slug: 'sap'   },
   { ticker: 'ADP',   nombre: 'ADP',                 sector: 'Tecnología',     icono: 'Calculator', color: 'text-red-400',    tradingviewSimbolo: 'NASDAQ:ADP',   slug: 'adp'   },
 ];
