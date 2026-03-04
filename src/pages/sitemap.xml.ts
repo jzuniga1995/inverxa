@@ -77,6 +77,7 @@ export const GET: APIRoute = async ({ locals }) => {
   ${url('/',            new Date(), 1.0, 'daily')}
   ${url('/noticias',    new Date(), 0.9, 'daily')}
   ${url('/herramientas',new Date(), 0.7, 'weekly')}
+   ${url('/autor/jose-zuniga', new Date(), 0.6, 'monthly')}
   ${url('/acerca',      new Date(), 0.4, 'monthly')}
   ${url('/contacto',    new Date(), 0.4, 'monthly')}
   ${url('/legal',       new Date(), 0.3, 'monthly')}
