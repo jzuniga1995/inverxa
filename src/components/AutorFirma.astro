@@ -1,0 +1,78 @@
+---
+// src/components/AutorFirma.astro
+// Uso: <AutorFirma fecha={articulo.creadoEn} />
+
+import { Twitter, Globe } from 'lucide-astro';
+
+interface Props {
+  fecha?: Date | null;
+}
+
+const { fecha } = Astro.props;
+
+function formatFecha(f: Date | null | undefined) {
+  if (!f) return '';
+  return new Intl.DateTimeFormat('es', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(f);
+}
+---
+
+<div class="flex items-center gap-4 py-5 px-5 sm:px-6 rounded-2xl bg-[#111318] border border-white/[0.07] my-8">
+
+  <!-- Avatar -->
+  <a href="/autor/jose-zuniga" class="flex-shrink-0 no-underline">
+    <div class="w-12 h-12 rounded-xl border border-[#D4A843]/20 overflow-hidden hover:border-[#D4A843]/50 transition-colors duration-200">
+      <img src="/foto-jose.jpg" alt="José Zúñiga" class="w-full h-full object-cover" />
+    </div>
+  </a>
+
+  <!-- Info -->
+  <div class="flex flex-col gap-0.5 flex-1 min-w-0">
+    <div class="flex items-center gap-2 flex-wrap">
+      <a
+        href="/autor/jose-zuniga"
+        class="font-bold text-sm text-white hover:text-[#D4A843] no-underline transition-colors duration-200"
+        style="font-family: 'Syne', sans-serif;"
+      >
+        José Zúñiga
+      </a>
+      <span class="text-[#D4A843] text-[10px] font-bold bg-[#D4A843]/10 border border-[#D4A843]/20 px-1.5 py-0.5 rounded uppercase tracking-wider">
+        Editor
+      </span>
+    </div>
+    <p class="text-white/35 text-xs leading-snug">
+      Desarrollador de software · Finanzas & Cripto · Inversax
+    </p>
+    {fecha && (
+      <p class="text-white/20 text-[10px] mt-0.5">
+        Publicado el {formatFecha(fecha)}
+      </p>
+    )}
+  </div>
+
+  <!-- Social (solo desktop) -->
+  <div class="hidden sm:flex items-center gap-2 flex-shrink-0">
+    <a
+      href="https://twitter.com/inversax"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="w-8 h-8 rounded-lg bg-white/5 border border-white/[0.07] hover:border-[#D4A843]/40 hover:text-[#D4A843] text-white/30 flex items-center justify-center transition-all duration-200 no-underline"
+    >
+      <Twitter size={13} />
+    </a>
+    <a
+      href="https://inversax.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="w-8 h-8 rounded-lg bg-white/5 border border-white/[0.07] hover:border-[#D4A843]/40 hover:text-[#D4A843] text-white/30 flex items-center justify-center transition-all duration-200 no-underline"
+    >
+      <Globe size={13} />
+    </a>
+  </div>
+
+</div>
+
+
