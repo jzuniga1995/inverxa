@@ -6,13 +6,13 @@ import { getArticulos } from '../../db/queries';
 import { Clock, ArrowRight, Globe, Twitter, Github, Linkedin } from 'lucide-astro';
 
 const db = Astro.locals.db;
-const todosArticulos = await getArticulos(db, 100);
+const todosArticulos = await getArticulos(db, 24);
 
 // Filtra solo artículos globales (misma lógica que /noticias)
-const articulos = todosArticulos.filter(a => !a.pais || a.pais.codigo === 'global').slice(0, 12);
+const articulos = todosArticulos.filter(a => !a.pais || a.pais.codigo === 'global');
 
 const autor = {
-  nombre:    'José Zúñiga',
+  nombre:    'José Zúniga',
   rol:       'Fundador & Editor',
   slug:      'jose-zuniga',
   bio:       'Desarrollador de software con una pasión profunda por los mercados financieros, las criptomonedas y la economía latinoamericana. Creé Inversax con el objetivo de llevar información financiera clara, accesible y de calidad a toda la región. Cada artículo que encuentras aquí pasa por mi revisión editorial antes de publicarse.',
@@ -232,4 +232,3 @@ function formatFecha(fecha: Date | null) {
     overflow: hidden;
   }
 </style>
-
