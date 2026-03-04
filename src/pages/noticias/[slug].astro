@@ -4,6 +4,7 @@ export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import { getArticuloPorSlug, getArticulosPorCategoria } from '../../db/queries';
 import { Clock, ArrowLeft, ArrowRight, Globe } from 'lucide-astro';
+import AutorFirma from '../../components/AutorFirma.astro';
 
 const { slug } = Astro.params;
 
@@ -92,11 +93,11 @@ function formatFecha(fecha: Date | null) {
           "height": 630
         }
       : undefined,
-    "author": {
-      "@type": "Organization",
-      "name": "Inversax",
-      "url": "https://inversax.com"
-    },
+"author": {
+  "@type": "Person",
+  "name": "José Zúniga",
+  "url": "https://inversax.com/autor/jose-zuniga"
+},
     "publisher": {
       "@type": "Organization",
       "name": "Inversax",
@@ -215,6 +216,9 @@ function formatFecha(fecha: Date | null) {
 
           <!-- Contenido del artículo -->
           <div class="article-content text-white/70 leading-relaxed text-base sm:text-[16.5px]" set:html={articulo.contenido} />
+
+          <!-- FIRMA DEL AUTOR ← aquí -->
+<AutorFirma fecha={articulo.creadoEn} />
 
           <!-- Footer del artículo -->
           <div class="flex items-center justify-between mt-10 pt-6 border-t border-white/[0.07] flex-wrap gap-4">
