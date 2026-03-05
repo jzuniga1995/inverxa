@@ -284,6 +284,11 @@ const TICKER_SKELETON = [
   .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Items sin precio: ocultos */
+  .ticker-item[data-loaded="false"] {
+    display: none;
+  }
 </style>
 
 <script>
@@ -454,10 +459,10 @@ const TICKER_SKELETON = [
   });
 
   // ── CARGA Y POLLING DEL TICKER (client-side) ──────────────────
-  // El ticker carga al abrir la página y refresca cada 5 min.
-  // En SSR solo se renderizan los símbolos (skeleton ···) para
-  // no bloquear el TTFB con llamadas a APIs externas.
   const TICKER_COUNT = { crypto: 6, forex: 5, metal: 2, stock: 5 };
+
+  // Conjunto de símbolos que recibieron precio real
+  const loadedSymbols = new Set<string>();
 
   function fmtPrice(p: number): string {
     if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
@@ -471,9 +476,11 @@ const TICKER_SKELETON = [
   }
 
   // Actualiza los nodos del ticker que coincidan con el símbolo dado
+  // y marca el símbolo como cargado
   function patchTicker(items: { symbol: string; price: string; change?: string; up?: boolean }[]) {
     const nodes = document.querySelectorAll<HTMLElement>('#ticker-track .ticker-item');
     items.forEach(({ symbol, price, change, up }) => {
+      loadedSymbols.add(symbol.toUpperCase());
       nodes.forEach((node) => {
         if (node.dataset.symbol?.toUpperCase() !== symbol.toUpperCase()) return;
         const priceEl  = node.querySelector('.ticker-price');
@@ -491,7 +498,19 @@ const TICKER_SKELETON = [
             changeEl.textContent = '';
           }
         }
+        // Marcar como cargado para mostrarlo
+        node.dataset.loaded = 'true';
       });
+    });
+  }
+
+  // Oculta todos los items que aún no recibieron precio
+  function ocultarSinPrecio() {
+    const nodes = document.querySelectorAll<HTMLElement>('#ticker-track .ticker-item');
+    nodes.forEach((node) => {
+      if (node.dataset.loaded !== 'true') {
+        node.dataset.loaded = 'false'; // dispara display:none via CSS
+      }
     });
   }
 
@@ -554,6 +573,9 @@ const TICKER_SKELETON = [
         );
       }
     }
+
+    // Una vez que todas las APIs respondieron, ocultar los que no cargaron
+    ocultarSinPrecio();
   }
 
   // Carga inmediata + refresco cada 5 min

@@ -2,8 +2,8 @@ import { fetchAcciones } from '../lib/acciones';
 
 const TOP_ACCIONES = [
   'aapl', 'nvda', 'tsla', 'msft', 'amzn',
-  'meta', 'googl', 'spy',  'qqq',  'amd',
-  'jpm',  'v',    'nflx', 'brkb', 'lly'
+  'meta', 'googl', 'amd', 'jpm', 'v',
+  'nflx', 'brkb', 'ko', 'dis', 'ba'
 ];
 
 export default {
@@ -14,7 +14,6 @@ export default {
     await env.INVERSA_KV.put('acciones', JSON.stringify(data), { expirationTtl: 7200 });
     console.log(`[CRON-ACCIONES] ✓ Acciones — ${data.length} registros`);
 
-    // Pre-calentar top acciones — sin calls extra a Finnhub
     const topAccionesData: Record<string, any> = {};
     for (const slug of TOP_ACCIONES) {
       const found = data.find((a: any) => a.slug === slug);
@@ -22,12 +21,12 @@ export default {
       topAccionesData[slug] = {
         accion: found,
         quote: {
-          precio:    found.precio,
-          apertura:  0,
-          maximo:    0,
-          minimo:    0,
+          precio:     found.precio,
+          apertura:   0,
+          maximo:     0,
+          minimo:     0,
           prevCierre: 0,
-          cambioPct: found.cambioPct,
+          cambioPct:  found.cambioPct,
         }
       };
     }
