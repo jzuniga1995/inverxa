@@ -15,17 +15,19 @@ export default {
     console.log(`[CRON-ACCIONES] ✓ Acciones — ${data.length} registros`);
 
     const topAccionesData: Record<string, any> = {};
+
     for (const slug of TOP_ACCIONES) {
       const found = data.find((a: any) => a.slug === slug);
       if (!found) continue;
+
       topAccionesData[slug] = {
         accion: found,
         quote: {
           precio:     found.precio,
-          apertura:   0,
-          maximo:     0,
-          minimo:     0,
-          prevCierre: 0,
+          apertura:   found.apertura,
+          maximo:     found.maximo,
+          minimo:     found.minimo,
+          prevCierre: found.prevCierre,
           cambioPct:  found.cambioPct,
         }
       };
@@ -35,4 +37,3 @@ export default {
     console.log('[CRON-ACCIONES] Finalizado.');
   }
 };
-
