@@ -12,6 +12,10 @@ export interface AccionData {
   cambio: number;
   cambioPct: number;
   alza: boolean;
+  apertura: number;
+  maximo: number;
+  minimo: number;
+  prevCierre: number;
 }
 
 interface FinnhubQuote {
@@ -74,10 +78,14 @@ export const ACCIONES = [
 function mapQuote(accion: typeof ACCIONES[0], q: FinnhubQuote): AccionData {
   return {
     ...accion,
-    precio:    Number(q.c.toFixed(2)),
-    cambio:    Number(q.d?.toFixed(2)  ?? 0),
-    cambioPct: Number(q.dp?.toFixed(2) ?? 0),
-    alza:      (q.dp ?? 0) >= 0,
+    precio:     Number(q.c.toFixed(2)),
+    cambio:     Number(q.d?.toFixed(2)  ?? 0),
+    cambioPct:  Number(q.dp?.toFixed(2) ?? 0),
+    alza:       (q.dp ?? 0) >= 0,
+    apertura:   Number(q.o?.toFixed(2)  ?? 0),
+    maximo:     Number(q.h?.toFixed(2)  ?? 0),
+    minimo:     Number(q.l?.toFixed(2)  ?? 0),
+    prevCierre: Number(q.pc?.toFixed(2) ?? 0),
   };
 }
 
@@ -99,7 +107,7 @@ export async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
   const failed: typeof ACCIONES = [];
 
   const BATCH_SIZE = 5;
-  const DELAY_BETWEEN_BATCHES = 5500; // 5 lotes × 5.5s → ~50 req en 27s, seguro con 60 req/min
+  const DELAY_BETWEEN_BATCHES = 5500;
 
   for (let i = 0; i < ACCIONES.length; i += BATCH_SIZE) {
     const batch = ACCIONES.slice(i, i + BATCH_SIZE);
@@ -126,7 +134,6 @@ export async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
     }
   }
 
-  // Reintento grupal de fallidos (suelen ser 1-3 tickers por rate limit)
   if (failed.length > 0) {
     console.warn(`⚠️ Reintentando ${failed.length} acciones fallidas...`);
     await new Promise(res => setTimeout(res, 2000));
@@ -140,7 +147,11 @@ export async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
         results.push(r.value);
       } else {
         console.error(`❌ Reintento fallido para ${failed[idx].ticker}`);
-        results.push({ ...failed[idx], precio: -1, cambio: 0, cambioPct: 0, alza: false });
+        results.push({
+          ...failed[idx],
+          precio: -1, cambio: 0, cambioPct: 0, alza: false,
+          apertura: 0, maximo: 0, minimo: 0, prevCierre: 0,
+        });
       }
     });
   }
