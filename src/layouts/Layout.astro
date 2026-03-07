@@ -3,8 +3,11 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import NavProgress from '../components/NavProgress.astro';
+import BrokerBanner from '../components/BrokerBanner.astro';
 
-const { bodyClass = '' } = Astro.props;
+
+const { bodyClass = '', mostrarBrokers = true } = Astro.props;
+
 ---
 
 <!DOCTYPE html>
@@ -50,7 +53,7 @@ const { bodyClass = '' } = Astro.props;
   <main class="pt-[100px]">
     <slot />
   </main>
-
+<BrokerBanner mostrar={mostrarBrokers} />  
   <Footer />
 
 </body>
