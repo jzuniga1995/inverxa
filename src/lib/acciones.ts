@@ -134,28 +134,42 @@ export async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
     }
   }
 
-  if (failed.length > 0) {
-    console.warn(`⚠️ Reintentando ${failed.length} acciones fallidas...`);
-    await new Promise(res => setTimeout(res, 2000));
+if (failed.length > 0) {
+  console.warn(`⚠️ Reintentando ${failed.length} acciones fallidas...`);
+  await new Promise(res => setTimeout(res, 3000));
+
+  for (let i = 0; i < failed.length; i += BATCH_SIZE) {
+    const batch = failed.slice(i, i + BATCH_SIZE);
 
     const retries = await Promise.allSettled(
-      failed.map(accion => fetchQuote(accion.ticker, apiKey).then(q => mapQuote(accion, q)))
+      batch.map(accion => fetchQuote(accion.ticker, apiKey).then(q => mapQuote(accion, q)))
     );
 
     retries.forEach((r, idx) => {
       if (r.status === 'fulfilled') {
         results.push(r.value);
       } else {
-        console.error(`❌ Reintento fallido para ${failed[idx].ticker}`);
+        console.error(`❌ Reintento fallido para ${batch[idx].ticker}`);
         results.push({
-          ...failed[idx],
+          ...batch[idx],
           precio: -1, cambio: 0, cambioPct: 0, alza: false,
           apertura: 0, maximo: 0, minimo: 0, prevCierre: 0,
         });
       }
     });
+
+    if (i + BATCH_SIZE < failed.length) {
+      await new Promise(res => setTimeout(res, 5500));
+    }
+  }
+
+
+
+
   }
 
   return results;
 }
+
+
 
