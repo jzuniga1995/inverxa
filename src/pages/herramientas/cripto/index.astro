@@ -41,35 +41,145 @@ try {
 ---
 
 <Layout>
+---
+// REEMPLAZA el bloque <slot name="head"> en src/pages/herramientas/cripto/index.astro
+// El resto del archivo queda igual.
+---
+
 <slot name="head" slot="head">
 
-  <title>Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax</title>
-  <meta name="description" content="Precios de las 100 principales criptomonedas en tiempo real: Bitcoin, Ethereum, Solana, XRP y más. Capitalización, volumen y variación 24h para inversores en Latinoamérica." />
-  <meta name="keywords" content="precio bitcoin hoy, precio ethereum hoy, criptomonedas en tiempo real, top 100 criptomonedas, precio crypto hoy, bitcoin en dolares, crypto latinoamerica, precio BTC ETH SOL XRP" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="author" content="Inversax" />
-  <link rel="canonical" href="https://inversax.com/herramientas/cripto" />
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <meta property="og:site_name"    content="Inversax" />
-  <meta property="og:locale"       content="es_LA" />
-  <meta property="og:type"         content="website" />
-  <meta property="og:title"        content="Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax" />
-  <meta property="og:description"  content="Bitcoin, Ethereum, Solana y las 100 principales criptomonedas con precios en tiempo real, capitalización y volumen para toda Latinoamérica." />
-  <meta property="og:url"          content="https://inversax.com/herramientas/cripto" />
-  <meta property="og:image"        content="https://inversax.com/og/herramientas/cripto.png" />
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax</title>
+  <meta name="description"    content="Precios de las 100 principales criptomonedas en tiempo real: Bitcoin, Ethereum, Solana, XRP y más. Capitalización, volumen y variación 24h para inversores en Latinoamérica." />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href="https://inversax.com/herramientas/cripto" />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+  ═══════════════════════════════════════ -->
+  <meta name="keywords"      content="precio bitcoin hoy, precio ethereum hoy, criptomonedas en tiempo real, top 100 criptomonedas, precio crypto hoy, bitcoin en dolares, crypto latinoamerica, precio BTC ETH SOL XRP" />
+  <meta name="news_keywords" content="precio bitcoin hoy, precio ethereum, criptomonedas, BTC, ETH, SOL, XRP, Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — página global, aplican los 36
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/cripto" />
+  <!-- América Latina -->
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/cripto" />
+  <!-- Europa -->
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/cripto" />
+  <!-- Resto del mundo -->
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/cripto" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax" />
+  <meta property="og:description" content="Bitcoin, Ethereum, Solana y las 100 principales criptomonedas con precios en tiempo real, capitalización y volumen para toda Latinoamérica." />
+  <meta property="og:url"         content="https://inversax.com/herramientas/cripto" />
+  <meta property="og:image"       content="https://inversax.com/og/herramientas/cripto.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content="Top 100 Criptomonedas en vivo — Inversax" />
+  <meta property="og:image:alt"   content="Top 100 Criptomonedas en vivo — Inversax" />
+  <meta property="og:image:type"  content="image/png" />
 
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
   <meta name="twitter:title"       content="Precios de Criptomonedas Hoy — Top 100 | Inversax" />
   <meta name="twitter:description" content="Bitcoin, Ethereum, Solana y las 100 principales criptos en tiempo real para Latinoamérica." />
   <meta name="twitter:image"       content="https://inversax.com/og/herramientas/cripto.png" />
+  <meta name="twitter:image:alt"   content="Top 100 Criptomonedas en vivo — Inversax" />
 
-  <meta name="language" content="Spanish" />
-  <meta name="content-language" content="es" />
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -77,24 +187,41 @@ try {
     "description": "Precios en tiempo real de las 100 principales criptomonedas con capitalización, volumen y variación para inversores en Latinoamérica.",
     "url": "https://inversax.com/herramientas/cripto",
     "inLanguage": "es",
-    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
     "publisher": {
-      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
-      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png",
+        "width": 512,
+        "height": 512
+      }
     },
     "about": { "@type": "Thing", "name": "Criptomonedas" }
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
-      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
-      { "@type": "ListItem", "position": 3, "name": "Criptomonedas","item": "https://inversax.com/herramientas/cripto" }
+      { "@type": "ListItem", "position": 1, "name": "Inicio",        "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",  "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Criptomonedas", "item": "https://inversax.com/herramientas/cripto" }
     ]
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — ItemList (Top 100)
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -205,6 +332,9 @@ try {
     ]
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — FAQPage
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",

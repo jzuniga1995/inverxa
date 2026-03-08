@@ -33,38 +33,132 @@ function formatFecha(fecha: Date | null) {
 ---
 
 <Layout>
+---
+// REEMPLAZA el bloque <slot name="head"> en src/pages/noticias/[slug].astro
+// El resto del archivo (frontmatter, template, styles) queda igual.
+// Solo copia este bloque y pégalo en lugar del anterior.
+---
+
 <slot name="head" slot="head">
+
+  <!-- ═══════════════════════════════════════
+       PRECONNECT / DNS-PREFETCH
+       Mejora LCP cargando antes el CDN de imágenes
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
   <!-- ═══════════════════════════════════════
        BASIC SEO
   ═══════════════════════════════════════ -->
   <title>{articulo.titulo} — Inversax</title>
-  <meta name="description" content={articulo.resumen ?? ''} />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <link rel="canonical" href={`https://inversax.com/noticias/${articulo.slug}`} />
+  <meta name="description"  content={articulo.resumen ?? ''} />
+  <meta name="author"       content="José Zúniga" />
+  <meta name="robots"       content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"    content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"     href={`https://inversax.com/noticias/${articulo.slug}`} />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+       news_keywords es leído específicamente por Google News
+  ═══════════════════════════════════════ -->
+  <meta name="keywords"      content={[
+    articulo.categoria?.nombre,
+    'inversiones',
+    'finanzas',
+    'latinoamérica',
+    'mercados financieros',
+    articulo.pais?.nombre,
+  ].filter(Boolean).join(', ')} />
+  <meta name="news_keywords" content={[
+    articulo.categoria?.nombre,
+    articulo.titulo.split(' ').slice(0, 5).join(' '),
+    'Inversax',
+  ].filter(Boolean).join(', ')} />
+
+  <!-- ═══════════════════════════════════════
+       GEO — ayuda en búsquedas locales LATAM
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"      content={articulo.pais?.codigo ?? 'LATAM'} />
+  <meta name="geo.placename"   content={articulo.pais?.nombre ?? 'Latinoamérica'} />
+  <meta name="language"        content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — cubre todos los mercados que sirves
+       Le dice a Google qué variante de español mostrar
+       según el país del usuario
+  ═══════════════════════════════════════ -->
+  {(() => {
+    const url = `https://inversax.com/noticias/${articulo.slug}`;
+    const locales = [
+      'es',        // español genérico
+      // América Latina
+      'es-MX',     // México
+      'es-AR',     // Argentina
+      'es-CO',     // Colombia
+      'es-CL',     // Chile
+      'es-PE',     // Perú
+      'es-VE',     // Venezuela
+      'es-EC',     // Ecuador
+      'es-BO',     // Bolivia
+      'es-PY',     // Paraguay
+      'es-UY',     // Uruguay
+      'es-CR',     // Costa Rica
+      'es-PA',     // Panamá
+      'es-DO',     // República Dominicana
+      'es-SV',     // El Salvador
+      'es-HN',     // Honduras
+      'es-NI',     // Nicaragua
+      'es-GT',     // Guatemala
+      'es-CU',     // Cuba
+      'es-PR',     // Puerto Rico
+      'es-BZ',     // Belice
+      // Europa
+      'es-ES',     // España
+      'es-AD',     // Andorra
+      'es-DE',     // Alemania
+      'es-FR',     // Francia
+      'es-IT',     // Italia
+      'es-CH',     // Suiza
+      'es-NL',     // Países Bajos
+      'es-GB',     // Reino Unido
+      'es-PT',     // Portugal
+      // Resto del mundo
+      'es-US',     // Estados Unidos
+      'es-CA',     // Canadá
+      'es-AU',     // Australia
+      'es-BR',     // Brasil
+      'es-PH',     // Filipinas
+      'es-GQ',     // Guinea Ecuatorial
+      'es-MA',     // Marruecos
+    ];
+    return locales.map(lang => (
+      <link rel="alternate" hreflang={lang} href={url} />
+    ));
+  })()}
+  <link rel="alternate" hreflang="x-default" href={`https://inversax.com/noticias/${articulo.slug}`} />
 
   <!-- ═══════════════════════════════════════
        OPEN GRAPH
   ═══════════════════════════════════════ -->
   <meta property="og:site_name"   content="Inversax" />
   <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
   <meta property="og:type"        content="article" />
   <meta property="og:title"       content={articulo.titulo} />
   <meta property="og:description" content={articulo.resumen ?? ''} />
   <meta property="og:url"         content={`https://inversax.com/noticias/${articulo.slug}`} />
-  {articulo.imagen && <meta property="og:image"       content={articulo.imagen} />}
-  {articulo.imagen && <meta property="og:image:width"  content="1200" />}
-  {articulo.imagen && <meta property="og:image:height" content="630" />}
-  {articulo.imagen && <meta property="og:image:alt"    content={articulo.titulo} />}
-
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:site"        content="@inversax" />
-  <meta name="twitter:title"       content={articulo.titulo} />
-  <meta name="twitter:description" content={articulo.resumen ?? ''} />
-  {articulo.imagen && <meta name="twitter:image" content={articulo.imagen} />}
-  {articulo.imagen && <meta name="twitter:image:alt" content={articulo.titulo} />}
+  {articulo.imagen && <meta property="og:image"        content={articulo.imagen} />}
+  {articulo.imagen && <meta property="og:image:width"   content="1200" />}
+  {articulo.imagen && <meta property="og:image:height"  content="630" />}
+  {articulo.imagen && <meta property="og:image:alt"     content={articulo.titulo} />}
+  {articulo.imagen && <meta property="og:image:type"    content="image/png" />}
 
   <!-- ═══════════════════════════════════════
        ARTICLE META
@@ -72,10 +166,97 @@ function formatFecha(fecha: Date | null) {
   <meta property="article:published_time" content={articulo.creadoEn?.toISOString() ?? ''} />
   <meta property="article:modified_time"  content={articulo.actualizadoEn?.toISOString() ?? ''} />
   <meta property="article:publisher"      content="https://inversax.com" />
+  <meta property="article:author"         content="https://inversax.com/autor/jose-zuniga" />
   {articulo.categoria && <meta property="article:section" content={articulo.categoria.nombre} />}
+  {articulo.categoria && <meta property="article:tag"     content={articulo.categoria.nombre} />}
+  <meta property="article:tag" content="finanzas" />
+  <meta property="article:tag" content="latinoamérica" />
+
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
+  <meta name="twitter:title"       content={articulo.titulo} />
+  <meta name="twitter:description" content={articulo.resumen ?? ''} />
+  {articulo.imagen && <meta name="twitter:image"     content={articulo.imagen} />}
+  {articulo.imagen && <meta name="twitter:image:alt" content={articulo.titulo} />}
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+       Activa el Sitelinks Searchbox en Google
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — Organization
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://inversax.com/favicon.png",
+      "width": 200,
+      "height": 60
+    },
+    "sameAs": [
+      "https://twitter.com/inversax",
+      "https://inversax.com"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "editorial",
+      "email": "contacto@inversax.com",
+      "availableLanguage": "Spanish"
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — Person (Autor)
+       Construye autoridad E-E-A-T del autor
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "José Zúniga",
+    "url": "https://inversax.com/autor/jose-zuniga",
+    "jobTitle": "Editor y Fundador",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
+    "knowsAbout": [
+      "Criptomonedas", "Trading", "Forex", "Bolsa de valores",
+      "Economía latinoamericana", "Finanzas personales"
+    ],
+    "sameAs": [
+      "https://inversax.com/autor/jose-zuniga"
+    ]
+  })} />
 
   <!-- ═══════════════════════════════════════
        JSON-LD — NewsArticle (Rich Results)
+       Versión extendida con wordCount, speakable, keywords
   ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -85,19 +266,23 @@ function formatFecha(fecha: Date | null) {
     "url": `https://inversax.com/noticias/${articulo.slug}`,
     "datePublished": articulo.creadoEn?.toISOString() ?? '',
     "dateModified": articulo.actualizadoEn?.toISOString() ?? '',
-    "image": articulo.imagen
-      ? {
-          "@type": "ImageObject",
-          "url": articulo.imagen,
-          "width": 1200,
-          "height": 630
-        }
+    "wordCount": articulo.contenido
+      ? articulo.contenido.replace(/<[^>]+>/g, '').split(/\s+/).length
       : undefined,
-"author": {
-  "@type": "Person",
-  "name": "José Zúniga",
-  "url": "https://inversax.com/autor/jose-zuniga"
-},
+    "inLanguage": "es",
+    "isAccessibleForFree": true,
+    "image": articulo.imagen ? {
+      "@type": "ImageObject",
+      "url": articulo.imagen,
+      "width": 1200,
+      "height": 630
+    } : undefined,
+    "thumbnailUrl": articulo.imagen ?? undefined,
+    "author": {
+      "@type": "Person",
+      "name": "José Zúniga",
+      "url": "https://inversax.com/autor/jose-zuniga"
+    },
     "publisher": {
       "@type": "Organization",
       "name": "Inversax",
@@ -114,8 +299,22 @@ function formatFecha(fecha: Date | null) {
       "@id": `https://inversax.com/noticias/${articulo.slug}`
     },
     "articleSection": articulo.categoria?.nombre ?? '',
-    "inLanguage": "es",
-    "isAccessibleForFree": true
+    "keywords": [
+      articulo.categoria?.nombre,
+      "inversiones",
+      "finanzas latinoamérica",
+      articulo.pais?.nombre,
+    ].filter(Boolean).join(', '),
+    // speakable → Google Assistant puede leer el título/resumen en voz
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": ["h1", ".article-summary"]
+    },
+    "copyrightYear": new Date().getFullYear(),
+    "copyrightHolder": {
+      "@type": "Organization",
+      "name": "Inversax"
+    }
   })} />
 
   <!-- ═══════════════════════════════════════
@@ -137,26 +336,32 @@ function formatFecha(fecha: Date | null) {
         "name": "Noticias",
         "item": "https://inversax.com/noticias"
       },
-      ...(articulo.categoria ? [{
-        "@type": "ListItem",
-        "position": 3,
-        "name": articulo.categoria.nombre,
-        "item": `https://inversax.com/${articulo.categoria.slug}`
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
-        "name": articulo.titulo,
-        "item": `https://inversax.com/noticias/${articulo.slug}`
-      }] : [{
-        "@type": "ListItem",
-        "position": 3,
-        "name": articulo.titulo,
-        "item": `https://inversax.com/noticias/${articulo.slug}`
-      }])
+      ...(articulo.categoria ? [
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": articulo.categoria.nombre,
+          "item": `https://inversax.com/${articulo.categoria.slug}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": articulo.titulo,
+          "item": `https://inversax.com/noticias/${articulo.slug}`
+        }
+      ] : [
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": articulo.titulo,
+          "item": `https://inversax.com/noticias/${articulo.slug}`
+        }
+      ])
     ]
   })} />
+
 </slot>
+
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <div class="flex flex-col lg:flex-row gap-10">

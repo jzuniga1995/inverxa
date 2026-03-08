@@ -70,35 +70,145 @@ try {
 ---
 
 <Layout>
+---
+// REEMPLAZA el bloque <slot name="head"> en src/pages/herramientas/forex/index.astro
+// El resto del archivo queda igual.
+---
+
 <slot name="head" slot="head">
 
-  <title>Forex — Tipos de Cambio en Tiempo Real para Latinoamérica | Inversax</title>
-  <meta name="description" content="Tipos de cambio en tiempo real de EUR/USD, USD/MXN, USD/ARS, USD/COP, USD/HNL y más de 25 pares de divisas. Forex en español para inversores en Latinoamérica." />
-  <meta name="keywords" content="tipos de cambio hoy, EUR USD hoy, dolar peso mexicano, USD MXN hoy, USD ARS hoy, forex latinoamerica, divisas en tiempo real, tipo de cambio lempira, cambio de moneda latam" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="author" content="Inversax" />
-  <link rel="canonical" href="https://inversax.com/herramientas/forex" />
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <meta property="og:site_name"    content="Inversax" />
-  <meta property="og:locale"       content="es_LA" />
-  <meta property="og:type"         content="website" />
-  <meta property="og:title"        content="Forex — Tipos de Cambio en Tiempo Real para Latinoamérica | Inversax" />
-  <meta property="og:description"  content="EUR/USD, USD/MXN, USD/ARS, USD/HNL y más de 25 pares de divisas. Actualizado diariamente para toda Latinoamérica." />
-  <meta property="og:url"          content="https://inversax.com/herramientas/forex" />
-  <meta property="og:image"        content="https://inversax.com/og/herramientas/forex.png" />
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Forex — Tipos de Cambio en Tiempo Real para Latinoamérica | Inversax</title>
+  <meta name="description"    content="Tipos de cambio en tiempo real de EUR/USD, USD/MXN, USD/ARS, USD/COP, USD/HNL y más de 25 pares de divisas. Forex en español para inversores en Latinoamérica." />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href="https://inversax.com/herramientas/forex" />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+  ═══════════════════════════════════════ -->
+  <meta name="keywords"      content="tipos de cambio hoy, EUR USD hoy, dolar peso mexicano, USD MXN hoy, USD ARS hoy, forex latinoamerica, divisas en tiempo real, tipo de cambio lempira, cambio de moneda latam, forex en español" />
+  <meta name="news_keywords" content="forex, tipos de cambio, EUR/USD, USD/MXN, divisas latinoamérica, Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — página global, aplican los 36
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/forex" />
+  <!-- América Latina -->
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/forex" />
+  <!-- Europa -->
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/forex" />
+  <!-- Resto del mundo -->
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/forex" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/forex" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Forex — Tipos de Cambio en Tiempo Real para Latinoamérica | Inversax" />
+  <meta property="og:description" content="EUR/USD, USD/MXN, USD/ARS, USD/HNL y más de 25 pares de divisas. Actualizado diariamente para toda Latinoamérica." />
+  <meta property="og:url"         content="https://inversax.com/herramientas/forex" />
+  <meta property="og:image"       content="https://inversax.com/og/herramientas/forex.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content="Tipos de cambio Forex — Inversax" />
+  <meta property="og:image:alt"   content="Tipos de cambio Forex — Inversax" />
+  <meta property="og:image:type"  content="image/png" />
 
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
   <meta name="twitter:title"       content="Forex — Tipos de Cambio en Tiempo Real | Inversax" />
   <meta name="twitter:description" content="EUR/USD, USD/MXN, USD/ARS y más de 25 pares de divisas para Latinoamérica." />
   <meta name="twitter:image"       content="https://inversax.com/og/herramientas/forex.png" />
+  <meta name="twitter:image:alt"   content="Tipos de cambio Forex — Inversax" />
 
-  <meta name="language" content="Spanish" />
-  <meta name="content-language" content="es" />
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -106,14 +216,28 @@ try {
     "description": "Tipos de cambio de los principales pares de divisas globales y monedas de Latinoamérica.",
     "url": "https://inversax.com/herramientas/forex",
     "inLanguage": "es",
-    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
     "publisher": {
-      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
-      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png",
+        "width": 512,
+        "height": 512
+      }
     },
     "about": { "@type": "Thing", "name": "Mercado de divisas Forex" }
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -124,45 +248,51 @@ try {
     ]
   })} />
 
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Pares de divisas Forex en Inversax",
-  "url": "https://inversax.com/herramientas/forex",
-  "numberOfItems": 29,
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1,  "name": "EUR/USD — Euro / Dólar Estadounidense",          "url": "https://inversax.com/herramientas/forex/eur-usd" },
-    { "@type": "ListItem", "position": 2,  "name": "GBP/USD — Libra Esterlina / Dólar",              "url": "https://inversax.com/herramientas/forex/gbp-usd" },
-    { "@type": "ListItem", "position": 3,  "name": "USD/JPY — Dólar / Yen Japonés",                  "url": "https://inversax.com/herramientas/forex/usd-jpy" },
-    { "@type": "ListItem", "position": 4,  "name": "USD/CHF — Dólar / Franco Suizo",                 "url": "https://inversax.com/herramientas/forex/usd-chf" },
-    { "@type": "ListItem", "position": 5,  "name": "USD/CAD — Dólar / Dólar Canadiense",             "url": "https://inversax.com/herramientas/forex/usd-cad" },
-    { "@type": "ListItem", "position": 6,  "name": "AUD/USD — Dólar Australiano / Dólar",            "url": "https://inversax.com/herramientas/forex/aud-usd" },
-    { "@type": "ListItem", "position": 7,  "name": "NZD/USD — Dólar Neozelandés / Dólar",            "url": "https://inversax.com/herramientas/forex/nzd-usd" },
-    { "@type": "ListItem", "position": 8,  "name": "USD/CNY — Dólar / Yuan Chino",                   "url": "https://inversax.com/herramientas/forex/usd-cny" },
-    { "@type": "ListItem", "position": 9,  "name": "USD/MXN — Dólar / Peso Mexicano",                "url": "https://inversax.com/herramientas/forex/usd-mxn" },
-    { "@type": "ListItem", "position": 10, "name": "USD/COP — Dólar / Peso Colombiano",              "url": "https://inversax.com/herramientas/forex/usd-cop" },
-    { "@type": "ListItem", "position": 11, "name": "USD/ARS — Dólar / Peso Argentino",               "url": "https://inversax.com/herramientas/forex/usd-ars" },
-    { "@type": "ListItem", "position": 12, "name": "USD/CLP — Dólar / Peso Chileno",                 "url": "https://inversax.com/herramientas/forex/usd-clp" },
-    { "@type": "ListItem", "position": 13, "name": "USD/PEN — Dólar / Sol Peruano",                  "url": "https://inversax.com/herramientas/forex/usd-pen" },
-    { "@type": "ListItem", "position": 14, "name": "USD/BRL — Dólar / Real Brasileño",               "url": "https://inversax.com/herramientas/forex/usd-brl" },
-    { "@type": "ListItem", "position": 15, "name": "USD/BOB — Dólar / Boliviano",                    "url": "https://inversax.com/herramientas/forex/usd-bob" },
-    { "@type": "ListItem", "position": 16, "name": "USD/GTQ — Dólar / Quetzal Guatemalteco",         "url": "https://inversax.com/herramientas/forex/usd-gtq" },
-    { "@type": "ListItem", "position": 17, "name": "USD/HNL — Dólar / Lempira Hondureño",            "url": "https://inversax.com/herramientas/forex/usd-hnl" },
-    { "@type": "ListItem", "position": 18, "name": "USD/NIO — Dólar / Córdoba Nicaragüense",         "url": "https://inversax.com/herramientas/forex/usd-nio" },
-    { "@type": "ListItem", "position": 19, "name": "USD/CRC — Dólar / Colón Costarricense",          "url": "https://inversax.com/herramientas/forex/usd-crc" },
-    { "@type": "ListItem", "position": 20, "name": "USD/DOP — Dólar / Peso Dominicano",              "url": "https://inversax.com/herramientas/forex/usd-dop" },
-    { "@type": "ListItem", "position": 21, "name": "USD/PYG — Dólar / Guaraní Paraguayo",            "url": "https://inversax.com/herramientas/forex/usd-pyg" },
-    { "@type": "ListItem", "position": 22, "name": "USD/UYU — Dólar / Peso Uruguayo",                "url": "https://inversax.com/herramientas/forex/usd-uyu" },
-    { "@type": "ListItem", "position": 23, "name": "USD/VES — Dólar / Bolívar Venezolano",           "url": "https://inversax.com/herramientas/forex/usd-ves" },
-    { "@type": "ListItem", "position": 24, "name": "USD/PAB — Dólar / Balboa Panameño",              "url": "https://inversax.com/herramientas/forex/usd-pab" },
-    { "@type": "ListItem", "position": 25, "name": "USD/CUP — Dólar / Peso Cubano",                  "url": "https://inversax.com/herramientas/forex/usd-cup" },
-    { "@type": "ListItem", "position": 26, "name": "USD/JMD — Dólar / Dólar Jamaicano",              "url": "https://inversax.com/herramientas/forex/usd-jmd" },
-    { "@type": "ListItem", "position": 27, "name": "USD/TTD — Dólar / Dólar Trinidad y Tobago",      "url": "https://inversax.com/herramientas/forex/usd-ttd" },
-    { "@type": "ListItem", "position": 28, "name": "USD/BBD — Dólar / Dólar de Barbados",            "url": "https://inversax.com/herramientas/forex/usd-bbd" },
-    { "@type": "ListItem", "position": 29, "name": "USD/HTG — Dólar / Gourde Haitiano",              "url": "https://inversax.com/herramientas/forex/usd-htg" }
-  ]
-})} />
+  <!-- ═══════════════════════════════════════
+       JSON-LD — ItemList (29 pares)
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Pares de divisas Forex en Inversax",
+    "url": "https://inversax.com/herramientas/forex",
+    "numberOfItems": 29,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1,  "name": "EUR/USD — Euro / Dólar Estadounidense",        "url": "https://inversax.com/herramientas/forex/eur-usd" },
+      { "@type": "ListItem", "position": 2,  "name": "GBP/USD — Libra Esterlina / Dólar",            "url": "https://inversax.com/herramientas/forex/gbp-usd" },
+      { "@type": "ListItem", "position": 3,  "name": "USD/JPY — Dólar / Yen Japonés",                "url": "https://inversax.com/herramientas/forex/usd-jpy" },
+      { "@type": "ListItem", "position": 4,  "name": "USD/CHF — Dólar / Franco Suizo",               "url": "https://inversax.com/herramientas/forex/usd-chf" },
+      { "@type": "ListItem", "position": 5,  "name": "USD/CAD — Dólar / Dólar Canadiense",           "url": "https://inversax.com/herramientas/forex/usd-cad" },
+      { "@type": "ListItem", "position": 6,  "name": "AUD/USD — Dólar Australiano / Dólar",          "url": "https://inversax.com/herramientas/forex/aud-usd" },
+      { "@type": "ListItem", "position": 7,  "name": "NZD/USD — Dólar Neozelandés / Dólar",          "url": "https://inversax.com/herramientas/forex/nzd-usd" },
+      { "@type": "ListItem", "position": 8,  "name": "USD/CNY — Dólar / Yuan Chino",                 "url": "https://inversax.com/herramientas/forex/usd-cny" },
+      { "@type": "ListItem", "position": 9,  "name": "USD/MXN — Dólar / Peso Mexicano",              "url": "https://inversax.com/herramientas/forex/usd-mxn" },
+      { "@type": "ListItem", "position": 10, "name": "USD/COP — Dólar / Peso Colombiano",            "url": "https://inversax.com/herramientas/forex/usd-cop" },
+      { "@type": "ListItem", "position": 11, "name": "USD/ARS — Dólar / Peso Argentino",             "url": "https://inversax.com/herramientas/forex/usd-ars" },
+      { "@type": "ListItem", "position": 12, "name": "USD/CLP — Dólar / Peso Chileno",               "url": "https://inversax.com/herramientas/forex/usd-clp" },
+      { "@type": "ListItem", "position": 13, "name": "USD/PEN — Dólar / Sol Peruano",                "url": "https://inversax.com/herramientas/forex/usd-pen" },
+      { "@type": "ListItem", "position": 14, "name": "USD/BRL — Dólar / Real Brasileño",             "url": "https://inversax.com/herramientas/forex/usd-brl" },
+      { "@type": "ListItem", "position": 15, "name": "USD/BOB — Dólar / Boliviano",                  "url": "https://inversax.com/herramientas/forex/usd-bob" },
+      { "@type": "ListItem", "position": 16, "name": "USD/GTQ — Dólar / Quetzal Guatemalteco",       "url": "https://inversax.com/herramientas/forex/usd-gtq" },
+      { "@type": "ListItem", "position": 17, "name": "USD/HNL — Dólar / Lempira Hondureño",          "url": "https://inversax.com/herramientas/forex/usd-hnl" },
+      { "@type": "ListItem", "position": 18, "name": "USD/NIO — Dólar / Córdoba Nicaragüense",       "url": "https://inversax.com/herramientas/forex/usd-nio" },
+      { "@type": "ListItem", "position": 19, "name": "USD/CRC — Dólar / Colón Costarricense",        "url": "https://inversax.com/herramientas/forex/usd-crc" },
+      { "@type": "ListItem", "position": 20, "name": "USD/DOP — Dólar / Peso Dominicano",            "url": "https://inversax.com/herramientas/forex/usd-dop" },
+      { "@type": "ListItem", "position": 21, "name": "USD/PYG — Dólar / Guaraní Paraguayo",          "url": "https://inversax.com/herramientas/forex/usd-pyg" },
+      { "@type": "ListItem", "position": 22, "name": "USD/UYU — Dólar / Peso Uruguayo",              "url": "https://inversax.com/herramientas/forex/usd-uyu" },
+      { "@type": "ListItem", "position": 23, "name": "USD/VES — Dólar / Bolívar Venezolano",         "url": "https://inversax.com/herramientas/forex/usd-ves" },
+      { "@type": "ListItem", "position": 24, "name": "USD/PAB — Dólar / Balboa Panameño",            "url": "https://inversax.com/herramientas/forex/usd-pab" },
+      { "@type": "ListItem", "position": 25, "name": "USD/CUP — Dólar / Peso Cubano",                "url": "https://inversax.com/herramientas/forex/usd-cup" },
+      { "@type": "ListItem", "position": 26, "name": "USD/JMD — Dólar / Dólar Jamaicano",            "url": "https://inversax.com/herramientas/forex/usd-jmd" },
+      { "@type": "ListItem", "position": 27, "name": "USD/TTD — Dólar / Dólar Trinidad y Tobago",    "url": "https://inversax.com/herramientas/forex/usd-ttd" },
+      { "@type": "ListItem", "position": 28, "name": "USD/BBD — Dólar / Dólar de Barbados",          "url": "https://inversax.com/herramientas/forex/usd-bbd" },
+      { "@type": "ListItem", "position": 29, "name": "USD/HTG — Dólar / Gourde Haitiano",            "url": "https://inversax.com/herramientas/forex/usd-htg" }
+    ]
+  })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — FAQPage
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -195,6 +325,7 @@ try {
   })} />
 
 </slot>
+
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
     <div class="max-w-5xl mx-auto px-4 py-10">

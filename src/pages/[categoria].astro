@@ -88,35 +88,142 @@ const [principal, ...resto] = articulosFiltrados;
 ---
 
 <Layout>
+---
+// REEMPLAZA el bloque <slot name="head"> en la página de categoría
+// Variables disponibles: seo.title, seo.desc, slugParam, articulosFiltrados
+---
+
 <slot name="head" slot="head">
 
-  <title>{seo.title} en Latinoamérica — Noticias y Análisis | Inversax</title>
-  <meta name="description" content={seo.desc} />
-  <meta name="keywords" content={`${seo.title.toLowerCase()} latinoamerica, ${seo.title.toLowerCase()} en español, noticias ${seo.title.toLowerCase()}, ${seo.title.toLowerCase()} hoy`} />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="author" content="Inversax" />
-  <link rel="canonical" href={`https://inversax.com/${slugParam}`} />
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <meta property="og:site_name"    content="Inversax" />
-  <meta property="og:locale"       content="es_LA" />
-  <meta property="og:type"         content="website" />
-  <meta property="og:title"        content={`${seo.title} en Latinoamérica — Noticias y Análisis | Inversax`} />
-  <meta property="og:description"  content={seo.desc} />
-  <meta property="og:url"          content={`https://inversax.com/${slugParam}`} />
-  <meta property="og:image"        content={`https://inversax.com/og/categoria/${slugParam}.png`} />
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>{seo.title} en Latinoamérica — Noticias y Análisis | Inversax</title>
+  <meta name="description"    content={seo.desc} />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href={`https://inversax.com/${slugParam}`} />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+  ═══════════════════════════════════════ -->
+  <meta name="keywords" content={`${seo.title.toLowerCase()} latinoamerica, ${seo.title.toLowerCase()} en español, noticias ${seo.title.toLowerCase()}, ${seo.title.toLowerCase()} hoy, ${seo.title.toLowerCase()} análisis, mercados financieros latinoamérica`} />
+  <meta name="news_keywords"  content={`${seo.title}, ${seo.title} hoy, Inversax, finanzas latinoamérica`} />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — 36 países + genérico + x-default
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href={`https://inversax.com/${slugParam}`} />
+  <!-- América Latina -->
+  <link rel="alternate" hreflang="es-MX" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-AR" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-CO" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-CL" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-PE" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-VE" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-EC" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-BO" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-PY" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-UY" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-CR" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-PA" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-DO" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-SV" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-HN" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-NI" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-GT" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-CU" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-PR" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-BZ" href={`https://inversax.com/${slugParam}`} />
+  <!-- Europa -->
+  <link rel="alternate" hreflang="es-ES" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-AD" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-DE" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-FR" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-IT" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-CH" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-NL" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-GB" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-PT" href={`https://inversax.com/${slugParam}`} />
+  <!-- Resto del mundo -->
+  <link rel="alternate" hreflang="es-US" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-CA" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-AU" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-BR" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-PH" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-GQ" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="es-MA" href={`https://inversax.com/${slugParam}`} />
+  <link rel="alternate" hreflang="x-default" href={`https://inversax.com/${slugParam}`} />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content={`${seo.title} en Latinoamérica — Noticias y Análisis | Inversax`} />
+  <meta property="og:description" content={seo.desc} />
+  <meta property="og:url"         content={`https://inversax.com/${slugParam}`} />
+  <meta property="og:image"       content={`https://inversax.com/og/categoria/${slugParam}.png`} />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content={`${seo.title} — Inversax`} />
+  <meta property="og:image:alt"   content={`${seo.title} en Latinoamérica — Inversax`} />
 
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
   <meta name="twitter:title"       content={`${seo.title} en Latinoamérica — Inversax`} />
   <meta name="twitter:description" content={seo.desc} />
   <meta name="twitter:image"       content={`https://inversax.com/og/categoria/${slugParam}.png`} />
+  <meta name="twitter:image:alt"   content={`${seo.title} en Latinoamérica — Inversax`} />
 
-  <meta name="language" content="Spanish" />
-  <meta name="content-language" content="es" />
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — CollectionPage
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -124,14 +231,28 @@ const [principal, ...resto] = articulosFiltrados;
     "description": seo.desc,
     "url": `https://inversax.com/${slugParam}`,
     "inLanguage": "es",
-    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
     "publisher": {
-      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
-      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png",
+        "width": 200,
+        "height": 60
+      }
     },
     "about": { "@type": "Thing", "name": seo.title }
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -142,6 +263,11 @@ const [principal, ...resto] = articulosFiltrados;
     ]
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — ItemList
+       Lista los artículos de la categoría como
+       resultados estructurados en Google
+  ═══════════════════════════════════════ -->
   {articulosFiltrados.length > 0 && (
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -159,6 +285,7 @@ const [principal, ...resto] = articulosFiltrados;
   )}
 
 </slot>
+
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 

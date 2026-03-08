@@ -10,35 +10,147 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
 ---
 
 <Layout>
+---
+// REEMPLAZA el bloque <slot name="head"> en src/pages/herramientas/dolar.astro
+// El resto del archivo queda igual.
+---
+
 <slot name="head" slot="head">
 
-  <title>Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax</title>
-  <meta name="description" content="Precio del dólar hoy en Argentina, Venezuela, México, Colombia y toda Latinoamérica. Dólar blue, oficial, MEP, CCL y paralelo actualizados cada 15 minutos." />
-  <meta name="keywords" content="precio dolar hoy, dolar blue hoy, dolar paralelo, tipo de cambio latinoamerica, dolar oficial argentina, dolar venezuela, dolar mexico hoy, dolar colombia hoy" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="author" content="Inversax" />
-  <link rel="canonical" href="https://inversax.com/herramientas/dolar" />
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <meta property="og:site_name"    content="Inversax" />
-  <meta property="og:locale"       content="es_LA" />
-  <meta property="og:type"         content="website" />
-  <meta property="og:title"        content="Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax" />
-  <meta property="og:description"  content="Dólar blue, oficial, MEP y paralelo en Argentina, Venezuela, México, Colombia y más. Actualizado cada 15 minutos." />
-  <meta property="og:url"          content="https://inversax.com/herramientas/dolar" />
-  <meta property="og:image"        content="https://inversax.com/og/herramientas/dolar.png" />
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax</title>
+  <meta name="description"    content="Precio del dólar hoy en Argentina, Venezuela, México, Colombia y toda Latinoamérica. Dólar blue, oficial, MEP, CCL y paralelo actualizados cada 15 minutos." />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href="https://inversax.com/herramientas/dolar" />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+       Esta página tiene keywords muy buscadas
+       (dólar blue, dólar paralelo) — máxima densidad
+  ═══════════════════════════════════════ -->
+  <meta name="keywords"      content="precio dolar hoy, dolar blue hoy, dolar paralelo, tipo de cambio latinoamerica, dolar oficial argentina, dolar venezuela, dolar mexico hoy, dolar colombia hoy, dolar mep, dolar ccl, dolar blue argentina hoy" />
+  <meta name="news_keywords" content="precio dólar hoy, dólar blue, dólar paralelo, tipo de cambio, Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — página global, aplican los 36
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/dolar" />
+  <!-- América Latina -->
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/dolar" />
+  <!-- Europa -->
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/dolar" />
+  <!-- Resto del mundo -->
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/dolar" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax" />
+  <meta property="og:description" content="Dólar blue, oficial, MEP y paralelo en Argentina, Venezuela, México, Colombia y más. Actualizado cada 15 minutos." />
+  <meta property="og:url"         content="https://inversax.com/herramientas/dolar" />
+  <meta property="og:image"       content="https://inversax.com/og/herramientas/dolar.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content="Precio del Dólar hoy en Latinoamérica — Inversax" />
+  <meta property="og:image:alt"   content="Precio del Dólar hoy en Latinoamérica — Inversax" />
+  <meta property="og:image:type"  content="image/png" />
 
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
   <meta name="twitter:title"       content="Precio del Dólar Hoy — Oficial, Blue y Paralelo en LATAM | Inversax" />
   <meta name="twitter:description" content="Dólar blue, oficial y paralelo en toda Latinoamérica. Actualizado cada 15 minutos." />
   <meta name="twitter:image"       content="https://inversax.com/og/herramientas/dolar.png" />
+  <meta name="twitter:image:alt"   content="Precio del Dólar hoy en Latinoamérica — Inversax" />
 
-  <meta name="language" content="Spanish" />
-  <meta name="content-language" content="es" />
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -46,14 +158,28 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
     "description": "Dólar oficial, blue y paralelo en toda Latinoamérica. Actualizado cada 15 minutos.",
     "url": "https://inversax.com/herramientas/dolar",
     "inLanguage": "es",
-    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
     "publisher": {
-      "@type": "Organization", "name": "Inversax", "url": "https://inversax.com",
-      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png" }
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png",
+        "width": 512,
+        "height": 512
+      }
     },
     "about": { "@type": "Thing", "name": "Tipo de cambio del dólar estadounidense" }
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -64,6 +190,11 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
     ]
   })} />
 
+  <!-- ═══════════════════════════════════════
+       JSON-LD — FAQPage
+       Activa rich results de preguntas en Google,
+       especialmente valioso para queries de dólar blue
+  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -104,6 +235,7 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
   })} />
 
 </slot>
+
 
   <main class="min-h-screen bg-[#0A0B0D] pt-28 pb-20 px-4 sm:px-6" style="font-family: 'DM Sans', sans-serif;">
     <div class="max-w-5xl mx-auto">

@@ -35,15 +35,199 @@ function formatFecha(fecha: Date | null) {
 ---
 
 <Layout>
-  <slot name="head" slot="head">
-    <title>Noticias — Inversax</title>
-    <meta name="description" content="Últimas noticias de cripto, trading, bolsa y economía para Latinoamérica." />
-    <link rel="canonical" href="https://inversax.com/noticias" />
-    <meta property="og:title"       content="Noticias — Inversax" />
-    <meta property="og:description" content="Últimas noticias de cripto, trading, bolsa y economía para Latinoamérica." />
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://inversax.com/noticias" />
-  </slot>
+---
+// REEMPLAZA el bloque <slot name="head"> en src/pages/noticias/index.astro
+// El resto del archivo queda igual.
+---
+
+<slot name="head" slot="head">
+
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Noticias de Finanzas, Cripto y Bolsa en Español — Inversax</title>
+  <meta name="description"    content="Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica. Actualizado cada día en español." />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href="https://inversax.com/noticias" />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+  ═══════════════════════════════════════ -->
+  <meta name="keywords" content="noticias criptomonedas, noticias trading, noticias forex, bolsa de valores latinoamérica, economía latinoamericana, finanzas en español, bitcoin hoy, mercados financieros" />
+  <meta name="news_keywords"  content="criptomonedas, trading, forex, bolsa, economía, Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — 36 países + genérico + x-default
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/noticias" />
+  <!-- América Latina -->
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/noticias" />
+  <!-- Europa -->
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/noticias" />
+  <!-- Resto del mundo -->
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/noticias" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/noticias" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Noticias de Finanzas, Cripto y Bolsa en Español — Inversax" />
+  <meta property="og:description" content="Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica. Actualizado cada día en español." />
+  <meta property="og:url"         content="https://inversax.com/noticias" />
+  <meta property="og:image"       content="https://inversax.com/og-noticias.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Noticias financieras en español — Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
+  <meta name="twitter:title"       content="Noticias de Finanzas, Cripto y Bolsa — Inversax" />
+  <meta name="twitter:description" content="Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica." />
+  <meta name="twitter:image"       content="https://inversax.com/og-noticias.png" />
+  <meta name="twitter:image:alt"   content="Noticias financieras en español — Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json">{JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  })}</script>
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — CollectionPage
+       Le dice a Google que esta página es un
+       índice de artículos, no un artículo suelto
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json">{JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Noticias de Finanzas, Cripto y Bolsa en Español",
+    "description": "Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica.",
+    "url": "https://inversax.com/noticias",
+    "inLanguage": "es",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://inversax.com/favicon.png",
+        "width": 200,
+        "height": 60
+      }
+    },
+    "about": [
+      { "@type": "Thing", "name": "Criptomonedas" },
+      { "@type": "Thing", "name": "Trading" },
+      { "@type": "Thing", "name": "Forex" },
+      { "@type": "Thing", "name": "Bolsa de valores" },
+      { "@type": "Thing", "name": "Economía latinoamericana" }
+    ]
+  })}</script>
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json">{JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://inversax.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Noticias",
+        "item": "https://inversax.com/noticias"
+      }
+    ]
+  })}</script>
+
+</slot>
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
 
