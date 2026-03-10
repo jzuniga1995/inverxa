@@ -12,9 +12,10 @@
     "db:seed-articulo": "npx tsx --env-file=.env src/db/seed-articulo.ts",
     "astro": "astro"
   },
-  "dependencies": {
+"dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/node": "^9.5.4",
+    "@astrojs/rss": "^4.0.0",
     "@astrojs/tailwind": "^5.1.4",
     "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/typography": "^0.5.19",
