@@ -1,0 +1,705 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Calculator, ArrowLeft } from 'lucide-astro';
+---
+
+<Layout>
+
+<slot name="head" slot="head">
+  <title>Calculadora Cripto — Convertidor, Ganancias y Comisiones | Inversax</title>
+  <meta name="description" content="Calculadora de criptomonedas para Latinoamérica. Convertí cripto a pesos, calculá ganancias, ahorro periódico y comisiones del exchange. Precios en vivo." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadora-cripto" />
+  <meta property="og:title" content="Calculadora Cripto | Inversax" />
+  <meta property="og:description" content="Convertí cripto a pesos, calculá ganancias, ahorro periódico y comisiones. Precios en vivo para toda Latinoamérica." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadora-cripto" />
+  <meta property="og:type" content="website" />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",           "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",     "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadora Cripto","item": "https://inversax.com/herramientas/calculadora-cripto" }
+    ]
+  })} />
+</slot>
+
+<main class="min-h-screen bg-[#0A0B0D] pt-28 pb-20 px-4 sm:px-6" style="font-family: 'DM Sans', sans-serif;">
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Back -->
+    <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <ArrowLeft size={15} /> Herramientas
+    </a>
+
+    <!-- Header -->
+    <div class="mb-10">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(0,214,143,0.12);">
+          <Calculator size={20} class="text-emerald-400" />
+        </div>
+        <div>
+          <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+            Calculadora Cripto
+          </h1>
+          <p class="text-white/40 text-sm">Precios en vivo · Para toda Latinoamérica</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="flex gap-1.5 bg-[#111318] border border-white/[0.07] rounded-xl p-1.5 mb-6 overflow-x-auto scrollbar-hide">
+      <button class="tab-btn active flex-1 min-w-[120px] text-xs font-semibold px-4 py-2.5 rounded-lg transition-all whitespace-nowrap" data-tab="convertir">⇄ Convertir</button>
+      <button class="tab-btn flex-1 min-w-[120px] text-xs font-semibold px-4 py-2.5 rounded-lg transition-all whitespace-nowrap" data-tab="ganancias">📈 Ganancias</button>
+      <button class="tab-btn flex-1 min-w-[120px] text-xs font-semibold px-4 py-2.5 rounded-lg transition-all whitespace-nowrap" data-tab="ahorro">🔁 Ahorro periódico</button>
+      <button class="tab-btn flex-1 min-w-[120px] text-xs font-semibold px-4 py-2.5 rounded-lg transition-all whitespace-nowrap" data-tab="comisiones">💸 Comisiones</button>
+    </div>
+
+    <!-- ══ CONVERTIR ══ -->
+    <div class="panel" id="tab-convertir">
+      <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 sm:p-8">
+
+        <!-- Live price -->
+        <div id="conv-live" class="hidden items-center gap-3 bg-emerald-400/5 border border-emerald-400/15 rounded-xl px-4 py-3 mb-6 text-sm">
+          <img id="conv-img" src="" alt="" class="w-6 h-6 rounded-full" />
+          <span id="conv-cname" class="text-white/50 text-xs"></span>
+          <span id="conv-cprice" class="text-emerald-400 font-bold ml-auto font-mono text-xs"></span>
+          <span id="conv-cchg" class="text-xs font-mono"></span>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Cantidad a convertir</label>
+          <div class="relative">
+            <input type="number" id="conv-amount" value="1" min="0" step="any"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 focus:ring-1 focus:ring-emerald-400/20 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+            <span id="conv-suffix" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/25 text-xs font-mono pointer-events-none">BTC</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Criptomoneda</label>
+            <select id="conv-from" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+              <option>Cargando...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Convertir a</label>
+            <select id="conv-to" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+              <option value="usd">🇺🇸 Dólar — USD</option>
+              <option value="eur">🇪🇺 Euro — EUR</option>
+              <option value="ars">🇦🇷 Peso Argentino — ARS</option>
+              <option value="mxn">🇲🇽 Peso Mexicano — MXN</option>
+              <option value="cop">🇨🇴 Peso Colombiano — COP</option>
+              <option value="hnl">🇭🇳 Lempira — HNL</option>
+              <option value="brl">🇧🇷 Real Brasileño — BRL</option>
+              <option value="clp">🇨🇱 Peso Chileno — CLP</option>
+              <option value="pen">🇵🇪 Sol Peruano — PEN</option>
+              <option value="uyu">🇺🇾 Peso Uruguayo — UYU</option>
+              <option value="pyg">🇵🇾 Guaraní — PYG</option>
+              <option value="bob">🇧🇴 Boliviano — BOB</option>
+              <option value="crc">🇨🇷 Colón — CRC</option>
+              <option value="gtq">🇬🇹 Quetzal — GTQ</option>
+              <option value="nio">🇳🇮 Córdoba — NIO</option>
+              <option value="dop">🇩🇴 Peso Dominicano — DOP</option>
+              <option value="ves">🇻🇪 Bolívar — VES</option>
+              <option value="cripto">⚡ Otra criptomoneda</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="conv-cripto-wrap" class="hidden mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Criptomoneda destino</label>
+          <select id="conv-to-cripto" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+            <option>Cargando...</option>
+          </select>
+        </div>
+
+        <!-- Result -->
+        <div id="result-convertir" class="hidden bg-[#0f1318] border border-white/[0.07] rounded-xl overflow-hidden mt-4">
+          <div class="px-5 py-3 border-b border-white/[0.05] text-[10px] font-semibold text-white/25 uppercase tracking-widest">Resultado</div>
+          <div class="px-5 py-5">
+            <div id="conv-result-val" class="font-mono font-bold text-3xl text-white mb-1">—</div>
+            <div id="conv-result-sub" class="text-white/30 text-xs font-mono mb-5"></div>
+            <div class="grid grid-cols-2 gap-px bg-white/[0.05] rounded-lg overflow-hidden">
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Precio unitario</div>
+                <div id="conv-unit" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Tasa usada</div>
+                <div id="conv-tasa" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ GANANCIAS ══ -->
+    <div class="panel hidden" id="tab-ganancias">
+      <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 sm:p-8">
+
+        <div id="gan-live" class="hidden items-center gap-3 bg-emerald-400/5 border border-emerald-400/15 rounded-xl px-4 py-3 mb-6 text-sm">
+          <img id="gan-img" src="" alt="" class="w-6 h-6 rounded-full" />
+          <span id="gan-cname" class="text-white/50 text-xs"></span>
+          <span id="gan-cprice" class="text-emerald-400 font-bold ml-auto font-mono text-xs"></span>
+          <span id="gan-cchg" class="text-xs font-mono"></span>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Criptomoneda que compraste</label>
+          <select id="gan-coin" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+            <option>Cargando...</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Precio al que compraste <span class="normal-case text-white/20">(USD)</span></label>
+            <input type="number" id="gan-buy" placeholder="ej: 50000" min="0" step="any"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Cantidad que compraste</label>
+            <input type="number" id="gan-qty" placeholder="ej: 0.5" min="0" step="any"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Precio actual <span class="normal-case text-white/20">(se llena automático)</span></label>
+          <input type="number" id="gan-now" placeholder="Se carga desde la API" min="0" step="any"
+            class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+        </div>
+
+        <div id="gan-error" class="hidden text-red-400 text-xs font-mono bg-red-400/10 rounded-lg px-4 py-2 mb-4">
+          Completá precio de compra, cantidad y precio actual.
+        </div>
+
+        <div id="result-ganancias" class="hidden bg-[#0f1318] border border-white/[0.07] rounded-xl overflow-hidden mt-4">
+          <div class="px-5 py-3 border-b border-white/[0.05] flex items-center">
+            <span class="text-[10px] font-semibold text-white/25 uppercase tracking-widest">Resultado</span>
+            <span id="gan-pill" class="ml-auto text-[10px] font-bold px-2.5 py-1 rounded-full"></span>
+          </div>
+          <div class="px-5 py-5">
+            <div id="gan-pct" class="font-mono font-bold text-3xl mb-1">—</div>
+            <div id="gan-sub" class="text-white/30 text-xs font-mono mb-5"></div>
+            <div class="grid grid-cols-2 gap-px bg-white/[0.05] rounded-lg overflow-hidden">
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Lo que invertiste</div>
+                <div id="gan-invertido" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Vale hoy</div>
+                <div id="gan-actual" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Ganancia / Pérdida</div>
+                <div id="gan-neta" class="font-mono text-sm font-bold">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Precio de recuperación</div>
+                <div id="gan-breakeven" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AHORRO PERIÓDICO ══ -->
+    <div class="panel hidden" id="tab-ahorro">
+      <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 sm:p-8">
+
+        <!-- Info banner -->
+        <div class="flex gap-3 bg-amber-400/5 border border-amber-400/15 rounded-xl px-4 py-3 mb-6 text-xs text-white/40 leading-relaxed">
+          <span class="text-amber-400 flex-shrink-0 mt-0.5">💡</span>
+          <span>El <strong class="text-white/60">ahorro periódico</strong> (DCA) consiste en comprar una cantidad fija de cripto cada semana o mes sin importar el precio. Así promediás el costo y reducís el riesgo de entrar en el peor momento.</span>
+        </div>
+
+        <div id="ahorro-live" class="hidden items-center gap-3 bg-emerald-400/5 border border-emerald-400/15 rounded-xl px-4 py-3 mb-6 text-sm">
+          <img id="ahorro-img" src="" alt="" class="w-6 h-6 rounded-full" />
+          <span id="ahorro-cname" class="text-white/50 text-xs"></span>
+          <span id="ahorro-cprice" class="text-emerald-400 font-bold ml-auto font-mono text-xs"></span>
+          <span id="ahorro-cchg" class="text-xs font-mono"></span>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Criptomoneda</label>
+          <select id="ahorro-coin" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+            <option>Cargando...</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">¿Cuánto invertís cada vez? <span class="normal-case text-white/20">(USD)</span></label>
+            <input type="number" id="ahorro-monto" placeholder="ej: 50" min="0" step="any"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Frecuencia</label>
+            <select id="ahorro-freq" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+              <option value="weekly">Cada semana</option>
+              <option value="monthly" selected>Cada mes</option>
+              <option value="quarterly">Cada 3 meses</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">¿Cuántas veces compraste?</label>
+            <input type="number" id="ahorro-periodos" value="12" min="1" max="240"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Precio promedio pagado <span class="normal-case text-white/20">(USD)</span></label>
+            <input type="number" id="ahorro-avg" placeholder="ej: 45000" min="0" step="any"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+        </div>
+
+        <div id="ahorro-error" class="hidden text-red-400 text-xs font-mono bg-red-400/10 rounded-lg px-4 py-2 mb-4">
+          Completá monto, períodos y precio promedio para calcular.
+        </div>
+
+        <div id="result-ahorro" class="hidden bg-[#0f1318] border border-white/[0.07] rounded-xl overflow-hidden mt-4">
+          <div class="px-5 py-3 border-b border-white/[0.05] flex items-center">
+            <span class="text-[10px] font-semibold text-white/25 uppercase tracking-widest">Resumen de tu ahorro</span>
+            <span id="ahorro-pill" class="ml-auto text-[10px] font-bold px-2.5 py-1 rounded-full"></span>
+          </div>
+          <div class="px-5 py-5">
+            <div id="ahorro-pct" class="font-mono font-bold text-3xl mb-1">—</div>
+            <div id="ahorro-sub" class="text-white/30 text-xs font-mono mb-5"></div>
+            <div class="grid grid-cols-2 gap-px bg-white/[0.05] rounded-lg overflow-hidden mb-4">
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Total invertido</div>
+                <div id="ahorro-total-inv" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Cripto acumulada</div>
+                <div id="ahorro-total-cripto" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Vale hoy</div>
+                <div id="ahorro-valor-hoy" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Ganancia total</div>
+                <div id="ahorro-ganancia" class="font-mono text-sm font-bold">—</div>
+              </div>
+            </div>
+            <!-- Tabla -->
+            <div class="border border-white/[0.07] rounded-xl overflow-hidden">
+              <div class="max-h-64 overflow-y-auto">
+                <table class="w-full text-xs font-mono border-collapse">
+                  <thead>
+                    <tr class="bg-[#161b22] text-white/25 uppercase text-[10px] tracking-wider">
+                      <th class="px-4 py-2.5 text-left border-b border-white/[0.07]">#</th>
+                      <th class="px-4 py-2.5 text-left border-b border-white/[0.07]">Invertido</th>
+                      <th class="px-4 py-2.5 text-left border-b border-white/[0.07]">Cripto comprada</th>
+                      <th class="px-4 py-2.5 text-left border-b border-white/[0.07]">Cripto acumulada</th>
+                      <th class="px-4 py-2.5 text-left border-b border-white/[0.07]">Valor acumulado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ahorro-tbody" class="divide-y divide-white/[0.05]"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COMISIONES ══ -->
+    <div class="panel hidden" id="tab-comisiones">
+      <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 sm:p-8">
+
+        <div class="flex gap-3 bg-amber-400/5 border border-amber-400/15 rounded-xl px-4 py-3 mb-6 text-xs text-white/40 leading-relaxed">
+          <span class="text-amber-400 flex-shrink-0 mt-0.5">💡</span>
+          <span>La <strong class="text-white/60">comisión</strong> es el porcentaje que cobra el exchange por cada operación. Binance cobra 0.1%, Kraken 0.26%, Coinbase hasta 1.49%. Calculá cuánto te queda realmente.</span>
+        </div>
+
+        <div id="com-live" class="hidden items-center gap-3 bg-emerald-400/5 border border-emerald-400/15 rounded-xl px-4 py-3 mb-6 text-sm">
+          <img id="com-img" src="" alt="" class="w-6 h-6 rounded-full" />
+          <span id="com-cname" class="text-white/50 text-xs"></span>
+          <span id="com-cprice" class="text-emerald-400 font-bold ml-auto font-mono text-xs"></span>
+          <span id="com-cchg" class="text-xs font-mono"></span>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Criptomoneda</label>
+          <select id="com-coin" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+            <option>Cargando...</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Cantidad a operar</label>
+            <input type="number" id="com-cant" placeholder="ej: 0.1" min="0" step="any"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Comisión del exchange (%)</label>
+            <input type="number" id="com-pct" value="0.1" min="0" step="0.01"
+              class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-base rounded-xl px-4 py-3.5 outline-none transition" />
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">Tipo de operación</label>
+          <select id="com-tipo" class="w-full bg-[#161b22] border border-white/[0.07] focus:border-emerald-400/50 text-white font-mono text-sm rounded-xl px-4 py-3.5 outline-none transition appearance-none">
+            <option value="compra">Solo compra</option>
+            <option value="venta">Solo venta</option>
+            <option value="ambas">Compra y venta (comisión doble)</option>
+          </select>
+        </div>
+
+        <div id="com-error" class="hidden text-red-400 text-xs font-mono bg-red-400/10 rounded-lg px-4 py-2 mb-4">
+          Ingresá la cantidad para calcular.
+        </div>
+
+        <div id="result-comisiones" class="hidden bg-[#0f1318] border border-white/[0.07] rounded-xl overflow-hidden mt-4">
+          <div class="px-5 py-3 border-b border-white/[0.05]">
+            <span class="text-[10px] font-semibold text-white/25 uppercase tracking-widest">Lo que realmente pagás</span>
+          </div>
+          <div class="px-5 py-5">
+            <div id="com-neto" class="font-mono font-bold text-3xl text-white mb-1">—</div>
+            <div id="com-sub" class="text-white/30 text-xs font-mono mb-5"></div>
+            <div class="grid grid-cols-2 gap-px bg-white/[0.05] rounded-lg overflow-hidden">
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Valor total de la operación</div>
+                <div id="com-bruto" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Total en comisiones</div>
+                <div id="com-fee-usd" class="font-mono text-sm font-bold text-red-400">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">Comisión en cripto</div>
+                <div id="com-fee-cripto" class="font-mono text-sm font-bold text-white">—</div>
+              </div>
+              <div class="bg-[#111318] px-4 py-3">
+                <div class="text-[10px] text-white/25 uppercase tracking-wider mb-1">% del capital que se va</div>
+                <div id="com-pct-real" class="font-mono text-sm font-bold text-red-400">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</Layout>
+
+<script>
+  // ── FIAT CONFIG ─────────────────────────────────────────────────────────────
+  const CODIGO_MAP: Record<string, string> = {
+    ar:'ars',mx:'mxn',co:'cop',hn:'hnl',br:'brl',
+    cl:'clp',pe:'pen',uy:'uyu',py:'pyg',bo:'bob',
+    cr:'crc',gt:'gtq',ni:'nio',do:'dop',ve:'ves',
+  };
+  const FIAT_SIM: Record<string, string> = {
+    usd:'$',eur:'€',mxn:'$',ars:'$',cop:'$',hnl:'L',
+    brl:'R$',clp:'$',pen:'S/',uyu:'$',pyg:'₲',bob:'Bs',
+    crc:'₡',gtq:'Q',nio:'C$',dop:'$',ves:'Bs.S',
+  };
+  const FIAT_NAME: Record<string, string> = {
+    usd:'USD',eur:'EUR',mxn:'MXN',ars:'ARS',cop:'COP',hnl:'HNL',
+    brl:'BRL',clp:'CLP',pen:'PEN',uyu:'UYU',pyg:'PYG',bob:'BOB',
+    crc:'CRC',gtq:'GTQ',nio:'NIO',dop:'DOP',ves:'VES',
+  };
+  const FIAT_RATES: Record<string, number> = { usd:1, eur:0.92 };
+  let coins: any[] = [];
+
+  // ── UTILS ────────────────────────────────────────────────────────────────────
+  const gc = (id: string) => coins.find((c: any) => c.id === id);
+  const el = (id: string): any => document.getElementById(id);
+  const set = (id: string, v: string) => { const e = el(id); if (e) e.textContent = v; };
+  const showBlock = (id: string, v: boolean) => { const e = el(id); if (e) e.classList.toggle('hidden', !v); };
+  const showErr = (id: string, v: boolean) => { const e = el(id); if (e) e.classList.toggle('hidden', !v); };
+
+  function fUSD(n: number): string {
+    if (!isFinite(n)) return '—';
+    if (Math.abs(n) >= 1e9) return '$'+(n/1e9).toFixed(2)+'B';
+    if (Math.abs(n) >= 1e6) return '$'+(n/1e6).toFixed(2)+'M';
+    return '$'+n.toLocaleString('es-419',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function fFiat(n: number, key: string): string {
+    if (!isFinite(n)) return '—';
+    const s = FIAT_SIM[key]||'$', nm = FIAT_NAME[key]||key.toUpperCase();
+    if (Math.abs(n) >= 1e9) return s+(n/1e9).toFixed(2)+'B '+nm;
+    if (Math.abs(n) >= 1e6) return s+(n/1e6).toFixed(2)+'M '+nm;
+    const d = Math.abs(n)<10?4:2;
+    return s+n.toLocaleString('es-419',{minimumFractionDigits:d,maximumFractionDigits:d})+' '+nm;
+  }
+  function fCripto(n: number, sym: string): string {
+    if (!isFinite(n)) return '—';
+    const d = n<0.0001?8:n<0.01?6:n<1?4:2;
+    return n.toLocaleString('es-419',{minimumFractionDigits:d,maximumFractionDigits:d})+' '+sym.toUpperCase();
+  }
+  function fPct(n: number): string { return (n>=0?'+':'')+n.toFixed(2)+'%'; }
+
+  // ── LIVE BADGE ───────────────────────────────────────────────────────────────
+  function badge(pfx: string, coin: any) {
+    if (!coin) return;
+    const wrap = el(pfx+'-live');
+    const img  = el(pfx+'-img');
+    if (img) { img.src = coin.image||''; img.alt = coin.symbol; }
+    set(pfx+'-cname', coin.name);
+    set(pfx+'-cprice', fUSD(coin.price));
+    const chg = el(pfx+'-cchg');
+    if (chg) {
+      const c = coin.change24||0;
+      chg.textContent = fPct(c);
+      chg.className = 'text-xs font-mono '+(c>=0?'text-emerald-400':'text-red-400');
+    }
+    if (wrap) { wrap.classList.remove('hidden'); wrap.classList.add('flex'); }
+  }
+
+  // ── LOAD APIs ────────────────────────────────────────────────────────────────
+  async function loadDolar() {
+    try {
+      const r = await fetch('/api/dolar');
+      const j: any = await r.json();
+      if (!j.ok) return;
+      j.data.forEach((p: any) => {
+        const k = CODIGO_MAP[p.codigo];
+        if (!k) return;
+        const of = p.variantes.find((v: any) => !v.esParalelo) || p.variantes[0];
+        if (of?.venta) FIAT_RATES[k] = of.venta;
+      });
+    } catch(e) { console.warn('[dolar]', e); }
+  }
+
+  async function loadCoins() {
+    try {
+      const r = await fetch('/api/precios');
+      coins   = await r.json();
+      populateSelects();
+      bindAll();
+    } catch(e) { console.error('[precios]', e); }
+  }
+
+  function populateSelects() {
+    ['conv-from','conv-to-cripto','gan-coin','ahorro-coin','com-coin'].forEach(id => {
+      const s = el(id);
+      if (!s) return;
+      s.innerHTML = coins.map(c =>
+        `<option value="${c.id}">${c.symbol.toUpperCase()} — ${c.name}</option>`
+      ).join('');
+    });
+    const f = coins[0];
+    if (f) {
+      badge('conv',f); badge('gan',f); badge('ahorro',f); badge('com',f);
+      const gn = el('gan-now');
+      if (gn) gn.value = String(f.price);
+      const cs = el('conv-suffix'); if (cs) cs.textContent = f.symbol.toUpperCase();
+    }
+  }
+
+  // ── BIND ALL ─────────────────────────────────────────────────────────────────
+  function bindAll() {
+
+    // TABS
+    (document.querySelectorAll('.tab-btn') as NodeListOf<HTMLElement>).forEach(btn => {
+      btn.addEventListener('click', () => {
+        (document.querySelectorAll('.tab-btn') as NodeListOf<HTMLElement>).forEach(b => {
+          b.classList.remove('active','bg-emerald-400','text-black');
+          b.classList.add('text-white/40');
+        });
+        document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+        btn.classList.add('active','bg-emerald-400','text-black');
+        btn.classList.remove('text-white/40');
+        const tab = btn.dataset.tab;
+        el('tab-'+tab)?.classList.remove('hidden');
+      });
+    });
+    // Active first tab styling
+    const firstTab = document.querySelector('.tab-btn.active') as HTMLElement;
+    if (firstTab) { firstTab.classList.add('bg-emerald-400','text-black'); firstTab.classList.remove('text-white/40'); }
+
+    // ── CONVERTIR ──
+    function calcConv() {
+      const amt  = parseFloat((el('conv-amount')).value);
+      const from = (el('conv-from')).value;
+      const to   = (el('conv-to')).value;
+      const coin = gc(from);
+      if (!coin || !amt || amt <= 0) { showBlock('result-convertir', false); return; }
+      badge('conv', coin);
+      const cs = el('conv-suffix'); if (cs) cs.textContent = coin.symbol.toUpperCase();
+      const usd = amt * coin.price;
+
+      if (to === 'cripto') {
+        const tc = gc((el('conv-to-cripto')).value);
+        if (!tc) return;
+        set('conv-result-val', fCripto(usd/tc.price, tc.symbol));
+        set('conv-result-sub', `${amt} ${coin.symbol.toUpperCase()} = ${fUSD(usd)}`);
+        set('conv-unit', fUSD(coin.price)+' USD');
+        set('conv-tasa', `1 ${tc.symbol.toUpperCase()} = ${fUSD(tc.price)}`);
+      } else {
+        const rate = FIAT_RATES[to]||1;
+        const converted = usd * rate;
+        const unitConverted = coin.price * rate;
+        set('conv-result-val', fFiat(converted, to));
+        set('conv-result-sub', `${amt} ${coin.symbol.toUpperCase()} × ${fFiat(unitConverted, to)} por unidad`);
+        set('conv-unit', fFiat(unitConverted, to));
+        set('conv-tasa', `1 USD = ${FIAT_SIM[to]||'$'}${rate.toLocaleString('es-419',{maximumFractionDigits:4})} ${FIAT_NAME[to]||''}`);
+      }
+      showBlock('result-convertir', true);
+    }
+
+    el('conv-from')?.addEventListener('change', () => { badge('conv', gc((el('conv-from')).value)); calcConv(); });
+    el('conv-amount')?.addEventListener('input', calcConv);
+    el('conv-to')?.addEventListener('change', () => {
+      const w = el('conv-cripto-wrap');
+      const isC = (el('conv-to')).value === 'cripto';
+      if (w) w.classList.toggle('hidden', !isC);
+      calcConv();
+    });
+    el('conv-to-cripto')?.addEventListener('change', calcConv);
+
+    // ── GANANCIAS ──
+    function calcGan() {
+      const coin = gc((el('gan-coin')).value);
+      const buy  = parseFloat((el('gan-buy')).value);
+      const qty  = parseFloat((el('gan-qty')).value);
+      const now  = parseFloat((el('gan-now')).value);
+      const ok   = !!(coin && buy > 0 && qty > 0 && now > 0);
+      const touched = !!(( el('gan-buy')).value || (el('gan-qty')).value);
+      showErr('gan-error', !ok && touched);
+      if (!ok) { showBlock('result-ganancias', false); return; }
+
+      const inv  = buy * qty, act = now * qty, net = act - inv;
+      const pct  = ((now-buy)/buy)*100, gain = net >= 0;
+
+      set('gan-pct', fPct(pct));
+      const gp = el('gan-pct');
+      if (gp) gp.className = 'font-mono font-bold text-3xl mb-1 '+(gain?'text-emerald-400':'text-red-400');
+
+      set('gan-sub', gain ? `Ganaste ${fUSD(net)} con esta inversión ✓` : `Perdiste ${fUSD(Math.abs(net))} con esta inversión`);
+      const pill = el('gan-pill');
+      if (pill) {
+        pill.textContent = gain?'▲ GANANCIA':'▼ PÉRDIDA';
+        pill.className = gain
+          ? 'ml-auto text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-400/10 text-emerald-400'
+          : 'ml-auto text-[10px] font-bold px-2.5 py-1 rounded-full bg-red-400/10 text-red-400';
+      }
+      set('gan-invertido', fUSD(inv));
+      set('gan-actual', fUSD(act));
+      const ne = el('gan-neta');
+      if (ne) { ne.textContent = (gain?'+':'')+fUSD(net); ne.className = 'font-mono text-sm font-bold '+(gain?'text-emerald-400':'text-red-400'); }
+      set('gan-breakeven', fUSD(buy));
+      showBlock('result-ganancias', true);
+    }
+
+    el('gan-coin')?.addEventListener('change', () => {
+      const c = gc((el('gan-coin')).value);
+      if (c) { badge('gan',c); (el('gan-now')).value = String(c.price); }
+      calcGan();
+    });
+    ['gan-buy','gan-qty','gan-now'].forEach(id => el(id)?.addEventListener('input', calcGan));
+
+    // ── AHORRO PERIÓDICO ──
+    function calcAhorro() {
+      const coin  = gc((el('ahorro-coin')).value);
+      const monto = parseFloat((el('ahorro-monto')).value);
+      const pers  = parseInt((el('ahorro-periodos')).value);
+      const avg   = parseFloat((el('ahorro-avg')).value);
+      const ok    = !!(coin && monto > 0 && pers > 0 && avg > 0);
+      const touched = !!((el('ahorro-monto')).value || (el('ahorro-avg')).value);
+      showErr('ahorro-error', !ok && touched);
+      if (!ok) { showBlock('result-ahorro', false); return; }
+
+      const totInv = monto*pers, totC = totInv/avg, valHoy = totC*coin.price;
+      const gan = valHoy-totInv, gain = gan>=0, pct = (gan/totInv)*100;
+      const freqEl = el('ahorro-freq');
+      const freqLabel = freqEl.options[freqEl.selectedIndex].text.toLowerCase();
+
+      set('ahorro-pct', fPct(pct));
+      const ap = el('ahorro-pct');
+      if (ap) ap.className = 'font-mono font-bold text-3xl mb-1 '+(gain?'text-emerald-400':'text-red-400');
+      set('ahorro-sub', `Si invertiste ${fUSD(monto)} ${freqLabel} durante ${pers} ${pers===1?'vez':'veces'}`);
+
+      const pill = el('ahorro-pill');
+      if (pill) {
+        pill.textContent = gain?'▲ EN GANANCIA':'▼ EN PÉRDIDA';
+        pill.className = gain
+          ? 'ml-auto text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-400/10 text-emerald-400'
+          : 'ml-auto text-[10px] font-bold px-2.5 py-1 rounded-full bg-red-400/10 text-red-400';
+      }
+
+      set('ahorro-total-inv', fUSD(totInv));
+      set('ahorro-total-cripto', fCripto(totC, coin.symbol));
+      set('ahorro-valor-hoy', fUSD(valHoy));
+      const ge = el('ahorro-ganancia');
+      if (ge) { ge.textContent=(gain?'+':'')+fUSD(gan); ge.className='font-mono text-sm font-bold '+(gain?'text-emerald-400':'text-red-400'); }
+
+      let rows = '';
+      let ac = 0;
+      for (let i=1; i<=pers; i++) {
+        const pc = monto/avg; ac += pc;
+        rows += `<tr class="hover:bg-white/[0.02] transition-colors">
+          <td class="px-4 py-2.5 text-white/40">${i}</td>
+          <td class="px-4 py-2.5 text-white">${fUSD(monto)}</td>
+          <td class="px-4 py-2.5 text-white">${fCripto(pc, coin.symbol)}</td>
+          <td class="px-4 py-2.5 text-white">${fCripto(ac, coin.symbol)}</td>
+          <td class="px-4 py-2.5 text-emerald-400/80">${fUSD(ac*avg)}</td>
+        </tr>`;
+      }
+      const tb = el('ahorro-tbody'); if (tb) tb.innerHTML = rows;
+      showBlock('result-ahorro', true);
+    }
+
+    el('ahorro-coin')?.addEventListener('change', () => { badge('ahorro', gc((el('ahorro-coin')).value)); calcAhorro(); });
+    ['ahorro-monto','ahorro-periodos','ahorro-avg','ahorro-freq'].forEach(id => {
+      el(id)?.addEventListener('input', calcAhorro);
+      el(id)?.addEventListener('change', calcAhorro);
+    });
+
+    // ── COMISIONES ──
+    function calcCom() {
+      const coin = gc((el('com-coin')).value);
+      const cant = parseFloat((el('com-cant')).value);
+      const pct  = parseFloat((el('com-pct')).value);
+      const tipo = (el('com-tipo')).value;
+      const ok   = !!(coin && cant > 0 && pct >= 0);
+      showErr('com-error', !ok && !!(el('com-cant')).value);
+      if (!ok) { showBlock('result-comisiones', false); return; }
+
+      const bruto = cant*coin.price, mult = tipo==='ambas'?2:1;
+      const fee = bruto*(pct/100)*mult, neto = bruto-fee, feeC = fee/coin.price, pctR = (fee/bruto)*100;
+
+      set('com-neto', fUSD(neto));
+      set('com-sub', tipo==='ambas'
+        ? 'Lo que recibís después de comisión de compra + venta'
+        : `Lo que recibís después de la comisión de ${tipo}`);
+      set('com-bruto', fUSD(bruto));
+      set('com-fee-usd', '−'+fUSD(fee));
+      set('com-fee-cripto', fCripto(feeC, coin.symbol));
+      set('com-pct-real', pctR.toFixed(4)+'%');
+      showBlock('result-comisiones', true);
+    }
+
+    el('com-coin')?.addEventListener('change', () => { badge('com', gc((el('com-coin')).value)); calcCom(); });
+    ['com-cant','com-pct','com-tipo'].forEach(id => {
+      el(id)?.addEventListener('input', calcCom);
+      el(id)?.addEventListener('change', calcCom);
+    });
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────────────────
+  await Promise.all([loadDolar(), loadCoins()]);
+</script>
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff40' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px !important; }
+</style>

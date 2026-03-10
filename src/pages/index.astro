@@ -2,7 +2,7 @@
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import { TrendingUp, ArrowRight, DollarSign, BarChart2, Clock, Flame, BookOpen, Star, ExternalLink, Layers, Landmark } from 'lucide-astro';
+import { TrendingUp, ArrowRight, DollarSign, BarChart2, Clock, Flame, BookOpen, Layers, Landmark, Calculator } from 'lucide-astro';
 import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategoria } from '../db/queries';
 
 // ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
@@ -30,11 +30,12 @@ const primeraConNoticias = categorias.find(c => (noticiasPorCategoria[c.slug]?.l
 
 // ── HERRAMIENTAS ─────────────────────────────────────────────
 const herramientas = [
-  { titulo: "Mercados Cripto",   desc: "Precios en vivo y gráficas de las principales criptomonedas.", href: "/herramientas/cripto",   icon: "chart"    },
-  { titulo: "Forex",             desc: "Tipos de cambio de divisas globales y monedas LATAM.",          href: "/herramientas/forex",    icon: "forex"    },
-  { titulo: "Metales Preciosos", desc: "Precios de oro, plata, platino y paladio por onza troy.",       href: "/herramientas/metales",  icon: "layers"   },
-  { titulo: "Acciones",          desc: "Cotizaciones en tiempo real del mercado estadounidense.",        href: "/herramientas/acciones", icon: "acciones" },
-  { titulo: "Precio del Dólar",  desc: "Dólar oficial y paralelo (blue en Argentina) por país.",        href: "/herramientas/dolar",    icon: "dollar"   },
+  { titulo: "Mercados Cripto",   desc: "Precios en vivo y gráficas de las principales criptomonedas.", href: "/herramientas/cripto",               icon: "chart"    },
+  { titulo: "Forex",             desc: "Tipos de cambio de divisas globales y monedas LATAM.",          href: "/herramientas/forex",                icon: "forex"    },
+  { titulo: "Metales Preciosos", desc: "Precios de oro, plata, platino y paladio por onza troy.",       href: "/herramientas/metales",              icon: "layers"   },
+  { titulo: "Acciones",          desc: "Cotizaciones en tiempo real del mercado estadounidense.",        href: "/herramientas/acciones",             icon: "acciones" },
+  { titulo: "Precio del Dólar",  desc: "Dólar oficial y paralelo (blue en Argentina) por país.",        href: "/herramientas/dolar",                icon: "dollar"   },
+  { titulo: "Calculadora Cripto",desc: "Convertí cripto a pesos, calculá ganancias y comisiones.",      href: "/herramientas/calculadora-cripto",   icon: "calc"     },
 ];
 
 // ── CONCEPTO DEL DÍA ─────────────────────────────────────────
@@ -94,10 +95,7 @@ const categoriaColores: Record<string, string> = {
 ---
 
 <Layout>
----
-// REEMPLAZA el bloque <slot name="head"> en src/pages/index.astro
-// El resto del archivo queda igual.
----
+
 
 <slot name="head" slot="head">
 
@@ -322,12 +320,13 @@ const categoriaColores: Record<string, string> = {
     "@type": "ItemList",
     "name": "Herramientas financieras de Inversax",
     "url": "https://inversax.com/herramientas",
-    "numberOfItems": 5,
+    "numberOfItems": 6,
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Mercados Cripto",   "url": "https://inversax.com/herramientas/cripto"   },
       { "@type": "ListItem", "position": 2, "name": "Forex",             "url": "https://inversax.com/herramientas/forex"    },
       { "@type": "ListItem", "position": 3, "name": "Metales Preciosos", "url": "https://inversax.com/herramientas/metales"  },
       { "@type": "ListItem", "position": 4, "name": "Acciones",          "url": "https://inversax.com/herramientas/acciones" },
+      { "@type": "ListItem", "position": 6, "name": "Calculadora Cripto", "url": "https://inversax.com/herramientas/calculadora-cripto" },
       { "@type": "ListItem", "position": 5, "name": "Precio del Dólar",  "url": "https://inversax.com/herramientas/dolar"    }
     ]
   })} />
@@ -719,6 +718,7 @@ const categoriaColores: Record<string, string> = {
               {h.icon === "layers"   && <Layers      size={18} />}
               {h.icon === "acciones" && <Landmark    size={18} />}
               {h.icon === "dollar"   && <DollarSign  size={18} />}
+              {h.icon === "calc"     && <Calculator  size={18} />}
             </div>
             <div class="flex flex-col gap-1">
               <span class="font-bold text-white text-[15px] group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">{h.titulo}</span>

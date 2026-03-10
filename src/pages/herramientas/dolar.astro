@@ -3,17 +3,11 @@
 import Layout from '../../layouts/Layout.astro';
 import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
 
-// ── Sin fetch en SSR ──────────────────────────────────────────
-// Los datos del dólar cargan client-side al montar la página
-// para no bloquear el TTFB. El botón "Actualizar" y el
-// auto-refresh cada 15 min siguen funcionando igual.
+
 ---
 
 <Layout>
----
-// REEMPLAZA el bloque <slot name="head"> en src/pages/herramientas/dolar.astro
-// El resto del archivo queda igual.
----
+
 
 <slot name="head" slot="head">
 
