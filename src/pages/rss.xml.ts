@@ -16,7 +16,13 @@ export async function GET(context: any) {
       pubDate: a.creadoEn ? new Date(a.creadoEn) : new Date(),
       description: a.resumen ?? '',
       link: `/noticias/${a.slug}`,
-      ...(a.imagen ? { customData: `<enclosure url="${a.imagen}" type="image/jpeg" />` } : {}),
+      ...(a.imagen ? {
+        enclosure: {
+          url: a.imagen,
+          length: 0,
+          type: 'image/jpeg'
+        }
+      } : {}),
     })),
   });
 }
