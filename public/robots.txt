@@ -1,8 +1,6 @@
 User-agent: *
 Allow: /
-
 # Bloquear APIs internas
 Disallow: /api/
-
 # Sitemap
-Sitemap: https://inversax.com/sitemap.xml
+Sitemap: https://inversax.com/sitemap-index.xml
