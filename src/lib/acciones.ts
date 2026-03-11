@@ -72,8 +72,24 @@ export const ACCIONES = [
 ];
 
 // ==============================
+// CONFIG
+// ==============================
+
+const BATCH_SIZE             = 3;    // lotes más pequeños = menos presión
+const DELAY_BETWEEN_BATCHES  = 12000; // 12s entre lotes → ~15 req/min, muy por debajo del límite
+const MAX_REINTENTOS         = 3;    // intentos máximos por ticker
+const DELAY_BASE_REINTENTO   = 5000; // delay base para backoff exponencial
+const TIMEOUT_POR_REQUEST    = 10000; // 10s timeout por request
+
+// ==============================
 // HELPERS
 // ==============================
+
+const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+function accionVacia(accion: typeof ACCIONES[0]): AccionData {
+  return { ...accion, precio: -1, cambio: 0, cambioPct: 0, alza: false, apertura: 0, maximo: 0, minimo: 0, prevCierre: 0 };
+}
 
 function mapQuote(accion: typeof ACCIONES[0], q: FinnhubQuote): AccionData {
   return {
@@ -89,87 +105,85 @@ function mapQuote(accion: typeof ACCIONES[0], q: FinnhubQuote): AccionData {
   };
 }
 
-async function fetchQuote(ticker: string, apiKey: string): Promise<FinnhubQuote> {
-  const res = await fetch(
-    `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${apiKey}`,
-    { signal: AbortSignal.timeout(8000) }
-  );
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json() as Promise<FinnhubQuote>;
+// Fetch con backoff exponencial — reintenta automáticamente ante 429 o error de red
+async function fetchQuoteConBackoff(
+  ticker: string,
+  apiKey: string,
+  intento = 1
+): Promise<FinnhubQuote> {
+  try {
+    const res = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${apiKey}`,
+      { signal: AbortSignal.timeout(TIMEOUT_POR_REQUEST) }
+    );
+
+    // Rate limit: espera y reintenta con backoff exponencial
+    if (res.status === 429) {
+      if (intento >= MAX_REINTENTOS) throw new Error(`429 tras ${MAX_REINTENTOS} intentos`);
+      const espera = DELAY_BASE_REINTENTO * Math.pow(2, intento); // 5s, 10s, 20s
+      console.warn(`⏳ 429 en ${ticker} — esperando ${espera / 1000}s (intento ${intento}/${MAX_REINTENTOS})`);
+      await delay(espera);
+      return fetchQuoteConBackoff(ticker, apiKey, intento + 1);
+    }
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json() as FinnhubQuote;
+    if (!data.c) throw new Error('Precio vacío');
+
+    return data;
+
+  } catch (err) {
+    if (intento >= MAX_REINTENTOS) throw err;
+
+    // Error de red o timeout: reintenta con backoff
+    const espera = DELAY_BASE_REINTENTO * intento; // 5s, 10s
+    console.warn(`⚠️ Error en ${ticker} — reintentando en ${espera / 1000}s (intento ${intento}/${MAX_REINTENTOS})`);
+    await delay(espera);
+    return fetchQuoteConBackoff(ticker, apiKey, intento + 1);
+  }
 }
 
 // ==============================
-// FETCH PRINCIPAL
+// FETCH PRINCIPAL — secuencial por lotes
 // ==============================
 
 export async function fetchAcciones(apiKey: string): Promise<AccionData[]> {
   const results: AccionData[] = [];
-  const failed: typeof ACCIONES = [];
 
-  const BATCH_SIZE = 5;
-  const DELAY_BETWEEN_BATCHES = 5500;
+  console.log(`[ACCIONES] Iniciando fetch de ${ACCIONES.length} acciones en lotes de ${BATCH_SIZE}`);
 
   for (let i = 0; i < ACCIONES.length; i += BATCH_SIZE) {
-    const batch = ACCIONES.slice(i, i + BATCH_SIZE);
+    const lote = ACCIONES.slice(i, i + BATCH_SIZE);
+    const numLote = Math.floor(i / BATCH_SIZE) + 1;
+    const totalLotes = Math.ceil(ACCIONES.length / BATCH_SIZE);
 
-    const promises = batch.map(async (accion) => {
+    console.log(`[ACCIONES] Lote ${numLote}/${totalLotes}: ${lote.map(a => a.ticker).join(', ')}`);
+
+    // Procesa el lote — cada ticker con su propio backoff
+    for (const accion of lote) {
       try {
-        const q = await fetchQuote(accion.ticker, apiKey);
-        if (q.c == null) throw new Error('Sin precio');
-        return mapQuote(accion, q);
+        const q = await fetchQuoteConBackoff(accion.ticker, apiKey);
+        results.push(mapQuote(accion, q));
+        console.log(`✓ ${accion.ticker}: $${q.c}`);
       } catch (err) {
-        console.error(`❌ Error con ${accion.ticker}:`, err);
-        failed.push(accion);
-        return null;
+        console.error(`❌ ${accion.ticker} falló definitivamente:`, err);
+        results.push(accionVacia(accion)); // nunca corta el proceso
       }
-    });
 
-    const batchResults = await Promise.all(promises);
-    for (const r of batchResults) {
-      if (r) results.push(r);
+      // Delay entre requests individuales dentro del lote (evita ráfagas)
+      await delay(1500);
     }
 
+    // Delay entre lotes (no aplica en el último)
     if (i + BATCH_SIZE < ACCIONES.length) {
-      await new Promise(res => setTimeout(res, DELAY_BETWEEN_BATCHES));
+      console.log(`[ACCIONES] Esperando ${DELAY_BETWEEN_BATCHES / 1000}s antes del siguiente lote...`);
+      await delay(DELAY_BETWEEN_BATCHES);
     }
   }
 
-if (failed.length > 0) {
-  console.warn(`⚠️ Reintentando ${failed.length} acciones fallidas...`);
-  await new Promise(res => setTimeout(res, 3000));
-
-  for (let i = 0; i < failed.length; i += BATCH_SIZE) {
-    const batch = failed.slice(i, i + BATCH_SIZE);
-
-    const retries = await Promise.allSettled(
-      batch.map(accion => fetchQuote(accion.ticker, apiKey).then(q => mapQuote(accion, q)))
-    );
-
-    retries.forEach((r, idx) => {
-      if (r.status === 'fulfilled') {
-        results.push(r.value);
-      } else {
-        console.error(`❌ Reintento fallido para ${batch[idx].ticker}`);
-        results.push({
-          ...batch[idx],
-          precio: -1, cambio: 0, cambioPct: 0, alza: false,
-          apertura: 0, maximo: 0, minimo: 0, prevCierre: 0,
-        });
-      }
-    });
-
-    if (i + BATCH_SIZE < failed.length) {
-      await new Promise(res => setTimeout(res, 5500));
-    }
-  }
-
-
-
-
-  }
+  const exitosos = results.filter(r => r.precio > 0).length;
+  console.log(`[ACCIONES] Finalizado — ${exitosos}/${ACCIONES.length} acciones obtenidas correctamente`);
 
   return results;
 }
-
-
-
