@@ -1,6 +1,6 @@
-// src/pages/sitemap.xml.ts
+// src/pages/sitemap-static.xml.ts
 import type { APIRoute } from 'astro';
-import { getArticulos, getCategorias, getPaises } from '../db/queries';
+import { getCategorias, getPaises } from '../db/queries';
 
 const SITE = 'https://inversax.com';
 
@@ -62,8 +62,7 @@ const ACCIONES_SLUGS = [
 export const GET: APIRoute = async ({ locals }) => {
   const db = locals.db;
 
-  const [articulos, categorias, paises] = await Promise.all([
-    getArticulos(db, 1000),
+  const [categorias, paises] = await Promise.all([
     getCategorias(db),
     getPaises(db),
   ]);
@@ -74,13 +73,13 @@ export const GET: APIRoute = async ({ locals }) => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <!-- ── Páginas estáticas ── -->
-  ${url('/',            new Date(), 1.0, 'daily')}
-  ${url('/noticias',    new Date(), 0.9, 'daily')}
-  ${url('/herramientas',new Date(), 0.7, 'weekly')}
-   ${url('/autor/jose-zuniga', new Date(), 0.6, 'monthly')}
-  ${url('/acerca',      new Date(), 0.4, 'monthly')}
-  ${url('/contacto',    new Date(), 0.4, 'monthly')}
-  ${url('/legal',       new Date(), 0.3, 'monthly')}
+  ${url('/',             new Date(), 1.0, 'daily')}
+  ${url('/noticias',     new Date(), 0.9, 'daily')}
+  ${url('/herramientas', new Date(), 0.7, 'weekly')}
+  ${url('/autor/jose-zuniga', new Date(), 0.6, 'monthly')}
+  ${url('/acerca',       new Date(), 0.4, 'monthly')}
+  ${url('/contacto',     new Date(), 0.4, 'monthly')}
+  ${url('/legal',        new Date(), 0.3, 'monthly')}
 
   <!-- ── Herramientas (índices) ── -->
   ${url('/herramientas/cripto',   new Date(), 0.8, 'daily')}
@@ -119,16 +118,6 @@ export const GET: APIRoute = async ({ locals }) => {
     url(`/pais/${p.codigo}`, new Date(), 0.5, 'weekly')
   ).join('')}
 
-  <!-- ── Artículos destacados ── -->
-  ${articulos.filter(a => a.destacado).map(a =>
-    url(`/noticias/${a.slug}`, a.creadoEn ?? new Date(), 0.9, 'daily')
-  ).join('')}
-
-  <!-- ── Artículos normales ── -->
-  ${articulos.filter(a => !a.destacado).map(a =>
-    url(`/noticias/${a.slug}`, a.creadoEn ?? new Date(), 0.7, 'weekly')
-  ).join('')}
-
 </urlset>`;
 
   return new Response(xml, {
@@ -138,4 +127,3 @@ export const GET: APIRoute = async ({ locals }) => {
     },
   });
 };
-
