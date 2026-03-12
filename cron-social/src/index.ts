@@ -40,7 +40,9 @@ async function run(env: Env) {
   // 2. Filtrar no publicados
   const allUrls = articles.map(a => a.url)
   const unpostedUrls = await getUnpostedArticles(env.DATABASE_URL, allUrls)
-  const toPost = articles.filter(a => unpostedUrls.includes(a.url))
+  const toPost = articles.filter(a => 
+    unpostedUrls.includes(a.url.replace(/\/$/, ''))
+  )
 
   console.log(`[Social] ${toPost.length} artículos por publicar`)
 
