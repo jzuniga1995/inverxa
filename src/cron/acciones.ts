@@ -3,7 +3,8 @@ import { fetchAcciones } from '../lib/acciones';
 const TOP_ACCIONES = [
   'aapl', 'nvda', 'tsla', 'msft', 'amzn',
   'meta', 'googl', 'amd', 'jpm', 'v',
-  'nflx', 'brkb', 'ko', 'dis', 'ba'
+  'nflx', 'brkb', 'ko', 'dis', 'ba',
+  'meli', 'shop', 'coin', 'pltr', 'lly'
 ];
 
 export default {
