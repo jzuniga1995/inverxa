@@ -1,6 +1,6 @@
 ---
 // Footer.astro - Inversax
-import { Twitter, Youtube, Instagram, Facebook, ArrowRight, TrendingUp } from 'lucide-astro';
+import { ArrowRight, TrendingUp } from 'lucide-astro';
 import { getCategorias, getPaises } from '../db/queries';
 
 const db = Astro.locals.db;
@@ -10,11 +10,11 @@ const paises     = await getPaises(db);
 const paisesLocales = paises.filter(p => p.codigo !== 'global').slice(0, 8);
 
 const herramientas = [
-  { label: "Mercados Cripto",   href: "/herramientas/cripto" },
-  { label: "Conversor Monedas", href: "/herramientas"        },
-  { label: "Precio del Dólar",  href: "/herramientas"        },
-  { label: "Gráficas en vivo",  href: "/herramientas/cripto" },
-  { label: "Comparar Brokers",  href: "/herramientas"        },
+  { label: "Mercados Cripto",   href: "/herramientas/cripto"   },
+  { label: "Forex",             href: "/herramientas/forex"    },
+  { label: "Metales Preciosos", href: "/herramientas/metales"  },
+  { label: "Acciones",          href: "/herramientas/acciones" },
+  { label: "Precio del Dólar",  href: "/herramientas/dolar"    },
 ];
 
 const nosotros = [
@@ -26,10 +26,11 @@ const nosotros = [
 ];
 
 const socials = [
-  { icon: "twitter",   href: "#", label: "Twitter"   },
-  { icon: "youtube",   href: "#", label: "YouTube"   },
-  { icon: "instagram", href: "#", label: "Instagram" },
-  { icon: "facebook",  href: "#", label: "Facebook"  },
+  { icon: "facebook",  href: "https://www.facebook.com/share/17n2iAeMxV/",                    label: "Facebook"  },
+  { icon: "instagram", href: "https://www.instagram.com/inversaxtop",                          label: "Instagram" },
+  { icon: "x",         href: "https://x.com/inversax",                                        label: "X"         },
+  { icon: "threads",   href: "https://www.threads.com/@inversaxtop",                           label: "Threads"   },
+  { icon: "telegram",  href: "https://t.me/inversax",                                          label: "Telegram"  },
 ];
 ---
 
@@ -63,7 +64,7 @@ const socials = [
           <div class="flex items-center gap-2">
             <input
               type="email"
-              placeholder="codezun@gmail.com"
+              placeholder="tu@email.com"
               class="flex-1 bg-white/5 border border-white/[0.07] text-white text-sm px-3.5 py-2.5 rounded-lg outline-none placeholder:text-white/25 focus:border-[#D4A843]/50 transition-colors duration-200 min-w-0"
               style="font-family: 'DM Sans', sans-serif;"
             />
@@ -76,21 +77,46 @@ const socials = [
         <!-- Socials -->
         <div class="flex items-center gap-2 pt-1">
           {socials.map((s) => (
-            <a
+            
               href={s.href}
               aria-label={s.label}
+              target="_blank"
+              rel="noopener noreferrer"
               class="w-8 h-8 flex items-center justify-center bg-white/5 border border-white/[0.07] text-white/40 hover:text-white hover:border-white/20 rounded-lg transition-colors duration-200 no-underline"
             >
-              {s.icon === "twitter"   && <Twitter   size={14} />}
-              {s.icon === "youtube"   && <Youtube   size={14} />}
-              {s.icon === "instagram" && <Instagram size={14} />}
-              {s.icon === "facebook"  && <Facebook  size={14} />}
+              {s.icon === "facebook" && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              )}
+              {s.icon === "instagram" && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              )}
+              {s.icon === "x" && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              )}
+              {s.icon === "threads" && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.851 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.1 1.704-3.617 1.789-1.195.066-2.31-.232-3.13-.87a3.535 3.535 0 0 1-1.382-2.848c0-2.57 2.044-4.143 5.477-4.317.71-.036 1.426-.044 2.138-.026.028-.44.028-.893-.012-1.35-.09-1.023-.47-1.774-1.132-2.232-.654-.452-1.52-.626-2.544-.517-.86.09-1.67.404-2.303.883-.617.468-.977 1.04-1.067 1.7l-2.04-.286c.16-1.17.722-2.155 1.673-2.93.882-.715 2.046-1.15 3.358-1.29 1.463-.155 2.797.107 3.755.757 1.012.683 1.618 1.795 1.748 3.21.054.607.05 1.214.006 1.823.463.106.901.245 1.31.42 1.168.496 2.02 1.34 2.463 2.37.836 1.916.735 4.695-1.528 6.916-1.805 1.768-4.015 2.606-7.218 2.63z"/>
+                </svg>
+              )}
+              {s.icon === "telegram" && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/>
+                </svg>
+              )}
             </a>
           ))}
         </div>
       </div>
 
-      <!-- Noticias (desde DB) — links a /{slug} -->
+      <!-- Noticias (desde DB) -->
       <div class="flex flex-col gap-4">
         <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
           Noticias
@@ -98,7 +124,7 @@ const socials = [
         <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
           {categorias.map((cat) => (
             <li>
-              <a
+              
                 href={`/${cat.slug}`}
                 class="text-sm text-white/40 hover:text-white no-underline transition-colors duration-200"
               >
@@ -125,7 +151,7 @@ const socials = [
         </ul>
       </div>
 
-      <!-- Por País (desde DB) — links a /pais/{codigo} -->
+      <!-- Por País (desde DB) -->
       <div class="flex flex-col gap-4">
         <span class="font-bold text-[13px] text-white tracking-wide uppercase" style="font-family: 'Syne', sans-serif;">
           Por País
@@ -133,7 +159,7 @@ const socials = [
         <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
           {paisesLocales.map((p) => (
             <li>
-              <a
+              
                 href={`/pais/${p.codigo}`}
                 class="text-sm text-white/40 hover:text-white no-underline transition-colors duration-200"
               >
