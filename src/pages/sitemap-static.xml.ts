@@ -48,27 +48,32 @@ const METALES_SLUGS = ['oro','plata','platino','paladio'];
 
 const ACCIONES_SLUGS = [
   // Tecnología
-  'aapl','msft','googl','nvda','meta','amd','adbe','crm','orcl','ibm',
-  'qcom','csco','intc','txn','adp','sap','tsm','avgo','now','pltr',
-  'crwd','net','snow','ddog','arm','shop',
-  // Consumo
-  'amzn','tsla','wmt','hd','cost','mcd','ko','pep','sbux','nke','abnb','uber',
-  // Entretenimiento
-  'nflx','dis','spot','roku',
-  // Finanzas
-  'v','ma','jpm','bac','gs','ms','brkb','pypl','c','wfc','blk','coin','sq','hood',
-  // Salud
-  'lly','unh','jnj','pfe','abbv','mrk',
-  // Energía
-  'xom','cvx','oxy','slb',
-  // Industria & Automotriz
-  'ba','cat','de','f','gm','rivn','nio',
-  // Telecom
-  'vz','att','amx',
-  // LATAM
-  'meli','pbr','vale','ec','baba','glob','desp','ifs',
+  'aapl', 'nvda', 'msft', 'meta', 'googl',
+  'amd', 'pltr', 'crwd', 'shop',
+
+  // Alta volatilidad
+  'tsla', 'amzn', 'nflx', 'coin', 'hood',
+
   // ETFs
-  'spy','qqq','gld','iwm',
+  'spy', 'qqq', 'gld',
+
+  // LATAM
+  'meli', 'ec', 'pbr', 'vale', 'glob', 'amx',
+
+  // Finanzas
+  'v', 'jpm', 'gs', 'brkb', 'pypl',
+
+  // Salud
+  'lly', 'jnj', 'pfe',
+
+  // Consumo
+  'ko', 'mcd', 'dis', 'sbux', 'nke', 'uber',
+
+  // Energía
+  'xom', 'cvx',
+
+  // Industria
+  'ba', 'cat',
 ];
 
 export const GET: APIRoute = async ({ locals }) => {

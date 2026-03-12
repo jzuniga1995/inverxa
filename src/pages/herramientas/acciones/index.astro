@@ -26,53 +26,65 @@ const fmt = (p: number) => {
 const fmtC = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
 
 const dominiosPorTicker: Record<string, string> = {
-  AAPL:    'apple.com',             MSFT:  'microsoft.com',        GOOGL: 'google.com',
-  AMZN:    'amazon.com',            NVDA:  'nvidia.com',            META:  'meta.com',
-  TSLA:    'tesla.com',             ORCL:  'oracle.com',            CRM:   'salesforce.com',
-  ADBE:    'adobe.com',             INTC:  'intel.com',             AMD:   'amd.com',
-  QCOM:    'qualcomm.com',          JPM:   'jpmorganchase.com',     BAC:   'bankofamerica.com',
-  GS:      'goldmansachs.com',      MS:    'morganstanley.com',     V:     'visa.com',
-  MA:      'mastercard.com',        PYPL:  'paypal.com',            KO:    'coca-cola.com',
-  PEP:     'pepsico.com',           MCD:   'mcdonalds.com',         WMT:   'walmart.com',
-  NKE:     'nike.com',              SBUX:  'starbucks.com',         NFLX:  'netflix.com',
-  DIS:     'disney.com',            UBER:  'uber.com',              BA:    'boeing.com',
-  VZ:      'verizon.com',           CAT:   'caterpillar.com',       DE:    'deere.com',
-  IBM:     'ibm.com',               TXN:   'ti.com',                CSCO:  'cisco.com',
-  SAP:     'sap.com',               ADP:   'adp.com',               HD:    'homedepot.com',
-  'BRK-B': 'berkshirehathaway.com',
-  // Tecnología nueva
-  TSM:     'tsmc.com',              AVGO:  'broadcom.com',          NOW:   'servicenow.com',
-  PLTR:    'palantir.com',          CRWD:  'crowdstrike.com',       NET:   'cloudflare.com',
-  SNOW:    'snowflake.com',         DDOG:  'datadoghq.com',         ARM:   'arm.com',
-  SHOP:    'shopify.com',
-  // Finanzas nueva
-  C:       'citigroup.com',         WFC:   'wellsfargo.com',        BLK:   'blackrock.com',
-  COIN:    'coinbase.com',          SQ:    'block.xyz',             HOOD:  'robinhood.com',
-  IFS:     'intercorp.com.pe',
-  // Consumo nueva
-  COST:    'costco.com',            ABNB:  'airbnb.com',
-  // Entretenimiento
-  SPOT:    'spotify.com',           ROKU:  'roku.com',
-  // Salud
-  LLY:     'lilly.com',             UNH:   'unitedhealthgroup.com', JNJ:   'jnj.com',
-  PFE:     'pfizer.com',            ABBV:  'abbvie.com',            MRK:   'merck.com',
-  // Energía
-  XOM:     'exxonmobil.com',        CVX:   'chevron.com',           OXY:   'oxy.com',
-  SLB:     'slb.com',
-  // Automotriz
-  F:       'ford.com',              GM:    'gm.com',                RIVN:  'rivian.com',
-  NIO:     'nio.com',
-  // Telecom
-  T:       'att.com',               AMX:   'americamovil.com',
-  // LATAM
-  MELI:    'mercadolibre.com',      PBR:   'petrobras.com.br',      VALE:  'vale.com',
-  EC:      'ecopetrol.com.co',      BABA:  'alibaba.com',           GLOB:  'globant.com',
-  DESP:    'despegar.com',
-  // ETFs
-  SPY:     'ssga.com',              QQQ:   'invesco.com',           GLD:   'spdrgoldshares.com',
-  IWM:     'ishares.com',
-};
+  // ── Tecnología ──
+  AAPL:    'apple.com',
+  NVDA:    'nvidia.com',
+  MSFT:    'microsoft.com',
+  META:    'meta.com',
+  GOOGL:   'google.com',
+  AMD:     'amd.com',
+  PLTR:    'palantir.com',
+  CRWD:    'crowdstrike.com',
 
+  // ── Alta volatilidad ──
+  TSLA:    'tesla.com',
+  AMZN:    'amazon.com',
+  NFLX:    'netflix.com',
+  COIN:    'coinbase.com',
+  HOOD:    'robinhood.com',
+  SHOP:    'shopify.com',
+
+  // ── ETFs ──
+  SPY:     'ssga.com',
+  QQQ:     'invesco.com',
+  GLD:     'spdrgoldshares.com',
+
+  // ── LATAM ──
+  MELI:    'mercadolibre.com',
+  EC:      'ecopetrol.com.co',
+  PBR:     'petrobras.com.br',
+  VALE:    'vale.com',
+  GLOB:    'globant.com',
+  AMX:     'americamovil.com',
+
+  // ── Finanzas ──
+  V:       'visa.com',
+  JPM:     'jpmorganchase.com',
+  GS:      'goldmansachs.com',
+  'BRK-B': 'berkshirehathaway.com',
+  PYPL:    'paypal.com',
+
+  // ── Salud ──
+  LLY:     'lilly.com',
+  JNJ:     'jnj.com',
+  PFE:     'pfizer.com',
+
+  // ── Consumo ──
+  KO:      'coca-cola.com',
+  MCD:     'mcdonalds.com',
+  DIS:     'disney.com',
+  SBUX:    'starbucks.com',
+  NKE:     'nike.com',
+  UBER:    'uber.com',
+
+  // ── Energía ──
+  XOM:     'exxonmobil.com',
+  CVX:     'chevron.com',
+
+  // ── Industria ──
+  BA:      'boeing.com',
+  CAT:     'caterpillar.com',
+};
 
 // ── Lee de KV directamente (igual que forex/index.astro) ──────
 const env = (Astro.locals.runtime?.env as any);

@@ -8,107 +8,161 @@ import { ArrowLeft, TrendingUp, TrendingDown, ExternalLink } from 'lucide-astro'
 const { slug } = Astro.params;
 
 const dominiosPorTicker: Record<string, string> = {
-  AAPL:    'apple.com',             MSFT:  'microsoft.com',        GOOGL: 'google.com',
-  AMZN:    'amazon.com',            NVDA:  'nvidia.com',            META:  'meta.com',
-  TSLA:    'tesla.com',             ORCL:  'oracle.com',            CRM:   'salesforce.com',
-  ADBE:    'adobe.com',             INTC:  'intel.com',             AMD:   'amd.com',
-  QCOM:    'qualcomm.com',          JPM:   'jpmorganchase.com',     BAC:   'bankofamerica.com',
-  GS:      'goldmansachs.com',      MS:    'morganstanley.com',     V:     'visa.com',
-  MA:      'mastercard.com',        PYPL:  'paypal.com',            KO:    'coca-cola.com',
-  PEP:     'pepsico.com',           MCD:   'mcdonalds.com',         WMT:   'walmart.com',
-  NKE:     'nike.com',              SBUX:  'starbucks.com',         NFLX:  'netflix.com',
-  DIS:     'disney.com',            UBER:  'uber.com',              BA:    'boeing.com',
-  VZ:      'verizon.com',           CAT:   'caterpillar.com',       DE:    'deere.com',
-  IBM:     'ibm.com',               TXN:   'ti.com',                CSCO:  'cisco.com',
-  SAP:     'sap.com',               ADP:   'adp.com',               HD:    'homedepot.com',
-  'BRK-B': 'berkshirehathaway.com',
-  // Tecnología nueva
-  TSM:     'tsmc.com',              AVGO:  'broadcom.com',          NOW:   'servicenow.com',
-  PLTR:    'palantir.com',          CRWD:  'crowdstrike.com',       NET:   'cloudflare.com',
-  SNOW:    'snowflake.com',         DDOG:  'datadoghq.com',         ARM:   'arm.com',
-  SHOP:    'shopify.com',
-  // Finanzas nueva
-  C:       'citigroup.com',         WFC:   'wellsfargo.com',        BLK:   'blackrock.com',
-  COIN:    'coinbase.com',          SQ:    'block.xyz',             HOOD:  'robinhood.com',
-  IFS:     'intercorp.com.pe',
-  // Consumo nueva
-  COST:    'costco.com',            ABNB:  'airbnb.com',
-  // Entretenimiento
-  SPOT:    'spotify.com',           ROKU:  'roku.com',
-  // Salud
-  LLY:     'lilly.com',             UNH:   'unitedhealthgroup.com', JNJ:   'jnj.com',
-  PFE:     'pfizer.com',            ABBV:  'abbvie.com',            MRK:   'merck.com',
-  // Energía
-  XOM:     'exxonmobil.com',        CVX:   'chevron.com',           OXY:   'oxy.com',
-  SLB:     'slb.com',
-  // Automotriz
-  F:       'ford.com',              GM:    'gm.com',                RIVN:  'rivian.com',
-  NIO:     'nio.com',
-  // Telecom
-  T:       'att.com',               AMX:   'americamovil.com',
-  // LATAM
-  MELI:    'mercadolibre.com',      PBR:   'petrobras.com.br',      VALE:  'vale.com',
-  EC:      'ecopetrol.com.co',      BABA:  'alibaba.com',           GLOB:  'globant.com',
-  DESP:    'despegar.com',
-  // ETFs
-  SPY:     'ssga.com',              QQQ:   'invesco.com',           GLD:   'spdrgoldshares.com',
-  IWM:     'ishares.com',
-};
+  // ── Tecnología ──
+  AAPL:    'apple.com',
+  NVDA:    'nvidia.com',
+  MSFT:    'microsoft.com',
+  META:    'meta.com',
+  GOOGL:   'google.com',
+  AMD:     'amd.com',
+  PLTR:    'palantir.com',
+  CRWD:    'crowdstrike.com',
 
+  // ── Alta volatilidad ──
+  TSLA:    'tesla.com',
+  AMZN:    'amazon.com',
+  NFLX:    'netflix.com',
+  COIN:    'coinbase.com',
+  HOOD:    'robinhood.com',
+  SHOP:    'shopify.com',
+
+  // ── ETFs ──
+  SPY:     'ssga.com',
+  QQQ:     'invesco.com',
+  GLD:     'spdrgoldshares.com',
+
+  // ── LATAM ──
+  MELI:    'mercadolibre.com',
+  EC:      'ecopetrol.com.co',
+  PBR:     'petrobras.com.br',
+  VALE:    'vale.com',
+  GLOB:    'globant.com',
+  AMX:     'americamovil.com',
+
+  // ── Finanzas ──
+  V:       'visa.com',
+  JPM:     'jpmorganchase.com',
+  GS:      'goldmansachs.com',
+  'BRK-B': 'berkshirehathaway.com',
+  PYPL:    'paypal.com',
+
+  // ── Salud ──
+  LLY:     'lilly.com',
+  JNJ:     'jnj.com',
+  PFE:     'pfizer.com',
+
+  // ── Consumo ──
+  KO:      'coca-cola.com',
+  MCD:     'mcdonalds.com',
+  DIS:     'disney.com',
+  SBUX:    'starbucks.com',
+  NKE:     'nike.com',
+  UBER:    'uber.com',
+
+  // ── Energía ──
+  XOM:     'exxonmobil.com',
+  CVX:     'chevron.com',
+
+  // ── Industria ──
+  BA:      'boeing.com',
+  CAT:     'caterpillar.com',
+};
 
 // ── Descripciones completas ───────────────────────────────────
 const descripciones: Record<string, string> = {
-  AAPL:  'Apple Inc. diseña, fabrica y vende teléfonos inteligentes, computadoras personales, tablets, wearables y accesorios, además de servicios digitales como iCloud, App Store y Apple Pay. Es la empresa más valiosa del mundo por capitalización bursátil.',
-  MSFT:  'Microsoft Corporation desarrolla y licencia software, hardware y servicios en la nube. Sus productos incluyen Windows, Office 365, Azure (líder en cloud computing), Xbox y LinkedIn. Es una de las empresas más influyentes del mundo tecnológico.',
-  GOOGL: 'Alphabet Inc. es la matriz de Google, líder mundial en búsqueda en internet, publicidad digital y computación en la nube con Google Cloud. También opera YouTube, Android, Waymo (vehículos autónomos) y desarrolla modelos de inteligencia artificial como Gemini.',
-  AMZN:  'Amazon.com es el mayor retailer en línea del mundo y líder en servicios de computación en la nube a través de AWS, que representa la mayor parte de sus ganancias. También opera Prime Video, Alexa y una creciente red logística propia.',
-  NVDA:  'NVIDIA Corporation diseña unidades de procesamiento gráfico (GPU) y sistemas en chip. Lidera el mercado de hardware para inteligencia artificial y centros de datos con sus chips H100 y Blackwell, convirtiéndola en una de las empresas más valiosas del mundo.',
-  META:  'Meta Platforms opera las redes sociales más grandes del mundo: Facebook, Instagram y WhatsApp, con más de 3,000 millones de usuarios activos diarios. También invierte en realidad virtual y aumentada a través de Meta Quest y el proyecto Metaverse.',
-  TSLA:  'Tesla Inc. diseña, desarrolla y vende vehículos eléctricos, sistemas de almacenamiento de energía y paneles solares. También ofrece servicios de conducción autónoma (Autopilot/FSD) y opera una red global de supercargadores.',
-  ORCL:  'Oracle Corporation es uno de los mayores proveedores de software empresarial y bases de datos del mundo. Sus productos incluyen Oracle Database, Java y una creciente oferta de servicios en la nube (Oracle Cloud Infrastructure).',
-  CRM:   'Salesforce es el líder mundial en software de gestión de relaciones con clientes (CRM). Su plataforma en la nube ayuda a empresas a gestionar ventas, marketing y atención al cliente. También integra inteligencia artificial a través de Einstein AI.',
-  ADBE:  'Adobe Inc. es el líder mundial en software creativo y de diseño digital, con productos como Photoshop, Illustrator, Premiere y Acrobat. Su transición a la nube con Creative Cloud ha convertido sus ingresos en recurrentes y altamente predecibles.',
-  INTC:  'Intel Corporation es uno de los mayores fabricantes de procesadores del mundo, conocido por los chips de las series Core y Xeon. Aunque perdió participación frente a AMD y Apple Silicon, está invirtiendo fuertemente en recuperar el liderazgo en manufactura de semiconductores.',
-  AMD:   'Advanced Micro Devices (AMD) diseña procesadores (CPUs) y tarjetas gráficas (GPUs) que compiten directamente con Intel y NVIDIA. Sus chips Ryzen y EPYC han ganado participación de mercado significativa, especialmente en servidores y centros de datos.',
-  TSM:   'Taiwan Semiconductor Manufacturing Company (TSMC) es la mayor fundición de chips del mundo por ingresos. Fabrica semiconductores para Apple, NVIDIA, AMD y otras empresas tecnológicas. Controla cerca del 90% del mercado de chips avanzados.',
-  AVGO:  'Broadcom Inc. diseña y vende semiconductores y software de infraestructura. Sus productos incluyen chips para redes, almacenamiento, banda ancha y conectividad inalámbrica. También adquirió VMware en 2023, expandiéndose al software empresarial.',
-  QCOM:  'Qualcomm Incorporated diseña chips Snapdragon para teléfonos móviles y dispositivos de conectividad 5G. Es el principal proveedor de módem y procesadores para la mayoría de los smartphones Android de gama alta a nivel mundial.',
-  JPM:   'JPMorgan Chase & Co. es el banco más grande de Estados Unidos por activos totales, con más de $3.7 billones. Ofrece servicios de banca de inversión, banca comercial, gestión de activos, tarjetas de crédito y servicios al consumidor a nivel global.',
-  BAC:   'Bank of America es uno de los mayores grupos bancarios del mundo, con más de 66 millones de clientes. Ofrece servicios de banca de consumo, gestión patrimonial (Merrill Lynch), banca de inversión y mercados de capitales.',
-  GS:    'The Goldman Sachs Group es uno de los bancos de inversión más prestigiosos del mundo. Presta servicios de banca de inversión, trading de valores, gestión de activos y finanzas corporativas para gobiernos, instituciones y grandes empresas.',
-  MS:    'Morgan Stanley es un banco de inversión global con fuerte presencia en gestión patrimonial (Wealth Management), banca de inversión y mercados de capitales. Gestiona más de $5 billones en activos de clientes a nivel mundial.',
-  V:     'Visa Inc. opera la red de pagos digitales más grande del mundo, procesando miles de millones de transacciones al año. No emite tarjetas ni asume riesgo crediticio; en su lugar conecta a bancos emisores, comerciantes e instituciones financieras.',
-  MA:    'Mastercard Incorporated es una empresa global de tecnología de pagos que conecta a consumidores, bancos y comerciantes en más de 210 países. Al igual que Visa, opera como red de pagos sin asumir directamente el riesgo crediticio.',
-  PYPL:  'PayPal Holdings es una plataforma de pagos digitales con más de 430 millones de cuentas activas. Sus productos incluyen PayPal, Venmo (pagos entre personas) y Braintree (procesamiento para empresas). Es un pionero del comercio electrónico.',
-  'BRK.B': 'Berkshire Hathaway es el conglomerado liderado por Warren Buffett, considerado el mayor inversor de la historia. Posee empresas completas como GEICO y BNSF Railway, además de grandes posiciones en Apple, Bank of America y otras compañías.',
-  JNJ:   'Johnson & Johnson es uno de los conglomerados de salud más grandes del mundo, con operaciones en productos farmacéuticos, dispositivos médicos y productos de consumo (como Band-Aid y Neutrogena). Tiene más de 135 años de historia.',
-  UNH:   'UnitedHealth Group es la mayor empresa de seguros de salud de Estados Unidos por ingresos. Opera a través de UnitedHealthcare (seguros) y Optum (servicios de salud y tecnología), atendiendo a más de 50 millones de personas.',
-  PFE:   'Pfizer Inc. es una de las compañías farmacéuticas más grandes del mundo. Desarrolló la vacuna contra el COVID-19 con BioNTech y posee un amplio portafolio de medicamentos en oncología, cardiología, infecciosas y vacunas.',
-  ABBV:  'AbbVie Inc. es una biofarmacéutica especializada en enfermedades inflamatorias, oncología y neurología. Su producto estrella es Humira, que fue durante años el medicamento más vendido del mundo, aunque ahora enfrenta competencia genérica.',
-  MRK:   'Merck & Co. es una de las farmacéuticas líderes a nivel mundial, con productos destacados como Keytruda (tratamiento contra el cáncer más vendido del mundo), vacunas como Gardasil y medicamentos para diabetes y enfermedades cardíacas.',
-  LLY:   'Eli Lilly and Company es una de las farmacéuticas de mayor crecimiento gracias a sus medicamentos para diabetes y obesidad como Mounjaro y Zepbound (tirzepatida), que se han convertido en los más demandados del mercado en los últimos años.',
-  XOM:   'ExxonMobil es una de las mayores compañías de petróleo y gas del mundo, con operaciones en exploración, producción, refinación, distribución y productos petroquímicos. Tiene presencia en más de 60 países y produce más de 3 millones de barriles diarios.',
-  CVX:   'Chevron Corporation es una compañía energética multinacional con operaciones en petróleo, gas natural y energías renovables. Opera en más de 180 países y es una de las mayores empresas del mundo por capitalización bursátil.',
-  KO:    'The Coca-Cola Company es la mayor empresa de bebidas no alcohólicas del mundo con más de 200 marcas, incluyendo Sprite, Fanta, Powerade y Minute Maid. Tiene presencia en prácticamente todos los países del mundo.',
-  PEP:   'PepsiCo Inc. es un gigante global de alimentos y bebidas que posee marcas icónicas como Pepsi, Gatorade, Tropicana, Lay\'s, Doritos y Quaker. A diferencia de Coca-Cola, tiene una diversificación mayor en el segmento de snacks y alimentos.',
-  MCD:   'McDonald\'s Corporation opera la cadena de restaurantes de comida rápida más grande del mundo con más de 40,000 ubicaciones en más de 100 países. La mayoría son franquicias, lo que hace su modelo de negocio altamente rentable y escalable.',
-  WMT:   'Walmart Inc. es la mayor empresa minorista del mundo por ingresos, con más de 10,500 tiendas en 24 países bajo marcas como Walmart, Sam\'s Club y Flipkart. También tiene una creciente operación de comercio electrónico y publicidad digital.',
-  COST:  'Costco Wholesale es una cadena de almacenes mayoristas por membresía con más de 130 millones de miembros en todo el mundo. Su modelo de negocio basado en cuotas anuales genera ingresos recurrentes y alta fidelidad de clientes.',
-  NKE:   'Nike Inc. es la mayor empresa de ropa y calzado deportivo del mundo, con marcas como Nike, Jordan y Converse. Vende en más de 190 países y ha construido una de las identidades de marca más reconocibles de la historia.',
-  SBUX:  'Starbucks Corporation opera más de 36,000 cafeterías en 80 países, siendo la mayor cadena de café del mundo. Además de café, ofrece té, bebidas de temporada y alimentos. Su programa de lealtad cuenta con millones de miembros activos.',
-  NFLX:  'Netflix es el servicio de streaming líder mundial con más de 260 millones de suscriptores en 190 países. Produce contenido original en múltiples idiomas y géneros, incluyendo series, películas y documentales premiados globalmente.',
-  DIS:   'The Walt Disney Company es un conglomerado de entretenimiento con parques temáticos (Disneyland, Disney World), estudios de cine (Marvel, Pixar, Star Wars), televisión (ABC, ESPN) y la plataforma de streaming Disney+.',
-  SPOT:  'Spotify Technology es el servicio de streaming de música más grande del mundo con más de 600 millones de usuarios y 240 millones de suscriptores. Ofrece música, podcasts y audiolibros, y ha expandido su presencia en contenido exclusivo.',
-  UBER:  'Uber Technologies opera la mayor plataforma de transporte bajo demanda del mundo, con servicios de viajes compartidos, entrega de comida (Uber Eats) y logística de mercancías en más de 70 países y 10,000 ciudades.',
-  ABNB:  'Airbnb Inc. opera la plataforma de alojamiento alternativo más grande del mundo, conectando a más de 4 millones de anfitriones con viajeros en más de 220 países. También ofrece "Experiences", actividades organizadas por locales.',
-  F:     'Ford Motor Company es uno de los fabricantes de automóviles más antiguos y reconocidos del mundo, conocido por marcas como Ford y Lincoln. Está invirtiendo fuertemente en vehículos eléctricos con su división Ford Model e.',
-  GM:    'General Motors es uno de los mayores fabricantes de automóviles del mundo, con marcas como Chevrolet, GMC, Buick y Cadillac. Está apostando por la transición eléctrica con su plataforma Ultium y la división de vehículos autónomos Cruise.',
-  BA:    'Boeing Company es uno de los mayores fabricantes de aeronaves del mundo, con aviones comerciales (737, 787 Dreamliner), militares y de defensa. Enfrenta desafíos de calidad y certificación con su modelo 737 MAX tras accidentes fatales.',
-  T:     'AT&T Inc. es una de las mayores compañías de telecomunicaciones de Estados Unidos, con servicios de telefonía móvil, banda ancha e internet. Tras vender sus activos de medios (Warner Media), se enfoca exclusivamente en conectividad.',
-  VZ:    'Verizon Communications es el mayor operador de red inalámbrica de Estados Unidos por suscriptores. Ofrece servicios de telefonía móvil, internet de banda ancha y empresarial. Está invirtiendo fuertemente en la expansión de redes 5G.',
-  SPY:   'SPDR S&P 500 ETF Trust (SPY) replica el índice S&P 500, que incluye las 500 empresas más grandes de Estados Unidos por capitalización bursátil. Es el ETF con mayor volumen de negociación del mundo y es ampliamente usado por inversores de todo tipo.',
-  QQQ:   'Invesco QQQ Trust replica el índice Nasdaq-100, que incluye las 100 mayores empresas no financieras del Nasdaq, con alta concentración en tecnología. Es el ETF de referencia para obtener exposición al sector tecnológico estadounidense.',
+
+  // ── Tecnología ──
+  AAPL:  'Apple Inc. diseña, fabrica y comercializa smartphones (iPhone), computadoras (Mac), tablets (iPad), wearables (Apple Watch, AirPods) y accesorios. Su ecosistema de servicios incluye iCloud, App Store, Apple Pay, Apple Music y Apple TV+. Es la empresa más valiosa del mundo por capitalización bursátil, con una base de más de 2,000 millones de dispositivos activos. Su capacidad para retener usuarios dentro de su ecosistema y sus márgenes elevados la convierten en una de las acciones más seguidas por inversores institucionales y particulares de todo el mundo.',
+
+  NVDA:  'NVIDIA Corporation es el líder mundial en diseño de unidades de procesamiento gráfico (GPU) y hardware para inteligencia artificial. Sus chips H100 y la arquitectura Blackwell son el estándar de la industria para entrenar modelos de IA a gran escala. NVIDIA también desarrolla plataformas para conducción autónoma, robótica, simulación industrial y computación científica. La explosión de la inteligencia artificial generativa la convirtió en una de las empresas de mayor crecimiento en la historia de los mercados financieros, con una capitalización bursátil que la sitúa entre las tres más grandes del mundo.',
+
+  MSFT:  'Microsoft Corporation es uno de los conglomerados tecnológicos más grandes del mundo. Sus productos incluyen el sistema operativo Windows, la suite Office 365, la plataforma en la nube Azure (segunda en cuota global), Xbox, LinkedIn y GitHub. Su inversión estratégica en OpenAI le permitió integrar inteligencia artificial en toda su línea de productos bajo la marca Copilot. Microsoft combina ingresos recurrentes en la nube con un portafolio diversificado que la hace una de las acciones más estables y buscadas por inversores de largo plazo.',
+
+  META:  'Meta Platforms Inc. opera las plataformas de redes sociales más grandes del mundo: Facebook, Instagram, WhatsApp y Threads, con más de 3,200 millones de usuarios activos diarios combinados. Sus ingresos provienen principalmente de publicidad digital altamente segmentada. También invierte en realidad virtual y aumentada a través de los dispositivos Meta Quest y su visión del Metaverso. Tras una fuerte caída en 2022, Meta ejecutó un plan de eficiencia que disparó sus ganancias y la devolvió a máximos históricos, convirtiéndola en una de las historias de recuperación más llamativas de Wall Street.',
+
+  GOOGL: 'Alphabet Inc. es la empresa matriz de Google, el motor de búsqueda más utilizado del mundo con más del 90% de cuota de mercado global. Sus ingresos principales provienen de publicidad en Search, YouTube y la red de display. Google Cloud es su división de más rápido crecimiento, compitiendo con AWS y Azure. Alphabet también desarrolla inteligencia artificial con Gemini, opera Waymo (vehículos autónomos), DeepMind (investigación en IA) y gestiona una cartera de inversiones en startups tecnológicas a través de GV y CapitalG.',
+
+  AMD:   'Advanced Micro Devices (AMD) diseña y comercializa procesadores (CPUs) y tarjetas gráficas (GPUs) de alto rendimiento. Sus chips Ryzen para consumidores y EPYC para servidores han ganado cuota de mercado significativa frente a Intel en los últimos años. Su línea de GPUs Radeon compite con NVIDIA en el mercado de gaming y computación paralela. AMD también fabrica chips personalizados para consolas PlayStation y Xbox, y está expandiéndose en el mercado de aceleradores para inteligencia artificial con su línea Instinct MI300.',
+
+  PLTR:  'Palantir Technologies es una empresa especializada en software de análisis de datos y plataformas de inteligencia artificial para gobiernos y grandes corporaciones. Sus productos principales son Palantir Gotham (para defensa e inteligencia), Palantir Foundry (para empresas) y AIP (plataforma de IA generativa). Fundada en 2003 con respaldo de la CIA, Palantir es contratista estratégico de múltiples gobiernos y ejércitos. En los últimos años aceleró su expansión comercial y logró su primera rentabilidad consistente, atrayendo la atención de inversores que apuestan al crecimiento de la IA aplicada.',
+
+  CRWD:  'CrowdStrike Holdings es el líder del mercado en ciberseguridad en la nube, especializado en protección de endpoints, inteligencia de amenazas y respuesta a incidentes. Su plataforma Falcon utiliza inteligencia artificial para detectar y neutralizar ciberataques en tiempo real. Opera en modo SaaS con ingresos recurrentes anuales (ARR) que crecen de forma consistente. Es una de las empresas más recomendadas por analistas en el segmento de seguridad informática y una referencia para empresas que buscan protegerse de ransomware y amenazas avanzadas.',
+
+  SHOP:  'Shopify Inc. es la plataforma de comercio electrónico más popular del mundo para pequeñas y medianas empresas, con más de 2 millones de comercios activos en más de 175 países. Ofrece herramientas para crear tiendas en línea, gestionar inventarios, procesar pagos y vender en redes sociales. También tiene Shopify Payments, Shopify Capital (financiamiento a comercios) y Shopify Fulfillment (logística). Su modelo SaaS con ingresos por suscripción y comisiones por transacción la convierte en una apuesta de largo plazo sobre el crecimiento del comercio digital global.',
+
+  // ── Alta volatilidad ──
+  TSLA:  'Tesla Inc. es el fabricante de vehículos eléctricos más reconocido del mundo, con modelos como el Model 3, Model Y, Model S y Cybertruck. Además de autos, produce sistemas de almacenamiento de energía (Powerwall, Megapack) y paneles solares. Su software de conducción autónoma (Autopilot/FSD) es una apuesta de alto potencial. Tesla también opera la red de supercargadores más grande del mundo. Es una de las acciones más negociadas del mercado, conocida por su alta volatilidad y por la influencia que tiene Elon Musk, su CEO, en el precio de la acción.',
+
+  AMZN:  'Amazon.com Inc. es el mayor retailer en línea del mundo y el líder en computación en la nube a través de AWS (Amazon Web Services), que genera la mayor parte de sus ganancias operativas. También opera Prime Video, Amazon Advertising, Alexa y una red logística propia de alcance global. Prime, su programa de membresía, cuenta con más de 200 millones de suscriptores. Amazon es además el mayor empleador privado de Estados Unidos. Su capacidad para dominar múltiples industrias simultáneamente la convierte en una de las acciones más seguidas por inversores de crecimiento a largo plazo.',
+
+  NFLX:  'Netflix Inc. es el servicio de streaming de video más grande del mundo con más de 260 millones de suscriptores en 190 países. Produce contenido original en múltiples idiomas, incluyendo series, películas, documentales y stand-up comedy que han ganado premios Emmy, Óscar y Globo de Oro. Introdujo el modelo de suscripción con publicidad para ampliar su base de usuarios y ha comenzado a incursionar en videojuegos. Netflix es la referencia del sector streaming y su capacidad para retener suscriptores en un mercado competitivo define su valor como empresa.',
+
+  COIN:  'Coinbase Global Inc. es el mayor exchange de criptomonedas de Estados Unidos y uno de los más regulados del mundo. Permite comprar, vender y custodiar más de 200 criptoactivos. También ofrece servicios institucionales, staking, wallet propia y una plataforma de derivados. Cotiza en el Nasdaq desde 2021 y su acción está altamente correlacionada con el precio de Bitcoin. Es la puerta de entrada al mundo cripto para millones de usuarios y un referente para inversores que quieren exposición al ecosistema blockchain sin comprar criptomonedas directamente.',
+
+  HOOD:  'Robinhood Markets Inc. es una plataforma de inversión que popularizó el trading sin comisiones en Estados Unidos, democratizando el acceso a acciones, ETFs, opciones y criptomonedas para millones de usuarios jóvenes. Su modelo freemium ofrece una cuenta básica gratuita y Robinhood Gold con funciones premium. También lanzó una tarjeta de crédito y servicios de retiro. Robinhood es un termómetro del sentimiento retail en los mercados y su cotización refleja el apetito por el riesgo de los inversores minoristas estadounidenses.',
+
+  // ── ETFs ──
+  SPY:   'SPDR S&P 500 ETF Trust (SPY) es el ETF con mayor volumen de negociación del mundo. Replica el índice S&P 500, que agrupa a las 500 empresas más grandes de Estados Unidos por capitalización bursátil, incluyendo Apple, Microsoft, NVIDIA, Amazon y Google. Es el instrumento de referencia para obtener exposición diversificada a la economía estadounidense con una sola operación. Históricamente ha generado un rendimiento promedio anual de alrededor del 10% en dólares, convirtiéndolo en la base de la estrategia de inversión pasiva de largo plazo para millones de inversores en todo el mundo.',
+
+  QQQ:   'Invesco QQQ Trust replica el índice Nasdaq-100, que agrupa a las 100 mayores empresas no financieras del Nasdaq, con alta concentración en tecnología: Apple, Microsoft, NVIDIA, Amazon, Meta y Alphabet representan una parte significativa de su composición. Es el ETF de referencia para inversores que buscan exposición al sector tecnológico y de crecimiento estadounidense. Históricamente ha superado al S&P 500 en períodos alcistas, aunque también presenta mayor volatilidad. Es uno de los ETFs más negociados del mundo y favorito entre traders de corto y largo plazo.',
+
+  GLD:   'SPDR Gold Shares (GLD) es el mayor ETF de oro del mundo por activos bajo gestión. Replica el precio del oro físico, permitiendo a inversores obtener exposición al metal precioso sin necesidad de comprarlo ni almacenarlo físicamente. El oro históricamente funciona como reserva de valor y activo refugio en momentos de incertidumbre económica, inflación elevada o debilidad del dólar. GLD es el instrumento preferido por traders e inversores institucionales para operar oro con la liquidez y simplicidad de una acción en bolsa.',
+
+  // ── LATAM ──
+  MELI:  'MercadoLibre Inc. es la mayor plataforma de comercio electrónico y servicios financieros de América Latina, con operaciones en más de 18 países. Su ecosistema incluye MercadoPago (fintech y pagos digitales), MercadoShips (logística), MercadoFondos (inversiones) y MercadoCrédito (préstamos). Con más de 200 millones de usuarios activos, es el referente del e-commerce en la región y la empresa latinoamericana de mayor capitalización bursátil cotizando en el Nasdaq. Su crecimiento constante en mercados como Brasil, México y Argentina la convierte en la apuesta principal para inversores que buscan exposición a LATAM.',
+
+  EC:    'Ecopetrol S.A. es la mayor empresa de Colombia y una de las principales compañías de petróleo y gas de América Latina. Controlada mayoritariamente por el Estado colombiano, opera en exploración, producción, refinación y transporte de hidrocarburos. También tiene participación en ISA (infraestructura de transmisión eléctrica) y está avanzando en proyectos de energía renovable. Cotiza en la Bolsa de Valores de Colombia (BVC) y en el NYSE como ADR. Es una de las acciones latinoamericanas con mayor dividendo y un referente para inversores interesados en el sector energético de la región.',
+
+  PBR:   'Petróleo Brasileiro S.A. (Petrobras) es la mayor empresa de Brasil y una de las mayores compañías de energía del mundo. Controlada por el gobierno brasileño, opera en exploración y producción de petróleo en aguas profundas, refinación, distribución y gas natural. Sus reservas del presal son de las más grandes y rentables del mundo. Cotiza en la Bolsa de São Paulo (B3) y en el NYSE como ADR. Históricamente ha pagado dividendos muy elevados, lo que la convierte en una de las acciones más atractivas para inversores orientados a rentas en mercados emergentes.',
+
+  VALE:  'Vale S.A. es la mayor productora de mineral de hierro y níquel del mundo, con operaciones principalmente en Brasil y presencia en más de 30 países. El mineral de hierro que extrae es materia prima clave para la producción de acero a nivel global, especialmente en China, su principal cliente. También produce cobre, manganeso y otros minerales críticos para la transición energética. Cotiza en la B3 de Brasil y en el NYSE como ADR. Su precio está fuertemente correlacionado con el ciclo económico chino y la demanda de materias primas industriales.',
+
+  GLOB:  'Globant S.A. es una empresa tecnológica argentina especializada en servicios de desarrollo de software, transformación digital e inteligencia artificial para grandes corporaciones a nivel mundial. Sus clientes incluyen Disney, Google, Electronic Arts y Santander. Cotiza en el NYSE y es uno de los unicornios tecnológicos más exitosos de América Latina, con operaciones en más de 30 países y miles de ingenieros distribuidos globalmente. Es la referencia del sector tecnológico latinoamericano para inversores que buscan exposición al talento de la región sin los riesgos macroeconómicos locales.',
+
+  AMX:   'América Móvil S.A.B. de C.V. es la mayor empresa de telecomunicaciones de América Latina, fundada por Carlos Slim. Opera bajo marcas como Telcel en México, Claro en más de 20 países de la región y Telmex en telecomunicaciones fijas. Con más de 300 millones de suscriptores, domina los mercados móviles de la mayoría de los países latinoamericanos. Cotiza en la Bolsa Mexicana de Valores y en el NYSE como ADR. Es una acción defensiva con dividendos consistentes, muy seguida por inversores institucionales que buscan exposición estable al crecimiento de la conectividad en LATAM.',
+
+  // ── Finanzas ──
+  V:     'Visa Inc. opera la red de pagos electrónicos más grande del mundo, procesando más de 200,000 millones de transacciones al año en más de 200 países. No emite tarjetas ni asume riesgo crediticio; actúa como puente tecnológico entre bancos emisores, comerciantes e instituciones financieras. Su modelo de negocio es altamente escalable: cada nueva transacción genera ingresos sin aumentar proporcionalmente los costos. El crecimiento del comercio electrónico y la digitalización de los pagos en mercados emergentes son sus principales motores de expansión a largo plazo.',
+
+  JPM:   'JPMorgan Chase & Co. es el banco más grande de Estados Unidos por activos totales, con más de $3.9 billones bajo gestión. Ofrece servicios de banca de inversión, banca comercial, gestión de activos (J.P. Morgan Asset Management), tarjetas de crédito (Chase) y servicios al consumidor. Bajo el liderazgo de Jamie Dimon, es considerado el banco mejor gestionado de Wall Street. Sus resultados trimestrales son un termómetro de la salud del sistema financiero estadounidense y su acción es referencia obligada para inversores del sector bancario global.',
+
+  GS:    'The Goldman Sachs Group Inc. es uno de los bancos de inversión más prestigiosos e influyentes del mundo. Presta servicios de banca de inversión, trading de activos financieros, gestión de activos y finanzas corporativas para gobiernos, fondos soberanos, corporaciones y altos patrimonios. Tiene presencia en los principales centros financieros del mundo y sus análisis de mercado son seguidos por inversores institucionales globalmente. Goldman Sachs es referencia cuando se habla de fusiones y adquisiciones, salidas a bolsa (IPOs) y operaciones de deuda a gran escala.',
+
+  'BRK-B': 'Berkshire Hathaway Inc. es el conglomerado inversor liderado por Warren Buffett, considerado el mayor inversor de la historia. Posee empresas completas como GEICO (seguros), BNSF Railway (ferrocarriles), Berkshire Hathaway Energy y Dairy Queen, además de grandes posiciones accionarias en Apple, Bank of America, Chevron y Coca-Cola. La clase B (BRK-B) permite a inversores minoristas acceder al portafolio de Buffett a un precio accesible. Sus cartas anuales a accionistas son consideradas material de lectura obligatoria para cualquier inversor de largo plazo.',
+
+  PYPL:  'PayPal Holdings Inc. es una de las plataformas de pagos digitales más utilizadas del mundo, con más de 430 millones de cuentas activas en más de 200 mercados. Sus productos incluyen PayPal (pagos en línea), Venmo (pagos entre personas en EE.UU.), Braintree (procesamiento para empresas) y Honey (cupones y descuentos). Fue pionera del comercio electrónico como spin-off de eBay y hoy compite con Apple Pay, Google Pay y nuevos actores fintech. Su valuación ha caído significativamente desde sus máximos, lo que la convierte en una acción de valor seguida por inversores contrarian.',
+
+  // ── Salud ──
+  LLY:   'Eli Lilly and Company es una de las compañías farmacéuticas de mayor crecimiento del mundo gracias a sus medicamentos para diabetes y obesidad, especialmente tirzepatida (Mounjaro para diabetes, Zepbound para obesidad). La demanda global de estos tratamientos superó ampliamente la capacidad de producción de la compañía, convirtiéndola en una de las acciones de mayor rendimiento del S&P 500 en los últimos años. También tiene un sólido portafolio en oncología, Alzheimer e inmunología. Su capitalización bursátil la ubica entre las diez empresas más valiosas del mundo.',
+
+  JNJ:   'Johnson & Johnson es uno de los conglomerados de salud más grandes y diversificados del mundo, con más de 135 años de historia. Tras escindir su división de productos de consumo (Kenvue), se enfoca en farmacéuticos y dispositivos médicos. Su portafolio incluye tratamientos para cáncer, enfermedades autoinmunes y psiquiátricas, así como dispositivos quirúrgicos avanzados. Es un Dividend Aristocrat que lleva más de 60 años aumentando su dividendo de forma consecutiva, convirtiéndola en una referencia para inversores orientados a rentas estables y capital preservado.',
+
+  PFE:   'Pfizer Inc. es una de las compañías farmacéuticas más grandes del mundo, con presencia en más de 180 países. Desarrolló junto a BioNTech la vacuna de ARNm contra el COVID-19 más distribuida globalmente. Su portafolio incluye medicamentos en oncología, enfermedades infecciosas, cardiología, neurología e inflamación. Tras los ingresos extraordinarios del COVID, Pfizer atraviesa una fase de readecuación de su portafolio con nuevas adquisiciones. Su dividendo consistente y su valuación más baja respecto a pares la convierten en una opción seguida por inversores de valor en el sector salud.',
+
+  // ── Consumo ──
+  KO:    'The Coca-Cola Company es la mayor empresa de bebidas no alcohólicas del mundo, con un portafolio de más de 200 marcas que incluyen Sprite, Fanta, Powerade, Minute Maid, Smartwater y Georgia Coffee. Tiene presencia en prácticamente todos los países del mundo y distribuye más de 2,000 millones de porciones diarias. Es un Dividend Aristocrat con más de 60 años aumentando su dividendo consecutivamente. Warren Buffett, a través de Berkshire Hathaway, es uno de sus mayores accionistas históricos. Es la acción defensiva por excelencia para inversores que priorizan estabilidad y rentas.',
+
+  MCD:   'McDonald\'s Corporation opera la mayor cadena de restaurantes de comida rápida del mundo, con más de 40,000 ubicaciones en más de 100 países. Cerca del 95% son franquicias, lo que genera un modelo de negocio altamente rentable basado en rentas inmobiliarias y regalías. Además de hamburguesas, McCafé ha convertido al café en una línea de negocio relevante. McDonald\'s es Dividend Aristocrat con décadas de aumentos consecutivos y es considerada una acción defensiva que mantiene bien su valor en períodos de recesión económica gracias a la resiliencia de su demanda.',
+
+  DIS:   'The Walt Disney Company es uno de los conglomerados de entretenimiento más icónicos del mundo. Opera parques temáticos (Disneyland, Disney World, parks en Asia y Europa), estudios cinematográficos (Marvel, Pixar, Lucasfilm, 20th Century Studios), canales de televisión (ABC, ESPN, National Geographic) y la plataforma de streaming Disney+. Su capacidad de monetizar sus franquicias a través de múltiples canales simultáneos es única en la industria. Disney atraviesa una transformación hacia el streaming mientras mantiene el poder de sus marcas como activo diferencial a largo plazo.',
+
+  SBUX:  'Starbucks Corporation opera más de 36,000 cafeterías en 80 países, siendo la mayor cadena de café del mundo. Su modelo combina tiendas propias con licencias y franquicias internacionales. El programa de lealtad Starbucks Rewards cuenta con millones de miembros activos que generan ingresos recurrentes y datos valiosos. También vende productos envasados en supermercados. Starbucks enfrenta el desafío de recuperar el tráfico de clientes en un contexto de precios elevados y competencia creciente en China, su segundo mercado más importante.',
+
+  NKE:   'Nike Inc. es la mayor empresa de ropa y calzado deportivo del mundo, con marcas como Nike, Jordan y Converse presentes en más de 190 países. Su estrategia de venta directa al consumidor (DTC) a través de su app, SNKRS y tiendas propias está aumentando márgenes y control de marca. Nike invierte fuertemente en patrocinios de atletas y equipos deportivos de élite a nivel global. Su capacidad para crear productos de edición limitada con alta demanda y márgenes premium la diferencia de sus competidores. Es una de las marcas más reconocidas y valoradas del mundo.',
+
+  UBER:  'Uber Technologies Inc. opera la mayor plataforma de transporte bajo demanda del mundo en más de 70 países y 10,000 ciudades. Sus servicios incluyen viajes compartidos (Uber), entrega de comida (Uber Eats), transporte de mercancías (Uber Freight) y movilidad empresarial. Tras años de pérdidas, Uber logró su primera rentabilidad sostenida, lo que cambió radicalmente la percepción de los inversores. Su escala global, el efecto de red de su plataforma y la expansión de Uber Eats como negocio independiente la convierten en una de las acciones de crecimiento más seguidas fuera del sector tecnológico puro.',
+
+  // ── Energía ──
+  XOM:   'ExxonMobil Corporation es una de las mayores compañías de petróleo y gas del mundo, con operaciones en exploración, producción, refinación, distribución y petroquímica en más de 60 países. Produce más de 3.8 millones de barriles equivalentes de petróleo diarios. También está invirtiendo en captura de carbono y litio para baterías, como parte de su adaptación a la transición energética. Es un Dividend Aristocrat con más de 40 años de aumentos consecutivos en su dividendo. Su rentabilidad depende significativamente del precio global del crudo y el gas natural.',
+
+  CVX:   'Chevron Corporation es una de las mayores compañías energéticas del mundo, con operaciones integradas en petróleo, gas natural, refinación y productos petroquímicos en más de 180 países. Tiene posiciones estratégicas en el Pérmico (EE.UU.), el Mar del Norte, Kazajistán y Australia. También está avanzando en energías renovables, hidrógeno y combustibles de bajas emisiones. Al igual que ExxonMobil, es un Dividend Aristocrat reconocido por su política de retorno de capital a través de dividendos y recompra de acciones. Es la segunda mayor empresa energética de Estados Unidos.',
+
+  // ── Industria ──
+  BA:    'The Boeing Company es uno de los dos mayores fabricantes de aeronaves comerciales del mundo junto a Airbus. Su portafolio incluye los modelos 737 MAX, 787 Dreamliner y 777X, además de aeronaves militares, helicópteros y sistemas espaciales a través de su división de Defensa. Boeing atraviesa uno de los períodos más complejos de su historia, con problemas de control de calidad en el 737 MAX, retrasos en entregas y una huelga prolongada de trabajadores que afectó su producción. Su recuperación y cartera de pedidos son seguidas de cerca por analistas e inversores del sector aeroespacial.',
+
+  CAT:   'Caterpillar Inc. es el mayor fabricante mundial de maquinaria de construcción y minería, con productos que incluyen excavadoras, bulldozers, motores industriales y turbinas de gas. Sus máquinas son esenciales para proyectos de infraestructura, minería, energía y construcción en todo el mundo. Caterpillar es considerada un barómetro de la actividad económica global: cuando la construcción y la minería crecen, sus ventas aumentan. Es Dividend Aristocrat con décadas de aumentos consecutivos y una referencia para inversores que buscan exposición al ciclo económico industrial con una empresa de calidad reconocida.',
 };
+
 
 const fmt    = (p: number) => (!p || p <= 0) ? '—' : `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtChg = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
