@@ -1,0 +1,558 @@
+---
+// src/pages/herramientas/dolar/[codigo].astro
+export const prerender = false;
+import Layout from '../../../layouts/Layout.astro';
+import { DollarSign, RefreshCw, ArrowLeft } from 'lucide-astro';
+
+const { codigo } = Astro.params;
+
+// ─── CONFIG ESTÁTICA DE PAÍSES ────────────────────────────────
+const paisesConfig: Record<string, {
+  nombre:         string;
+  moneda:         string;
+  simbolo:        string;
+  bandera:        string;
+  tieneParalelo:  boolean;
+  descripcionSeo: string;
+}> = {
+  ar: {
+    nombre: 'Argentina', moneda: 'Peso argentino', simbolo: 'ARS', bandera: 'ar',
+    tieneParalelo: true,
+    descripcionSeo: 'Dólar blue, oficial, MEP y CCL en Argentina hoy. Tipo de cambio actualizado cada 15 minutos.',
+  },
+  ve: {
+    nombre: 'Venezuela', moneda: 'Bolívar digital', simbolo: 'VES', bandera: 've',
+    tieneParalelo: true,
+    descripcionSeo: 'Dólar paralelo y oficial en Venezuela hoy. Tipo de cambio BCV y mercado negro actualizado.',
+  },
+  mx: {
+    nombre: 'México', moneda: 'Peso mexicano', simbolo: 'MXN', bandera: 'mx',
+    tieneParalelo: false,
+    descripcionSeo: 'Tipo de cambio del dólar en México hoy. Precio oficial actualizado cada 15 minutos en Inversax.',
+  },
+  co: {
+    nombre: 'Colombia', moneda: 'Peso colombiano', simbolo: 'COP', bandera: 'co',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Colombia hoy. Tipo de cambio TRM actualizado en Inversax.',
+  },
+  cl: {
+    nombre: 'Chile', moneda: 'Peso chileno', simbolo: 'CLP', bandera: 'cl',
+    tieneParalelo: false,
+    descripcionSeo: 'Tipo de cambio del dólar en Chile hoy. Precio oficial actualizado cada 15 minutos.',
+  },
+  pe: {
+    nombre: 'Perú', moneda: 'Sol peruano', simbolo: 'PEN', bandera: 'pe',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Perú hoy. Tipo de cambio oficial actualizado en Inversax.',
+  },
+  uy: {
+    nombre: 'Uruguay', moneda: 'Peso uruguayo', simbolo: 'UYU', bandera: 'uy',
+    tieneParalelo: false,
+    descripcionSeo: 'Tipo de cambio del dólar en Uruguay hoy. Precio oficial actualizado cada 15 minutos.',
+  },
+  py: {
+    nombre: 'Paraguay', moneda: 'Guaraní', simbolo: 'PYG', bandera: 'py',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Paraguay hoy. Tipo de cambio oficial en guaraníes actualizado.',
+  },
+  bo: {
+    nombre: 'Bolivia', moneda: 'Boliviano', simbolo: 'BOB', bandera: 'bo',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Bolivia hoy. Tipo de cambio oficial en bolivianos actualizado.',
+  },
+  ec: {
+    nombre: 'Ecuador', moneda: 'Dólar (USD)', simbolo: 'USD', bandera: 'ec',
+    tieneParalelo: false,
+    descripcionSeo: 'Ecuador usa el dólar como moneda oficial. Consulta tasas de referencia y economía local.',
+  },
+  hn: {
+    nombre: 'Honduras', moneda: 'Lempira', simbolo: 'HNL', bandera: 'hn',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Honduras hoy. Tipo de cambio lempira-dólar actualizado cada 15 minutos.',
+  },
+  gt: {
+    nombre: 'Guatemala', moneda: 'Quetzal', simbolo: 'GTQ', bandera: 'gt',
+    tieneParalelo: false,
+    descripcionSeo: 'Tipo de cambio del dólar en Guatemala hoy. Precio oficial en quetzales actualizado.',
+  },
+  cr: {
+    nombre: 'Costa Rica', moneda: 'Colón costarricense', simbolo: 'CRC', bandera: 'cr',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Costa Rica hoy. Tipo de cambio oficial en colones actualizado.',
+  },
+  pa: {
+    nombre: 'Panamá', moneda: 'Balboa / USD', simbolo: 'PAB', bandera: 'pa',
+    tieneParalelo: false,
+    descripcionSeo: 'Panamá usa el dólar como moneda oficial junto al balboa. Información financiera actualizada.',
+  },
+  do: {
+    nombre: 'República Dominicana', moneda: 'Peso dominicano', simbolo: 'DOP', bandera: 'do',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en República Dominicana hoy. Tipo de cambio oficial actualizado.',
+  },
+  sv: {
+    nombre: 'El Salvador', moneda: 'Dólar / Bitcoin', simbolo: 'USD', bandera: 'sv',
+    tieneParalelo: false,
+    descripcionSeo: 'El Salvador usa el dólar y Bitcoin como moneda de curso legal. Información financiera actualizada.',
+  },
+  ni: {
+    nombre: 'Nicaragua', moneda: 'Córdoba', simbolo: 'NIO', bandera: 'ni',
+    tieneParalelo: false,
+    descripcionSeo: 'Precio del dólar en Nicaragua hoy. Tipo de cambio oficial en córdobas actualizado.',
+  },
+  cu: {
+    nombre: 'Cuba', moneda: 'Peso cubano', simbolo: 'CUP', bandera: 'cu',
+    tieneParalelo: true,
+    descripcionSeo: 'Precio del dólar en Cuba hoy. Tipo de cambio oficial y mercado informal actualizado.',
+  },
+};
+
+const pais = paisesConfig[codigo ?? ''];
+if (!pais) return Astro.redirect('/herramientas/dolar');
+
+// ─── FETCH SSR — datos en el HTML inicial para indexación ─────
+let variantes: any[] = [];
+let errorCarga = false;
+try {
+  const res      = await fetch(`${Astro.url.origin}/api/dolar`);
+  const json     = await res.json() as any;
+  const paisData = json.data?.find((p: any) => p.bandera === codigo || p.codigo === codigo);
+  variantes      = paisData?.variantes ?? [];
+} catch (_) {
+  errorCarga = true;
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────
+const fmtNum = (n: number | null) => {
+  if (n === null || n === undefined) return '—';
+  if (n >= 100) return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return n.toLocaleString('es-AR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+};
+
+const tituloPage  = pais.tieneParalelo
+  ? `Dólar hoy en ${pais.nombre} — Oficial, Blue y Paralelo | Inversax`
+  : `Dólar hoy en ${pais.nombre} — Tipo de Cambio Oficial | Inversax`;
+
+const canonicalUrl = `https://inversax.com/herramientas/dolar/${codigo}`;
+
+// Variante principal oficial (para mostrar destacada en el hero)
+const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0] ?? null;
+---
+
+<Layout>
+
+<slot name="head" slot="head">
+
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+  <!-- BASIC SEO -->
+  <title>{tituloPage}</title>
+  <meta name="description"    content={pais.descripcionSeo} />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href={canonicalUrl} />
+
+  <!-- KEYWORDS -->
+  <meta name="keywords"      content={`precio dolar hoy ${pais.nombre.toLowerCase()}, dolar ${pais.simbolo.toLowerCase()}, tipo de cambio ${pais.nombre.toLowerCase()}, ${pais.tieneParalelo ? `dolar blue ${pais.nombre.toLowerCase()}, dolar paralelo ${pais.nombre.toLowerCase()}, ` : ''}dolar oficial ${pais.nombre.toLowerCase()}, inversax ${pais.nombre.toLowerCase()}`} />
+  <meta name="news_keywords" content={`dólar ${pais.nombre}, tipo de cambio, ${pais.simbolo}, Inversax`} />
+
+  <!-- GEO -->
+  <meta name="geo.region"       content={codigo!.toUpperCase()} />
+  <meta name="geo.placename"    content={pais.nombre} />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <!-- HREFLANG -->
+  <link rel="alternate" hreflang="es"                             href={canonicalUrl} />
+  <link rel="alternate" hreflang={`es-${codigo!.toUpperCase()}`}  href={canonicalUrl} />
+  <link rel="alternate" hreflang="x-default"                      href={canonicalUrl} />
+
+  <!-- OPEN GRAPH -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content={tituloPage} />
+  <meta property="og:description" content={pais.descripcionSeo} />
+  <meta property="og:url"         content={canonicalUrl} />
+  <meta property="og:image"       content={`https://inversax.com/og/herramientas/dolar-${codigo}.png`} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"   content={`Precio del Dólar en ${pais.nombre} — Inversax`} />
+  <meta property="og:image:type"  content="image/png" />
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
+  <meta name="twitter:title"       content={tituloPage} />
+  <meta name="twitter:description" content={pais.descripcionSeo} />
+  <meta name="twitter:image"       content={`https://inversax.com/og/herramientas/dolar-${codigo}.png`} />
+  <meta name="twitter:image:alt"   content={`Precio del Dólar en ${pais.nombre} — Inversax`} />
+
+  <!-- JSON-LD: WebSite -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
+  <!-- JSON-LD: WebPage con Place -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": tituloPage,
+    "description": pais.descripcionSeo,
+    "url": canonicalUrl,
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
+    },
+    "about": {
+      "@type": "Place",
+      "name": pais.nombre,
+      "addressCountry": codigo!.toUpperCase()
+    }
+  })} />
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",           "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",     "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Precio del Dólar", "item": "https://inversax.com/herramientas/dolar" },
+      { "@type": "ListItem", "position": 4, "name": pais.nombre,        "item": canonicalUrl }
+    ]
+  })} />
+
+  <!-- JSON-LD: FAQPage — solo para países con mercado paralelo -->
+  {pais.tieneParalelo && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": `¿Cuál es el precio del dólar blue hoy en ${pais.nombre}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `El dólar paralelo en ${pais.nombre} se actualiza cada 15 minutos en Inversax. Representa el tipo de cambio informal fuera del sistema bancario oficial.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Cuánto vale el dólar oficial hoy en ${pais.nombre}?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `El dólar oficial en ${pais.nombre} es el tipo de cambio fijado por el banco central. Inversax lo actualiza cada 15 minutos automáticamente.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `¿Cada cuánto se actualiza el tipo de cambio en Inversax?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Los precios se actualizan automáticamente cada 15 minutos. También podés forzar una actualización manual con el botón Actualizar."
+          }
+        }
+      ]
+    })} />
+  )}
+
+</slot>
+
+  <main
+    class="min-h-screen bg-[#0A0B0D] pt-28 pb-20 px-4 sm:px-6"
+    style="font-family: 'DM Sans', sans-serif;"
+    data-codigo={codigo}
+  >
+    <div class="max-w-2xl mx-auto">
+
+      <!-- Back -->
+      <a
+        href="/herramientas/dolar"
+        class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors"
+      >
+        <ArrowLeft size={15} /> Precio del Dólar
+      </a>
+
+      <!-- ── Header ── -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(212,168,67,0.15);">
+            <img
+              src={`https://flagcdn.com/w40/${pais.bandera}.png`}
+              alt={pais.nombre}
+              class="w-6 h-4 object-cover rounded-sm"
+            />
+          </div>
+          <div>
+            <h1
+              class="font-extrabold text-2xl sm:text-3xl text-white leading-tight"
+              style="font-family: 'Syne', sans-serif;"
+            >
+              Dólar en {pais.nombre}
+            </h1>
+            <p class="text-white/40 text-sm">{pais.moneda} · {pais.simbolo}</p>
+          </div>
+        </div>
+
+        <!-- Meta info + botón actualizar -->
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-4 flex-wrap">
+            <span class="flex items-center gap-1.5 text-xs text-white/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              Actualizado cada 15 minutos
+            </span>
+            <span id="ultima-actualizacion" class="text-xs text-white/20"></span>
+          </div>
+          <button
+            id="btn-actualizar"
+            class="flex items-center gap-1.5 text-xs text-white/40 hover:text-white border border-white/[0.07] hover:border-white/20 px-3 py-1.5 rounded-lg transition-colors duration-200 cursor-pointer bg-transparent"
+          >
+            <RefreshCw size={12} />
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Precio destacado (variante oficial, SSR) ── -->
+      {varianteOficial && (
+        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl px-6 py-5 mb-4 flex items-center justify-between gap-4">
+          <div>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-400/10 text-emerald-400">OFICIAL</span>
+            <p class="text-white/50 text-sm mt-1.5">{varianteOficial.nombre}</p>
+          </div>
+          <div class="text-right">
+            {varianteOficial.compra !== null && (
+              <p class="text-white/30 text-xs mb-0.5">Compra <span class="text-white/60 font-medium">{fmtNum(varianteOficial.compra)}</span></p>
+            )}
+            <p
+              class="font-extrabold text-3xl text-white"
+              style="font-family: 'Syne', sans-serif;"
+            >
+              {fmtNum(varianteOficial.venta)}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <!-- ── Leyenda badges ── -->
+      <div class="flex items-center gap-4 mb-4 flex-wrap">
+        <span class="flex items-center gap-1.5 text-xs text-white/40">
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-400/10 text-emerald-400">OFICIAL</span>
+          Tipo de cambio del banco central
+        </span>
+        {pais.tieneParalelo && (
+          <span class="flex items-center gap-1.5 text-xs text-white/40">
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#D4A843]/10 text-[#D4A843]">PARALELO</span>
+            Mercado informal o alternativo
+          </span>
+        )}
+      </div>
+
+      <!-- ── Tabla de variantes (SSR inicial, se actualiza client-side) ── -->
+      <div
+        id="variantes-container"
+        class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden"
+      >
+        {errorCarga || variantes.length === 0 ? (
+          <!-- Skeleton mientras carga client-side -->
+          <div class="divide-y divide-white/[0.05]">
+            {[...Array(3)].map(() => (
+              <div class="flex items-center justify-between px-5 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-4 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-24 h-3 bg-white/5 rounded animate-pulse"></div>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="w-16 h-4 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="divide-y divide-white/[0.05]">
+            {variantes.map((v: any) => (
+              <div class="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors duration-150">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class={`text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
+                    v.esParalelo
+                      ? 'bg-[#D4A843]/10 text-[#D4A843]'
+                      : 'bg-emerald-400/10 text-emerald-400'
+                  }`}>
+                    {v.esParalelo ? 'PARALELO' : 'OFICIAL'}
+                  </span>
+                  <span class="text-white/60 text-sm truncate">{v.nombre}</span>
+                </div>
+                <div class="flex items-center gap-5 flex-shrink-0 ml-3">
+                  {v.compra !== null && (
+                    <div class="text-right hidden sm:block">
+                      <div class="text-[10px] text-white/25 leading-none mb-0.5">Compra</div>
+                      <div class="text-sm text-white/60 font-medium">{fmtNum(v.compra)}</div>
+                    </div>
+                  )}
+                  <div class="text-right">
+                    <div class="text-[10px] text-white/25 leading-none mb-0.5">Venta</div>
+                    <div
+                      class="font-bold text-base text-white"
+                      style="font-family: 'Syne', sans-serif;"
+                    >
+                      {fmtNum(v.venta)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Nota informativa -->
+      <p class="text-white/15 text-xs text-center mt-6">
+        Los precios paralelos son referenciales. Fuentes: bluelytics.com.ar, dolarapi.com y fawazahmed0/currency-api.
+      </p>
+
+      <!-- ── Link de vuelta al índice global ── -->
+      <div class="mt-8 pt-8 border-t border-white/[0.05]">
+        <p class="text-white/25 text-xs mb-3">Ver otros países</p>
+        <a
+          href="/herramientas/dolar"
+          class="inline-flex items-center gap-2 text-[#D4A843] text-sm font-medium hover:underline no-underline"
+        >
+          ← Todos los países en Latinoamérica
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+</Layout>
+
+<script>
+  // ─── Helpers ───────────────────────────────────────────────
+  const fmtNum = (n: number | null): string => {
+    if (n === null || n === undefined) return '—';
+    if (n >= 100) return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return n.toLocaleString('es-AR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  };
+
+  // Recupera el código del país desde el atributo data del <main>
+  const main   = document.querySelector('main[data-codigo]') as HTMLElement;
+  const CODIGO = main?.dataset.codigo ?? '';
+
+  const container  = document.getElementById('variantes-container') as HTMLElement;
+  const ultimaAct  = document.getElementById('ultima-actualizacion');
+  const btnAct     = document.getElementById('btn-actualizar');
+  const icon       = btnAct?.querySelector('svg') as HTMLElement | null;
+
+  function renderVariantes(variantes: any[]) {
+    if (!variantes.length) return;
+
+    container.innerHTML = `
+      <div class="divide-y divide-white/[0.05]">
+        ${variantes.map((v: any) => `
+          <div class="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors duration-150">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
+                v.esParalelo
+                  ? 'bg-[#D4A843]/10 text-[#D4A843]'
+                  : 'bg-emerald-400/10 text-emerald-400'
+              }">
+                ${v.esParalelo ? 'PARALELO' : 'OFICIAL'}
+              </span>
+              <span class="text-white/60 text-sm truncate">${v.nombre}</span>
+            </div>
+            <div class="flex items-center gap-5 flex-shrink-0 ml-3">
+              ${v.compra !== null ? `
+                <div class="text-right hidden sm:block">
+                  <div class="text-[10px] text-white/25 leading-none mb-0.5">Compra</div>
+                  <div class="text-sm text-white/60 font-medium">${fmtNum(v.compra)}</div>
+                </div>
+              ` : ''}
+              <div class="text-right">
+                <div class="text-[10px] text-white/25 leading-none mb-0.5">Venta</div>
+                <div class="font-bold text-base text-white" style="font-family: 'Syne', sans-serif;">
+                  ${fmtNum(v.venta)}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+
+    // Actualizar el precio destacado (hero) con el primer oficial
+    const oficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0];
+    if (oficial) {
+      const hero = document.querySelector('[data-hero-venta]') as HTMLElement | null;
+      if (hero) hero.textContent = fmtNum(oficial.venta);
+    }
+  }
+
+  async function cargarDatos() {
+    btnAct?.setAttribute('disabled', 'true');
+    if (icon) icon.style.animation = 'spin 1s linear infinite';
+
+    try {
+      const res  = await fetch('/api/dolar');
+      const json = await res.json() as any;
+
+      if (!json.ok || !json.data?.length) return;
+
+      const paisData = json.data.find((p: any) => p.bandera === CODIGO || p.codigo === CODIGO);
+      if (paisData?.variantes?.length) {
+        renderVariantes(paisData.variantes);
+        if (ultimaAct) {
+          ultimaAct.textContent = new Date().toLocaleString('es-ES', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit',
+          });
+        }
+      }
+    } catch (e) {
+      console.error('[dolar/[codigo]]', e);
+    } finally {
+      btnAct?.removeAttribute('disabled');
+      if (icon) icon.style.animation = '';
+    }
+  }
+
+  // Si el SSR no trajo datos (error de red en build), cargar en cliente
+  const hayDatosSSR = container.querySelector('.divide-y') !== null &&
+                      !container.querySelector('.animate-pulse');
+  if (!hayDatosSSR) cargarDatos();
+
+  // Refresh manual y automático cada 15 min
+  btnAct?.addEventListener('click', cargarDatos);
+  setInterval(cargarDatos, 1000 * 60 * 15);
+</script>
+
+<style>
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+</style>
