@@ -234,18 +234,6 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
         </div>
       </div>
 
-      <!-- Leyenda badges -->
-      <div class="flex items-center gap-4 mb-6 flex-wrap">
-        <span class="flex items-center gap-1.5 text-xs text-white/40">
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-400/10 text-emerald-400">OFICIAL</span>
-          Tipo de cambio oficial del banco central
-        </span>
-        <span class="flex items-center gap-1.5 text-xs text-white/40">
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#D4A843]/10 text-[#D4A843]">PARALELO</span>
-          Mercado informal o alternativo
-        </span>
-      </div>
-
       <!-- Grid de países — skeleton inicial, se llena client-side -->
       <div id="paises-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
 
@@ -295,12 +283,9 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
   };
 
   function renderGrid(data: any[]) {
-    // ─── ÚNICO CAMBIO respecto al dolar.astro original: ───────
-    // Cada card es un <a> que linkea a /herramientas/dolar/{codigo}
-    // El código del país viene del campo `bandera` que ya devuelve tu API
-    // (mismo valor que usa flagcdn). Si tu API devuelve un campo `codigo`
-    // distinto, reemplaza pais.bandera por pais.codigo aquí abajo.
-    grid.innerHTML = data.map((pais: any) => `
+    grid.innerHTML = data.map((pais: any) => {
+      const hayParalelo = pais.variantes.some((v: any) => v.esParalelo);
+      return `
       <a
         href="/herramientas/dolar/${pais.bandera}"
         class="group bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden transition-colors duration-200 no-underline block"
@@ -316,20 +301,19 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
             <div class="font-bold text-sm text-white group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">${pais.pais}</div>
             <div class="text-[11px] text-white/35">${pais.moneda} · ${pais.simbolo}</div>
           </div>
-          <!-- Flecha sutil -->
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/20 group-hover:text-[#D4A843] transition-colors duration-200 flex-shrink-0"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </div>
         <div class="divide-y divide-white/[0.05]">
           ${pais.variantes.map((v: any) => `
             <div class="flex items-center justify-between px-4 py-3">
               <div class="flex items-center gap-2 min-w-0">
-                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
-                  v.esParalelo
-                    ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                    : 'bg-emerald-400/10 text-emerald-400'
-                }">
-                  ${v.esParalelo ? 'PARALELO' : 'OFICIAL'}
-                </span>
+                ${hayParalelo ? `
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
+                    v.esParalelo ? 'bg-[#D4A843]/10 text-[#D4A843]' : 'bg-emerald-400/10 text-emerald-400'
+                  }">
+                    ${v.esParalelo ? 'PARALELO' : 'OFICIAL'}
+                  </span>
+                ` : ''}
                 <span class="text-white/60 text-xs truncate">${v.nombre}</span>
               </div>
               <div class="flex items-center gap-3 flex-shrink-0 ml-2">
@@ -340,15 +324,15 @@ import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
                   </div>
                 ` : ''}
                 <div class="text-right">
-                  <div class="text-[10px] text-white/25 leading-none mb-0.5">Venta</div>
+                  ${v.compra !== null ? `<div class="text-[10px] text-white/25 leading-none mb-0.5">Venta</div>` : ''}
                   <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">${fmtNum(v.venta)}</div>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>
-      </a>
-    `).join('');
+      </a>`;
+    }).join('');
   }
 
   async function cargarDatos() {
