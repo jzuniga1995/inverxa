@@ -561,20 +561,24 @@ const canonicalUrl = `https://inversax.com/herramientas/dolar/${codigo}`;
           </div>
         ) : (
           <div>
-            {variantes.map((v: any, i: number) => (
+            {(() => {
+              // Detectar si la API realmente devolvió variantes paralelas
+              const hayParalelo = variantes.some((v: any) => v.esParalelo);
+              return variantes.map((v: any, i: number) => (
               <div class={`flex flex-col px-4 sm:px-6 py-4 sm:py-5 gap-3 ${i < variantes.length - 1 ? 'border-b border-white/[0.05]' : ''}`}>
-                <!-- Fila superior: label + nombre -->
                 <div class="flex items-center gap-2">
-                  <span class={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                    v.esParalelo
-                      ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                      : 'bg-emerald-400/10 text-emerald-400'
-                  }`}>
-                    {v.esParalelo ? 'PARALELO' : 'OFICIAL'}
-                  </span>
+                  {hayParalelo && (
+                    <span class={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                      v.esParalelo
+                        ? 'bg-[#D4A843]/10 text-[#D4A843]'
+                        : 'bg-emerald-400/10 text-emerald-400'
+                    }`}>
+                      {v.esParalelo ? 'PARALELO' : 'OFICIAL'}
+                    </span>
+                  )}
                   <span class="text-white/40 text-xs">{v.nombre}</span>
                 </div>
-                <!-- Precio grande centrado -->
+                <!-- Precio: etiquetas Compra/Venta solo si ambas existen -->
                 <div class="flex items-end justify-center gap-6 py-2">
                   {v.compra !== null && (
                     <div class="text-center">
@@ -585,14 +589,17 @@ const canonicalUrl = `https://inversax.com/herramientas/dolar/${codigo}`;
                     </div>
                   )}
                   <div class="text-center">
-                    <div class="text-[10px] text-white/25 mb-1">Venta</div>
+                    {v.compra !== null && (
+                      <div class="text-[10px] text-white/25 mb-1">Venta</div>
+                    )}
                     <div class={`font-extrabold text-3xl sm:text-4xl ${v.esParalelo ? 'text-[#D4A843]' : 'text-white'}`} style="font-family: 'Syne', sans-serif;">
                       {fmtNum(v.venta)}
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+            ));
+            })()}
           </div>
         )}
       </div>
@@ -696,16 +703,13 @@ const canonicalUrl = `https://inversax.com/herramientas/dolar/${codigo}`;
 
   function renderVariantes(variantes: any[]) {
     if (!variantes.length) return;
+    const hayParalelo = variantes.some((v: any) => v.esParalelo);
     container.innerHTML = `
       <div>
         ${variantes.map((v: any, i: number) => `
           <div class="flex flex-col px-4 sm:px-6 py-4 sm:py-5 gap-3 ${i < variantes.length - 1 ? 'border-b border-white/[0.05]' : ''}">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                v.esParalelo ? 'bg-[#D4A843]/10 text-[#D4A843]' : 'bg-emerald-400/10 text-emerald-400'
-              }">
-                ${v.esParalelo ? 'PARALELO' : 'OFICIAL'}
-              </span>
+              ${hayParalelo ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${v.esParalelo ? 'bg-[#D4A843]/10 text-[#D4A843]' : 'bg-emerald-400/10 text-emerald-400'}">${v.esParalelo ? 'PARALELO' : 'OFICIAL'}</span>` : ''}
               <span class="text-white/40 text-xs">${v.nombre}</span>
             </div>
             <div class="flex items-end justify-center gap-6 py-2">
@@ -716,7 +720,7 @@ const canonicalUrl = `https://inversax.com/herramientas/dolar/${codigo}`;
                 </div>
               ` : ''}
               <div class="text-center">
-                <div class="text-[10px] text-white/25 mb-1">Venta</div>
+                ${v.compra !== null ? `<div class="text-[10px] text-white/25 mb-1">Venta</div>` : ''}
                 <div class="font-extrabold text-3xl sm:text-4xl ${v.esParalelo ? 'text-[#D4A843]' : 'text-white'}" style="font-family: 'Syne', sans-serif;">${fmtNum(v.venta)}</div>
               </div>
             </div>
