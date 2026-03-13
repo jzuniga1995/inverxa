@@ -2,7 +2,7 @@
 // src/pages/herramientas/dolar/[codigo].astro
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
-import { DollarSign, RefreshCw, ArrowLeft } from 'lucide-astro';
+import { RefreshCw, ArrowLeft } from 'lucide-astro';
 
 const { codigo } = Astro.params;
 
@@ -14,103 +14,313 @@ const paisesConfig: Record<string, {
   bandera:        string;
   tieneParalelo:  boolean;
   descripcionSeo: string;
+  contenidoSeo:   {
+    intro:       string;
+    lexico:      { termino: string; definicion: string }[];
+    contexto:    string;
+    consejo:     string;
+  };
 }> = {
   ar: {
     nombre: 'Argentina', moneda: 'Peso argentino', simbolo: 'ARS', bandera: 'ar',
     tieneParalelo: true,
     descripcionSeo: 'Dólar blue, oficial, MEP y CCL en Argentina hoy. Tipo de cambio actualizado cada 15 minutos.',
+    contenidoSeo: {
+      intro: `En Argentina el dólar no es solo una moneda extranjera: es el termómetro de la economía, el refugio del ahorro y la obsesión cotidiana de millones de personas. Desde el almacenero del barrio hasta el empresario que exporta soja, todos miran el dólar antes de tomar cualquier decisión financiera importante. Esta realidad tiene décadas de historia y varias crisis que la explican — el Rodrigazo de 1975, la hiperinflación de 1989, el corralito de 2001 — cada una dejó una cicatriz en la memoria colectiva que empujó a los argentinos a dolarizar sus ahorros como método de defensa.`,
+      lexico: [
+        { termino: 'Dólar blue', definicion: 'El tipo de cambio del mercado informal o negro. Se opera en cuevas y arbolitos — así se llama a los cambistas callejeros — principalmente en la peatonal Florida de Buenos Aires. Su precio suele ser significativamente más alto que el oficial.' },
+        { termino: 'Dólar MEP', definicion: 'También llamado dólar bolsa. Se obtiene comprando un bono en pesos (típicamente el AL30) y vendiéndolo en dólares en el mismo mercado bursátil. Es 100% legal y no tiene límite de monto.' },
+        { termino: 'Dólar CCL', definicion: 'Contado con liquidación. Similar al MEP pero la venta del bono se realiza en una cuenta del exterior. Suele ser levemente más caro que el MEP y también es completamente legal.' },
+        { termino: 'Dólar tarjeta / Qatar', definicion: 'El tipo de cambio que aplica para consumos con tarjeta en el exterior o compras en sitios extranjeros. Incluye el tipo de cambio oficial más impuestos (PAIS, Ganancias, etc.).' },
+        { termino: 'Cepo cambiario', definicion: 'Restricción oficial que limita la compra de dólares. En su forma más estricta, el cupo es de apenas USD 200 mensuales por persona, conocido popularmente como el "dólar ahorro".' },
+        { termino: 'Brecha cambiaria', definicion: 'La diferencia porcentual entre el dólar oficial y el blue o financiero. Cuando la brecha supera el 100%, señal inequívoca de tensión en el mercado.' },
+      ],
+      contexto: `El peso argentino acumula una devaluación histórica sin parangón en la región. En 2001 la paridad era 1 a 1 con el dólar; dos décadas después el tipo de cambio oficial ya superó los 1.000 pesos por dólar y el blue llegó a rozar los 1.500 en su pico de 2023. La llegada de Javier Milei a la presidencia en diciembre de 2023 marcó un punto de inflexión: se implementó un crawling peg del 2% mensual y se inició un proceso de desregulación que paulatinamente fue achicando la brecha entre el oficial y los tipos paralelos. Hoy la situación es más estable, pero la memoria inflacionaria sigue haciendo que los argentinos prefieran el dólar como reserva de valor por sobre cualquier instrumento en pesos.`,
+      consejo: `Si estás viajando a Argentina, el tipo de cambio más conveniente es el MEP o el CCL que podés obtener a través de plataformas como Lemon, Belo o cualquier broker local. Evitá cambiar en el aeropuerto donde solo aplica el oficial. Los hoteles y restaurantes suelen aceptar dólares billetes, especialmente en Buenos Aires, y en muchos casos aplican un tipo de cambio competitivo al blue.`,
+    },
   },
   ve: {
     nombre: 'Venezuela', moneda: 'Bolívar digital', simbolo: 'VES', bandera: 've',
     tieneParalelo: true,
     descripcionSeo: 'Dólar paralelo y oficial en Venezuela hoy. Tipo de cambio BCV y mercado negro actualizado.',
+    contenidoSeo: {
+      intro: `Venezuela vivió una de las hiperinflaciones más extremas de la historia moderna. Entre 2016 y 2021 el bolívar perdió tantos ceros que el gobierno tuvo que reconvertir la moneda tres veces — la última dio origen al bolívar digital en 2021, eliminando seis ceros de golpe. Hoy, gran parte de la economía venezolana funciona de facto en dólares: los supermercados tienen sus precios en USD, los alquileres se cobran en dólares y hasta los vendedores ambulantes cotizan en la divisa norteamericana. El dólar dejó de ser una moneda extranjera para convertirse en la moneda real del día a día.`,
+      lexico: [
+        { termino: 'Tasa BCV', definicion: 'El tipo de cambio oficial fijado por el Banco Central de Venezuela. Se actualiza diariamente y es la referencia legal para transacciones formales.' },
+        { termino: 'Paralelo o negro', definicion: 'El tipo de cambio del mercado informal. En Venezuela históricamente estuvo muy por encima del oficial, aunque con la dolarización de facto la brecha se ha ido reduciendo.' },
+        { termino: 'Dolarización de facto', definicion: 'El proceso informal por el cual el dólar se convirtió en la moneda dominante del comercio cotidiano sin que el gobierno lo decretara oficialmente. Se estima que más del 60% de las transacciones en Venezuela se realizan en dólares.' },
+        { termino: 'Petro', definicion: 'Criptomoneda creada por el gobierno de Maduro en 2018 respaldada supuestamente por reservas de petróleo. Fue un intento de eludir sanciones internacionales que tuvo escasa adopción real.' },
+        { termino: 'Monitor Dólar', definicion: 'Portal de referencia venezolano que publica el tipo de cambio del mercado paralelo. Es consultado masivamente por comerciantes y ciudadanos como referencia de precios.' },
+      ],
+      contexto: `Desde 2019 el gobierno de Nicolás Maduro flexibilizó implícitamente el uso del dólar para frenar el colapso económico. Esta apertura tácita permitió que la hiperinflación cediera y que la economía encontrara cierta estabilidad relativa. Sin embargo, la situación sigue siendo frágil: las sanciones internacionales, la baja producción petrolera y la falta de inversión mantienen al país en una situación de vulnerabilidad. El tipo de cambio BCV y el paralelo se han ido acercando progresivamente, una señal de mayor unificación del mercado cambiario, aunque la desconfianza en el bolívar persiste en todos los estratos sociales.`,
+      consejo: `Si vas a Venezuela o hacés negocios allí, lo más práctico es manejar dólares en efectivo. Los billetes de pequeña denominación (USD 1, 5, 10) son especialmente útiles para el comercio cotidiano. Las transferencias en Zelle son extremadamente populares entre comerciantes venezolanos dentro y fuera del país.`,
+    },
   },
   mx: {
     nombre: 'México', moneda: 'Peso mexicano', simbolo: 'MXN', bandera: 'mx',
     tieneParalelo: false,
     descripcionSeo: 'Tipo de cambio del dólar en México hoy. Precio oficial actualizado cada 15 minutos en Inversax.',
+    contenidoSeo: {
+      intro: `El peso mexicano es una de las monedas más sólidas y líquidas de América Latina. A diferencia de muchos de sus vecinos, México tiene un mercado cambiario libre y profundo donde el peso cotiza en tiempo real contra el dólar las 24 horas, los cinco días de la semana. Esta liquidez lo convierte en uno de los pesos más negociados del mundo emergente, solo superado en Latinoamérica por el real brasileño. El tipo de cambio refleja no solo la economía interna sino también las relaciones comerciales con Estados Unidos, destino de casi el 80% de las exportaciones mexicanas.`,
+      lexico: [
+        { termino: 'FIX', definicion: 'Tipo de cambio de referencia publicado diariamente por el Banco de México (Banxico). Se usa para obligaciones denominadas en dólares dentro de México. No es el tipo de cambio de ventanilla.' },
+        { termino: 'TIIE', definicion: 'Tasa de Interés Interbancaria de Equilibrio. No es un tipo de cambio, pero influye directamente en él: cuando Banxico sube la TIIE para combatir inflación, el peso tiende a fortalecerse.' },
+        { termino: 'Ventanilla bancaria', definicion: 'El tipo de cambio que aplican los bancos para compra y venta de dólares en sucursal. Suele tener un spread mayor al del mercado interbancario.' },
+        { termino: 'Remesas', definicion: 'Los envíos de dinero de mexicanos en el exterior — principalmente en EE.UU. — son la mayor fuente de divisas del país, superando incluso al petróleo. En 2023 llegaron a USD 63,000 millones.' },
+        { termino: 'Superpeso', definicion: 'Término popular que surgió en 2023 cuando el peso se apreció significativamente frente al dólar, llegando a niveles no vistos en años, gracias al nearshoring y las altas tasas de Banxico.' },
+      ],
+      contexto: `El peso mexicano atravesó una etapa de fortaleza notable entre 2022 y 2024, fenómeno conocido como el "superpeso", impulsado por las altas tasas de interés de Banxico, el boom del nearshoring (empresas que trasladan producción de Asia a México para estar más cerca de EE.UU.) y las remesas récord. Sin embargo, la moneda mostró volatilidad en el período post-electoral de 2024 ante la incertidumbre sobre reformas constitucionales. El peso sigue siendo una moneda relativamente estable en el contexto regional, con el respaldo de reservas internacionales sólidas y una política monetaria ortodoxa.`,
+      consejo: `Para cambiar dólares en México, las casas de cambio suelen ofrecer mejor tipo que los bancos y mucho mejor que los aeropuertos. En ciudades fronterizas como Tijuana, Ciudad Juárez o Nuevo Laredo el movimiento cambiario es especialmente activo. Las plataformas digitales como Bitso o SPIN by OXXO también ofrecen tipos competitivos para transferencias internacionales.`,
+    },
   },
   co: {
     nombre: 'Colombia', moneda: 'Peso colombiano', simbolo: 'COP', bandera: 'co',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Colombia hoy. Tipo de cambio TRM actualizado en Inversax.',
+    contenidoSeo: {
+      intro: `El peso colombiano tiene una relación particular con el dólar que refleja la estructura exportadora del país. Colombia es un gran exportador de petróleo, carbón, café y flores — todos commodities que se cotizan en dólares — lo que hace que el precio del crudo tenga una correlación directa con el comportamiento del peso. Cuando el petróleo sube, el peso se fortalece; cuando cae, el dólar se encarece en Colombia. Esta dependencia de las materias primas es el principal factor de volatilidad cambiaria en el país cafetero.`,
+      lexico: [
+        { termino: 'TRM', definicion: 'Tasa Representativa del Mercado. Es el tipo de cambio oficial calculado por la Superintendencia Financiera con base en las operaciones del día anterior. Se usa para contratos, impuestos y obligaciones legales.' },
+        { termino: 'Spread cambiario', definicion: 'La diferencia entre el precio de compra y venta del dólar. En Colombia los bancos suelen tener spreads amplios; las casas de cambio y plataformas digitales son más competitivas.' },
+        { termino: 'Dólar interbancario', definicion: 'El precio al que se negocian los dólares entre entidades financieras. Es la referencia más cercana al mercado real, antes de que los bancos apliquen su margen de ganancia al cliente.' },
+        { termino: 'Revaluación / Devaluación', definicion: 'Términos cotidianos en Colombia para describir el fortalecimiento o debilitamiento del peso. "El dólar subió" significa que el peso se devaluó; "el dólar bajó" que el peso se revaluó.' },
+      ],
+      contexto: `El peso colombiano sufrió una devaluación significativa durante la pandemia y en los años posteriores, llegando a superar los COP 5.000 por dólar en 2022 en un contexto de alta inflación global y caída del petróleo. Con la normalización de las tasas internacionales y cierta recuperación del crudo, el peso encontró mayor estabilidad en torno a los COP 4.000. Las políticas del gobierno de Gustavo Petro y los debates sobre reforma tributaria han generado episodios de volatilidad puntual, pero el Banco de la República mantiene una política monetaria relativamente sólida que ancla las expectativas.`,
+      consejo: `En Colombia, las casas de cambio del centro de Bogotá, Medellín o Cali suelen ofrecer el mejor tipo de cambio. Plataformas como Adyen, Bancolombia Digital o Rappipay son buenas alternativas para cambios pequeños. Evitá los cambistas informales en la calle — además del riesgo de billetes falsos, las tasas no siempre son mejores.`,
+    },
   },
   cl: {
     nombre: 'Chile', moneda: 'Peso chileno', simbolo: 'CLP', bandera: 'cl',
     tieneParalelo: false,
     descripcionSeo: 'Tipo de cambio del dólar en Chile hoy. Precio oficial actualizado cada 15 minutos.',
+    contenidoSeo: {
+      intro: `Chile tiene una de las economías más abiertas y estables de América Latina, con un mercado cambiario libre donde el Banco Central interviene solo en situaciones excepcionales. El peso chileno tiene una correlación muy estrecha con el precio del cobre — Chile produce cerca del 27% del cobre mundial — lo que convierte a este metal en el termómetro más preciso del tipo de cambio. En los pasillos de Santiago se dice que "el cobre tiene su propio ministerio": el precio del mineral en la Bolsa de Metales de Londres mueve el dólar en Chile más que cualquier discurso del Banco Central.`,
+      lexico: [
+        { termino: 'Dólar observado', definicion: 'El tipo de cambio oficial publicado diariamente por el Banco Central, calculado con las operaciones del día hábil anterior. Es la referencia legal para contratos y declaraciones tributarias.' },
+        { termino: 'Cobre y peso', definicion: 'La correlación es tan fuerte que los analistas locales calculan el "tipo de cambio implícito del cobre": si el metal sube 10%, el peso tiende a apreciarse entre 2% y 4%.' },
+        { termino: 'UF (Unidad de Fomento)', definicion: 'Unidad de cuenta indexada a la inflación, usada principalmente para hipotecas, arrendamientos y contratos de largo plazo. No es una moneda pero tiene enorme presencia en la vida financiera chilena.' },
+        { termino: 'Dólar acuerdo', definicion: 'Tipo de cambio negociado entre privados para operaciones específicas. Es legal y puede diferir del dólar observado según el acuerdo entre las partes.' },
+      ],
+      contexto: `El peso chileno mostró alta volatilidad entre 2019 y 2022, marcado por el estallido social de octubre 2019, la pandemia y el proceso constituyente. El dólar llegó a superar los CLP 1.000 en 2022, un nivel históricamente alto. Desde entonces el peso se recuperó parcialmente con la estabilización política y la fortaleza relativa del cobre. Chile mantiene un Fondo de Estabilización Económica y Social (FEES) que actúa como colchón ante caídas del cobre, dotando al país de una resiliencia fiscal que otros países de la región no tienen.`,
+      consejo: `En Chile el sistema financiero es muy desarrollado y los bancos ofrecen tipos competitivos para cambio de divisas. Las casas de cambio del centro de Santiago ("el bandejón" de la Alameda) suelen tener mejores tasas que las sucursales bancarias. Para montos grandes, las mesas de dinero de los bancos ofrecen tipos negociables.`,
+    },
   },
   pe: {
     nombre: 'Perú', moneda: 'Sol peruano', simbolo: 'PEN', bandera: 'pe',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Perú hoy. Tipo de cambio oficial actualizado en Inversax.',
+    contenidoSeo: {
+      intro: `El sol peruano es reconocido como una de las monedas más estables de la región, gracias a décadas de política monetaria prudente del Banco Central de Reserva del Perú (BCRP). Esta estabilidad es notable si se considera la historia reciente del país: Peru vivió una hiperinflación devastadora en los años 80 bajo el gobierno de Alan García que destruyó el inti, la moneda anterior. Esa memoria histórica explica por qué el BCRP es uno de los bancos centrales más conservadores y respetados de Latinoamérica, con una política de flotación sucia que interviene activamente para evitar movimientos bruscos del tipo de cambio.`,
+      lexico: [
+        { termino: 'SBS', definicion: 'Superintendencia de Banca, Seguros y AFP. Regula el sistema financiero peruano y publica diariamente el tipo de cambio de referencia.' },
+        { termino: 'Flotación sucia', definicion: 'El régimen cambiario del Perú. El sol flota libremente pero el BCRP interviene comprando o vendiendo dólares cuando la variación diaria supera ciertos umbrales, evitando volatilidad excesiva.' },
+        { termino: 'Dolarización parcial', definicion: 'Aunque el sol es la moneda oficial, muchos activos en Perú (hipotecas, autos, bienes raíces) se denominan en dólares. Esta dualidad es herencia de los años de hiperinflación.' },
+        { termino: 'Tipo de cambio paralelo', definicion: 'En Perú existe un mercado paralelo legal y transparente operado por cambistas con credencial en las calles céntricas de Lima. No es un mercado negro: es informal pero tolerado y visible.' },
+      ],
+      contexto: `El sol peruano mantuvo una notable estabilidad durante la pandemia en comparación con sus pares regionales. Sin embargo, la volatilidad política de los últimos años — con cinco presidentes entre 2016 y 2023 y el fallido autogolpe de Pedro Castillo en 2022 — generó episodios de depreciación puntual. Perú es además el segundo mayor productor mundial de cobre y zinc, lo que hace que los precios de los metales influyan en el tipo de cambio, aunque en menor medida que en Chile gracias a la mayor diversificación de su economía.`,
+      consejo: `En Lima, los mejores tipos de cambio se encuentran en las casas de cambio del centro histórico (jirón Ocoña) y en Miraflores. Los cambistas de calle con chaleco oficial también son una opción válida para pequeñas cantidades. Los bancos suelen tener tipos menos competitivos. Para transferencias internacionales, plataformas como Western Union o las billeteras digitales de los bancos locales son cada vez más populares.`,
+    },
   },
   uy: {
     nombre: 'Uruguay', moneda: 'Peso uruguayo', simbolo: 'UYU', bandera: 'uy',
     tieneParalelo: false,
     descripcionSeo: 'Tipo de cambio del dólar en Uruguay hoy. Precio oficial actualizado cada 15 minutos.',
+    contenidoSeo: {
+      intro: `Uruguay tiene una relación especial con el dólar que se explica en gran parte por su rol histórico como plaza financiera de la región. Montevideo ha sido durante décadas un refugio de capitales argentinos y brasileños, lo que generó un sistema bancario altamente dolarizado: más del 70% de los depósitos bancarios están en dólares. Esta realidad hace que el peso uruguayo conviva permanentemente con la divisa norteamericana en la vida cotidiana: sueldos, alquileres y propiedades suelen denominarse en dólares, mientras que el peso se usa para las compras del día a día.`,
+      lexico: [
+        { termino: 'BCU', definicion: 'Banco Central del Uruguay. Maneja la política monetaria y publica diariamente el tipo de cambio de referencia interbancario.' },
+        { termino: 'UI (Unidad Indexada)', definicion: 'Similar a la UF chilena, es una unidad de cuenta ajustada por inflación utilizada en hipotecas y contratos de largo plazo en Uruguay.' },
+        { termino: 'Plaza financiera', definicion: 'Uruguay es conocido como la "Suiza de América" por su estabilidad institucional y secreto bancario histórico, que atrajo depósitos de toda la región. La libre circulación de divisas es un pilar del sistema.' },
+        { termino: 'Dolarización de activos', definicion: 'El fenómeno por el cual los uruguayos prefieren denominar sus ahorros y activos en dólares. Los precios de los inmuebles en Uruguay se publican invariablemente en USD.' },
+      ],
+      contexto: `El peso uruguayo ha mostrado una tendencia a la depreciación gradual y ordenada frente al dólar, en línea con el diferencial de inflación entre Uruguay y Estados Unidos. El BCU maneja un régimen de flotación administrada. La economía uruguaya, sólida por sus estándares regionales, enfrenta el desafío permanente de la competitividad exportadora: cuando el peso se aprecia demasiado, los sectores agropecuario y turístico sienten la presión. El turismo argentino es especialmente sensible al tipo de cambio, ya que cuando el dólar en Uruguay está "barato" en términos relativos, los argentinos prefieren veranear en Punta del Este y Porto.`,
+      consejo: `En Uruguay podés cambiar dólares en los bancos, casas de cambio y en muchos comercios que aceptan ambas monedas. Las casas de cambio del centro de Montevideo y de Punta del Este durante la temporada ofrecen los mejores tipos. Los cajeros automáticos dispensan tanto pesos como dólares, lo que hace el manejo de divisas muy práctico para el visitante.`,
+    },
   },
   py: {
     nombre: 'Paraguay', moneda: 'Guaraní', simbolo: 'PYG', bandera: 'py',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Paraguay hoy. Tipo de cambio oficial en guaraníes actualizado.',
+    contenidoSeo: {
+      intro: `El guaraní paraguayo es la moneda con mayor cantidad de ceros de América Latina — un dólar equivale a varios miles de guaraníes — lo que hace que las transacciones cotidianas involucren números de varios dígitos. Esta característica no es señal de debilidad: Paraguay tiene una de las economías más dinámicas de la región, con bajos impuestos, una zona franca en Ciudad del Este reconocida mundialmente y un modelo de baja inflación que el Banco Central lleva décadas perfeccionando. El país es el cuarto exportador mundial de soja y el segundo de energía hidroeléctrica per cápita.`,
+      lexico: [
+        { termino: 'BCP', definicion: 'Banco Central del Paraguay. Publica diariamente el tipo de cambio de referencia y gestiona las reservas internacionales del país.' },
+        { termino: 'Ciudad del Este', definicion: 'Ciudad fronteriza con Brasil y Argentina que es uno de los mayores centros comerciales de América del Sur. El movimiento de divisas allí es intensísimo dado el comercio transfronterizo masivo.' },
+        { termino: 'Itaipú y Yacyretá', definicion: 'Las dos represas hidroeléctricas que generan energía eléctrica que Paraguay vende a Brasil y Argentina respectivamente. Esta venta genera ingresos en dólares que sostienen las reservas del BCP.' },
+        { termino: 'Zona franca', definicion: 'Paraguay tiene zonas francas con tratamiento impositivo especial. Ciudad del Este es conocida como un hub de electrónica, perfumes y productos importados con precios muy competitivos.' },
+      ],
+      contexto: `Paraguay ha mantenido una inflación relativamente baja y un tipo de cambio estable durante la última década, lo que contrasta favorablemente con sus vecinos Argentina y Brasil. La política fiscal conservadora y un modelo de Estado pequeño contribuyen a esta estabilidad. Sin embargo, la economía paraguaya es vulnerable a las sequías (que afectan la soja y la generación hidroeléctrica) y a las fluctuaciones del real brasileño, dado que Brasil es su principal socio comercial.`,
+      consejo: `En Paraguay es muy común el uso del dólar y el real brasileño en zonas fronterizas. En Asunción los cambios se hacen sin problema en casas de cambio del microcentro. Si vas a Ciudad del Este, llevá efectivo en dólares o reales — es el mercado más conveniente para cambio físico de divisas de la región.`,
+    },
   },
   bo: {
     nombre: 'Bolivia', moneda: 'Boliviano', simbolo: 'BOB', bandera: 'bo',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Bolivia hoy. Tipo de cambio oficial en bolivianos actualizado.',
-  },
-  ec: {
-    nombre: 'Ecuador', moneda: 'Dólar (USD)', simbolo: 'USD', bandera: 'ec',
-    tieneParalelo: false,
-    descripcionSeo: 'Ecuador usa el dólar como moneda oficial. Consulta tasas de referencia y economía local.',
+    contenidoSeo: {
+      intro: `Bolivia mantuvo durante casi dos décadas uno de los regímenes cambiarios más estables de América Latina: el tipo de cambio estuvo fijo en torno a los 6,96 bolivianos por dólar desde 2011. Esta estabilidad fue posible gracias al boom del gas natural — Bolivia tiene las segundas reservas más grandes de gas de Sudamérica — que llenó las arcas del Estado durante los años de altos precios. Sin embargo, la caída de la producción gasífera y el agotamiento de reservas internacionales generaron una crisis de divisas a partir de 2023 que puso en jaque ese esquema de tipo de cambio fijo.`,
+      lexico: [
+        { termino: 'BCB', definicion: 'Banco Central de Bolivia. Administró durante años el sistema de tipo de cambio fijo y hoy enfrenta el desafío de gestionar la escasez de divisas.' },
+        { termino: 'Dólar en el mercado paralelo', definicion: 'Ante la escasez de dólares en el sistema bancario oficial a partir de 2023, surgió un mercado paralelo donde el dólar cotiza por encima del tipo oficial, fenómeno inédito en Bolivia en décadas.' },
+        { termino: 'Gas y divisas', definicion: 'Bolivia exportó gas principalmente a Brasil y Argentina, generando un flujo constante de dólares. La declinación de estos campos gasíferos es la causa estructural de la escasez de divisas actual.' },
+        { termino: 'Bolivianización', definicion: 'El proceso por el cual, gracias a la estabilidad cambiaria, los bolivianos fueron depositando más en bolivianos y menos en dólares — lo opuesto a la tendencia regional de dolarización.' },
+      ],
+      contexto: `Bolivia enfrenta desde 2023 una situación inédita en su historia reciente: la escasez de dólares generó filas en los bancos, restricciones para comprar divisas y un mercado paralelo que llegó a cotizar el dólar un 30-40% por encima del oficial. El gobierno de Luis Arce implementó medidas de control de exportaciones y negoció préstamos internacionales para aliviar la presión, pero la situación estructural requiere diversificar la economía más allá del gas. El litio, del que Bolivia tiene las mayores reservas del mundo, es visto como la solución de largo plazo.`,
+      consejo: `Si necesitás dólares en Bolivia, los bancos tienen cupos limitados y suele haber demoras. Las casas de cambio del centro de La Paz o Cochabamba son más ágiles. Para transferencias al exterior, las remesadoras internacionales son la vía más práctica dado que el sistema bancario tiene restricciones.`,
+    },
   },
   hn: {
     nombre: 'Honduras', moneda: 'Lempira', simbolo: 'HNL', bandera: 'hn',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Honduras hoy. Tipo de cambio lempira-dólar actualizado cada 15 minutos.',
+    contenidoSeo: {
+      intro: `El lempira hondureño — nombrado en honor al cacique indígena Lempira que resistió la conquista española — es la moneda oficial de Honduras desde 1931. El Banco Central de Honduras (BCH) maneja un régimen de crawling peg, es decir, una depreciación gradual y controlada del lempira frente al dólar que refleja el diferencial de inflación entre Honduras y Estados Unidos. Este esquema provee estabilidad al tipo de cambio pero implica una depreciación constante de la moneda local a lo largo del tiempo.`,
+      lexico: [
+        { termino: 'BCH', definicion: 'Banco Central de Honduras. Establece la política cambiaria mediante subastas periódicas de dólares al sistema bancario, fijando así el tipo de cambio de referencia.' },
+        { termino: 'Crawling peg', definicion: 'El régimen cambiario de Honduras. El lempira se deprecia de forma gradual y predecible frente al dólar, típicamente unos 2-4 centavos por año, evitando tanto una sobrevaluación como una devaluación brusca.' },
+        { termino: 'Remesas', definicion: 'Las remesas son el mayor ingreso de divisas de Honduras, superando a las exportaciones de café, banano y palma africana juntas. Cerca del 25% del PIB proviene de los envíos de hondureños residentes en Estados Unidos.' },
+        { termino: 'Maquila', definicion: 'El sector de maquila (manufactura textil principalmente) es otro generador clave de divisas. Honduras es uno de los mayores exportadores de ropa hacia Estados Unidos bajo el CAFTA-DR.' },
+      ],
+      contexto: `La economía hondureña está profundamente integrada con la de Estados Unidos: el dólar es ampliamente aceptado en el comercio, los precios de propiedades y bienes duraderos suelen cotizarse en dólares, y las remesas de la diáspora hondureña en EE.UU. son el motor real de la economía familiar de millones de hogares. La reciente aprobación de las Zonas de Empleo y Desarrollo Económico (ZEDE) y su posterior derogación generaron incertidumbre, pero la economía mantiene un crecimiento moderado apoyado en las remesas y las exportaciones tradicionales.`,
+      consejo: `En Honduras los dólares se aceptan en muchos comercios, hoteles y establecimientos turísticos, especialmente en Tegucigalpa, San Pedro Sula y las islas de la Bahía. Los bancos y casas de cambio ofrecen tipos similares. Para enviar dinero desde EE.UU., plataformas como Remitly, WorldRemit o las cadenas de Western Union tienen amplia presencia y buenos tipos.`,
+    },
   },
   gt: {
     nombre: 'Guatemala', moneda: 'Quetzal', simbolo: 'GTQ', bandera: 'gt',
     tieneParalelo: false,
     descripcionSeo: 'Tipo de cambio del dólar en Guatemala hoy. Precio oficial en quetzales actualizado.',
+    contenidoSeo: {
+      intro: `El quetzal guatemalteco — nombrado por el ave símbolo nacional, sagrada para los mayas — es una de las monedas más estables de Centroamérica. El Banco de Guatemala (Banguat) maneja un régimen de flotación administrada con muy pocas intervenciones, y el quetzal ha mantenido una paridad relativamente constante con el dólar durante décadas. Esta estabilidad es notable dado que Guatemala es el país más poblado de Centroamérica y tiene una economía diversificada con exportaciones de café, azúcar, cardamomo, palma africana y una industria manufacturera creciente.`,
+      lexico: [
+        { termino: 'Banguat', definicion: 'Banco de Guatemala. Regula la política monetaria y cambiaria del país con un mandato constitucional de estabilidad de precios.' },
+        { termino: 'Remesas', definicion: 'Guatemala recibe remesas equivalentes al 18-20% de su PIB, principalmente desde Estados Unidos. Son el mayor generador de divisas del país y el sustento de millones de familias en el interior.' },
+        { termino: 'Agroexportaciones', definicion: 'El café, azúcar y cardamomo (Guatemala es el mayor exportador mundial de cardamomo) generan importantes flujos de dólares que estabilizan la moneda.' },
+        { termino: 'Tipo de cambio de referencia', definicion: 'Banguat publica diariamente el tipo de cambio de referencia calculado con las operaciones del mercado interbancario. Es la base para contratos y declaraciones tributarias.' },
+      ],
+      contexto: `El quetzal ha mostrado una apreciación relativa en años recientes gracias al flujo sostenido de remesas y a la solidez de las exportaciones agrícolas. Guatemala es considerada una de las economías más estables de la región, con niveles de deuda pública bajos y déficit fiscal moderado. Sin embargo, la informalidad económica alta, la desigualdad y la dependencia de las remesas son vulnerabilidades estructurales que el país debe abordar para un desarrollo más robusto.`,
+      consejo: `En Guatemala los cambios se realizan en bancos y casas de cambio con facilidad. En la Zona Viva de Ciudad de Guatemala y en Antigua los dólares son ampliamente aceptados en hoteles y restaurantes. Para cambiar quetzales de vuelta a dólares al salir del país, es mejor hacerlo en el aeropuerto o en bancos antes del viaje ya que fuera de Guatemala el quetzal no se cambia fácilmente.`,
+    },
   },
   cr: {
     nombre: 'Costa Rica', moneda: 'Colón costarricense', simbolo: 'CRC', bandera: 'cr',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Costa Rica hoy. Tipo de cambio oficial en colones actualizado.',
-  },
-  pa: {
-    nombre: 'Panamá', moneda: 'Balboa / USD', simbolo: 'PAB', bandera: 'pa',
-    tieneParalelo: false,
-    descripcionSeo: 'Panamá usa el dólar como moneda oficial junto al balboa. Información financiera actualizada.',
+    contenidoSeo: {
+      intro: `Costa Rica tiene una economía altamente dolarizada pese a tener moneda propia. El colón costarricense coexiste con el dólar en la vida cotidiana: muchos supermercados, restaurantes y comercios aceptan ambas monedas; los precios de propiedades y alquileres se publican en dólares; y el sistema bancario maneja tanto cuentas en colones como en dólares indistintamente. Este fenómeno tiene su explicación en la alta integración con la economía estadounidense — Estados Unidos es el principal destino turístico emisor y el mayor socio comercial de Costa Rica.`,
+      lexico: [
+        { termino: 'BCCR', definicion: 'Banco Central de Costa Rica. Maneja la política monetaria con metas de inflación y un régimen de flotación administrada para el colón.' },
+        { termino: 'Colones vs dólares', definicion: 'La economía tica funciona en paralelo en ambas monedas. Los salarios del sector público se pagan en colones; muchos salarios del sector privado y turístico, en dólares.' },
+        { termino: 'Turismo como generador de divisas', definicion: 'Costa Rica recibe más de 2 millones de turistas anuales, principalmente de EE.UU. y Europa. Este turismo es el principal generador de dólares para el país.' },
+        { termino: 'Zonas francas', definicion: 'Costa Rica atrae inversión extranjera directa en zonas francas, especialmente en tecnología médica y semiconductores (Intel operó allí muchos años). Estas empresas generan divisas y empleos calificados.' },
+      ],
+      contexto: `El colón costarricense se ha apreciado en años recientes frente al dólar, lo que generó debates sobre competitividad exportadora. El BCCR mantiene una política de flotación con bandas implícitas. La economía costarricense es una de las más desarrolladas de Centroamérica, con altos índices de desarrollo humano, educación universal y un sector de servicios sofisticado. Sin embargo, el alto déficit fiscal y la deuda pública son desafíos estructurales que presionan sobre la estabilidad financiera.`,
+      consejo: `En Costa Rica podés pagar en dólares en casi cualquier establecimiento turístico, aunque el vuelto te lo darán en colones. Los bancos estatales (BCR, BNCR) y las casas de cambio del centro de San José ofrecen buenos tipos. Los aeropuertos tienen tipos menos competitivos. Para largas estadías, conviene abrir una cuenta en dólares en un banco local.`,
+    },
   },
   do: {
     nombre: 'República Dominicana', moneda: 'Peso dominicano', simbolo: 'DOP', bandera: 'do',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en República Dominicana hoy. Tipo de cambio oficial actualizado.',
-  },
-  sv: {
-    nombre: 'El Salvador', moneda: 'Dólar / Bitcoin', simbolo: 'USD', bandera: 'sv',
-    tieneParalelo: false,
-    descripcionSeo: 'El Salvador usa el dólar y Bitcoin como moneda de curso legal. Información financiera actualizada.',
+    contenidoSeo: {
+      intro: `La República Dominicana tiene una de las economías de más rápido crecimiento del Caribe y Centroamérica, impulsada por el turismo, las zonas francas y las remesas. El peso dominicano ha mostrado una tendencia a la depreciación gradual frente al dólar, con episodios de mayor volatilidad en tiempos de crisis. El Banco Central de la República Dominicana (BCRD) maneja un régimen de flotación administrada, interviniendo cuando la volatilidad amenaza la estabilidad.`,
+      lexico: [
+        { termino: 'BCRD', definicion: 'Banco Central de la República Dominicana. Regula la política monetaria y cambiaria con metas de inflación de banda.' },
+        { termino: 'Turismo y divisas', definicion: 'República Dominicana es el destino turístico más visitado del Caribe. El turismo genera más de USD 8.000 millones anuales en divisas, siendo el principal sostén del peso.' },
+        { termino: 'Zonas francas', definicion: 'Las zonas francas dominicanas exportan principalmente textiles, calzado y productos médicos. Generan importantes ingresos en dólares y emplean a cientos de miles de personas.' },
+        { termino: 'Remesas', definicion: 'La diáspora dominicana — principalmente en Estados Unidos y Puerto Rico — envía remesas equivalentes al 8-10% del PIB anualmente.' },
+      ],
+      contexto: `El peso dominicano mantuvo relativa estabilidad durante la pandemia gracias a los paquetes de estímulo del gobierno y la rápida recuperación del turismo en 2021-2022. El país logró ser de los primeros en recuperar los niveles pre-pandemia de visitantes. La economía dominicana crece consistentemente por encima del promedio regional, aunque persisten desafíos de distribución del ingreso y dependencia de importaciones de combustible que presionan el tipo de cambio.`,
+      consejo: `En Santo Domingo y en las zonas turísticas como Punta Cana, Puerto Plata o Las Terrenas, el dólar se acepta ampliamente. Las casas de cambio (bancos de cambio) en el aeropuerto ofrecen tipos razonables. Para estadías largas, los bancos locales como Banreservas o Popular ofrecen cuentas en dólares muy accesibles.`,
+    },
   },
   ni: {
     nombre: 'Nicaragua', moneda: 'Córdoba', simbolo: 'NIO', bandera: 'ni',
     tieneParalelo: false,
     descripcionSeo: 'Precio del dólar en Nicaragua hoy. Tipo de cambio oficial en córdobas actualizado.',
+    contenidoSeo: {
+      intro: `El córdoba nicaragüense — bautizado en honor al conquistador Francisco Hernández de Córdoba, fundador de las ciudades de Granada y León — opera bajo un sistema de crawling peg desde 1993, con una devaluación programada del 5% anual frente al dólar. Este esquema ha provisto estabilidad cambiaria y anclado las expectativas de inflación, aunque a costa de una pérdida gradual de competitividad. Nicaragua es el segundo país más pobre de América Latina, aunque en la última década mostró tasas de crecimiento razonables apoyadas en las exportaciones agropecuarias y el turismo antes de la crisis política de 2018.`,
+      lexico: [
+        { termino: 'BCN', definicion: 'Banco Central de Nicaragua. Administra el sistema de deslizamiento cambiario del 5% anual.' },
+        { termino: 'Deslizamiento', definicion: 'El mecanismo técnico por el cual el tipo de cambio sube exactamente un 5% cada año de forma predecible. Esto permite a empresas y hogares calcular con precisión el costo futuro del dólar.' },
+        { termino: 'Remesas', definicion: 'Las remesas de nicaragüenses en Costa Rica y Estados Unidos representan más del 20% del PIB y son el principal ingreso de divisas del país, superando a las exportaciones de café, oro y carne.' },
+        { termino: 'Dolarización informal', definicion: 'En Nicaragua el dólar circula libremente junto al córdoba. Muchos precios, especialmente en Managua, se cotizan en dólares o en córdobas "a tasa del día".' },
+      ],
+      contexto: `Nicaragua enfrenta sanciones económicas internacionales relacionadas con la situación política bajo el gobierno de Daniel Ortega, lo que restringe el acceso a financiamiento externo y presiona las reservas. Sin embargo, el flujo de remesas ha mantenido la estabilidad cambiaria. El país tiene niveles de inflación relativamente bajos para la región gracias al ancla cambiaria del crawling peg.`,
+      consejo: `En Nicaragua los dólares se aceptan en la mayoría de los negocios formales. Los bancos y casas de cambio en Managua ofrecen los mejores tipos. En ciudades más pequeñas conviene llevar córdobas para las transacciones cotidianas.`,
+    },
   },
   cu: {
     nombre: 'Cuba', moneda: 'Peso cubano', simbolo: 'CUP', bandera: 'cu',
     tieneParalelo: true,
     descripcionSeo: 'Precio del dólar en Cuba hoy. Tipo de cambio oficial y mercado informal actualizado.',
+    contenidoSeo: {
+      intro: `Cuba tiene uno de los sistemas cambiarios más complejos del mundo, producto de décadas de economía planificada y la convivencia de múltiples tipos de cambio. Tras la Tarea Ordenamiento de enero de 2021, que unificó el CUC (peso convertible) y el CUP (peso cubano), Cuba oficialmente tiene una sola moneda — el peso cubano — con un tipo de cambio oficial de 24 CUP por dólar. Sin embargo, la realidad del mercado informal es muy distinta: el dólar en el mercado negro llegó a superar los 300-400 CUP, reflejando la escasez de divisas y las distorsiones estructurales de la economía.`,
+      lexico: [
+        { termino: 'CADECA', definicion: 'Casas de Cambio S.A. — la red oficial de casas de cambio estatales donde se puede cambiar divisas al tipo de cambio oficial. Las largas colas y la escasez de divisas son frecuentes.' },
+        { termino: 'Mercado informal o "la calle"', definicion: 'El mercado paralelo donde el dólar cotiza muy por encima del oficial. Es ilegal pero masivamente utilizado dado que el tipo oficial no refleja la realidad económica.' },
+        { termino: 'MLC (Moneda Libremente Convertible)', definicion: 'Unidad de cuenta usada en las tiendas de divisas del Estado. Equivale nominalmente a 1 USD y solo puede obtenerse mediante remesas o tarjetas extranjeras.' },
+        { termino: 'Remesas', definicion: 'Las remesas de cubanos en el exterior — principalmente de la comunidad en Miami y España — son vitales para millones de familias. Las restricciones de transferencias internacionales complican su envío.' },
+        { termino: 'Tarea Ordenamiento', definicion: 'La reforma monetaria de enero 2021 que eliminó el CUC y unificó el tipo de cambio a 24 CUP por dólar. Generó una ola inflacionaria sin precedentes en la historia reciente de Cuba.' },
+      ],
+      contexto: `Cuba atraviesa una de sus peores crisis económicas en décadas, agravada por la pandemia, el recrudecimiento del bloqueo estadounidense y las ineficiencias estructurales del modelo. La inflación disparada post-Tarea Ordenamiento erosionó el poder adquisitivo de los cubanos; los apagones prolongados afectan la producción; y la emigración masiva (más de 500.000 cubanos emigraron solo en 2022-2023) reduce la fuerza laboral disponible. El tipo de cambio informal del dólar es el termómetro más preciso del estado real de la economía cubana.`,
+      consejo: `Si viajás a Cuba, llevá efectivo en euros o en dólares canadienses — las tarjetas de crédito y débito estadounidenses no funcionan. Las casas de cambio CADECA tienen cupos limitados. Para cambiar a la tasa del mercado informal asumís un riesgo legal. El mercado de las criptomonedas, especialmente USDT, ha ganado popularidad entre cubanos como mecanismo de ahorro y transferencia.`,
+    },
+  },
+  pa: {
+    nombre: 'Panamá', moneda: 'Balboa / USD', simbolo: 'PAB', bandera: 'pa',
+    tieneParalelo: false,
+    descripcionSeo: 'Panamá usa el dólar como moneda oficial junto al balboa. Información financiera actualizada.',
+    contenidoSeo: {
+      intro: `Panamá es uno de los pocos países del mundo que no tiene moneda propia de facto: el dólar estadounidense circula libremente como moneda de curso legal junto al balboa panameño, que existe solo en monedas fraccionarias y tiene paridad 1:1 con el dólar. Esta dolarización completa elimina el riesgo cambiario y la inflación importada, convirtiendo a Panamá en un hub financiero y logístico de primer orden. El Canal de Panamá, el hub aeroportuario de Tocumen y el centro bancario internacional son los pilares de una economía que crece de forma sostenida.`,
+      lexico: [
+        { termino: 'Balboa', definicion: 'Moneda oficial de Panamá en términos legales, pero que en la práctica solo existe en monedas de 1 balboa y sus fracciones. Los billetes son 100% dólares estadounidenses.' },
+        { termino: 'Canal de Panamá', definicion: 'La joya de la economía panameña. Genera ingresos por más de USD 4.000 millones anuales en peajes y mueve el 5% del comercio mundial. Es también el principal empleador del sector formal.' },
+        { termino: 'Centro Bancario Internacional', definicion: 'Panamá alberga a más de 70 bancos internacionales. El secreto bancario y la estabilidad cambiaria lo convierten en una plaza financiera de relevancia regional.' },
+        { termino: 'Hub logístico', definicion: 'La Zona Libre de Colón es la segunda zona franca más grande del mundo. Junto con el Canal y el aeropuerto de Tocumen, hacen de Panamá el centro logístico del continente.' },
+      ],
+      contexto: `Al no tener moneda propia, Panamá no tiene política monetaria autónoma ni puede devaluar para ganar competitividad. Su ajuste ante shocks externos se da por precios y salarios, no por tipo de cambio. Esta rigidez es contrapesada por la solidez institucional y la posición geográfica privilegiada. La economía panameña creció a tasas del 6-7% durante la primera mitad de la década 2010, aunque el cierre de la mina de cobre Cobre Panamá en 2023 tras protestas sociales generó una contracción significativa.`,
+      consejo: `Al viajar a Panamá no necesitás cambiar dinero si venís de Estados Unidos. Con dólares funcionás perfectamente en todo el país. Las tarjetas de crédito son aceptadas ampliamente en la ciudad de Panamá. En el interior y en zonas rurales el efectivo es más necesario.`,
+    },
+  },
+  sv: {
+    nombre: 'El Salvador', moneda: 'Dólar / Bitcoin', simbolo: 'USD', bandera: 'sv',
+    tieneParalelo: false,
+    descripcionSeo: 'El Salvador usa el dólar y Bitcoin como moneda de curso legal. Información financiera actualizada.',
+    contenidoSeo: {
+      intro: `El Salvador tiene una historia monetaria única en el mundo. En 2001 dolarizó su economía completamente, abandonando el colón salvadoreño. Veinte años después, en 2021, se convirtió en el primer país del mundo en adoptar Bitcoin como moneda de curso legal — cualquier negocio estaba obligado legalmente a aceptarlo — en un experimento sin precedentes impulsado por el presidente Nayib Bukele. Esta doble condición de economía dolarizada y primer estado bitcoin del mundo convirtió a El Salvador en un caso de estudio para economistas de todo el planeta.`,
+      lexico: [
+        { termino: 'Dolarización (2001)', definicion: 'El Salvador abandonó el colón en 2001 y adoptó el dólar como única moneda, eliminando el riesgo cambiario pero también la soberanía monetaria.' },
+        { termino: 'Ley Bitcoin', definicion: 'En septiembre de 2021, El Salvador aprobó la Ley Bitcoin, haciendo obligatoria la aceptación de BTC como medio de pago. En 2024 la ley fue reformada para hacerlo voluntario, como condición para el acuerdo con el FMI.' },
+        { termino: 'Chivo Wallet', definicion: 'La billetera digital oficial creada por el gobierno salvadoreño para el uso de Bitcoin y dólares digitales. El gobierno regaló USD 30 en BTC a cada ciudadano para promover su adopción.' },
+        { termino: 'Bitcoin City', definicion: 'Proyecto del gobierno Bukele para construir una ciudad junto al volcán Conchagua, financiada con bonos bitcoin y con cero impuestos para atraer inversores cripto. El proyecto avanzó lentamente.' },
+        { termino: 'Remesas', definicion: 'Las remesas de salvadoreños en EE.UU. representan el 24% del PIB. El gobierno intentó canalizar parte de ellas a través de Chivo Wallet para abaratar comisiones.' },
+      ],
+      contexto: `El experimento Bitcoin de El Salvador generó debate internacional pero tuvo una adopción ciudadana limitada — encuestas mostraron que la mayoría de los salvadoreños nunca usó la Chivo Wallet tras el bono inicial. En 2024, como condición para un acuerdo de USD 1.400 millones con el FMI, el gobierno reformó la ley para que la aceptación de Bitcoin fuera voluntaria en lugar de obligatoria. El Salvador sigue siendo una economía dolarizada con alta dependencia de remesas y creciente turismo, impulsado también por la política de seguridad de Bukele que redujo drásticamente los homicidios.`,
+      consejo: `En El Salvador los dólares son la moneda de facto en todo. El Bitcoin es aceptado en establecimientos turísticos y tiendas modernas, pero no es universal. Si querés experimentar el sistema Bitcoin, cargá la Chivo Wallet antes de llegar. Las remesas desde EE.UU. llegan a través de múltiples plataformas con comisiones muy bajas.`,
+    },
+  },
+  ec: {
+    nombre: 'Ecuador', moneda: 'Dólar (USD)', simbolo: 'USD', bandera: 'ec',
+    tieneParalelo: false,
+    descripcionSeo: 'Ecuador usa el dólar como moneda oficial. Consulta tasas de referencia y economía local.',
+    contenidoSeo: {
+      intro: `Ecuador adoptó el dólar como moneda oficial en el año 2000, tras una de las peores crisis bancarias y financieras de su historia. La quiebra del sistema bancario ecuatoriano en 1999 y la hiperinflación del sucre — la moneda que reemplazó — llevaron al presidente Jamil Mahuad a decretar la dolarización en una decisión que salvó la economía pero que también le costó la presidencia pocos días después. Más de dos décadas después, la dolarización sigue siendo uno de los principales activos macroeconómicos del Ecuador: proporciona estabilidad de precios, atrae inversión y simplifica el comercio con EE.UU.`,
+      lexico: [
+        { termino: 'Sucre', definicion: 'La antigua moneda de Ecuador, nombrada en honor al mariscal Antonio José de Sucre. Fue reemplazada por el dólar en 2000 tras su colapso hiperinflacionario.' },
+        { termino: 'Feriado bancario', definicion: 'En marzo de 1999 el gobierno decretó un feriado bancario — congelando los depósitos — que desencadenó la crisis que condujo a la dolarización. El término quedó grabado en la memoria colectiva ecuatoriana.' },
+        { termino: 'Sector petrolero', definicion: 'Ecuador es un exportador de petróleo, aunque sus reservas son menores que las de Venezuela o Colombia. El precio del crudo impacta directamente en los ingresos fiscales y la capacidad de gasto del gobierno.' },
+        { termino: 'Remesas', definicion: 'La diáspora ecuatoriana — especialmente en España e Italia tras la crisis de 1999 — envía remesas que representan el 4-5% del PIB.' },
+      ],
+      contexto: `Ecuador no puede devaluar ni emitir moneda — al estar dolarizado, el ajuste económico se hace vía reducción de salarios y precios, o mediante financiamiento externo. Esto hace que los períodos de crisis sean más dolorosos pero también que la recuperación sea más sólida. El país enfrenta desafíos de seguridad significativos, con el crimen organizado ganando presencia, lo que afecta la inversión. Sin embargo, la estabilidad cambiaria sigue siendo una ventaja comparativa que atrae a inversores y turistas.`,
+      consejo: `Al estar dolarizado, no hay necesidad de cambio de divisas en Ecuador. Con dólares funcionás perfectamente en todo el país. Las tarjetas de crédito son ampliamente aceptadas en Quito, Guayaquil y zonas turísticas como Galápagos y Cuenca.`,
+    },
   },
 };
 
 const pais = paisesConfig[codigo ?? ''];
 if (!pais) return Astro.redirect('/herramientas/dolar');
 
-// ─── FETCH SSR — datos en el HTML inicial para indexación ─────
+// ─── FETCH SSR ────────────────────────────────────────────────
 let variantes: any[] = [];
 let errorCarga = false;
 try {
@@ -122,7 +332,6 @@ try {
   errorCarga = true;
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────
 const fmtNum = (n: number | null) => {
   if (n === null || n === undefined) return '—';
   if (n >= 100) return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -134,9 +343,6 @@ const tituloPage  = pais.tieneParalelo
   : `Dólar hoy en ${pais.nombre} — Tipo de Cambio Oficial | Inversax`;
 
 const canonicalUrl = `https://inversax.com/herramientas/dolar/${codigo}`;
-
-// Variante principal oficial (para mostrar destacada en el hero)
-const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0] ?? null;
 ---
 
 <Layout>
@@ -147,7 +353,6 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
   <link rel="dns-prefetch" href="https://res.cloudinary.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <!-- BASIC SEO -->
   <title>{tituloPage}</title>
   <meta name="description"    content={pais.descripcionSeo} />
   <meta name="author"         content="José Zúniga" />
@@ -156,22 +361,18 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
   <meta name="googlebot-news" content="index, follow" />
   <link rel="canonical"       href={canonicalUrl} />
 
-  <!-- KEYWORDS -->
   <meta name="keywords"      content={`precio dolar hoy ${pais.nombre.toLowerCase()}, dolar ${pais.simbolo.toLowerCase()}, tipo de cambio ${pais.nombre.toLowerCase()}, ${pais.tieneParalelo ? `dolar blue ${pais.nombre.toLowerCase()}, dolar paralelo ${pais.nombre.toLowerCase()}, ` : ''}dolar oficial ${pais.nombre.toLowerCase()}, inversax ${pais.nombre.toLowerCase()}`} />
   <meta name="news_keywords" content={`dólar ${pais.nombre}, tipo de cambio, ${pais.simbolo}, Inversax`} />
 
-  <!-- GEO -->
   <meta name="geo.region"       content={codigo!.toUpperCase()} />
   <meta name="geo.placename"    content={pais.nombre} />
   <meta name="language"         content="Spanish" />
   <meta name="content-language" content="es" />
 
-  <!-- HREFLANG -->
   <link rel="alternate" hreflang="es"                             href={canonicalUrl} />
   <link rel="alternate" hreflang={`es-${codigo!.toUpperCase()}`}  href={canonicalUrl} />
   <link rel="alternate" hreflang="x-default"                      href={canonicalUrl} />
 
-  <!-- OPEN GRAPH -->
   <meta property="og:site_name"   content="Inversax" />
   <meta property="og:locale"      content="es_LA" />
   <meta property="og:type"        content="website" />
@@ -184,7 +385,6 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
   <meta property="og:image:alt"   content={`Precio del Dólar en ${pais.nombre} — Inversax`} />
   <meta property="og:image:type"  content="image/png" />
 
-  <!-- TWITTER CARD -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:creator"     content="@inversax" />
@@ -193,7 +393,6 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
   <meta name="twitter:image"       content={`https://inversax.com/og/herramientas/dolar-${codigo}.png`} />
   <meta name="twitter:image:alt"   content={`Precio del Dólar en ${pais.nombre} — Inversax`} />
 
-  <!-- JSON-LD: WebSite -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -208,7 +407,6 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
     }
   })} />
 
-  <!-- JSON-LD: WebPage con Place -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -223,14 +421,9 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
       "url": "https://inversax.com",
       "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
     },
-    "about": {
-      "@type": "Place",
-      "name": pais.nombre,
-      "addressCountry": codigo!.toUpperCase()
-    }
+    "about": { "@type": "Place", "name": pais.nombre, "addressCountry": codigo!.toUpperCase() }
   })} />
 
-  <!-- JSON-LD: BreadcrumbList -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -242,7 +435,6 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
     ]
   })} />
 
-  <!-- JSON-LD: FAQPage — solo para países con mercado paralelo -->
   {pais.tieneParalelo && (
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -276,6 +468,20 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
     })} />
   )}
 
+  <!-- JSON-LD: DefinedTermSet con el léxico local — ayuda a Google a entender terminología específica -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "name": `Léxico cambiario en ${pais.nombre}`,
+    "inLanguage": "es",
+    "hasDefinedTerm": pais.contenidoSeo.lexico.map(item => ({
+      "@type": "DefinedTerm",
+      "name": item.termino,
+      "description": item.definicion,
+      "inDefinedTermSet": `https://inversax.com/herramientas/dolar/${codigo}`
+    }))
+  })} />
+
 </slot>
 
   <main
@@ -294,7 +500,7 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
       </a>
 
       <!-- ── Header ── -->
-      <div class="mb-10">
+      <div class="mb-8">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(212,168,67,0.15);">
             <img
@@ -314,7 +520,6 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
           </div>
         </div>
 
-        <!-- Meta info + botón actualizar -->
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div class="flex items-center gap-4 flex-wrap">
             <span class="flex items-center gap-1.5 text-xs text-white/30">
@@ -333,29 +538,8 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
         </div>
       </div>
 
-      <!-- ── Precio destacado (variante oficial, SSR) ── -->
-      {varianteOficial && (
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl px-6 py-5 mb-4 flex items-center justify-between gap-4">
-          <div>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-400/10 text-emerald-400">OFICIAL</span>
-            <p class="text-white/50 text-sm mt-1.5">{varianteOficial.nombre}</p>
-          </div>
-          <div class="text-right">
-            {varianteOficial.compra !== null && (
-              <p class="text-white/30 text-xs mb-0.5">Compra <span class="text-white/60 font-medium">{fmtNum(varianteOficial.compra)}</span></p>
-            )}
-            <p
-              class="font-extrabold text-3xl text-white"
-              style="font-family: 'Syne', sans-serif;"
-            >
-              {fmtNum(varianteOficial.venta)}
-            </p>
-          </div>
-        </div>
-      )}
-
       <!-- ── Leyenda badges ── -->
-      <div class="flex items-center gap-4 mb-4 flex-wrap">
+      <div class="flex items-center gap-4 mb-3 flex-wrap">
         <span class="flex items-center gap-1.5 text-xs text-white/40">
           <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-400/10 text-emerald-400">OFICIAL</span>
           Tipo de cambio del banco central
@@ -368,15 +552,14 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
         )}
       </div>
 
-      <!-- ── Tabla de variantes (SSR inicial, se actualiza client-side) ── -->
+      <!-- ── Tabla de variantes ── -->
       <div
         id="variantes-container"
-        class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden"
+        class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden mb-10"
       >
         {errorCarga || variantes.length === 0 ? (
-          <!-- Skeleton mientras carga client-side -->
           <div class="divide-y divide-white/[0.05]">
-            {[...Array(3)].map(() => (
+            {[...Array(2)].map(() => (
               <div class="flex items-center justify-between px-5 py-4">
                 <div class="flex items-center gap-2">
                   <div class="w-14 h-4 bg-white/5 rounded animate-pulse"></div>
@@ -426,13 +609,74 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
         )}
       </div>
 
-      <!-- Nota informativa -->
-      <p class="text-white/15 text-xs text-center mt-6">
+      <!-- ═══════════════════════════════════════════════════════
+           CONTENIDO SEO EDITORIAL
+           Texto humanizado, extenso y con léxico local.
+           Google lo indexa; los usuarios que quieran contexto
+           lo leen; el resto simplemente lo omite.
+      ═══════════════════════════════════════════════════════ -->
+
+      <!-- Intro -->
+      <section class="mb-8">
+        <h2
+          class="font-bold text-lg text-white mb-3"
+          style="font-family: 'Syne', sans-serif;"
+        >
+          El dólar en {pais.nombre}: contexto y realidad
+        </h2>
+        <p class="text-white/50 text-sm leading-relaxed">
+          {pais.contenidoSeo.intro}
+        </p>
+      </section>
+
+      <!-- Léxico local -->
+      <section class="mb-8">
+        <h2
+          class="font-bold text-lg text-white mb-4"
+          style="font-family: 'Syne', sans-serif;"
+        >
+          Términos que se usan en {pais.nombre}
+        </h2>
+        <div class="flex flex-col gap-3">
+          {pais.contenidoSeo.lexico.map((item) => (
+            <div class="bg-[#111318] border border-white/[0.05] rounded-xl px-5 py-4">
+              <p class="text-sm font-semibold text-white mb-1" style="font-family: 'Syne', sans-serif;">
+                {item.termino}
+              </p>
+              <p class="text-white/45 text-xs leading-relaxed">{item.definicion}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Contexto económico -->
+      <section class="mb-8">
+        <h2
+          class="font-bold text-lg text-white mb-3"
+          style="font-family: 'Syne', sans-serif;"
+        >
+          Situación actual del tipo de cambio
+        </h2>
+        <p class="text-white/50 text-sm leading-relaxed">
+          {pais.contenidoSeo.contexto}
+        </p>
+      </section>
+
+      <!-- Consejo práctico -->
+      <section class="mb-10">
+        <div class="bg-[#111318] border border-[#D4A843]/15 rounded-2xl px-5 py-5">
+          <p class="text-[#D4A843] text-xs font-bold uppercase tracking-widest mb-2">Consejo práctico</p>
+          <p class="text-white/50 text-sm leading-relaxed">{pais.contenidoSeo.consejo}</p>
+        </div>
+      </section>
+
+      <!-- Nota de fuentes -->
+      <p class="text-white/15 text-xs text-center mb-8">
         Los precios paralelos son referenciales. Fuentes: bluelytics.com.ar, dolarapi.com y fawazahmed0/currency-api.
       </p>
 
-      <!-- ── Link de vuelta al índice global ── -->
-      <div class="mt-8 pt-8 border-t border-white/[0.05]">
+      <!-- Link de vuelta -->
+      <div class="pt-6 border-t border-white/[0.05]">
         <p class="text-white/25 text-xs mb-3">Ver otros países</p>
         <a
           href="/herramientas/dolar"
@@ -448,17 +692,14 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
 </Layout>
 
 <script>
-  // ─── Helpers ───────────────────────────────────────────────
   const fmtNum = (n: number | null): string => {
     if (n === null || n === undefined) return '—';
     if (n >= 100) return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return n.toLocaleString('es-AR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
   };
 
-  // Recupera el código del país desde el atributo data del <main>
-  const main   = document.querySelector('main[data-codigo]') as HTMLElement;
-  const CODIGO = main?.dataset.codigo ?? '';
-
+  const main       = document.querySelector('main[data-codigo]') as HTMLElement;
+  const CODIGO     = main?.dataset.codigo ?? '';
   const container  = document.getElementById('variantes-container') as HTMLElement;
   const ultimaAct  = document.getElementById('ultima-actualizacion');
   const btnAct     = document.getElementById('btn-actualizar');
@@ -466,16 +707,13 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
 
   function renderVariantes(variantes: any[]) {
     if (!variantes.length) return;
-
     container.innerHTML = `
       <div class="divide-y divide-white/[0.05]">
         ${variantes.map((v: any) => `
           <div class="flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors duration-150">
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
-                v.esParalelo
-                  ? 'bg-[#D4A843]/10 text-[#D4A843]'
-                  : 'bg-emerald-400/10 text-emerald-400'
+                v.esParalelo ? 'bg-[#D4A843]/10 text-[#D4A843]' : 'bg-emerald-400/10 text-emerald-400'
               }">
                 ${v.esParalelo ? 'PARALELO' : 'OFICIAL'}
               </span>
@@ -498,25 +736,15 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
           </div>
         `).join('')}
       </div>`;
-
-    // Actualizar el precio destacado (hero) con el primer oficial
-    const oficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0];
-    if (oficial) {
-      const hero = document.querySelector('[data-hero-venta]') as HTMLElement | null;
-      if (hero) hero.textContent = fmtNum(oficial.venta);
-    }
   }
 
   async function cargarDatos() {
     btnAct?.setAttribute('disabled', 'true');
     if (icon) icon.style.animation = 'spin 1s linear infinite';
-
     try {
-      const res  = await fetch('/api/dolar');
-      const json = await res.json() as any;
-
+      const res      = await fetch('/api/dolar');
+      const json     = await res.json() as any;
       if (!json.ok || !json.data?.length) return;
-
       const paisData = json.data.find((p: any) => p.bandera === CODIGO || p.codigo === CODIGO);
       if (paisData?.variantes?.length) {
         renderVariantes(paisData.variantes);
@@ -535,12 +763,11 @@ const varianteOficial = variantes.find((v: any) => !v.esParalelo) ?? variantes[0
     }
   }
 
-  // Si el SSR no trajo datos (error de red en build), cargar en cliente
+  // Si SSR no trajo datos, cargar en cliente
   const hayDatosSSR = container.querySelector('.divide-y') !== null &&
                       !container.querySelector('.animate-pulse');
   if (!hayDatosSSR) cargarDatos();
 
-  // Refresh manual y automático cada 15 min
   btnAct?.addEventListener('click', cargarDatos);
   setInterval(cargarDatos, 1000 * 60 * 15);
 </script>
