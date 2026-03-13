@@ -50,30 +50,44 @@ const ACCIONES_SLUGS = [
   // Tecnología
   'aapl', 'nvda', 'msft', 'meta', 'googl',
   'amd', 'pltr', 'crwd', 'shop',
-
   // Alta volatilidad
   'tsla', 'amzn', 'nflx', 'coin', 'hood',
-
   // ETFs
   'spy', 'qqq', 'gld',
-
   // LATAM
   'meli', 'ec', 'pbr', 'vale', 'glob', 'amx',
-
   // Finanzas
   'v', 'jpm', 'gs', 'brkb', 'pypl',
-
   // Salud
   'lly', 'jnj', 'pfe',
-
   // Consumo
   'ko', 'mcd', 'dis', 'sbux', 'nke', 'uber',
-
   // Energía
   'xom', 'cvx',
-
   // Industria
   'ba', 'cat',
+];
+
+// Deben coincidir exactamente con los códigos del paisesConfig en [codigo].astro
+const DOLAR_PAISES = [
+  'ar', // Argentina
+  've', // Venezuela
+  'mx', // México
+  'co', // Colombia
+  'cl', // Chile
+  'pe', // Perú
+  'uy', // Uruguay
+  'py', // Paraguay
+  'bo', // Bolivia
+  'ec', // Ecuador
+  'hn', // Honduras
+  'gt', // Guatemala
+  'cr', // Costa Rica
+  'pa', // Panamá
+  'do', // República Dominicana
+  'sv', // El Salvador
+  'ni', // Nicaragua
+  'cu', // Cuba
 ];
 
 export const GET: APIRoute = async ({ locals }) => {
@@ -103,7 +117,12 @@ export const GET: APIRoute = async ({ locals }) => {
   ${url('/herramientas/forex',    new Date(), 0.8, 'daily')}
   ${url('/herramientas/metales',  new Date(), 0.7, 'daily')}
   ${url('/herramientas/acciones', new Date(), 0.8, 'daily')}
-  ${url('/herramientas/dolar',    new Date(), 0.7, 'daily')}
+  ${url('/herramientas/dolar',    new Date(), 0.8, 'daily')}
+
+  <!-- ── Dólar: páginas por país ── -->
+  ${DOLAR_PAISES.map(codigo =>
+    url(`/herramientas/dolar/${codigo}`, new Date(), 0.7, 'daily')
+  ).join('')}
 
   <!-- ── Cripto: páginas individuales ── -->
   ${CRYPTO_IDS.map(id =>
