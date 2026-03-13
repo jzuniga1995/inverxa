@@ -1,0 +1,401 @@
+---
+// src/pages/herramientas/dolar/index.astro
+import Layout from '../../../layouts/Layout.astro';
+import { DollarSign, RefreshCw, Globe, ArrowLeft } from 'lucide-astro';
+---
+
+<Layout>
+
+<slot name="head" slot="head">
+
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax</title>
+  <meta name="description"    content="Precio del dólar hoy en Argentina, Venezuela, México, Colombia y toda Latinoamérica. Dólar blue, oficial, MEP, CCL y paralelo actualizados cada 15 minutos." />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href="https://inversax.com/herramientas/dolar" />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS
+  ═══════════════════════════════════════ -->
+  <meta name="keywords"      content="precio dolar hoy, dolar blue hoy, dolar paralelo, tipo de cambio latinoamerica, dolar oficial argentina, dolar venezuela, dolar mexico hoy, dolar colombia hoy, dolar mep, dolar ccl, dolar blue argentina hoy" />
+  <meta name="news_keywords" content="precio dólar hoy, dólar blue, dólar paralelo, tipo de cambio, Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/dolar" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/dolar" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Precio del Dólar Hoy en Latinoamérica — Oficial, Blue y Paralelo | Inversax" />
+  <meta property="og:description" content="Dólar blue, oficial, MEP y paralelo en Argentina, Venezuela, México, Colombia y más. Actualizado cada 15 minutos." />
+  <meta property="og:url"         content="https://inversax.com/herramientas/dolar" />
+  <meta property="og:image"       content="https://inversax.com/og/herramientas/dolar.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"   content="Precio del Dólar hoy en Latinoamérica — Inversax" />
+  <meta property="og:image:type"  content="image/png" />
+
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
+  <meta name="twitter:title"       content="Precio del Dólar Hoy — Oficial, Blue y Paralelo en LATAM | Inversax" />
+  <meta name="twitter:description" content="Dólar blue, oficial y paralelo en toda Latinoamérica. Actualizado cada 15 minutos." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/dolar.png" />
+  <meta name="twitter:image:alt"   content="Precio del Dólar hoy en Latinoamérica — Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Precio del Dólar Hoy en Latinoamérica — Inversax",
+    "description": "Dólar oficial, blue y paralelo en toda Latinoamérica. Actualizado cada 15 minutos.",
+    "url": "https://inversax.com/herramientas/dolar",
+    "inLanguage": "es",
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
+    },
+    "about": { "@type": "Thing", "name": "Tipo de cambio del dólar estadounidense" }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",           "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",     "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Precio del Dólar", "item": "https://inversax.com/herramientas/dolar" }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — FAQPage
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cuál es el precio del dólar blue hoy en Argentina?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El dólar blue en Argentina se actualiza cada 15 minutos en Inversax. Es el tipo de cambio informal que opera fuera del sistema bancario oficial."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué diferencia hay entre el dólar oficial y el dólar paralelo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El dólar oficial es el tipo de cambio fijado por el banco central. El paralelo o blue es el precio en el mercado informal, generalmente más alto en países con controles cambiarios como Argentina o Venezuela."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cada cuánto se actualiza el precio del dólar en Inversax?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Los precios se actualizan automáticamente cada 15 minutos. También puedes forzar actualización manual con el botón Actualizar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es el dólar MEP y el CCL en Argentina?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El dólar MEP y CCL son tipos de cambio financieros legales en Argentina que se obtienen comprando y vendiendo bonos en bolsa. Son alternativas legales al dólar blue."
+        }
+      }
+    ]
+  })} />
+
+</slot>
+
+  <main class="min-h-screen bg-[#0A0B0D] pt-28 pb-20 px-4 sm:px-6" style="font-family: 'DM Sans', sans-serif;">
+    <div class="max-w-5xl mx-auto">
+
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+        <ArrowLeft size={15} /> Herramientas
+      </a>
+
+      <!-- Encabezado -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(212,168,67,0.15);">
+            <DollarSign size={20} class="text-[#D4A843]" />
+          </div>
+          <div>
+            <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+              Precio del Dólar
+            </h1>
+            <p class="text-white/40 text-sm">Oficial, blue y paralelo en Latinoamérica</p>
+          </div>
+        </div>
+
+        <!-- Meta info + botón actualizar -->
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-4 flex-wrap">
+            <span class="flex items-center gap-1.5 text-xs text-white/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              Actualizado cada 15 minutos
+            </span>
+            <span id="ultima-actualizacion" class="text-xs text-white/20"></span>
+          </div>
+          <button
+            id="btn-actualizar"
+            class="flex items-center gap-1.5 text-xs text-white/40 hover:text-white border border-white/[0.07] hover:border-white/20 px-3 py-1.5 rounded-lg transition-colors duration-200 cursor-pointer bg-transparent"
+          >
+            <RefreshCw size={12} />
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- Leyenda badges -->
+      <div class="flex items-center gap-4 mb-6 flex-wrap">
+        <span class="flex items-center gap-1.5 text-xs text-white/40">
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-400/10 text-emerald-400">OFICIAL</span>
+          Tipo de cambio oficial del banco central
+        </span>
+        <span class="flex items-center gap-1.5 text-xs text-white/40">
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#D4A843]/10 text-[#D4A843]">PARALELO</span>
+          Mercado informal o alternativo
+        </span>
+      </div>
+
+      <!-- Grid de países — skeleton inicial, se llena client-side -->
+      <div id="paises-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+
+        <!-- Skeletons mientras cargan los datos -->
+        {[...Array(6)].map(() => (
+          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.07]">
+              <div class="w-6 h-4 rounded-sm bg-white/5 animate-pulse flex-shrink-0"></div>
+              <div class="flex-1 flex flex-col gap-1.5">
+                <div class="w-24 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-16 h-2.5 bg-white/5 rounded animate-pulse"></div>
+              </div>
+            </div>
+            <div class="divide-y divide-white/[0.05]">
+              {[...Array(3)].map(() => (
+                <div class="flex items-center justify-between px-4 py-3">
+                  <div class="w-20 h-4 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-16 h-4 bg-white/5 rounded animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+
+      </div>
+
+      <!-- Nota informativa -->
+      <p class="text-white/15 text-xs text-center mt-8">
+        Los precios paralelos son referenciales. Las fuentes utilizadas son bluelytics.com.ar y dolarapi.com.
+        Los tipos de cambio oficiales provienen de fawazahmed0/currency-api.
+      </p>
+
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const btnActualizar = document.getElementById('btn-actualizar');
+  const grid          = document.getElementById('paises-grid') as HTMLElement;
+  const ultimaAct     = document.getElementById('ultima-actualizacion');
+  const icon          = btnActualizar?.querySelector('svg') as HTMLElement | null;
+
+  const fmtNum = (n: number | null) => {
+    if (n === null || n === undefined) return '—';
+    if (n >= 100) return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return n.toLocaleString('es-AR', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  };
+
+  function renderGrid(data: any[]) {
+    // ─── ÚNICO CAMBIO respecto al dolar.astro original: ───────
+    // Cada card es un <a> que linkea a /herramientas/dolar/{codigo}
+    // El código del país viene del campo `bandera` que ya devuelve tu API
+    // (mismo valor que usa flagcdn). Si tu API devuelve un campo `codigo`
+    // distinto, reemplaza pais.bandera por pais.codigo aquí abajo.
+    grid.innerHTML = data.map((pais: any) => `
+      <a
+        href="/herramientas/dolar/${pais.bandera}"
+        class="group bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden transition-colors duration-200 no-underline block"
+      >
+        <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.07]">
+          <img
+            src="https://flagcdn.com/w40/${pais.bandera}.png"
+            alt="${pais.pais}"
+            class="w-6 h-4 object-cover rounded-sm flex-shrink-0"
+            onerror="this.style.display='none'"
+          />
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-white group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">${pais.pais}</div>
+            <div class="text-[11px] text-white/35">${pais.moneda} · ${pais.simbolo}</div>
+          </div>
+          <!-- Flecha sutil -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/20 group-hover:text-[#D4A843] transition-colors duration-200 flex-shrink-0"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </div>
+        <div class="divide-y divide-white/[0.05]">
+          ${pais.variantes.map((v: any) => `
+            <div class="flex items-center justify-between px-4 py-3">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
+                  v.esParalelo
+                    ? 'bg-[#D4A843]/10 text-[#D4A843]'
+                    : 'bg-emerald-400/10 text-emerald-400'
+                }">
+                  ${v.esParalelo ? 'PARALELO' : 'OFICIAL'}
+                </span>
+                <span class="text-white/60 text-xs truncate">${v.nombre}</span>
+              </div>
+              <div class="flex items-center gap-3 flex-shrink-0 ml-2">
+                ${v.compra !== null ? `
+                  <div class="text-right">
+                    <div class="text-[10px] text-white/25 leading-none mb-0.5">Compra</div>
+                    <div class="text-xs text-white/60 font-medium">${fmtNum(v.compra)}</div>
+                  </div>
+                ` : ''}
+                <div class="text-right">
+                  <div class="text-[10px] text-white/25 leading-none mb-0.5">Venta</div>
+                  <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">${fmtNum(v.venta)}</div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </a>
+    `).join('');
+  }
+
+  async function cargarDatos() {
+    btnActualizar?.setAttribute('disabled', 'true');
+    if (icon) icon.style.animation = 'spin 1s linear infinite';
+
+    try {
+      const res  = await fetch('/api/dolar');
+      const json = await res.json() as any;
+
+      if (!json.ok || !json.data?.length) {
+        grid.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center py-20 bg-[#111318] border border-white/[0.07] rounded-2xl">
+            <p class="text-white/30 text-sm">Error al cargar los datos. Intenta de nuevo.</p>
+          </div>`;
+        return;
+      }
+
+      renderGrid(json.data);
+
+      if (ultimaAct) {
+        ultimaAct.textContent = new Date().toLocaleString('es-ES', {
+          day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit',
+        });
+      }
+    } catch (e) {
+      console.error('[dolar index]', e);
+    } finally {
+      btnActualizar?.removeAttribute('disabled');
+      if (icon) icon.style.animation = '';
+    }
+  }
+
+  cargarDatos();
+  btnActualizar?.addEventListener('click', cargarDatos);
+  setInterval(cargarDatos, 1000 * 60 * 15);
+</script>
+
+<style>
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+</style>
