@@ -20,7 +20,6 @@ const [articulos, categorias] = await Promise.all([
   getCategorias(db),
 ]);
 
-
 const articulosFiltrados = categoriaParam === 'todas'
   ? articulos
   : articulos.filter((a) => a.categoria?.slug === categoriaParam);
@@ -44,6 +43,54 @@ const regiones: Record<string, string> = {
 
 const region = regiones[codigo] ?? 'Internacional';
 
+// ── Descripciones SEO por país ──────────────────────────────────────────────
+const descripcionesPais: Record<string, string> = {
+  ar: 'Dólar blue, Merval, Cedears, AFIP e inflación en Argentina. Todo sobre la economía argentina explicado para el ciudadano de a pie, actualizado cada día.',
+  mx: 'Tipo de cambio peso-dólar, CETES, BMV, SAT, Banxico e inflación en México. Información financiera actualizada para el inversionista mexicano.',
+  co: 'Peso colombiano, Banrep, DIAN, Bolsa de Valores de Colombia, CDTs e inflación. Todo lo que necesitas para invertir desde Colombia.',
+  pe: 'Sol peruano, BVL, SUNAT, AFP e inflación en Perú. Noticias financieras y herramientas para el inversionista peruano.',
+  hn: 'Lempira, BCH, SAR, remesas e inversiones en Honduras. Finanzas personales y economía hondureña explicada sin tecnicismos.',
+  cl: 'Peso chileno, BCCh, CMF, AFP y bolsa en Chile. Noticias de economía e inversiones actualizadas para el chileno de a pie.',
+  ve: 'Bolívar, dólar paralelo, economía venezolana y criptomonedas como refugio de valor. Actualizado cada día para Venezuela.',
+  ec: 'Economía dolarizada, BCE, SRI e inversiones en Ecuador. Todo sobre finanzas personales y mercados para el ecuatoriano.',
+  bo: 'Boliviano, BCB, impuestos y finanzas personales en Bolivia. Noticias económicas actualizadas para el boliviano.',
+  py: 'Guaraní, BCP, SET e inversiones en Paraguay. Economía y finanzas personales para el paraguayo.',
+  uy: 'Peso uruguayo, BCU, IRPF e inversiones en Uruguay. Finanzas personales y mercados para el uruguayo.',
+  cr: 'Colón costarricense, BCCR, Hacienda e inversiones en Costa Rica. Economía y finanzas personales actualizadas.',
+  gt: 'Quetzal, Banguat, SAT e inversiones en Guatemala. Finanzas personales y economía guatemalteca.',
+  sv: 'Bitcoin como moneda legal, economía dolarizada y finanzas en El Salvador. Actualizado para el salvadoreño.',
+  pa: 'Economía dolarizada, MEF e inversiones en Panamá. Centro financiero de Latinoamérica explicado.',
+  do: 'Peso dominicano, BCRD, DGII e inversiones en República Dominicana. Finanzas y economía dominicana.',
+  cu: 'Economía cubana, peso cubano y finanzas personales en Cuba. Actualizado con contexto regional.',
+  ni: 'Córdoba nicaragüense, BCN e inversiones en Nicaragua. Economía y finanzas personales actualizadas.',
+  bz: 'Dólar de Belice, economía y finanzas personales. Cobertura financiera para Belice en español.',
+  pr: 'Economía de Puerto Rico, finanzas personales y mercados en dólares. Actualizado para Puerto Rico.',
+  us: 'Mercados financieros de EE.UU., Fed, S&P 500, Nasdaq y economía americana. Explicado en español para la comunidad latina.',
+  ca: 'Dólar canadiense, Banco de Canadá y mercados en Canadá. Finanzas en español para la comunidad hispanohablante en Canadá.',
+  es: 'Euro, Banco de España, IBEX 35, Hacienda e inversiones en España. Finanzas personales y mercados para el español.',
+  de: 'Euro, Bundesbank, DAX y economía alemana. Finanzas en español para hispanohablantes en Alemania.',
+  fr: 'Euro, Banco de Francia, CAC 40 y economía francesa. Finanzas en español para hispanohablantes en Francia.',
+  gb: 'Libra esterlina, Banco de Inglaterra, FTSE 100 y economía del Reino Unido en español.',
+  it: 'Euro, Banco de Italia, FTSE MIB y economía italiana. Finanzas en español para hispanohablantes en Italia.',
+  nl: 'Euro, economía neerlandesa y mercados europeos. Finanzas en español para Países Bajos.',
+  pt: 'Euro, Banco de Portugal, PSI 20 e inversiones en Portugal. Finanzas en español.',
+  ch: 'Franco suizo, SNB y economía suiza. Centro financiero europeo explicado en español.',
+  ad: 'Finanzas, economía e inversiones en Andorra en español. Paraíso fiscal europeo explicado.',
+  ma: 'Dírham marroquí, finanzas e inversiones en Marruecos. Cobertura en español.',
+  gq: 'Franco CFA, economía y finanzas en Guinea Ecuatorial. El único país hispanohablante de África.',
+  au: 'Dólar australiano, RBA, ASX y economía australiana. Finanzas en español para hispanohablantes en Australia.',
+  ph: 'Peso filipino, BSP y economía de Filipinas. Finanzas en español para la comunidad hispanohablante en Filipinas.',
+};
+
+const descripcion = descripcionesPais[codigo] ??
+  `Finanzas, cripto, trading y economía en ${paisActual.nombre}. Noticias actualizadas cada día para inversores y traders en ${region}.`;
+
+// ── Flag helper ──────────────────────────────────────────────────────────────
+function getFlagCode(cod: string): string {
+  const overrides: Record<string, string> = { gb: 'gb', pr: 'pr' };
+  return overrides[cod] ?? cod;
+}
+
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
   const diff  = Date.now() - new Date(fecha).getTime();
@@ -65,12 +112,14 @@ function formatFecha(fecha: Date | null) {
   <link rel="preconnect" href="https://res.cloudinary.com" />
   <link rel="dns-prefetch" href="https://res.cloudinary.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://flagcdn.com" />
+  <link rel="dns-prefetch" href="https://flagcdn.com" />
 
   <!-- ═══════════════════════════════════════
        BASIC SEO
   ═══════════════════════════════════════ -->
   <title>Finanzas en {paisActual.nombre} — Cripto, Bolsa y Trading | Inversax</title>
-  <meta name="description"    content={`Noticias financieras en ${paisActual.nombre}: cripto, forex, bolsa, economía y trading. Todo en español, actualizado cada día para inversores y traders en ${paisActual.nombre}.`} />
+  <meta name="description" content={descripcion} />
   <meta name="author"         content="José Zúniga" />
   <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
@@ -79,13 +128,12 @@ function formatFecha(fecha: Date | null) {
 
   <!-- ═══════════════════════════════════════
        KEYWORDS
-       Combinación de keywords locales + genéricas
   ═══════════════════════════════════════ -->
   <meta name="keywords" content={`finanzas ${paisActual.nombre}, cripto ${paisActual.nombre}, trading ${paisActual.nombre}, bolsa ${paisActual.nombre}, inversiones ${paisActual.nombre}, forex ${paisActual.nombre}, economía ${paisActual.nombre}, noticias financieras ${paisActual.nombre}`} />
-  <meta name="news_keywords"  content={`${paisActual.nombre}, finanzas, cripto, trading, Inversax`} />
+  <meta name="news_keywords" content={`${paisActual.nombre}, finanzas, cripto, trading, Inversax`} />
 
   <!-- ═══════════════════════════════════════
-       GEO — máxima precisión por país
+       GEO
   ═══════════════════════════════════════ -->
   <meta name="geo.region"       content={codigo.toUpperCase()} />
   <meta name="geo.placename"    content={paisActual.nombre} />
@@ -93,32 +141,30 @@ function formatFecha(fecha: Date | null) {
   <meta name="content-language" content="es" />
 
   <!-- ═══════════════════════════════════════
-       HREFLANG — idioma del país específico + x-default
-       Para páginas de país solo declaramos la variante
-       del país en cuestión + es genérico + x-default
+       HREFLANG
   ═══════════════════════════════════════ -->
-  <link rel="alternate" hreflang="es"                          href={`https://inversax.com/pais/${codigo}`} />
+  <link rel="alternate" hreflang="es"                           href={`https://inversax.com/pais/${codigo}`} />
   <link rel="alternate" hreflang={`es-${codigo.toUpperCase()}`} href={`https://inversax.com/pais/${codigo}`} />
-  <link rel="alternate" hreflang="x-default"                   href={`https://inversax.com/pais/${codigo}`} />
+  <link rel="alternate" hreflang="x-default"                    href={`https://inversax.com/pais/${codigo}`} />
 
   <!-- ═══════════════════════════════════════
        OPEN GRAPH
   ═══════════════════════════════════════ -->
-  <meta property="og:site_name"   content="Inversax" />
-  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:site_name"        content="Inversax" />
+  <meta property="og:locale"           content="es_LA" />
   <meta property="og:locale:alternate" content="es_MX" />
   <meta property="og:locale:alternate" content="es_AR" />
   <meta property="og:locale:alternate" content="es_CO" />
   <meta property="og:locale:alternate" content="es_ES" />
-  <meta property="og:type"        content="website" />
-  <meta property="og:title"       content={`Finanzas en ${paisActual.nombre} — Cripto, Bolsa y Trading | Inversax`} />
-  <meta property="og:description" content={`Noticias de cripto, forex, bolsa y economía en ${paisActual.nombre}. Contenido financiero actualizado cada día para inversores en ${region}.`} />
-  <meta property="og:url"         content={`https://inversax.com/pais/${codigo}`} />
-  <meta property="og:image"       content={`https://inversax.com/og/pais/${codigo}.png`} />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"   content={`Finanzas en ${paisActual.nombre} — Inversax`} />
-  <meta property="og:image:type"  content="image/png" />
+  <meta property="og:type"             content="website" />
+  <meta property="og:title"            content={`Finanzas en ${paisActual.nombre} — Cripto, Bolsa y Trading | Inversax`} />
+  <meta property="og:description"      content={descripcion} />
+  <meta property="og:url"              content={`https://inversax.com/pais/${codigo}`} />
+  <meta property="og:image"            content={`https://inversax.com/og/pais/${codigo}.png`} />
+  <meta property="og:image:width"      content="1200" />
+  <meta property="og:image:height"     content="630" />
+  <meta property="og:image:alt"        content={`Finanzas en ${paisActual.nombre} — Inversax`} />
+  <meta property="og:image:type"       content="image/png" />
 
   <!-- ═══════════════════════════════════════
        TWITTER CARD
@@ -127,7 +173,7 @@ function formatFecha(fecha: Date | null) {
   <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:creator"     content="@inversax" />
   <meta name="twitter:title"       content={`Finanzas en ${paisActual.nombre} — Cripto, Bolsa y Trading | Inversax`} />
-  <meta name="twitter:description" content={`Noticias de cripto, forex, bolsa y economía en ${paisActual.nombre}. Actualizado cada día en Inversax.`} />
+  <meta name="twitter:description" content={descripcion} />
   <meta name="twitter:image"       content={`https://inversax.com/og/pais/${codigo}.png`} />
   <meta name="twitter:image:alt"   content={`Finanzas en ${paisActual.nombre} — Inversax`} />
 
@@ -153,13 +199,12 @@ function formatFecha(fecha: Date | null) {
 
   <!-- ═══════════════════════════════════════
        JSON-LD — WebPage con Place
-       Señal de relevancia geográfica para Google
   ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": `Finanzas en ${paisActual.nombre} — Inversax`,
-    "description": `Noticias de cripto, forex, bolsa y economía en ${paisActual.nombre}. Actualizado cada día para inversores en ${region}.`,
+    "description": descripcion,
     "url": `https://inversax.com/pais/${codigo}`,
     "inLanguage": "es",
     "isPartOf": {
@@ -192,7 +237,7 @@ function formatFecha(fecha: Date | null) {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": `Noticias financieras en ${paisActual.nombre}`,
-    "description": `Artículos sobre finanzas, cripto, trading y economía en ${paisActual.nombre}.`,
+    "description": descripcion,
     "url": `https://inversax.com/pais/${codigo}`,
     "inLanguage": "es",
     "publisher": {
@@ -213,30 +258,10 @@ function formatFecha(fecha: Date | null) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Inicio",
-        "item": "https://inversax.com"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Países",
-        "item": "https://inversax.com/paises"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": region,
-        "item": "https://inversax.com/paises"
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
-        "name": paisActual.nombre,
-        "item": `https://inversax.com/pais/${codigo}`
-      }
+      { "@type": "ListItem", "position": 1, "name": "Inicio",         "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Países",         "item": "https://inversax.com/paises" },
+      { "@type": "ListItem", "position": 3, "name": region,           "item": "https://inversax.com/paises" },
+      { "@type": "ListItem", "position": 4, "name": paisActual.nombre,"item": `https://inversax.com/pais/${codigo}` }
     ]
   })} />
 
@@ -259,9 +284,16 @@ function formatFecha(fecha: Date | null) {
       <!-- Header -->
       <div class="mb-10">
         <div class="flex items-center gap-3 mb-3">
-          <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-            <MapPin size={18} class="text-[#D4A843]" />
-          </div>
+          <!-- ✅ BANDERA REAL EN HEADER -->
+          <img
+            src={`https://flagcdn.com/w40/${getFlagCode(codigo)}.png`}
+            alt={`Bandera de ${paisActual.nombre}`}
+            width="40"
+            height="28"
+            loading="eager"
+            class="rounded-md object-cover flex-shrink-0"
+            style="width:40px;height:28px;"
+          />
           <div>
             <span class="text-white/30 text-xs uppercase tracking-widest">{region}</span>
             <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
@@ -269,12 +301,13 @@ function formatFecha(fecha: Date | null) {
             </h1>
           </div>
         </div>
+        <!-- ✅ DESCRIPCIÓN SEO ESPECÍFICA POR PAÍS -->
         <p class="text-white/40 text-sm max-w-xl leading-relaxed">
-          Finanzas, cripto, trading y economía en {paisActual.nombre}. Contenido actualizado para tu región.
+          {descripcion}
         </p>
       </div>
 
-      <!-- Filtro por categoría (único, solo pills) -->
+      <!-- Filtro por categoría -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide">
         <Filter size={14} class="text-white/30 flex-shrink-0" />
         <a
@@ -400,7 +433,7 @@ function formatFecha(fecha: Date | null) {
 
           </div>
 
-          <!-- SIDEBAR — solo países de la región -->
+          <!-- SIDEBAR — países de la región con banderas -->
           <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0">
             <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
               <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
@@ -411,11 +444,23 @@ function formatFecha(fecha: Date | null) {
                   .filter((p) => p.codigo !== 'global' && p.codigo !== codigo && regiones[p.codigo] === region)
                   .slice(0, 8)
                   .map((p) => (
+                    <!-- ✅ BANDERAS EN SIDEBAR -->
                     <a
                       href={`/pais/${p.codigo}`}
                       class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/5 no-underline transition-colors duration-200"
                     >
-                      <span>{p.nombre}</span>
+                      <span class="flex items-center gap-2">
+                        <img
+                          src={`https://flagcdn.com/w40/${getFlagCode(p.codigo)}.png`}
+                          alt={`Bandera de ${p.nombre}`}
+                          width="20"
+                          height="14"
+                          loading="lazy"
+                          class="rounded-sm object-cover flex-shrink-0"
+                          style="width:20px;height:14px;"
+                        />
+                        {p.nombre}
+                      </span>
                       <ArrowRight size={13} />
                     </a>
                   ))
@@ -454,3 +499,4 @@ function formatFecha(fecha: Date | null) {
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
+
