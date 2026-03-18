@@ -37,4 +37,5 @@ Desktop.ini
 # misc
 .cache/
 coverage/
+wrangler.toml
 
