@@ -294,7 +294,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
       </div>
     </div>
 
-    <!-- TABS — sin clase "active" hardcodeada, el JS la maneja sola -->
+    <!-- TABS -->
     <div class="flex gap-1 bg-[#111318] border border-white/[0.07] rounded-2xl p-1.5 mb-7 overflow-x-auto scrollbar-hide">
       <button class="tab-btn flex-1 min-w-[120px]" data-tab="convertir">⇄ Convertir</button>
       <button class="tab-btn flex-1 min-w-[120px]" data-tab="ganancias">📈 Ganancias</button>
@@ -375,6 +375,37 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
         </div>
 
       </div>
+
+      <!-- ── Cómo usar: Convertir ── -->
+      <div class="how-to-section">
+        <h2 class="how-to-title">¿Cómo usar el convertidor?</h2>
+        <ol class="how-to-steps">
+          <li>
+            <span class="how-to-num">1</span>
+            <div>
+              <strong class="how-to-step-title">Elegí la criptomoneda origen</strong>
+              <p class="how-to-step-desc">Seleccioná la cripto que querés convertir (BTC, ETH, SOL, etc.). El precio se carga automáticamente en vivo.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">2</span>
+            <div>
+              <strong class="how-to-step-title">Ingresá la cantidad</strong>
+              <p class="how-to-step-desc">Escribí cuántas unidades querés convertir. Podés usar decimales, por ejemplo <code class="how-to-code">0.005</code> BTC.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">3</span>
+            <div>
+              <strong class="how-to-step-title">Elegí la moneda destino</strong>
+              <p class="how-to-step-desc">Podés convertir a más de 17 monedas LATAM o a otra criptomoneda seleccionando la opción <em>⚡ Otra criptomoneda</em>.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="how-to-note">
+          💡 Las tasas de cambio de monedas locales (HNL, ARS, MXN…) se actualizan diariamente desde fuentes oficiales de cada país.
+        </div>
+      </div>
     </div>
 
     <!-- ══ GANANCIAS ══ -->
@@ -442,6 +473,37 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
           </div>
         </div>
 
+      </div>
+
+      <!-- ── Cómo usar: Ganancias ── -->
+      <div class="how-to-section">
+        <h2 class="how-to-title">¿Cómo calcular tus ganancias?</h2>
+        <ol class="how-to-steps">
+          <li>
+            <span class="how-to-num">1</span>
+            <div>
+              <strong class="how-to-step-title">Seleccioná la cripto que compraste</strong>
+              <p class="how-to-step-desc">El precio actual se completa automáticamente, pero podés modificarlo si querés simular un escenario futuro.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">2</span>
+            <div>
+              <strong class="how-to-step-title">Ingresá el precio al que compraste</strong>
+              <p class="how-to-step-desc">En USD. Si compraste en otra moneda, convertí primero con la pestaña <em>⇄ Convertir</em>.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">3</span>
+            <div>
+              <strong class="how-to-step-title">Ingresá la cantidad comprada</strong>
+              <p class="how-to-step-desc">La calculadora te mostrará el % de ganancia o pérdida, el valor actual y el <strong>breakeven</strong> (precio al que recuperás lo invertido).</p>
+            </div>
+          </li>
+        </ol>
+        <div class="how-to-note">
+          💡 El <strong>precio de recuperación</strong> es simplemente el precio al que compraste. Si el precio actual lo supera, estás en ganancia.
+        </div>
       </div>
     </div>
 
@@ -542,6 +604,37 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
         </div>
 
       </div>
+
+      <!-- ── Cómo usar: Ahorro DCA ── -->
+      <div class="how-to-section">
+        <h2 class="how-to-title">¿Cómo usar el simulador DCA?</h2>
+        <ol class="how-to-steps">
+          <li>
+            <span class="how-to-num">1</span>
+            <div>
+              <strong class="how-to-step-title">Definí cuánto invertís por compra</strong>
+              <p class="how-to-step-desc">Por ejemplo, $50 USD cada mes. No importa si el precio sube o baja, siempre comprás la misma cantidad en dólares.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">2</span>
+            <div>
+              <strong class="how-to-step-title">Indicá cuántas veces compraste</strong>
+              <p class="how-to-step-desc">Si llevás 12 meses comprando mensual, ingresá <code class="how-to-code">12</code>. La tabla desglosa cada período.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">3</span>
+            <div>
+              <strong class="how-to-step-title">Ingresá tu precio promedio de compra</strong>
+              <p class="how-to-step-desc">Es el promedio de todos los precios a los que compraste. Si no lo sabés exactamente, podés estimarlo.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="how-to-note">
+          💡 El DCA es especialmente útil en mercados volátiles como crypto: comprás más unidades cuando el precio baja y menos cuando sube, promediando tu costo de entrada.
+        </div>
+      </div>
     </div>
 
     <!-- ══ COMISIONES ══ -->
@@ -616,10 +709,133 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
         </div>
 
       </div>
+
+      <!-- ── Cómo usar: Comisiones ── -->
+      <div class="how-to-section">
+        <h2 class="how-to-title">¿Cómo calcular las comisiones?</h2>
+        <ol class="how-to-steps">
+          <li>
+            <span class="how-to-num">1</span>
+            <div>
+              <strong class="how-to-step-title">Seleccioná la cripto y la cantidad a operar</strong>
+              <p class="how-to-step-desc">Ingresá cuántas unidades vas a comprar o vender. El valor en USD se calcula con el precio en vivo.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">2</span>
+            <div>
+              <strong class="how-to-step-title">Ingresá el % de comisión de tu exchange</strong>
+              <p class="how-to-step-desc">Binance cobra <code class="how-to-code">0.1%</code>, Kraken <code class="how-to-code">0.26%</code>, Coinbase hasta <code class="how-to-code">1.49%</code>. Revisá la tarifa de tu exchange antes de operar.</p>
+            </div>
+          </li>
+          <li>
+            <span class="how-to-num">3</span>
+            <div>
+              <strong class="how-to-step-title">Elegí el tipo de operación</strong>
+              <p class="how-to-step-desc">Si vas a comprar y luego vender, seleccioná <em>Compra y venta</em> para ver la comisión total que pagarás en el ciclo completo.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="how-to-note">
+          💡 En operaciones frecuentes, las comisiones se acumulan rápido. Un 0.1% de ida y vuelta equivale al 0.2% de tu capital por cada operación completa.
+        </div>
+      </div>
     </div>
 
   </div>
 </main>
+
+<!-- ══ ESTILOS: Sección "Cómo usar" ══ -->
+<style>
+  .how-to-section {
+    margin-top: 1.5rem;
+    padding: 1.75rem;
+    background: #111318;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 1.25rem;
+  }
+
+  .how-to-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 1.25rem;
+  }
+
+  .how-to-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .how-to-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+
+  .how-to-num {
+    flex-shrink: 0;
+    width: 1.625rem;
+    height: 1.625rem;
+    background: rgba(0,214,143,0.1);
+    border: 1px solid rgba(0,214,143,0.25);
+    color: #00D68F;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    margin-top: 0.1rem;
+  }
+
+  .how-to-step-title {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 0.25rem;
+  }
+
+  .how-to-step-desc {
+    font-size: 0.8125rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .how-to-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    background: rgba(0,214,143,0.08);
+    color: #00D68F;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.3rem;
+  }
+
+  .how-to-note {
+    margin-top: 1.25rem;
+    padding: 0.875rem 1rem;
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.15);
+    border-radius: 0.875rem;
+    font-size: 0.8125rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.55;
+  }
+
+  .how-to-note strong {
+    color: rgba(255,255,255,0.75);
+  }
+</style>
+
+
 </Layout>
 
 <script>
