@@ -112,12 +112,14 @@ export const GET: APIRoute = async ({ locals }) => {
   ${url('/contacto',     new Date(), 0.4, 'monthly')}
   ${url('/legal',        new Date(), 0.3, 'monthly')}
 
-  <!-- ── Herramientas (índices) ── -->
-  ${url('/herramientas/cripto',   new Date(), 0.8, 'daily')}
-  ${url('/herramientas/forex',    new Date(), 0.8, 'daily')}
-  ${url('/herramientas/metales',  new Date(), 0.7, 'daily')}
-  ${url('/herramientas/acciones', new Date(), 0.8, 'daily')}
-  ${url('/herramientas/dolar',    new Date(), 0.8, 'daily')}
+<!-- ── Herramientas (índices) ── -->
+  ${url('/herramientas/cripto',            new Date(), 0.8, 'daily')}
+  ${url('/herramientas/forex',             new Date(), 0.8, 'daily')}
+  ${url('/herramientas/metales',           new Date(), 0.7, 'daily')}
+  ${url('/herramientas/acciones',          new Date(), 0.8, 'daily')}
+  ${url('/herramientas/dolar',             new Date(), 0.8, 'daily')}
+  ${url('/herramientas/calculadora-cripto',new Date(), 0.7, 'weekly')}
+  ${url('/herramientas/comparar-brokers',  new Date(), 0.8, 'weekly')}
 
   <!-- ── Dólar: páginas por país ── -->
   ${DOLAR_PAISES.map(codigo =>
