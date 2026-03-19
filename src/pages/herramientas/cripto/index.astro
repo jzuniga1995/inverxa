@@ -515,6 +515,9 @@ try {
 </Layout>
 
 <style>
+  /* ── Ocultar fila (compatible con grid en desktop y flex en móvil) ── */
+  .coin-row.hidden-row { display: none !important; }
+
   @media (max-width: 767px) {
     .coin-row, .coin-row > div { all: unset; }
     .coin-row {
@@ -568,7 +571,8 @@ try {
         activeFilter === 'top10'   ? rank <= 10 : true;
 
       const show = matchSearch && matchFilter;
-      row.style.display = show ? '' : 'none';
+      // ── FIX: usar clase en vez de inline style para no romper el flex de móvil ──
+      row.classList.toggle('hidden-row', !show);
       if (show) visible++;
     });
 
@@ -636,3 +640,4 @@ try {
     });
   });
 </script>
+

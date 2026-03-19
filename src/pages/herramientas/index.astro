@@ -62,9 +62,9 @@ const herramientas = [
     icon: 'shield',
     nombre: 'Comparar Brokers',
     descripcion: 'Compará comisiones, regulaciones y características de los principales brokers para Latinoamérica.',
-    href: '#',
-    disponible: false,
-    badge: 'Próximamente',
+    href: '/herramientas/comparar-brokers',
+    disponible: true,
+    badge: 'En Vivo',
     color: '#D4A843',
   },
 ];
@@ -246,21 +246,22 @@ const herramientas = [
   <!-- ═══════════════════════════════════════
        JSON-LD — ItemList de herramientas
   ═══════════════════════════════════════ -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Herramientas financieras de Inversax",
-    "url": "https://inversax.com/herramientas",
-    "numberOfItems": 6,
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Mercados Cripto — Precios en vivo",         "url": "https://inversax.com/herramientas/cripto"   },
-      { "@type": "ListItem", "position": 2, "name": "Forex — Tipos de cambio en tiempo real",    "url": "https://inversax.com/herramientas/forex"    },
-      { "@type": "ListItem", "position": 3, "name": "Metales Preciosos — Precio del oro y plata", "url": "https://inversax.com/herramientas/metales"  },
-      { "@type": "ListItem", "position": 4, "name": "Acciones — Cotizaciones en tiempo real",    "url": "https://inversax.com/herramientas/acciones" },
-      { "@type": "ListItem", "position": 5, "name": "Precio del Dólar en Latinoamérica",         "url": "https://inversax.com/herramientas/dolar"    },
-      { "@type": "ListItem", "position": 6, "name": "Calculadora Cripto",                       "url": "https://inversax.com/herramientas/calculadora-cripto" }
-    ]
-  })} />
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Herramientas financieras de Inversax",
+  "url": "https://inversax.com/herramientas",
+  "numberOfItems": 7,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Mercados Cripto — Precios en vivo",              "url": "https://inversax.com/herramientas/cripto"             },
+    { "@type": "ListItem", "position": 2, "name": "Forex — Tipos de cambio en tiempo real",         "url": "https://inversax.com/herramientas/forex"              },
+    { "@type": "ListItem", "position": 3, "name": "Metales Preciosos — Precio del oro y plata",     "url": "https://inversax.com/herramientas/metales"            },
+    { "@type": "ListItem", "position": 4, "name": "Acciones — Cotizaciones en tiempo real",         "url": "https://inversax.com/herramientas/acciones"           },
+    { "@type": "ListItem", "position": 5, "name": "Precio del Dólar en Latinoamérica",              "url": "https://inversax.com/herramientas/dolar"              },
+    { "@type": "ListItem", "position": 6, "name": "Calculadora Cripto",                             "url": "https://inversax.com/herramientas/calculadora-cripto" },
+    { "@type": "ListItem", "position": 7, "name": "Comparar Brokers — XM vs Exness vs Pepperstone", "url": "https://inversax.com/herramientas/comparar-brokers"   }
+  ]
+})} />
 
   <!-- ═══════════════════════════════════════
        JSON-LD — SoftwareApplication
