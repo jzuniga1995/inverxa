@@ -530,6 +530,9 @@ try {
 </Layout>
 
 <style>
+  /* ── Ocultar fila (compatible con grid en desktop y flex en móvil) ── */
+  .accion-row.hidden-row { display: none !important; }
+
   @media (max-width: 767px) {
     .accion-row {
       display: flex !important;
@@ -571,7 +574,8 @@ try {
         activeFilter === 'gainers' ? change > 0 :
         activeFilter === 'losers'  ? change < 0 : true;
       const show = matchSearch && matchFilter;
-      row.style.display = show ? '' : 'none';
+      // ── FIX: usar clase en vez de inline style para no romper el flex de móvil ──
+      row.classList.toggle('hidden-row', !show);
       if (show) visible++;
     });
     empty.classList.toggle('hidden', visible > 0);
@@ -626,3 +630,4 @@ try {
     });
   });
 </script>
+
