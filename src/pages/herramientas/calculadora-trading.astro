@@ -1,0 +1,1104 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+
+<slot name="head" slot="head">
+
+  <!-- ═══════════════════════════════════════
+       PRECONNECT
+  ═══════════════════════════════════════ -->
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+  <!-- ═══════════════════════════════════════
+       BASIC SEO
+  ═══════════════════════════════════════ -->
+  <title>Calculadoras de Trading Gratis — Pips, Posición, Ganancias y Margen Forex | Inversax</title>
+  <meta name="description"    content="Calculadoras de trading gratuitas: calculá pips, tamaño de posición, ganancias/pérdidas y margen requerido en Forex y CFDs. Gestión de riesgo profesional para traders de México, Argentina, Colombia, Honduras y toda Latinoamérica." />
+  <meta name="author"         content="José Zúniga" />
+  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="googlebot-news" content="index, follow" />
+  <link rel="canonical"       href="https://inversax.com/herramientas/calculadora-trading" />
+
+  <!-- ═══════════════════════════════════════
+       KEYWORDS — primarias + long tail + LATAM
+  ═══════════════════════════════════════ -->
+  <meta name="keywords" content="
+    calculadora pips forex, calculadora tamaño de posicion, calculadora margen forex,
+    calculadora ganancias trading, calculadora riesgo trading, calculadora lotes forex,
+    pip value calculator español, position size calculator forex,
+    calculadora forex gratis latam, gestión de riesgo forex,
+    cuanto vale un pip EUR/USD, cuanto vale un pip GBP/USD, cuanto vale un pip USD/JPY,
+    cuanto vale un pip USD/MXN, cuanto vale un pip USD/HNL,
+    como calcular tamaño de posicion forex, como calcular margen requerido forex,
+    como calcular ganancias en forex, calculadora stop loss forex,
+    calculadora lote estandar forex, calculadora mini lote forex, calculadora micro lote forex,
+    apalancamiento 1:100 calculadora, apalancamiento 1:500 calculadora, apalancamiento 1:1000,
+    calculadora CFD, calculadora spread forex, calculadora riesgo beneficio,
+    calculadora trading Mexico, calculadora forex Argentina, calculadora trading Colombia,
+    calculadora forex Honduras, calculadora trading Peru, calculadora forex Chile,
+    herramienta trading gratuita, calculadora Exness, calculadora XM broker, calculadora Pepperstone,
+    gestion de capital trading, regla 2 por ciento trading, lot size calculator
+  " />
+  <meta name="news_keywords" content="calculadora trading, pips forex, margen trading, gestión de riesgo, position size, Inversax" />
+
+  <!-- ═══════════════════════════════════════
+       GEO
+  ═══════════════════════════════════════ -->
+  <meta name="geo.region"       content="LATAM" />
+  <meta name="geo.placename"    content="Latinoamérica" />
+  <meta name="language"         content="Spanish" />
+  <meta name="content-language" content="es" />
+  <meta name="coverage"         content="Worldwide" />
+  <meta name="target"           content="all" />
+  <meta name="rating"           content="general" />
+  <meta name="category"         content="finance, trading, forex, calculator, risk management" />
+  <meta name="classification"   content="Finance/Trading Tools" />
+  <meta name="subject"          content="Calculadoras de trading Forex para Latinoamérica" />
+  <meta name="topic"            content="Forex, CFDs, Trading, Gestión de Riesgo" />
+  <meta name="abstract"         content="Suite de calculadoras profesionales para traders: pips, tamaño de posición, ganancias y margen. Gratis para toda Latinoamérica." />
+
+  <!-- ═══════════════════════════════════════
+       HREFLANG — 36 variantes
+  ═══════════════════════════════════════ -->
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/calculadora-trading" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadora-trading" />
+
+  <!-- ═══════════════════════════════════════
+       OPEN GRAPH
+  ═══════════════════════════════════════ -->
+  <meta property="og:site_name"        content="Inversax" />
+  <meta property="og:locale"           content="es_LA" />
+  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:locale:alternate" content="es_AR" />
+  <meta property="og:locale:alternate" content="es_CO" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:type"             content="website" />
+  <meta property="og:title"            content="Calculadoras de Trading Gratis — Pips, Posición, Ganancias y Margen | Inversax" />
+  <meta property="og:description"      content="Calculá pips, tamaño de posición, ganancias/pérdidas y margen en Forex y CFDs. Gestión de riesgo profesional gratis para traders de Latinoamérica." />
+  <meta property="og:url"              content="https://inversax.com/herramientas/calculadora-trading" />
+  <meta property="og:image"            content="https://inversax.com/og/herramientas/calculadora-trading.png" />
+  <meta property="og:image:width"      content="1200" />
+  <meta property="og:image:height"     content="630" />
+  <meta property="og:image:alt"        content="Calculadoras de Trading — Pips, Posición, Margen y Ganancias | Inversax" />
+  <meta property="og:image:type"       content="image/png" />
+
+  <!-- ═══════════════════════════════════════
+       TWITTER CARD
+  ═══════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@inversax" />
+  <meta name="twitter:creator"     content="@inversax" />
+  <meta name="twitter:title"       content="Calculadoras de Trading Gratis — Pips, Posición, Margen | Inversax" />
+  <meta name="twitter:description" content="Calculá pips, tamaño de posición, ganancias y margen en Forex. Gestión de riesgo profesional para traders LATAM. Gratis." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/calculadora-trading.png" />
+  <meta name="twitter:image:alt"   content="Calculadoras de Trading — Inversax" />
+  <meta name="twitter:label1"      content="Herramientas" />
+  <meta name="twitter:data1"       content="4 calculadoras: Pips · Posición · Ganancias · Margen" />
+  <meta name="twitter:label2"      content="Precio" />
+  <meta name="twitter:data2"       content="100% Gratis" />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebSite + SearchAction
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
+    "inLanguage": "es",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — WebPage
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Calculadoras de Trading — Pips, Posición, Ganancias y Margen | Inversax",
+    "description": "Suite de calculadoras de trading gratuitas: pips, tamaño de posición, ganancias/pérdidas y margen requerido en Forex y CFDs para traders de Latinoamérica.",
+    "url": "https://inversax.com/herramientas/calculadora-trading",
+    "inLanguage": "es",
+    "dateModified": new Date().toISOString().split('T')[0],
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com",
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
+    },
+    "about": [
+      { "@type": "Thing", "name": "Trading Forex" },
+      { "@type": "Thing", "name": "Calculadora de pips" },
+      { "@type": "Thing", "name": "Gestión de riesgo" },
+      { "@type": "Thing", "name": "Tamaño de posición" },
+      { "@type": "Thing", "name": "Margen requerido" },
+      { "@type": "Thing", "name": "CFDs" },
+      { "@type": "Thing", "name": "Stop Loss" },
+      { "@type": "Thing", "name": "Apalancamiento" }
+    ],
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Traders de Forex y CFDs en Latinoamérica",
+      "geographicArea": { "@type": "Place", "name": "Latinoamérica" }
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — BreadcrumbList
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",                  "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",            "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras de Trading", "item": "https://inversax.com/herramientas/calculadora-trading" }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — SoftwareApplication
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadoras de Trading Inversax",
+    "url": "https://inversax.com/herramientas/calculadora-trading",
+    "applicationCategory": "FinanceApplication",
+    "applicationSubCategory": "Trading Tools",
+    "operatingSystem": "Web",
+    "browserRequirements": "Requires JavaScript",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Suite de 4 calculadoras profesionales gratuitas para traders de Forex y CFDs: valor de pips, tamaño de posición con gestión de riesgo, ganancias/pérdidas y margen requerido.",
+    "featureList": [
+      "Calculadora de valor de pips para más de 20 pares incluyendo LATAM",
+      "Calculadora de tamaño de posición con regla del 1% y 2%",
+      "Calculadora de ganancias y pérdidas con comisión del broker",
+      "Calculadora de margen requerido para 7 niveles de apalancamiento",
+      "Soporte para lotes estándar, mini, micro y nano",
+      "Pares LATAM: USD/HNL, USD/MXN, USD/COP, USD/ARS, USD/BRL y más",
+      "Comparativa de brokers Exness, XM y Pepperstone integrada",
+      "100% gratuita, sin registro"
+    ],
+    "inLanguage": "es",
+    "availableLanguage": "Spanish",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "José Zúniga",
+      "url": "https://inversax.com/autor/jose-zuniga"
+    }
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — ItemList de calculadoras
+       Le dice a Google exactamente qué hay dentro
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Calculadoras de Trading — Inversax",
+    "description": "Suite de calculadoras profesionales para traders de Forex y CFDs en Latinoamérica",
+    "url": "https://inversax.com/herramientas/calculadora-trading",
+    "numberOfItems": 4,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Calculadora de Pips",
+        "description": "Calcula el valor monetario de cada pip según el par de divisas, tamaño de lote y moneda de tu cuenta. Soporta más de 20 pares incluyendo USD/HNL, USD/MXN y USD/COP.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#pips"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Calculadora de Tamaño de Posición",
+        "description": "Determina cuántos lotes operar para no arriesgar más de un % fijo de tu capital. Aplica la regla del 1-2% de gestión de riesgo profesional.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#posicion"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Calculadora de Ganancias y Pérdidas",
+        "description": "Calcula el resultado en USD de una operación Forex según precio de entrada, salida, dirección y comisión del broker.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#ganancias"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Calculadora de Margen",
+        "description": "Calcula cuánto margen requerido necesitas para abrir una posición según el apalancamiento de tu broker: desde 1:30 hasta 1:2000.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#margen"
+      }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — HowTo — Tamaño de posición
+       Rich result tipo "instrucciones" en Google
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Cómo calcular el tamaño de posición en Forex",
+    "description": "Guía paso a paso para calcular cuántos lotes operar sin arriesgar más del 2% de tu capital en cada operación de Forex.",
+    "totalTime": "PT2M",
+    "tool": [{ "@type": "HowToTool", "name": "Calculadora de tamaño de posición de Inversax" }],
+    "supply": [
+      { "@type": "HowToSupply", "name": "Capital de tu cuenta en USD" },
+      { "@type": "HowToSupply", "name": "Par de divisas a operar" },
+      { "@type": "HowToSupply", "name": "Nivel de stop loss en pips" }
+    ],
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Define tu capital y % de riesgo",
+        "text": "Ingresá el saldo de tu cuenta y el porcentaje que estás dispuesto a arriesgar. Se recomienda entre 1% y 2% por operación.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#posicion"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Seleccioná el par de divisas",
+        "text": "Elegí el par que vas a operar. La calculadora usa el tamaño de pip correcto para cada par automáticamente.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#posicion"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Ingresá tu stop loss en pips",
+        "text": "Define la cantidad de pips de tu stop loss. A mayor stop loss, menor será el tamaño de posición para mantener el mismo % de riesgo.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#posicion"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": "Obtené el tamaño de posición",
+        "text": "La calculadora te devuelve el número exacto de lotes, mini lotes, unidades y el nivel exacto de stop loss en precio.",
+        "url": "https://inversax.com/herramientas/calculadora-trading#posicion"
+      }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — FAQPage — 10 preguntas potentes
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cuánto vale un pip en EUR/USD?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "En EUR/USD, 1 pip equivale a 0.0001. Con un lote estándar (100,000 unidades) cada pip vale $10 USD. Con un mini lote (10,000 unidades) vale $1 USD, y con un micro lote (1,000 unidades) vale $0.10 USD. Usá la calculadora de pips de Inversax para calcular el valor exacto según tu par y tamaño de lote."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo calcular el tamaño de posición en Forex?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El tamaño de posición se calcula con la fórmula: Lotes = (Capital × % Riesgo) ÷ (Stop Loss en pips × Valor por pip). Ejemplo: con $1,000 de capital, 2% de riesgo y 20 pips de stop loss en EUR/USD: $20 ÷ ($10/pip × 1 lote) = 0.2 lotes. La calculadora de Inversax hace este cálculo automáticamente."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es el margen requerido en Forex y cómo se calcula?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El margen requerido es el dinero que el broker bloquea de tu cuenta para abrir una posición. Se calcula como: Margen = (Lotes × 100,000 × Precio) ÷ Apalancamiento. Con apalancamiento 1:100 y 1 lote de EUR/USD a 1.085, el margen requerido es $1,085 USD. Mayor apalancamiento = menor margen, pero también mayor riesgo de margin call."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuánto debo arriesgar por operación en Forex?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Los traders profesionales recomiendan arriesgar entre el 1% y el 2% del capital por operación. Con $1,000 de cuenta eso es entre $10 y $20 por trade. Esta regla permite sobrevivir rachas de 50 operaciones perdidas seguidas antes de quedar en cero. La calculadora de posición de Inversax aplica esta lógica de forma automática."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuál es la diferencia entre un lote estándar, mini lote y micro lote en Forex?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Un lote estándar equivale a 100,000 unidades de la divisa base. Un mini lote son 10,000 unidades (0.1 lotes) y un micro lote son 1,000 unidades (0.01 lotes). Para cuentas pequeñas, se recomienda operar con micro lotes para controlar mejor el riesgo por pip."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué brokers tienen mayor apalancamiento para traders de Latinoamérica?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Para traders de Latinoamérica: Exness ofrece hasta 1:2000 de apalancamiento, XM hasta 1:1000, y Pepperstone hasta 1:400. Los brokers regulados en Europa (como bajo la FCA o ESMA) tienen un límite de 1:30 para pares mayores. La calculadora de margen de Inversax incluye todos estos niveles."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo calcular las ganancias o pérdidas en Forex?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Para calcular el resultado de una operación Forex: Resultado = (Precio de salida - Precio de entrada) ÷ Tamaño de pip × Valor del pip × Lotes. En una compra de EUR/USD a 1.0850 con salida en 1.0900 (50 pips) con 1 lote estándar: 50 pips × $10/pip = $500 USD de ganancia bruta. Restá la comisión del broker para el neto."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo calcular los pips en pares con JPY como USD/JPY?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Para pares que incluyen el Yen japonés (USD/JPY, EUR/JPY, GBP/JPY), 1 pip equivale a 0.01 en lugar de 0.0001. Esto se debe a que el yen tiene menos decimales significativos. Con un lote estándar de USD/JPY a 150.00, el valor por pip es aproximadamente $6.67 USD. La calculadora de pips de Inversax ajusta esto automáticamente."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es un margin call y cómo evitarlo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Un margin call ocurre cuando las pérdidas de tus posiciones abiertas consumen el margen libre de tu cuenta y el broker cierra tus operaciones automáticamente. Se evita usando apalancamiento bajo, no sobreexponiendo la cuenta y manteniendo siempre un margen libre mayor al 100%. Calculá siempre el margen requerido antes de entrar a una operación."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Funciona la calculadora para pares de divisas de Latinoamérica como USD/HNL o USD/MXN?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí. La calculadora de Inversax incluye pares LATAM: USD/HNL (lempira hondureño), USD/MXN (peso mexicano), USD/BRL (real brasileño), USD/COP (peso colombiano), USD/ARS (peso argentino), USD/CLP (peso chileno) y USD/PEN (sol peruano). Es especialmente útil para traders que operan con divisas de su propio país."
+        }
+      }
+    ]
+  })} />
+
+  <!-- ═══════════════════════════════════════
+       JSON-LD — Organization
+  ═══════════════════════════════════════ -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Inversax",
+    "url": "https://inversax.com",
+    "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 },
+    "sameAs": [
+      "https://twitter.com/inversax",
+      "https://www.instagram.com/inversax",
+      "https://www.youtube.com/@inversax"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "editorial",
+      "email": "codezun@gmail.com",
+      "availableLanguage": "Spanish"
+    }
+  })} />
+
+</slot>
+
+
+  <!-- HEADER -->
+  <div class="text-center px-4 pt-8 pb-2">
+    <div class="text-sm text-[#6B7280] mb-2">
+      <a href="/herramientas" class="hover:text-[#D4A843] transition-colors">Herramientas</a>
+      <span class="mx-1">›</span>
+      <span class="text-[#E8EAF0]">Calculadoras de Trading</span>
+    </div>
+    <h1 class="text-3xl font-bold text-[#E8EAF0] mb-1" style="font-family: 'Syne', sans-serif;">
+      Calculadoras de Trading
+    </h1>
+    <p class="text-[#6B7280] text-sm">Gestión de riesgo profesional · Forex & CFDs</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto px-4 mt-6" id="calcTabs">
+    <button class="tab-btn active" data-tab="pips">Pips</button>
+    <button class="tab-btn" data-tab="posicion">Tamaño Posición</button>
+    <button class="tab-btn" data-tab="ganancias">Ganancias / Pérdidas</button>
+    <button class="tab-btn" data-tab="margen">Margen</button>
+  </div>
+
+  <div class="max-w-3xl mx-auto px-4 pb-16">
+
+    <!-- ===== TAB: PIPS ===== -->
+    <div class="calc-panel active" id="tab-pips">
+      <div class="calc-card">
+        <h2 class="calc-title">Calculadora de Pips</h2>
+        <p class="calc-desc">Calcula el valor monetario de cada pip según el par de divisas, tamaño de lote y moneda de tu cuenta.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Par de divisas</label>
+            <select id="pip-par">
+              <optgroup label="Majors">
+                <option value="EUR/USD" data-pip="0.0001">EUR/USD</option>
+                <option value="GBP/USD" data-pip="0.0001">GBP/USD</option>
+                <option value="AUD/USD" data-pip="0.0001">AUD/USD</option>
+                <option value="NZD/USD" data-pip="0.0001">NZD/USD</option>
+                <option value="USD/CHF" data-pip="0.0001">USD/CHF</option>
+                <option value="USD/CAD" data-pip="0.0001">USD/CAD</option>
+                <option value="USD/JPY" data-pip="0.01">USD/JPY</option>
+              </optgroup>
+              <optgroup label="Crosses">
+                <option value="EUR/GBP" data-pip="0.0001">EUR/GBP</option>
+                <option value="EUR/JPY" data-pip="0.01">EUR/JPY</option>
+                <option value="GBP/JPY" data-pip="0.01">GBP/JPY</option>
+                <option value="EUR/AUD" data-pip="0.0001">EUR/AUD</option>
+              </optgroup>
+              <optgroup label="LATAM">
+                <option value="USD/MXN" data-pip="0.0001">USD/MXN</option>
+                <option value="USD/BRL" data-pip="0.0001">USD/BRL</option>
+                <option value="USD/COP" data-pip="0.01">USD/COP</option>
+                <option value="USD/PEN" data-pip="0.0001">USD/PEN</option>
+                <option value="USD/ARS" data-pip="0.0001">USD/ARS</option>
+                <option value="USD/HNL" data-pip="0.0001">USD/HNL</option>
+                <option value="USD/CLP" data-pip="0.01">USD/CLP</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Tamaño del lote</label>
+            <select id="pip-lote-tipo">
+              <option value="100000">Lote estándar (1.0)</option>
+              <option value="10000">Mini lote (0.1)</option>
+              <option value="1000">Micro lote (0.01)</option>
+              <option value="100">Nano lote (0.001)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Cantidad de lotes</label>
+            <input type="number" id="pip-lotes" value="1" min="0.01" step="0.01" />
+          </div>
+
+          <div class="form-group">
+            <label>Número de pips</label>
+            <input type="number" id="pip-cantidad" value="10" min="0.1" step="0.1" />
+          </div>
+        </div>
+
+        <button class="calc-btn" id="btn-pips">Calcular</button>
+
+        <div class="resultado-box" id="resultado-pips" style="display:none">
+          <div class="resultado-grid">
+            <div class="resultado-item">
+              <span class="resultado-label">Valor por pip</span>
+              <span class="resultado-valor" id="r-pip-valor">—</span>
+            </div>
+            <div class="resultado-item highlight">
+              <span class="resultado-label">Valor total (<span id="r-pip-n">10</span> pips)</span>
+              <span class="resultado-valor" id="r-pip-total">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Par operado</span>
+              <span class="resultado-valor" id="r-pip-par">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Tamaño posición</span>
+              <span class="resultado-valor" id="r-pip-size">—</span>
+            </div>
+          </div>
+          <p class="resultado-nota">1 pip en EUR/USD con lote estándar = $10 USD. Con mini lote = $1 USD.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: POSICIÓN ===== -->
+    <div class="calc-panel" id="tab-posicion">
+      <div class="calc-card">
+        <h2 class="calc-title">Calculadora de Tamaño de Posición</h2>
+        <p class="calc-desc">Determina cuántos lotes operar para no arriesgar más de un porcentaje fijo de tu capital. La herramienta más importante en gestión de riesgo.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Capital de la cuenta (USD)</label>
+            <input type="number" id="pos-capital" value="1000" min="1" step="100" />
+          </div>
+
+          <div class="form-group">
+            <label>Riesgo por operación (%)</label>
+            <input type="number" id="pos-riesgo" value="2" min="0.1" max="100" step="0.1" />
+            <span class="hint">Recomendado: 1% – 2% por operación</span>
+          </div>
+
+          <div class="form-group">
+            <label>Par de divisas</label>
+            <select id="pos-par">
+              <option value="EUR/USD" data-pip="0.0001">EUR/USD</option>
+              <option value="GBP/USD" data-pip="0.0001">GBP/USD</option>
+              <option value="AUD/USD" data-pip="0.0001">AUD/USD</option>
+              <option value="USD/JPY" data-pip="0.01">USD/JPY</option>
+              <option value="USD/CHF" data-pip="0.0001">USD/CHF</option>
+              <option value="USD/CAD" data-pip="0.0001">USD/CAD</option>
+              <option value="GBP/JPY" data-pip="0.01">GBP/JPY</option>
+              <option value="EUR/JPY" data-pip="0.01">EUR/JPY</option>
+              <option value="USD/MXN" data-pip="0.0001">USD/MXN</option>
+              <option value="USD/BRL" data-pip="0.0001">USD/BRL</option>
+              <option value="USD/HNL" data-pip="0.0001">USD/HNL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Stop Loss (pips)</label>
+            <input type="number" id="pos-sl" value="20" min="1" step="1" />
+          </div>
+
+          <div class="form-group">
+            <label>Precio de entrada</label>
+            <input type="number" id="pos-entrada" value="1.0850" step="0.0001" />
+          </div>
+        </div>
+
+        <button class="calc-btn" id="btn-posicion">Calcular</button>
+
+        <div class="resultado-box" id="resultado-posicion" style="display:none">
+          <div class="resultado-grid">
+            <div class="resultado-item highlight">
+              <span class="resultado-label">Tamaño de posición</span>
+              <span class="resultado-valor" id="r-pos-lotes">—</span>
+            </div>
+            <div class="resultado-item highlight">
+              <span class="resultado-label">En mini lotes</span>
+              <span class="resultado-valor" id="r-pos-mini">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Riesgo en USD</span>
+              <span class="resultado-valor" id="r-pos-riesgo-usd">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Unidades totales</span>
+              <span class="resultado-valor" id="r-pos-unidades">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Stop Loss</span>
+              <span class="resultado-valor" id="r-pos-sl">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Nivel de stop (Buy)</span>
+              <span class="resultado-valor" id="r-pos-precio-sl">—</span>
+            </div>
+          </div>
+          <p class="resultado-nota">Nunca arriesgues más del 2% por operación. La consistencia en el riesgo es lo que separa traders rentables de los que quiebran.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: GANANCIAS ===== -->
+    <div class="calc-panel" id="tab-ganancias">
+      <div class="calc-card">
+        <h2 class="calc-title">Calculadora de Ganancias / Pérdidas</h2>
+        <p class="calc-desc">Calcula el resultado en USD de una operación forex según precio de entrada, salida y tamaño de posición.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Par de divisas</label>
+            <select id="gan-par">
+              <option value="EUR/USD" data-pip="0.0001">EUR/USD</option>
+              <option value="GBP/USD" data-pip="0.0001">GBP/USD</option>
+              <option value="AUD/USD" data-pip="0.0001">AUD/USD</option>
+              <option value="NZD/USD" data-pip="0.0001">NZD/USD</option>
+              <option value="USD/JPY" data-pip="0.01">USD/JPY</option>
+              <option value="USD/CHF" data-pip="0.0001">USD/CHF</option>
+              <option value="USD/CAD" data-pip="0.0001">USD/CAD</option>
+              <option value="GBP/JPY" data-pip="0.01">GBP/JPY</option>
+              <option value="EUR/JPY" data-pip="0.01">EUR/JPY</option>
+              <option value="USD/MXN" data-pip="0.0001">USD/MXN</option>
+              <option value="USD/HNL" data-pip="0.0001">USD/HNL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Dirección</label>
+            <select id="gan-direccion">
+              <option value="buy">Compra (Buy / Long)</option>
+              <option value="sell">Venta (Sell / Short)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Lotes</label>
+            <input type="number" id="gan-lotes" value="1" min="0.01" step="0.01" />
+          </div>
+
+          <div class="form-group">
+            <label>Precio de entrada</label>
+            <input type="number" id="gan-entrada" value="1.0850" step="0.00001" />
+          </div>
+
+          <div class="form-group">
+            <label>Precio de salida</label>
+            <input type="number" id="gan-salida" value="1.0900" step="0.00001" />
+          </div>
+
+          <div class="form-group">
+            <label>Comisión del broker (USD)</label>
+            <input type="number" id="gan-comision" value="0" min="0" step="0.5" />
+            <span class="hint">Exness $0 · XM desde $3.5/lote</span>
+          </div>
+        </div>
+
+        <button class="calc-btn" id="btn-ganancias">Calcular</button>
+
+        <div class="resultado-box" id="resultado-ganancias" style="display:none">
+          <div class="resultado-grid">
+            <div class="resultado-item" id="r-gan-box-neto">
+              <span class="resultado-label">Resultado neto</span>
+              <span class="resultado-valor" id="r-gan-neto">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Resultado bruto</span>
+              <span class="resultado-valor" id="r-gan-bruto">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Pips recorridos</span>
+              <span class="resultado-valor" id="r-gan-pips">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Valor por pip</span>
+              <span class="resultado-valor" id="r-gan-pip-valor">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Comisión</span>
+              <span class="resultado-valor" id="r-gan-comision">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">% sobre $1,000 de capital</span>
+              <span class="resultado-valor" id="r-gan-pct">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: MARGEN ===== -->
+    <div class="calc-panel" id="tab-margen">
+      <div class="calc-card">
+        <h2 class="calc-title">Calculadora de Margen</h2>
+        <p class="calc-desc">Calcula cuánto margen necesitas para abrir una posición según el apalancamiento de tu broker.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Par de divisas</label>
+            <select id="mar-par">
+              <option value="EUR/USD">EUR/USD</option>
+              <option value="GBP/USD">GBP/USD</option>
+              <option value="AUD/USD">AUD/USD</option>
+              <option value="USD/JPY">USD/JPY</option>
+              <option value="USD/CHF">USD/CHF</option>
+              <option value="USD/CAD">USD/CAD</option>
+              <option value="GBP/JPY">GBP/JPY</option>
+              <option value="USD/MXN">USD/MXN</option>
+              <option value="USD/HNL">USD/HNL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Apalancamiento</label>
+            <select id="mar-apal">
+              <option value="30">1:30 (regulado EU)</option>
+              <option value="100">1:100</option>
+              <option value="200">1:200</option>
+              <option value="400">1:400 (Pepperstone)</option>
+              <option value="500">1:500</option>
+              <option value="1000">1:1000 (XM)</option>
+              <option value="2000">1:2000 (Exness)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Lotes</label>
+            <input type="number" id="mar-lotes" value="1" min="0.01" step="0.01" />
+          </div>
+
+          <div class="form-group">
+            <label>Precio de entrada</label>
+            <input type="number" id="mar-precio" value="1.0850" step="0.00001" />
+          </div>
+        </div>
+
+        <button class="calc-btn" id="btn-margen">Calcular</button>
+
+        <div class="resultado-box" id="resultado-margen" style="display:none">
+          <div class="resultado-grid">
+            <div class="resultado-item highlight">
+              <span class="resultado-label">Margen requerido</span>
+              <span class="resultado-valor" id="r-mar-margen">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Valor total posición</span>
+              <span class="resultado-valor" id="r-mar-valor">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Apalancamiento</span>
+              <span class="resultado-valor" id="r-mar-apal">—</span>
+            </div>
+            <div class="resultado-item">
+              <span class="resultado-label">Margen libre (si cuenta $1,000)</span>
+              <span class="resultado-valor" id="r-mar-libre">—</span>
+            </div>
+          </div>
+          <p class="resultado-nota">Mayor apalancamiento = menor margen requerido, pero mayor riesgo de margin call.</p>
+
+          <!-- AFILIADOS inline -->
+          <div class="mt-4 pt-4 border-t border-[#23272F]">
+            <p class="text-xs text-[#6B7280] mb-3">
+              Brokers con mejor apalancamiento para LATAM ·
+              <span class="text-[#D4A843]">Contiene enlaces de afiliado</span>
+            </p>
+            <div class="grid grid-cols-3 gap-2">
+              <a href="https://one.exnessonelink.com/a/c_oq7nroj1va" target="_blank" rel="nofollow sponsored"
+                class="flex flex-col gap-1 bg-[#0A0B0D] border border-[#23272F] hover:border-[#D4A843] rounded-lg p-3 transition-colors no-underline">
+                <strong class="text-[#E8EAF0] text-sm">Exness</strong>
+                <span class="text-[#6B7280] text-xs">Hasta 1:2000</span>
+                <span class="text-[#D4A843] text-xs font-semibold mt-1">Abrir cuenta →</span>
+              </a>
+              <a href="https://affs.click/nBBTT" target="_blank" rel="nofollow sponsored"
+                class="flex flex-col gap-1 bg-[#0A0B0D] border border-[#23272F] hover:border-[#D4A843] rounded-lg p-3 transition-colors no-underline">
+                <strong class="text-[#E8EAF0] text-sm">XM</strong>
+                <span class="text-[#6B7280] text-xs">Hasta 1:1000</span>
+                <span class="text-[#D4A843] text-xs font-semibold mt-1">Abrir cuenta →</span>
+              </a>
+              <a href="https://www.pepperstone.com" target="_blank" rel="nofollow sponsored"
+                class="flex flex-col gap-1 bg-[#0A0B0D] border border-[#23272F] hover:border-[#D4A843] rounded-lg p-3 transition-colors no-underline">
+                <strong class="text-[#E8EAF0] text-sm">Pepperstone</strong>
+                <span class="text-[#6B7280] text-xs">Hasta 1:400</span>
+                <span class="text-[#D4A843] text-xs font-semibold mt-1">Ver condiciones →</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  /* TABS */
+  .tab-btn {
+    background: #13151A;
+    border: 1px solid #23272F;
+    color: #9CA3AF;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { border-color: #D4A843; color: #E8EAF0; }
+  .tab-btn.active {
+    background: #D4A843;
+    color: #0A0B0D;
+    border-color: #D4A843;
+    font-weight: 700;
+  }
+
+  /* PANELS */
+  .calc-panel { display: none; }
+  .calc-panel.active { display: block; }
+
+  /* CARD */
+  .calc-card {
+    margin-top: 1.5rem;
+    background: #13151A;
+    border: 1px solid #23272F;
+    border-radius: 16px;
+    padding: 2rem;
+  }
+  @media (max-width: 580px) {
+    .calc-card { padding: 1.25rem; }
+    .tab-btn { font-size: 0.78rem; padding: 0.4rem 0.75rem; }
+  }
+
+  .calc-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #E8EAF0;
+    font-family: 'Syne', sans-serif;
+    margin-bottom: 0.35rem;
+  }
+  .calc-desc {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  /* FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .form-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .form-group input,
+  .form-group select {
+    background: #0A0B0D;
+    border: 1px solid #23272F;
+    color: #E8EAF0;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #D4A843;
+  }
+  .hint {
+    font-size: 0.72rem;
+    color: #6B7280;
+  }
+
+  /* BUTTON */
+  .calc-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: #D4A843;
+    color: #0A0B0D;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .calc-btn:hover { opacity: 0.88; }
+  .calc-btn:active { transform: scale(0.98); }
+
+  /* RESULTADO */
+  .resultado-box {
+    margin-top: 1.5rem;
+    background: #0A0B0D;
+    border: 1px solid #23272F;
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .resultado-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  @media (max-width: 480px) { .resultado-grid { grid-template-columns: 1fr; } }
+
+  .resultado-item {
+    background: #13151A;
+    border: 1px solid #23272F;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .resultado-item.highlight { border-color: #D4A843; }
+
+  .resultado-label {
+    font-size: 0.72rem;
+    color: #6B7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .resultado-valor {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #E8EAF0;
+    font-family: 'Syne', sans-serif;
+  }
+  .resultado-nota {
+    font-size: 0.8rem;
+    color: #6B7280;
+    line-height: 1.5;
+  }
+  .ganancia { color: #22c55e !important; }
+  .perdida  { color: #ef4444 !important; }
+</style>
+
+<script>
+// @ts-nocheck
+
+  // TABS
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+      (btn as HTMLElement).classList.add('active');
+      document.getElementById('tab-' + (btn as HTMLElement).dataset.tab)?.classList.add('active');
+    });
+  });
+
+  // HELPERS
+  const fmt = (n: number, dec = 2) =>
+    n.toLocaleString('es-MX', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+
+  const approxPrices: Record<string, number> = {
+    'USD/JPY': 150, 'USD/CHF': 0.91, 'USD/CAD': 1.36,
+    'USD/MXN': 17,  'USD/BRL': 5.1,  'USD/CLP': 900,
+    'USD/COP': 4000,'USD/PEN': 3.7,  'USD/ARS': 1000,
+    'USD/HNL': 24.8,'EUR/GBP': 0.86, 'EUR/JPY': 162,
+    'GBP/JPY': 190, 'EUR/AUD': 1.65, 'NZD/USD': 0.61,
+  };
+
+  function pipVal(par: string, pipSize: number, lotSize: number, price: number) {
+    return par.endsWith('USD') ? pipSize * lotSize : (pipSize / price) * lotSize;
+  }
+
+  // PIPS
+  document.getElementById('btn-pips')?.addEventListener('click', () => {
+    const parEl   = document.getElementById('pip-par') as HTMLSelectElement;
+    const par     = parEl.value;
+    const pipSize = parseFloat(parEl.selectedOptions[0].dataset.pip ?? '0.0001');
+    const loteTipo= parseFloat((document.getElementById('pip-lote-tipo') as HTMLSelectElement).value);
+    const lotes   = parseFloat((document.getElementById('pip-lotes') as HTMLInputElement).value) || 1;
+    const pips    = parseFloat((document.getElementById('pip-cantidad') as HTMLInputElement).value) || 10;
+    const lotSize = loteTipo * lotes;
+    const price   = approxPrices[par] ?? 1.085;
+    const vPip    = pipVal(par, pipSize, lotSize, price);
+
+    document.getElementById('r-pip-valor')!.textContent = '$' + fmt(vPip);
+    document.getElementById('r-pip-total')!.textContent = '$' + fmt(vPip * pips);
+    document.getElementById('r-pip-par')!.textContent   = par;
+    document.getElementById('r-pip-size')!.textContent  = fmt(lotSize, 0) + ' unidades';
+    document.getElementById('r-pip-n')!.textContent     = String(pips);
+    (document.getElementById('resultado-pips') as HTMLElement).style.display = 'block';
+  });
+
+  // POSICIÓN
+  document.getElementById('btn-posicion')?.addEventListener('click', () => {
+    const capital   = parseFloat((document.getElementById('pos-capital') as HTMLInputElement).value) || 1000;
+    const riesgoPct = parseFloat((document.getElementById('pos-riesgo') as HTMLInputElement).value) || 2;
+    const parEl     = document.getElementById('pos-par') as HTMLSelectElement;
+    const par       = parEl.value;
+    const pipSize   = parseFloat(parEl.selectedOptions[0].dataset.pip ?? '0.0001');
+    const slPips    = parseFloat((document.getElementById('pos-sl') as HTMLInputElement).value) || 20;
+    const entrada   = parseFloat((document.getElementById('pos-entrada') as HTMLInputElement).value) || 1.085;
+    const riesgoUSD = capital * (riesgoPct / 100);
+    const pvStd     = pipVal(par, pipSize, 100000, approxPrices[par] ?? entrada);
+    const lotesStd  = riesgoUSD / (slPips * pvStd);
+
+    document.getElementById('r-pos-lotes')!.textContent      = fmt(lotesStd, 2) + ' lotes';
+    document.getElementById('r-pos-mini')!.textContent       = fmt(lotesStd * 10, 1) + ' mini lotes';
+    document.getElementById('r-pos-riesgo-usd')!.textContent = '$' + fmt(riesgoUSD);
+    document.getElementById('r-pos-unidades')!.textContent   = fmt(Math.round(lotesStd * 100000), 0);
+    document.getElementById('r-pos-sl')!.textContent         = slPips + ' pips';
+    document.getElementById('r-pos-precio-sl')!.textContent  = fmt(entrada - slPips * pipSize, 5);
+    (document.getElementById('resultado-posicion') as HTMLElement).style.display = 'block';
+  });
+
+  // GANANCIAS
+  document.getElementById('btn-ganancias')?.addEventListener('click', () => {
+    const parEl    = document.getElementById('gan-par') as HTMLSelectElement;
+    const par      = parEl.value;
+    const pipSize  = parseFloat(parEl.selectedOptions[0].dataset.pip ?? '0.0001');
+    const dir      = (document.getElementById('gan-direccion') as HTMLSelectElement).value;
+    const lotes    = parseFloat((document.getElementById('gan-lotes') as HTMLInputElement).value) || 1;
+    const entrada  = parseFloat((document.getElementById('gan-entrada') as HTMLInputElement).value);
+    const salida   = parseFloat((document.getElementById('gan-salida') as HTMLInputElement).value);
+    const comision = parseFloat((document.getElementById('gan-comision') as HTMLInputElement).value) || 0;
+    const lotSize  = lotes * 100000;
+    const diff     = dir === 'buy' ? salida - entrada : entrada - salida;
+    const pipsRec  = diff / pipSize;
+    const pv       = pipVal(par, pipSize, lotSize, approxPrices[par] ?? entrada);
+    const bruto    = pipsRec * pv;
+    const neto     = bruto - comision;
+
+    const netoEl = document.getElementById('r-gan-neto')!;
+    netoEl.textContent = (neto >= 0 ? '+' : '') + '$' + fmt(Math.abs(neto)) + ' USD';
+    netoEl.className = 'resultado-valor ' + (neto >= 0 ? 'ganancia' : 'perdida');
+    (document.getElementById('r-gan-box-neto') as HTMLElement).style.borderColor = neto >= 0 ? '#22c55e' : '#ef4444';
+
+    document.getElementById('r-gan-bruto')!.textContent     = (bruto >= 0 ? '+' : '') + '$' + fmt(Math.abs(bruto)) + ' USD';
+    document.getElementById('r-gan-pips')!.textContent      = fmt(Math.abs(pipsRec), 1) + ' pips';
+    document.getElementById('r-gan-pip-valor')!.textContent = '$' + fmt(pv / lotes, 2) + '/pip';
+    document.getElementById('r-gan-comision')!.textContent  = '$' + fmt(comision);
+    document.getElementById('r-gan-pct')!.textContent       = (neto >= 0 ? '+' : '') + fmt((neto / 1000) * 100, 2) + '%';
+    (document.getElementById('resultado-ganancias') as HTMLElement).style.display = 'block';
+  });
+
+  // MARGEN
+  document.getElementById('btn-margen')?.addEventListener('click', () => {
+    const lotes  = parseFloat((document.getElementById('mar-lotes') as HTMLInputElement).value) || 1;
+    const precio = parseFloat((document.getElementById('mar-precio') as HTMLInputElement).value) || 1.085;
+    const apal   = parseFloat((document.getElementById('mar-apal') as HTMLSelectElement).value);
+    const valPos = lotes * 100000 * precio;
+    const margen = valPos / apal;
+
+    document.getElementById('r-mar-margen')!.textContent = '$' + fmt(margen);
+    document.getElementById('r-mar-valor')!.textContent  = '$' + fmt(valPos);
+    document.getElementById('r-mar-apal')!.textContent   = '1:' + apal;
+    document.getElementById('r-mar-libre')!.textContent  = '$' + fmt(Math.max(1000 - margen, 0));
+    (document.getElementById('resultado-margen') as HTMLElement).style.display = 'block';
+  });
+</script>
