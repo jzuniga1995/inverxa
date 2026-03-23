@@ -130,6 +130,90 @@ const brokers = [
     descripcion: "Más de 25 años en el mercado. App con 10M+ descargas y 4.9 en Android. Sin spread en CFDs.",
     ideal: "Traders con app móvil",
   },
+  {
+    id: "deriv",
+    nombre: "Deriv",
+    domain: "deriv.com",
+    tipo: "Forex & Derivados",
+    color: "#FF444F",
+    rating: 4.4,
+    href: "https://deriv.com",                                     // ⏳ Reemplazar con link afiliado
+    cta: "Abrir cuenta",
+    badge: "Opciones & Sintéticos",
+    deposito: "$5 USD",
+    spread: "Desde 0.5 pips (Forex)",
+    cuentas: "Synthetic, Financial, Financial STP",
+    regulacion: ["MFSA", "LFSA", "VFSC", "FSC"],
+    plataformas: ["MT5", "cTrader", "DTrader", "SmartTrader"],
+    instrumentos: "+300 activos",
+    apalancamiento: "Hasta 1:1000",
+    inactividad: "Sin comisión",
+    descripcion: "Más de 300 activos incluyendo índices sintéticos únicos, Forex y opciones. Plataforma propia DTrader y soporte MT5.",
+    ideal: "Traders de derivados",
+  },
+  {
+    id: "vantage",
+    nombre: "Vantage",
+    domain: "vantagemarkets.com",
+    tipo: "Forex & CFD",
+    color: "#00C896",
+    rating: 4.5,
+    href: "https://www.vantagemarkets.com",                        // ⏳ Reemplazar con link afiliado
+    cta: "Empezar a operar",
+    badge: "15+ años",
+    deposito: "$50 USD",
+    spread: "Desde 0.0 pips (Raw ECN)",
+    cuentas: "Standard STP, Raw ECN, Pro ECN",
+    regulacion: ["ASIC", "FCA", "CIMA", "FSCA"],
+    plataformas: ["MT4", "MT5", "TradingView", "ProTrader"],
+    instrumentos: "+1,000 CFDs",
+    apalancamiento: "Hasta 1:500",
+    inactividad: "Sin comisión",
+    descripcion: "Más de 1,000 CFDs en Forex, índices, materias primas y ETFs. Spreads desde 0.0 pips. Regulado por ASIC y FCA.",
+    ideal: "Traders intermedios",
+  },
+  {
+    id: "icmarkets",
+    nombre: "IC Markets",
+    domain: "icmarkets.com",
+    tipo: "Broker ECN",
+    color: "#1A3C6E",
+    rating: 4.8,
+    href: "https://www.icmarkets.com",                             // ⏳ Reemplazar con link afiliado
+    cta: "Operar en ECN",
+    badge: "4.8★ Trustpilot",
+    deposito: "$200 USD",
+    spread: "Desde 0.0 pips (Raw)",
+    cuentas: "Standard, Raw Spread (cTrader), Raw Spread (MT)",
+    regulacion: ["ASIC", "CySEC", "FSA", "SCB"],
+    plataformas: ["MT4", "MT5", "cTrader", "TradingView"],
+    instrumentos: "+2,250 activos",
+    apalancamiento: "Hasta 1:500",
+    inactividad: "Sin comisión",
+    descripcion: "Broker ECN líder mundial por volumen. Más de 2,250 instrumentos con spreads desde 0.0 pips y ejecución de altísima velocidad.",
+    ideal: "Traders profesionales",
+  },
+  {
+    id: "fbs",
+    nombre: "FBS",
+    domain: "fbs.com",
+    tipo: "Forex & CFD",
+    color: "#F5A623",
+    rating: 4.4,
+    href: "https://fbs.com",                                       // ⏳ Reemplazar con link afiliado
+    cta: "Abrir cuenta",
+    badge: "Desde $1",
+    deposito: "$1 USD",
+    spread: "Desde 0.0 pips (Zero Spread)",
+    cuentas: "Cent, Micro, Standard, Zero Spread, ECN",
+    regulacion: ["IFSC", "CySEC", "ASIC", "FSCA"],
+    plataformas: ["MT4", "MT5", "FBS App"],
+    instrumentos: "+240 CFDs",
+    apalancamiento: "Hasta 1:3000",
+    inactividad: "Sin comisión",
+    descripcion: "Depósito mínimo desde $1. Apalancamiento hasta 1:3000. Más de 17M de traders en 150 países. Disponible en MT4 y MT5.",
+    ideal: "Traders con poco capital",
+  },
 ];
 ---
 
@@ -137,30 +221,22 @@ const brokers = [
 
 <slot name="head" slot="head">
 
-  <!-- ═══════════════════════════════════════
-       PRECONNECT
-  ═══════════════════════════════════════ -->
   <link rel="preconnect" href="https://icon.horse" />
   <link rel="dns-prefetch" href="https://icon.horse" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <!-- ═══════════════════════════════════════
-       BASIC SEO
-  ═══════════════════════════════════════ -->
   <title>Comparar Brokers 2026 — XM vs Exness vs Pepperstone vs XTB vs Binance | Inversax</title>
-  <meta name="description"    content="Comparador de brokers 2026 para Latinoamérica. Compará XM, Exness, Pepperstone, Binance, XTB y Libertex: spreads, depósito mínimo, regulación, plataformas y comisiones en una sola tabla." />
+  <meta name="description"    content="Comparador de brokers 2026 para Latinoamérica. Compará XM, Exness, Pepperstone, Binance, XTB, Libertex, Deriv, Vantage, IC Markets y FBS: spreads, depósito mínimo, regulación, plataformas y comisiones en una sola tabla." />
   <meta name="author"         content="José Zúniga" />
   <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
   <meta name="googlebot-news" content="index, follow" />
   <link rel="canonical"       href="https://inversax.com/herramientas/comparar-brokers" />
 
-  <!-- ═══════════════════════════════════════
-       KEYWORDS
-  ═══════════════════════════════════════ -->
   <meta name="keywords" content="
     comparar brokers forex 2026, mejor broker forex latinoamerica, comparador de brokers,
     XM vs Exness, XM vs Pepperstone, Exness vs XTB, XTB vs Pepperstone, Binance vs XTB,
+    Deriv broker review 2026, Vantage Markets review 2026, IC Markets review 2026, FBS review 2026,
     mejor broker para principiantes, broker con menor depósito mínimo, broker más regulado,
     broker con spreads más bajos, mejor broker para scalping, mejor broker para acciones,
     mejor broker cripto latinoamerica, XM broker opiniones 2026, Exness review 2026,
@@ -170,9 +246,6 @@ const brokers = [
     broker con retiros instantáneos, broker sin inactividad, apalancamiento forex 2026
   " />
 
-  <!-- ═══════════════════════════════════════
-       GEO
-  ═══════════════════════════════════════ -->
   <meta name="geo.region"       content="LATAM" />
   <meta name="geo.placename"    content="Latinoamérica" />
   <meta name="language"         content="Spanish" />
@@ -180,9 +253,6 @@ const brokers = [
   <meta name="coverage"         content="Worldwide" />
   <meta name="target"           content="all" />
 
-  <!-- ═══════════════════════════════════════
-       HREFLANG
-  ═══════════════════════════════════════ -->
   <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/comparar-brokers" />
   <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/comparar-brokers" />
   <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/comparar-brokers" />
@@ -205,9 +275,6 @@ const brokers = [
   <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/comparar-brokers" />
   <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/comparar-brokers" />
 
-  <!-- ═══════════════════════════════════════
-       OPEN GRAPH
-  ═══════════════════════════════════════ -->
   <meta property="og:site_name"        content="Inversax" />
   <meta property="og:locale"           content="es_LA" />
   <meta property="og:locale:alternate" content="es_MX" />
@@ -224,9 +291,6 @@ const brokers = [
   <meta property="og:image:alt"        content="Comparador de brokers 2026 — Inversax" />
   <meta property="og:image:type"       content="image/png" />
 
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:creator"     content="@inversax" />
@@ -235,9 +299,6 @@ const brokers = [
   <meta name="twitter:image"       content="https://inversax.com/og/herramientas/comparar-brokers.png" />
   <meta name="twitter:image:alt"   content="Comparador de brokers 2026 — Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebSite + SearchAction
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -252,9 +313,6 @@ const brokers = [
     }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -274,9 +332,6 @@ const brokers = [
     "mainEntity": { "@type": "ItemList", "name": "Mejores brokers 2026 para Latinoamérica" }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebApplication (herramienta)
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -294,59 +349,27 @@ const brokers = [
     }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — ItemList (brokers)
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Mejores brokers de Forex y CFD para Latinoamérica 2026",
     "description": "Ranking y comparativa de los mejores brokers para traders latinoamericanos en 2026.",
     "url": "https://inversax.com/herramientas/comparar-brokers",
-    "numberOfItems": 6,
+    "numberOfItems": 10,
     "itemListElement": [
-      {
-        "@type": "ListItem", "position": 1,
-        "name": "Exness",
-        "url": "https://one.exnessonelink.com/a/c_oq7nroj1va",
-        "description": "Broker con retiros instantáneos, spreads desde 0.0 pips y sin comisión por inactividad."
-      },
-      {
-        "@type": "ListItem", "position": 2,
-        "name": "Pepperstone",
-        "url": "https://www.pepperstone.com",
-        "description": "Broker ECN regulado en 7 jurisdicciones. Soporta MT4, MT5, cTrader y TradingView."
-      },
-      {
-        "@type": "ListItem", "position": 3,
-        "name": "XTB",
-        "url": "https://geolink.xtb.com/I0QSx",
-        "description": "0% comisión en acciones y ETFs reales hasta 100K EUR/mes. Más de 7,300 activos."
-      },
-      {
-        "@type": "ListItem", "position": 4,
-        "name": "Binance",
-        "url": "https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=en&ref=GRO_28502_ANDQ4",
-        "description": "El exchange de criptomonedas más grande del mundo. 0.1% comisión spot."
-      },
-      {
-        "@type": "ListItem", "position": 5,
-        "name": "Libertex",
-        "url": "https://libertex.org/es",
-        "description": "Broker sin spread en CFDs. Más de 25 años en el mercado. App con 10M+ descargas."
-      },
-      {
-        "@type": "ListItem", "position": 6,
-        "name": "XM",
-        "url": "https://affs.click/nBBTT",
-        "description": "Broker ideal para principiantes. Depósito desde $5 y bono de bienvenida de $30."
-      }
+      { "@type": "ListItem", "position": 1, "name": "Exness", "url": "https://one.exnessonelink.com/a/c_oq7nroj1va", "description": "Broker con retiros instantáneos, spreads desde 0.0 pips y sin comisión por inactividad." },
+      { "@type": "ListItem", "position": 2, "name": "Pepperstone", "url": "https://www.pepperstone.com", "description": "Broker ECN regulado en 7 jurisdicciones. Soporta MT4, MT5, cTrader y TradingView." },
+      { "@type": "ListItem", "position": 3, "name": "IC Markets", "url": "https://www.icmarkets.com", "description": "Broker ECN líder por volumen. Más de 2,250 instrumentos y spreads desde 0.0 pips." },
+      { "@type": "ListItem", "position": 4, "name": "XTB", "url": "https://geolink.xtb.com/I0QSx", "description": "0% comisión en acciones y ETFs reales hasta 100K EUR/mes. Más de 7,300 activos." },
+      { "@type": "ListItem", "position": 5, "name": "Binance", "url": "https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=en&ref=GRO_28502_ANDQ4", "description": "El exchange de criptomonedas más grande del mundo. 0.1% comisión spot." },
+      { "@type": "ListItem", "position": 6, "name": "Vantage", "url": "https://www.vantagemarkets.com", "description": "Más de 1,000 CFDs. Spreads desde 0.0 pips. Regulado por ASIC y FCA." },
+      { "@type": "ListItem", "position": 7, "name": "XM", "url": "https://affs.click/nBBTT", "description": "Broker ideal para principiantes. Depósito desde $5 y bono de bienvenida de $30." },
+      { "@type": "ListItem", "position": 8, "name": "Deriv", "url": "https://deriv.com", "description": "Más de 300 activos incluyendo índices sintéticos únicos, Forex y opciones." },
+      { "@type": "ListItem", "position": 9, "name": "FBS", "url": "https://fbs.com", "description": "Depósito desde $1 y apalancamiento hasta 1:3000. Más de 17M de traders globales." },
+      { "@type": "ListItem", "position": 10, "name": "Libertex", "url": "https://libertex.org/es", "description": "Broker sin spread en CFDs. Más de 25 años en el mercado. App con 10M+ descargas." }
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — BreadcrumbList
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -357,63 +380,20 @@ const brokers = [
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — FAQPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "¿Qué broker tiene el menor depósito mínimo en 2026?",
-        "acceptedAnswer": { "@type": "Answer", "text": "XM permite abrir una cuenta desde $5 USD, siendo el broker con menor depósito mínimo de esta comparativa. Pepperstone y XTB no exigen depósito mínimo." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cuál es el broker más regulado para Latinoamérica?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Pepperstone lidera con 7 regulaciones internacionales: FCA (Reino Unido), ASIC (Australia), CySEC (Chipre), DFSA (Dubái), BaFin (Alemania), CMA (Kenia) y SCB (Bahamas)." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué broker tiene los spreads más bajos?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Exness y Pepperstone ofrecen spreads desde 0.0 pips en sus cuentas ECN/Raw. Libertex opera sin spread pero cobra comisión por operación." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cuál es el mejor broker para principiantes en Latinoamérica?",
-        "acceptedAnswer": { "@type": "Answer", "text": "XM es el más recomendado para principiantes por su depósito mínimo de $5, bono de bienvenida de $30 sin depósito, cuenta demo ilimitada y soporte en español." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué broker es mejor para invertir en acciones y ETFs?",
-        "acceptedAnswer": { "@type": "Answer", "text": "XTB destaca para inversión en acciones con 0% de comisión en acciones y ETFs reales hasta 100,000 EUR al mes y más de 7,300 instrumentos disponibles." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cuál es el mejor broker de criptomonedas?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Binance es el exchange más grande del mundo por volumen, con más de 350 criptomonedas y una comisión spot del 0.1%. Ideal para inversores en cripto." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Exness tiene retiros instantáneos?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Sí. Exness procesa la mayoría de los retiros en menos de 1 minuto de forma automática, siendo el broker más rápido en esta comparativa." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué diferencia hay entre un broker ECN y un broker Market Maker?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Un broker ECN como Pepperstone conecta directamente con proveedores de liquidez, ofreciendo spreads más bajos pero con comisión por lote. Un Market Maker como XM o Exness en cuentas Standard actúa como contraparte, con spreads ligeramente más altos pero sin comisión fija." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué plataformas de trading soportan estos brokers?",
-        "acceptedAnswer": { "@type": "Answer", "text": "MT4 y MT5 están disponibles en XM, Exness, Pepperstone y Libertex. Pepperstone además ofrece cTrader y TradingView. XTB tiene su plataforma propia xStation 5. Binance opera a través de su propia plataforma web y app." }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué broker cobra comisión por inactividad?",
-        "acceptedAnswer": { "@type": "Answer", "text": "XM cobra $5/mes tras 90 días sin operar. XTB cobra 10 EUR/mes tras 12 meses de inactividad. Libertex cobra $10 tras 180 días. Exness, Pepperstone y Binance no cobran comisión por inactividad." }
-      }
+      { "@type": "Question", "name": "¿Qué broker tiene el menor depósito mínimo en 2026?", "acceptedAnswer": { "@type": "Answer", "text": "FBS permite abrir cuenta desde $1 USD. XM desde $5 USD. Pepperstone y XTB no exigen depósito mínimo." } },
+      { "@type": "Question", "name": "¿Cuál es el broker más regulado para Latinoamérica?", "acceptedAnswer": { "@type": "Answer", "text": "Pepperstone lidera con 7 regulaciones: FCA, ASIC, CySEC, DFSA, BaFin, CMA y SCB." } },
+      { "@type": "Question", "name": "¿Qué broker tiene los spreads más bajos?", "acceptedAnswer": { "@type": "Answer", "text": "Exness, Pepperstone, IC Markets, Vantage y FBS ofrecen spreads desde 0.0 pips en sus cuentas ECN/Raw." } },
+      { "@type": "Question", "name": "¿Cuál es el mejor broker para principiantes en Latinoamérica?", "acceptedAnswer": { "@type": "Answer", "text": "XM es el más recomendado para principiantes por su depósito mínimo de $5, bono de $30 sin depósito y soporte en español." } },
+      { "@type": "Question", "name": "¿Qué broker es mejor para invertir en acciones y ETFs?", "acceptedAnswer": { "@type": "Answer", "text": "XTB destaca con 0% de comisión en acciones y ETFs reales hasta 100,000 EUR al mes y más de 7,300 instrumentos." } },
+      { "@type": "Question", "name": "¿Cuál es el mejor broker de criptomonedas?", "acceptedAnswer": { "@type": "Answer", "text": "Binance es el exchange más grande del mundo por volumen, con más de 350 criptomonedas y comisión spot del 0.1%." } },
+      { "@type": "Question", "name": "¿Exness tiene retiros instantáneos?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Exness procesa la mayoría de retiros en menos de 1 minuto de forma automática." } },
+      { "@type": "Question", "name": "¿Qué diferencia hay entre un broker ECN y un broker Market Maker?", "acceptedAnswer": { "@type": "Answer", "text": "Un broker ECN como IC Markets o Pepperstone conecta directamente con proveedores de liquidez con spreads bajos pero comisión por lote. Un Market Maker como XM actúa como contraparte con spreads ligeramente más altos pero sin comisión fija." } },
+      { "@type": "Question", "name": "¿Qué broker ofrece mayor apalancamiento?", "acceptedAnswer": { "@type": "Answer", "text": "FBS ofrece apalancamiento hasta 1:3000, seguido de Exness con hasta 1:2000 y Deriv con hasta 1:1000." } },
+      { "@type": "Question", "name": "¿Qué broker cobra comisión por inactividad?", "acceptedAnswer": { "@type": "Answer", "text": "XM cobra $5/mes tras 90 días sin operar. XTB cobra 10 EUR/mes tras 12 meses. Libertex cobra $10 tras 180 días. Exness, Pepperstone, Binance, Deriv, Vantage, IC Markets y FBS no cobran por inactividad." } }
     ]
   })} />
 
@@ -626,11 +606,9 @@ const brokers = [
     render();
   }
 
-  // ── Render móvil: acordeón por fila ──────────────────────────────────────
   function renderMobile(sel: any[]) {
     let html = `<div style="display:flex;flex-direction:column;gap:.5rem;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;" id="cmp-tbl">`;
 
-    // Header con logos
     html += `<div style="display:grid;grid-template-columns:${sel.map(() => '1fr').join(' ')};gap:.5rem;margin-bottom:.25rem;">`;
     sel.forEach(b => {
       html += `
@@ -650,7 +628,6 @@ const brokers = [
     });
     html += `</div>`;
 
-    // Filas
     ROWS.forEach((row, ri) => {
       const stripe = ri % 2 !== 0 ? 'rgba(255,255,255,.016)' : 'transparent';
       html += `
@@ -672,7 +649,6 @@ const brokers = [
       html += `</div></div>`;
     });
 
-    // CTAs
     html += `<div style="display:grid;grid-template-columns:${sel.map(() => '1fr').join(' ')};gap:.5rem;margin-top:.25rem;">`;
     sel.forEach(b => {
       html += `
@@ -690,7 +666,6 @@ const brokers = [
     return html;
   }
 
-  // ── Render desktop: tabla grid ────────────────────────────────────────────
   function renderDesktop(sel: any[]) {
     const cols = sel.length;
     const cell = (extra = '') =>
@@ -817,7 +792,6 @@ const brokers = [
     if (btn) { btn.style.opacity = '1'; btn.style.transform = 'translateY(0)'; }
   });
 
-  // Re-render si cambia el tamaño de pantalla (ej. rotar dispositivo)
   let resizeTimer: ReturnType<typeof setTimeout>;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -848,8 +822,8 @@ const brokers = [
 
   .cmp-cta-btn { transition: opacity .2s, transform .15s; }
 
-  /* Touch: quitar hover fantasma en móvil */
   @media (hover: none) {
     .cmp-cta-btn:hover { opacity: 1 !important; transform: none !important; }
   }
 </style>
+
