@@ -1,100 +1,42 @@
 ---
-// src/pages/herramientas/acciones/index.astro
+// src/pages/cripto/index.astro
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft } from 'lucide-astro';
 
-type Accion = {
-  nombre: string;
-  ticker: string;
-  slug: string;
-  sector: string;
-  icono: string;
-  color: string;
-  tradingviewSimbolo: string;
-  precio: number;
-  cambioPct: number;
-  alza: boolean;
-};
-
-let acciones: Accion[] = [];
-
-const fmt = (p: number) => {
-  if (!p || p <= 0) return '—';
-  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-};
-const fmtC = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
-
-const dominiosPorTicker: Record<string, string> = {
-  // ── Tecnología ──
-  AAPL:    'apple.com',
-  NVDA:    'nvidia.com',
-  MSFT:    'microsoft.com',
-  META:    'meta.com',
-  GOOGL:   'google.com',
-  AMD:     'amd.com',
-  PLTR:    'palantir.com',
-  CRWD:    'crowdstrike.com',
-
-  // ── Alta volatilidad ──
-  TSLA:    'tesla.com',
-  AMZN:    'amazon.com',
-  NFLX:    'netflix.com',
-  COIN:    'coinbase.com',
-  HOOD:    'robinhood.com',
-  SHOP:    'shopify.com',
-
-  // ── ETFs ──
-  SPY:     'ssga.com',
-  QQQ:     'invesco.com',
-  GLD:     'spdrgoldshares.com',
-
-  // ── LATAM ──
-  MELI:    'mercadolibre.com',
-  EC:      'ecopetrol.com.co',
-  PBR:     'petrobras.com.br',
-  VALE:    'vale.com',
-  GLOB:    'globant.com',
-  AMX:     'americamovil.com',
-
-  // ── Finanzas ──
-  V:       'visa.com',
-  JPM:     'jpmorganchase.com',
-  GS:      'goldmansachs.com',
-  'BRK-B': 'berkshirehathaway.com',
-  PYPL:    'paypal.com',
-
-  // ── Salud ──
-  LLY:     'lilly.com',
-  JNJ:     'jnj.com',
-  PFE:     'pfizer.com',
-
-  // ── Consumo ──
-  KO:      'coca-cola.com',
-  MCD:     'mcdonalds.com',
-  DIS:     'disney.com',
-  SBUX:    'starbucks.com',
-  NKE:     'nike.com',
-  UBER:    'uber.com',
-
-  // ── Energía ──
-  XOM:     'exxonmobil.com',
-  CVX:     'chevron.com',
-
-  // ── Industria ──
-  BA:      'boeing.com',
-  CAT:     'caterpillar.com',
-};
-
-// ── Lee de KV directamente ──────
 const env = (Astro.locals.runtime?.env as any);
 const KV  = env?.INVERSA_KV as KVNamespace | undefined;
 
+type Coin = {
+  id: string; symbol: string; name: string; image: string;
+  price: number; change24: number; change7: number;
+  marketCap: number; volume: number; rank: number;
+};
+
+let coins: Coin[] = [];
+let fetchError = false;
+
+const fmt = (p: number) => {
+  if (!p) return '$0.00';
+  if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (p >= 0.01) return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  return `$${p.toLocaleString('en-US', { minimumFractionDigits: 6, maximumFractionDigits: 6 })}`;
+};
+const fmtL = (n: number) => {
+  if (!n) return '$0';
+  if (n >= 1e12) return `$${(n/1e12).toFixed(2)}T`;
+  if (n >= 1e9)  return `$${(n/1e9).toFixed(2)}B`;
+  if (n >= 1e6)  return `$${(n/1e6).toFixed(1)}M`;
+  return `$${n.toLocaleString('en-US')}`;
+};
+const fmtC = (c: number) => `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
+
 try {
-  const cached = await KV?.get('acciones', 'json') as Accion[] | null;
-  if (cached && cached.length > 0) acciones = cached;
+  const cached = await KV?.get('cache:precios', 'json') as Coin[] | null;
+  if (cached && cached.length > 0) coins = cached;
 } catch (e) {
-  console.error('[AccionesIndex]', e);
+  console.error('[CriptoIndex]', e);
 }
 ---
 
@@ -102,33 +44,21 @@ try {
 
 <slot name="head" slot="head">
 
-  <!-- ═══════════════════════════════════════
-       PRECONNECT
-  ═══════════════════════════════════════ -->
   <link rel="preconnect" href="https://res.cloudinary.com" />
   <link rel="dns-prefetch" href="https://res.cloudinary.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <!-- ═══════════════════════════════════════
-       BASIC SEO
-  ═══════════════════════════════════════ -->
-  <title>Acciones en Tiempo Real — AAPL, NVDA, TSLA y más | Inversax</title>
-  <meta name="description"    content="Cotizaciones en tiempo real de las principales acciones del mercado estadounidense. Apple, NVIDIA, Tesla, Microsoft, Amazon y más de 50 empresas. Precios actualizados para inversores en Latinoamérica." />
+  <title>Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax</title>
+  <meta name="description"    content="Precios de las 100 principales criptomonedas en tiempo real: Bitcoin, Ethereum, Solana, XRP y más. Capitalización, volumen y variación 24h para inversores en Latinoamérica." />
   <meta name="author"         content="José Zúniga" />
   <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
   <meta name="googlebot-news" content="index, follow" />
-  <link rel="canonical"       href="https://inversax.com/herramientas/acciones" />
+  <link rel="canonical"       href="https://inversax.com/herramientas/cripto" />
 
-  <!-- ═══════════════════════════════════════
-       KEYWORDS
-  ═══════════════════════════════════════ -->
-  <meta name="keywords"      content="acciones en tiempo real, precio AAPL hoy, precio NVDA hoy, precio TSLA hoy, bolsa de valores hoy, acciones USA, cotizaciones bolsa americana, invertir en acciones desde latinoamerica, S&P 500 hoy" />
-  <meta name="news_keywords" content="acciones hoy, AAPL, NVDA, TSLA, bolsa americana, S&P 500, Inversax" />
+  <meta name="keywords"      content="precio bitcoin hoy, precio ethereum hoy, criptomonedas en tiempo real, top 100 criptomonedas, precio crypto hoy, bitcoin en dolares, crypto latinoamerica, precio BTC ETH SOL XRP" />
+  <meta name="news_keywords" content="precio bitcoin hoy, precio ethereum, criptomonedas, BTC, ETH, SOL, XRP, Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       GEO
-  ═══════════════════════════════════════ -->
   <meta name="geo.region"       content="LATAM" />
   <meta name="geo.placename"    content="Latinoamérica" />
   <meta name="language"         content="Spanish" />
@@ -136,51 +66,45 @@ try {
   <meta name="coverage"         content="Worldwide" />
   <meta name="target"           content="all" />
 
-  <!-- ═══════════════════════════════════════
-       HREFLANG
-  ═══════════════════════════════════════ -->
-  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/acciones" />
-  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/acciones" />
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/cripto" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/cripto" />
 
-  <!-- ═══════════════════════════════════════
-       OPEN GRAPH
-  ═══════════════════════════════════════ -->
   <meta property="og:site_name"   content="Inversax" />
   <meta property="og:locale"      content="es_LA" />
   <meta property="og:locale:alternate" content="es_MX" />
@@ -188,29 +112,23 @@ try {
   <meta property="og:locale:alternate" content="es_CO" />
   <meta property="og:locale:alternate" content="es_ES" />
   <meta property="og:type"        content="website" />
-  <meta property="og:title"       content="Acciones en Tiempo Real — AAPL, NVDA, TSLA y más | Inversax" />
-  <meta property="og:description" content="Cotizaciones en vivo de Apple, NVIDIA, Tesla, Microsoft y más de 50 acciones del mercado estadounidense. Datos para inversores en Latinoamérica." />
-  <meta property="og:url"         content="https://inversax.com/herramientas/acciones" />
-  <meta property="og:image"       content="https://inversax.com/og/herramientas/acciones.png" />
+  <meta property="og:title"       content="Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax" />
+  <meta property="og:description" content="Bitcoin, Ethereum, Solana y las 100 principales criptomonedas con precios en tiempo real, capitalización y volumen para toda Latinoamérica." />
+  <meta property="og:url"         content="https://inversax.com/herramientas/cripto" />
+  <meta property="og:image"       content="https://inversax.com/og/herramientas/cripto.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"   content="Acciones en tiempo real — Inversax" />
+  <meta property="og:image:alt"   content="Top 100 Criptomonedas en vivo — Inversax" />
   <meta property="og:image:type"  content="image/png" />
 
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:creator"     content="@inversax" />
-  <meta name="twitter:title"       content="Acciones en Tiempo Real — AAPL, NVDA, TSLA | Inversax" />
-  <meta name="twitter:description" content="Más de 50 acciones del mercado estadounidense con precios en tiempo real. Para inversores en Latinoamérica." />
-  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/acciones.png" />
-  <meta name="twitter:image:alt"   content="Acciones en tiempo real — Inversax" />
+  <meta name="twitter:title"       content="Precios de Criptomonedas Hoy — Top 100 | Inversax" />
+  <meta name="twitter:description" content="Bitcoin, Ethereum, Solana y las 100 principales criptos en tiempo real para Latinoamérica." />
+  <meta name="twitter:image"       content="https://inversax.com/og/herramientas/cripto.png" />
+  <meta name="twitter:image:alt"   content="Top 100 Criptomonedas en vivo — Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebSite + SearchAction
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -220,155 +138,171 @@ try {
     "inLanguage": "es",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
-      },
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
       "query-input": "required name=search_term_string"
     }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Acciones en Tiempo Real — Inversax",
-    "description": "Cotizaciones en tiempo real de las principales acciones del mercado estadounidense para inversores en Latinoamérica.",
-    "url": "https://inversax.com/herramientas/acciones",
+    "name": "Precios de Criptomonedas Hoy — Top 100 | Inversax",
+    "description": "Precios en tiempo real de las 100 principales criptomonedas con capitalización, volumen y variación para inversores en Latinoamérica.",
+    "url": "https://inversax.com/herramientas/cripto",
     "inLanguage": "es",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Inversax",
-      "url": "https://inversax.com"
-    },
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
     "publisher": {
       "@type": "Organization",
       "name": "Inversax",
       "url": "https://inversax.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://inversax.com/favicon.png",
-        "width": 512,
-        "height": 512
-      }
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
     },
-    "about": { "@type": "Thing", "name": "Mercado de acciones estadounidense" }
+    "about": { "@type": "Thing", "name": "Criptomonedas" }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — BreadcrumbList
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Inicio",       "item": "https://inversax.com" },
-      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
-      { "@type": "ListItem", "position": 3, "name": "Acciones",     "item": "https://inversax.com/herramientas/acciones" }
+      { "@type": "ListItem", "position": 1, "name": "Inicio",        "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",  "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Criptomonedas", "item": "https://inversax.com/herramientas/cripto" }
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — ItemList (50 acciones)
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": "Acciones del mercado estadounidense en Inversax",
-    "url": "https://inversax.com/herramientas/acciones",
-    "numberOfItems": 50,
+    "name": "Top 100 Criptomonedas en Inversax",
+    "url": "https://inversax.com/herramientas/cripto",
+    "numberOfItems": 100,
     "itemListElement": [
-      { "@type": "ListItem", "position": 1,  "name": "Apple (AAPL)",               "url": "https://inversax.com/herramientas/acciones/aapl" },
-      { "@type": "ListItem", "position": 2,  "name": "Microsoft (MSFT)",           "url": "https://inversax.com/herramientas/acciones/msft" },
-      { "@type": "ListItem", "position": 3,  "name": "NVIDIA (NVDA)",              "url": "https://inversax.com/herramientas/acciones/nvda" },
-      { "@type": "ListItem", "position": 4,  "name": "Alphabet (GOOGL)",           "url": "https://inversax.com/herramientas/acciones/googl" },
-      { "@type": "ListItem", "position": 5,  "name": "Amazon (AMZN)",              "url": "https://inversax.com/herramientas/acciones/amzn" },
-      { "@type": "ListItem", "position": 6,  "name": "Meta Platforms (META)",      "url": "https://inversax.com/herramientas/acciones/meta" },
-      { "@type": "ListItem", "position": 7,  "name": "Tesla (TSLA)",               "url": "https://inversax.com/herramientas/acciones/tsla" },
-      { "@type": "ListItem", "position": 8,  "name": "Berkshire Hathaway (BRK.B)", "url": "https://inversax.com/herramientas/acciones/brk.b" },
-      { "@type": "ListItem", "position": 9,  "name": "Visa (V)",                   "url": "https://inversax.com/herramientas/acciones/v" },
-      { "@type": "ListItem", "position": 10, "name": "JPMorgan Chase (JPM)",       "url": "https://inversax.com/herramientas/acciones/jpm" },
-      { "@type": "ListItem", "position": 11, "name": "Mastercard (MA)",            "url": "https://inversax.com/herramientas/acciones/ma" },
-      { "@type": "ListItem", "position": 12, "name": "UnitedHealth (UNH)",         "url": "https://inversax.com/herramientas/acciones/unh" },
-      { "@type": "ListItem", "position": 13, "name": "Eli Lilly (LLY)",            "url": "https://inversax.com/herramientas/acciones/lly" },
-      { "@type": "ListItem", "position": 14, "name": "Oracle (ORCL)",              "url": "https://inversax.com/herramientas/acciones/orcl" },
-      { "@type": "ListItem", "position": 15, "name": "Broadcom (AVGO)",            "url": "https://inversax.com/herramientas/acciones/avgo" },
-      { "@type": "ListItem", "position": 16, "name": "Netflix (NFLX)",             "url": "https://inversax.com/herramientas/acciones/nflx" },
-      { "@type": "ListItem", "position": 17, "name": "Salesforce (CRM)",           "url": "https://inversax.com/herramientas/acciones/crm" },
-      { "@type": "ListItem", "position": 18, "name": "Adobe (ADBE)",               "url": "https://inversax.com/herramientas/acciones/adbe" },
-      { "@type": "ListItem", "position": 19, "name": "Taiwan Semiconductor (TSM)", "url": "https://inversax.com/herramientas/acciones/tsm" },
-      { "@type": "ListItem", "position": 20, "name": "Qualcomm (QCOM)",            "url": "https://inversax.com/herramientas/acciones/qcom" },
-      { "@type": "ListItem", "position": 21, "name": "AMD (AMD)",                  "url": "https://inversax.com/herramientas/acciones/amd" },
-      { "@type": "ListItem", "position": 22, "name": "Intel (INTC)",               "url": "https://inversax.com/herramientas/acciones/intc" },
-      { "@type": "ListItem", "position": 23, "name": "Goldman Sachs (GS)",         "url": "https://inversax.com/herramientas/acciones/gs" },
-      { "@type": "ListItem", "position": 24, "name": "Bank of America (BAC)",      "url": "https://inversax.com/herramientas/acciones/bac" },
-      { "@type": "ListItem", "position": 25, "name": "Morgan Stanley (MS)",        "url": "https://inversax.com/herramientas/acciones/ms" },
-      { "@type": "ListItem", "position": 26, "name": "PayPal (PYPL)",              "url": "https://inversax.com/herramientas/acciones/pypl" },
-      { "@type": "ListItem", "position": 27, "name": "Johnson & Johnson (JNJ)",    "url": "https://inversax.com/herramientas/acciones/jnj" },
-      { "@type": "ListItem", "position": 28, "name": "Pfizer (PFE)",               "url": "https://inversax.com/herramientas/acciones/pfe" },
-      { "@type": "ListItem", "position": 29, "name": "AbbVie (ABBV)",              "url": "https://inversax.com/herramientas/acciones/abbv" },
-      { "@type": "ListItem", "position": 30, "name": "Merck (MRK)",                "url": "https://inversax.com/herramientas/acciones/mrk" },
-      { "@type": "ListItem", "position": 31, "name": "ExxonMobil (XOM)",           "url": "https://inversax.com/herramientas/acciones/xom" },
-      { "@type": "ListItem", "position": 32, "name": "Chevron (CVX)",              "url": "https://inversax.com/herramientas/acciones/cvx" },
-      { "@type": "ListItem", "position": 33, "name": "Coca-Cola (KO)",             "url": "https://inversax.com/herramientas/acciones/ko" },
-      { "@type": "ListItem", "position": 34, "name": "PepsiCo (PEP)",              "url": "https://inversax.com/herramientas/acciones/pep" },
-      { "@type": "ListItem", "position": 35, "name": "McDonald's (MCD)",           "url": "https://inversax.com/herramientas/acciones/mcd" },
-      { "@type": "ListItem", "position": 36, "name": "Walmart (WMT)",              "url": "https://inversax.com/herramientas/acciones/wmt" },
-      { "@type": "ListItem", "position": 37, "name": "Costco (COST)",              "url": "https://inversax.com/herramientas/acciones/cost" },
-      { "@type": "ListItem", "position": 38, "name": "Nike (NKE)",                 "url": "https://inversax.com/herramientas/acciones/nke" },
-      { "@type": "ListItem", "position": 39, "name": "Starbucks (SBUX)",           "url": "https://inversax.com/herramientas/acciones/sbux" },
-      { "@type": "ListItem", "position": 40, "name": "Disney (DIS)",               "url": "https://inversax.com/herramientas/acciones/dis" },
-      { "@type": "ListItem", "position": 41, "name": "Spotify (SPOT)",             "url": "https://inversax.com/herramientas/acciones/spot" },
-      { "@type": "ListItem", "position": 42, "name": "Uber (UBER)",                "url": "https://inversax.com/herramientas/acciones/uber" },
-      { "@type": "ListItem", "position": 43, "name": "Airbnb (ABNB)",              "url": "https://inversax.com/herramientas/acciones/abnb" },
-      { "@type": "ListItem", "position": 44, "name": "Ford (F)",                   "url": "https://inversax.com/herramientas/acciones/f" },
-      { "@type": "ListItem", "position": 45, "name": "General Motors (GM)",        "url": "https://inversax.com/herramientas/acciones/gm" },
-      { "@type": "ListItem", "position": 46, "name": "Boeing (BA)",                "url": "https://inversax.com/herramientas/acciones/ba" },
-      { "@type": "ListItem", "position": 47, "name": "AT&T (T)",                   "url": "https://inversax.com/herramientas/acciones/t" },
-      { "@type": "ListItem", "position": 48, "name": "Verizon (VZ)",               "url": "https://inversax.com/herramientas/acciones/vz" },
-      { "@type": "ListItem", "position": 49, "name": "SPDR S&P 500 ETF (SPY)",     "url": "https://inversax.com/herramientas/acciones/spy" },
-      { "@type": "ListItem", "position": 50, "name": "Invesco QQQ (QQQ)",          "url": "https://inversax.com/herramientas/acciones/qqq" }
+      { "@type": "ListItem", "position": 1,   "name": "Bitcoin (BTC)",          "url": "https://inversax.com/herramientas/cripto/bitcoin" },
+      { "@type": "ListItem", "position": 2,   "name": "Ethereum (ETH)",         "url": "https://inversax.com/herramientas/cripto/ethereum" },
+      { "@type": "ListItem", "position": 3,   "name": "Tether (USDT)",          "url": "https://inversax.com/herramientas/cripto/tether" },
+      { "@type": "ListItem", "position": 4,   "name": "BNB (BNB)",              "url": "https://inversax.com/herramientas/cripto/binancecoin" },
+      { "@type": "ListItem", "position": 5,   "name": "Solana (SOL)",           "url": "https://inversax.com/herramientas/cripto/solana" },
+      { "@type": "ListItem", "position": 6,   "name": "XRP (XRP)",              "url": "https://inversax.com/herramientas/cripto/ripple" },
+      { "@type": "ListItem", "position": 7,   "name": "USDC (USDC)",            "url": "https://inversax.com/herramientas/cripto/usd-coin" },
+      { "@type": "ListItem", "position": 8,   "name": "Cardano (ADA)",          "url": "https://inversax.com/herramientas/cripto/cardano" },
+      { "@type": "ListItem", "position": 9,   "name": "Avalanche (AVAX)",       "url": "https://inversax.com/herramientas/cripto/avalanche-2" },
+      { "@type": "ListItem", "position": 10,  "name": "Dogecoin (DOGE)",        "url": "https://inversax.com/herramientas/cripto/dogecoin" },
+      { "@type": "ListItem", "position": 11,  "name": "Tron (TRX)",             "url": "https://inversax.com/herramientas/cripto/tron" },
+      { "@type": "ListItem", "position": 12,  "name": "Polkadot (DOT)",         "url": "https://inversax.com/herramientas/cripto/polkadot" },
+      { "@type": "ListItem", "position": 13,  "name": "Chainlink (LINK)",       "url": "https://inversax.com/herramientas/cripto/chainlink" },
+      { "@type": "ListItem", "position": 14,  "name": "Polygon (POL)",          "url": "https://inversax.com/herramientas/cripto/matic-network" },
+      { "@type": "ListItem", "position": 15,  "name": "Litecoin (LTC)",         "url": "https://inversax.com/herramientas/cripto/litecoin" },
+      { "@type": "ListItem", "position": 16,  "name": "Shiba Inu (SHIB)",       "url": "https://inversax.com/herramientas/cripto/shiba-inu" },
+      { "@type": "ListItem", "position": 17,  "name": "Dai (DAI)",              "url": "https://inversax.com/herramientas/cripto/dai" },
+      { "@type": "ListItem", "position": 18,  "name": "Uniswap (UNI)",          "url": "https://inversax.com/herramientas/cripto/uniswap" },
+      { "@type": "ListItem", "position": 19,  "name": "Wrapped Bitcoin (WBTC)", "url": "https://inversax.com/herramientas/cripto/wrapped-bitcoin" },
+      { "@type": "ListItem", "position": 20,  "name": "Cosmos (ATOM)",          "url": "https://inversax.com/herramientas/cripto/cosmos" },
+      { "@type": "ListItem", "position": 21,  "name": "Stellar (XLM)",          "url": "https://inversax.com/herramientas/cripto/stellar" },
+      { "@type": "ListItem", "position": 22,  "name": "Monero (XMR)",           "url": "https://inversax.com/herramientas/cripto/monero" },
+      { "@type": "ListItem", "position": 23,  "name": "Ethereum Classic (ETC)", "url": "https://inversax.com/herramientas/cripto/ethereum-classic" },
+      { "@type": "ListItem", "position": 24,  "name": "Filecoin (FIL)",         "url": "https://inversax.com/herramientas/cripto/filecoin" },
+      { "@type": "ListItem", "position": 25,  "name": "Hedera (HBAR)",          "url": "https://inversax.com/herramientas/cripto/hedera-hashgraph" },
+      { "@type": "ListItem", "position": 26,  "name": "VeChain (VET)",          "url": "https://inversax.com/herramientas/cripto/vechain" },
+      { "@type": "ListItem", "position": 27,  "name": "Aave (AAVE)",            "url": "https://inversax.com/herramientas/cripto/aave" },
+      { "@type": "ListItem", "position": 28,  "name": "Algorand (ALGO)",        "url": "https://inversax.com/herramientas/cripto/algorand" },
+      { "@type": "ListItem", "position": 29,  "name": "EOS (EOS)",              "url": "https://inversax.com/herramientas/cripto/eos" },
+      { "@type": "ListItem", "position": 30,  "name": "The Graph (GRT)",        "url": "https://inversax.com/herramientas/cripto/the-graph" },
+      { "@type": "ListItem", "position": 31,  "name": "Quant (QNT)",            "url": "https://inversax.com/herramientas/cripto/quant-network" },
+      { "@type": "ListItem", "position": 32,  "name": "Near Protocol (NEAR)",   "url": "https://inversax.com/herramientas/cripto/near" },
+      { "@type": "ListItem", "position": 33,  "name": "Fantom (FTM)",           "url": "https://inversax.com/herramientas/cripto/fantom" },
+      { "@type": "ListItem", "position": 34,  "name": "Aptos (APT)",            "url": "https://inversax.com/herramientas/cripto/aptos" },
+      { "@type": "ListItem", "position": 35,  "name": "Arbitrum (ARB)",         "url": "https://inversax.com/herramientas/cripto/arbitrum" },
+      { "@type": "ListItem", "position": 36,  "name": "Optimism (OP)",          "url": "https://inversax.com/herramientas/cripto/optimism" },
+      { "@type": "ListItem", "position": 37,  "name": "Lido DAO (LDO)",         "url": "https://inversax.com/herramientas/cripto/lido-dao" },
+      { "@type": "ListItem", "position": 38,  "name": "Maker (MKR)",            "url": "https://inversax.com/herramientas/cripto/maker" },
+      { "@type": "ListItem", "position": 39,  "name": "Injective (INJ)",        "url": "https://inversax.com/herramientas/cripto/injective-protocol" },
+      { "@type": "ListItem", "position": 40,  "name": "Sui (SUI)",              "url": "https://inversax.com/herramientas/cripto/sui" },
+      { "@type": "ListItem", "position": 41,  "name": "Stacks (STX)",           "url": "https://inversax.com/herramientas/cripto/blockstack" },
+      { "@type": "ListItem", "position": 42,  "name": "Immutable (IMX)",        "url": "https://inversax.com/herramientas/cripto/immutable-x" },
+      { "@type": "ListItem", "position": 43,  "name": "Render (RNDR)",          "url": "https://inversax.com/herramientas/cripto/render-token" },
+      { "@type": "ListItem", "position": 44,  "name": "Thorchain (RUNE)",       "url": "https://inversax.com/herramientas/cripto/thorchain" },
+      { "@type": "ListItem", "position": 45,  "name": "Sandbox (SAND)",         "url": "https://inversax.com/herramientas/cripto/the-sandbox" },
+      { "@type": "ListItem", "position": 46,  "name": "Decentraland (MANA)",    "url": "https://inversax.com/herramientas/cripto/decentraland" },
+      { "@type": "ListItem", "position": 47,  "name": "Axie Infinity (AXS)",    "url": "https://inversax.com/herramientas/cripto/axie-infinity" },
+      { "@type": "ListItem", "position": 48,  "name": "Curve DAO (CRV)",        "url": "https://inversax.com/herramientas/cripto/curve-dao-token" },
+      { "@type": "ListItem", "position": 49,  "name": "Chiliz (CHZ)",           "url": "https://inversax.com/herramientas/cripto/chiliz" },
+      { "@type": "ListItem", "position": 50,  "name": "Gala (GALA)",            "url": "https://inversax.com/herramientas/cripto/gala" },
+      { "@type": "ListItem", "position": 51,  "name": "Zcash (ZEC)",            "url": "https://inversax.com/herramientas/cripto/zcash" },
+      { "@type": "ListItem", "position": 52,  "name": "Dash (DASH)",            "url": "https://inversax.com/herramientas/cripto/dash" },
+      { "@type": "ListItem", "position": 53,  "name": "Compound (COMP)",        "url": "https://inversax.com/herramientas/cripto/compound-governance-token" },
+      { "@type": "ListItem", "position": 54,  "name": "1inch (1INCH)",          "url": "https://inversax.com/herramientas/cripto/1inch" },
+      { "@type": "ListItem", "position": 55,  "name": "Yearn Finance (YFI)",    "url": "https://inversax.com/herramientas/cripto/yearn-finance" },
+      { "@type": "ListItem", "position": 56,  "name": "Sushi (SUSHI)",          "url": "https://inversax.com/herramientas/cripto/sushi" },
+      { "@type": "ListItem", "position": 57,  "name": "Balancer (BAL)",         "url": "https://inversax.com/herramientas/cripto/balancer" },
+      { "@type": "ListItem", "position": 58,  "name": "Band Protocol (BAND)",   "url": "https://inversax.com/herramientas/cripto/band-protocol" },
+      { "@type": "ListItem", "position": 59,  "name": "Loopring (LRC)",         "url": "https://inversax.com/herramientas/cripto/loopring" },
+      { "@type": "ListItem", "position": 60,  "name": "Basic Attention (BAT)",  "url": "https://inversax.com/herramientas/cripto/basic-attention-token" },
+      { "@type": "ListItem", "position": 61,  "name": "Storj (STORJ)",          "url": "https://inversax.com/herramientas/cripto/storj" },
+      { "@type": "ListItem", "position": 62,  "name": "Celo (CELO)",            "url": "https://inversax.com/herramientas/cripto/celo" },
+      { "@type": "ListItem", "position": 63,  "name": "Flux (FLUX)",            "url": "https://inversax.com/herramientas/cripto/zelcash" },
+      { "@type": "ListItem", "position": 64,  "name": "Mask Network (MASK)",    "url": "https://inversax.com/herramientas/cripto/mask-network" },
+      { "@type": "ListItem", "position": 65,  "name": "Civic (CVC)",            "url": "https://inversax.com/herramientas/cripto/civic" },
+      { "@type": "ListItem", "position": 66,  "name": "Ankr (ANKR)",            "url": "https://inversax.com/herramientas/cripto/ankr" },
+      { "@type": "ListItem", "position": 67,  "name": "Ocean Protocol (OCEAN)", "url": "https://inversax.com/herramientas/cripto/ocean-protocol" },
+      { "@type": "ListItem", "position": 68,  "name": "Fetch.ai (FET)",         "url": "https://inversax.com/herramientas/cripto/fetch-ai" },
+      { "@type": "ListItem", "position": 69,  "name": "Worldcoin (WLD)",        "url": "https://inversax.com/herramientas/cripto/worldcoin-wld" },
+      { "@type": "ListItem", "position": 70,  "name": "Sei (SEI)",              "url": "https://inversax.com/herramientas/cripto/sei-network" },
+      { "@type": "ListItem", "position": 71,  "name": "Kaspa (KAS)",            "url": "https://inversax.com/herramientas/cripto/kaspa" },
+      { "@type": "ListItem", "position": 72,  "name": "Celestia (TIA)",         "url": "https://inversax.com/herramientas/cripto/celestia" },
+      { "@type": "ListItem", "position": 73,  "name": "Pyth Network (PYTH)",    "url": "https://inversax.com/herramientas/cripto/pyth-network" },
+      { "@type": "ListItem", "position": 74,  "name": "Jupiter (JUP)",          "url": "https://inversax.com/herramientas/cripto/jupiter-exchange-solana" },
+      { "@type": "ListItem", "position": 75,  "name": "Wormhole (W)",           "url": "https://inversax.com/herramientas/cripto/wormhole" },
+      { "@type": "ListItem", "position": 76,  "name": "Pendle (PENDLE)",        "url": "https://inversax.com/herramientas/cripto/pendle" },
+      { "@type": "ListItem", "position": 77,  "name": "Notcoin (NOT)",          "url": "https://inversax.com/herramientas/cripto/notcoin" },
+      { "@type": "ListItem", "position": 78,  "name": "Bonk (BONK)",            "url": "https://inversax.com/herramientas/cripto/bonk" },
+      { "@type": "ListItem", "position": 79,  "name": "dogwifhat (WIF)",        "url": "https://inversax.com/herramientas/cripto/dogwifcoin" },
+      { "@type": "ListItem", "position": 80,  "name": "Pepe (PEPE)",            "url": "https://inversax.com/herramientas/cripto/pepe" },
+      { "@type": "ListItem", "position": 81,  "name": "Floki (FLOKI)",          "url": "https://inversax.com/herramientas/cripto/floki" },
+      { "@type": "ListItem", "position": 82,  "name": "Blur (BLUR)",            "url": "https://inversax.com/herramientas/cripto/blur" },
+      { "@type": "ListItem", "position": 83,  "name": "dYdX (DYDX)",           "url": "https://inversax.com/herramientas/cripto/dydx" },
+      { "@type": "ListItem", "position": 84,  "name": "Rocket Pool (RPL)",      "url": "https://inversax.com/herramientas/cripto/rocket-pool" },
+      { "@type": "ListItem", "position": 85,  "name": "GMX (GMX)",              "url": "https://inversax.com/herramientas/cripto/gmx" },
+      { "@type": "ListItem", "position": 86,  "name": "Kava (KAVA)",            "url": "https://inversax.com/herramientas/cripto/kava" },
+      { "@type": "ListItem", "position": 87,  "name": "Osmosis (OSMO)",         "url": "https://inversax.com/herramientas/cripto/osmosis" },
+      { "@type": "ListItem", "position": 88,  "name": "Frax Share (FXS)",       "url": "https://inversax.com/herramientas/cripto/frax-share" },
+      { "@type": "ListItem", "position": 89,  "name": "Radix (XRD)",            "url": "https://inversax.com/herramientas/cripto/radix" },
+      { "@type": "ListItem", "position": 90,  "name": "Oasis Network (ROSE)",   "url": "https://inversax.com/herramientas/cripto/oasis-network" },
+      { "@type": "ListItem", "position": 91,  "name": "Moonbeam (GLMR)",        "url": "https://inversax.com/herramientas/cripto/moonbeam" },
+      { "@type": "ListItem", "position": 92,  "name": "Conflux (CFX)",          "url": "https://inversax.com/herramientas/cripto/conflux-token" },
+      { "@type": "ListItem", "position": 93,  "name": "Nervos (CKB)",           "url": "https://inversax.com/herramientas/cripto/nervos-network" },
+      { "@type": "ListItem", "position": 94,  "name": "Harmony (ONE)",          "url": "https://inversax.com/herramientas/cripto/harmony" },
+      { "@type": "ListItem", "position": 95,  "name": "Ontology (ONT)",         "url": "https://inversax.com/herramientas/cripto/ontology" },
+      { "@type": "ListItem", "position": 96,  "name": "Ravencoin (RVN)",        "url": "https://inversax.com/herramientas/cripto/ravencoin" },
+      { "@type": "ListItem", "position": 97,  "name": "Horizen (ZEN)",          "url": "https://inversax.com/herramientas/cripto/zencash" },
+      { "@type": "ListItem", "position": 98,  "name": "Syscoin (SYS)",          "url": "https://inversax.com/herramientas/cripto/syscoin" },
+      { "@type": "ListItem", "position": 99,  "name": "Stratis (STRAX)",        "url": "https://inversax.com/herramientas/cripto/stratis" },
+      { "@type": "ListItem", "position": 100, "name": "Vertcoin (VTC)",         "url": "https://inversax.com/herramientas/cripto/vertcoin" }
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — FAQPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "¿Cómo comprar acciones desde Latinoamérica?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Podés comprar acciones del mercado estadounidense desde Latinoamérica usando brokers internacionales como Interactive Brokers, eToro o Charles Schwab que permiten abrir cuentas desde la región. Algunos países también tienen plataformas locales habilitadas para operar en NYSE y NASDAQ."
-        }
+        "name": "¿Cuánto vale Bitcoin hoy?",
+        "acceptedAnswer": { "@type": "Answer", "text": "El precio de Bitcoin (BTC) se actualiza cada 5 minutos en Inversax. Puedes ver el precio en tiempo real junto con la variación 24h y capitalización de mercado." }
       },
       {
         "@type": "Question",
-        "name": "¿A qué hora abre la bolsa de valores de Estados Unidos?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "La Bolsa de Nueva York (NYSE) y el NASDAQ abren de lunes a viernes de 9:30 a 16:00 hora del Este (ET). Para Honduras (UTC-6) eso equivale de 8:30 a 15:00. Los precios mostrados en Inversax tienen un retraso de 15 minutos."
-        }
+        "name": "¿Cuáles son las criptomonedas más importantes?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Las principales criptomonedas por capitalización de mercado son Bitcoin (BTC), Ethereum (ETH), Tether (USDT), BNB, Solana (SOL) y XRP. Inversax muestra el top 100 en tiempo real." }
       },
       {
         "@type": "Question",
-        "name": "¿Qué son las acciones más populares para invertir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Las acciones más seguidas por inversores en Latinoamérica son Apple (AAPL), NVIDIA (NVDA), Tesla (TSLA), Microsoft (MSFT) y Amazon (AMZN), por ser empresas globales conocidas con alta liquidez en el mercado."
-        }
+        "name": "¿Cómo comprar criptomonedas desde Latinoamérica?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Puedes comprar criptomonedas desde Latinoamérica usando exchanges como Binance, que acepta depósitos en pesos, reales y otras monedas locales. También puedes usar brokers como eToro que ofrecen acceso a los principales activos cripto." }
       }
     ]
   })} />
 
 </slot>
-
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
@@ -380,145 +314,141 @@ try {
       <!-- Título -->
       <div class="mb-7">
         <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
-          Acciones
+          Precios de Criptomonedas
         </h1>
-        <p class="text-white/30 text-sm">Mercado estadounidense · cotizaciones en tiempo real</p>
+        <p class="text-white/30 text-sm">Top 100 por capitalización · actualizado cada 5 minutos</p>
       </div>
 
-      {acciones.length === 0 ? (
-        <!-- KV vacío — skeletons -->
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-            style="grid-template-columns: 1fr 130px 100px 140px">
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Empresa</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right">Precio</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right">Cambio</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right pr-1">Sector</div>
-          </div>
-          {[...Array(10)].map(() => (
-            <div class="grid px-4 py-3.5 border-b border-white/[0.04]"
-              style="grid-template-columns: 1fr 130px 100px 140px">
-              <div class="flex items-center gap-3 pl-2">
-                <div class="w-9 h-9 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
-                <div class="flex flex-col gap-1.5">
-                  <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-20 h-2.5 bg-white/5 rounded animate-pulse"></div>
-                </div>
-              </div>
-              <div class="flex items-center justify-end">
-                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
-              </div>
-              <div class="flex items-center justify-end">
-                <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
-              </div>
-              <div class="hidden md:flex items-center justify-end">
-                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
-              </div>
-            </div>
-          ))}
+      {fetchError ? (
+        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
+          <p class="text-white/30 text-sm">No se pudieron cargar los precios.</p>
         </div>
       ) : (
-        <div>
-          <!-- Controles -->
-          <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
-            <div class="flex gap-2 flex-wrap">
-              <button data-filter="all"
-                class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-                style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.4);color:#10B981">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                Todas
-              </button>
-              <button data-filter="gainers"
-                class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-                style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-                Ganadoras
-              </button>
-              <button data-filter="losers"
-                class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-                style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
-                Perdedoras
-              </button>
-            </div>
+      <div>
 
-            <!-- Búsqueda -->
-            <div class="relative w-48 flex-shrink-0">
-              <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-              <input id="search" type="text" placeholder="AAPL, Tesla..."
-                autocomplete="off"
-                class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#10B981]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
-            </div>
+        <!-- Controles -->
+        <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+
+          <!-- Filtros -->
+          <div class="flex gap-2 flex-wrap">
+            <button data-filter="all"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.4);color:#D4A843">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              Todas
+            </button>
+            <button data-filter="gainers"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              Ganadoras
+            </button>
+            <button data-filter="losers"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
+              Perdedoras
+            </button>
+            <button data-filter="top10"
+              class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
+              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Top 10
+            </button>
           </div>
 
-          <!-- Tabla -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-            <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-              style="grid-template-columns: 1fr 130px 100px 140px">
-              <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Empresa</div>
-              <button data-sort="price"  class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Precio <span class="sort-arrow">↕</span></button>
-              <button data-sort="change" class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Cambio <span class="sort-arrow">↕</span></button>
-              <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right pr-1">Sector</div>
-            </div>
+          <!-- Búsqueda -->
+          <div class="relative w-48 flex-shrink-0">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input id="search" type="text" placeholder="BTC, Ethereum..."
+              autocomplete="off"
+              class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#D4A843]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
+          </div>
+        </div>
 
-            <div id="table-body">
-              {acciones.map((a) => (
-                <a href={`/herramientas/acciones/${a.slug}`}
-                  class="accion-row grid px-4 py-3.5 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
-                  style="grid-template-columns: 1fr 130px 100px 140px"
-                  data-nombre={a.nombre.toLowerCase()}
-                  data-ticker={a.ticker.toLowerCase()}
-                  data-change={a.cambioPct}
-                  data-price={a.precio}>
+        <!-- Tabla -->
+        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
 
-                  <div class="flex items-center gap-3 pl-2 min-w-0">
-                    <div class="w-9 h-9 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
-                      {dominiosPorTicker[a.ticker] ? (
-                        <img
-                          src={`https://www.google.com/s2/favicons?domain=${dominiosPorTicker[a.ticker]}&sz=64`}
-                          alt={a.nombre}
-                          class="w-5 h-5 object-contain"
-                          loading="lazy"
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                        />
-                      ) : null}
-                      <span class="text-[9px] font-bold text-white/50" style={dominiosPorTicker[a.ticker] ? 'display:none' : ''}>
-                        {a.ticker.slice(0, 2)}
-                      </span>
+          <!-- Cabecera -->
+          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
+            style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px">
+            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-center">#</div>
+            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Moneda</div>
+            <button data-sort="price"    class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Precio    <span class="sort-arrow">↕</span></button>
+            <button data-sort="change24" class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">24h       <span class="sort-arrow">↕</span></button>
+            <button data-sort="change7"  class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">7d        <span class="sort-arrow">↕</span></button>
+            <button data-sort="cap"      class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Cap. Mkt  <span class="sort-arrow">↕</span></button>
+            <button data-sort="volume"   class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Volumen   <span class="sort-arrow">↕</span></button>
+          </div>
+
+          <!-- Filas -->
+          <div id="table-body">
+            {coins.map((c) => {
+              const up24 = c.change24 >= 0;
+              const up7  = c.change7  >= 0;
+              return (
+                <a href={`/herramientas/cripto/${c.id}`}
+                  class="coin-row grid px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
+                  style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px"
+                  data-name={c.name.toLowerCase()}
+                  data-symbol={c.symbol.toLowerCase()}
+                  data-chg24={c.change24}
+                  data-rank={c.rank}
+                  data-price={c.price}
+                  data-cap={c.marketCap}
+                  data-vol={c.volume}
+                  data-chg7={c.change7}>
+
+                  <div class="flex items-center justify-center text-white/20 text-xs" style="font-family:'Syne',sans-serif">
+                    {c.rank}
+                  </div>
+
+                  <div class="flex items-center gap-2.5 pl-2 min-w-0">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                      {c.image
+                        ? <img src={c.image} alt={c.name} class="w-full h-full object-cover" loading="lazy" />
+                        : <span class="text-[9px] font-bold text-white/40">{c.symbol.slice(0,2)}</span>
+                      }
                     </div>
                     <div class="min-w-0">
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif">{a.ticker}</div>
-                      <div class="text-white/30 text-[11px] truncate">{a.nombre}</div>
+                      <div class="text-white font-bold text-sm truncate" style="font-family:'Syne',sans-serif">{c.name}</div>
+                      <div class="text-white/30 text-[11px]">{c.symbol}</div>
                     </div>
                   </div>
 
                   <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif">
-                    {fmt(a.precio)}
+                    {fmt(c.price)}
                   </div>
 
-                  <div class={`flex items-center justify-end text-xs font-semibold ${a.alza ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {a.precio > 0 ? (`${a.alza ? '▲' : '▼'} ${fmtC(a.cambioPct)}`) : '—'}
+                  <div class={`flex items-center justify-end text-xs font-semibold ${up24 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {up24 ? '▲' : '▼'} {fmtC(c.change24)}
                   </div>
 
-                  <div class="hidden md:flex items-center justify-end">
-                    <span class="text-[10px] text-white/30 bg-white/5 px-2 py-0.5 rounded truncate max-w-[130px]">{a.sector}</span>
+                  <div class={`flex items-center justify-end text-xs font-semibold ${up7 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {up7 ? '▲' : '▼'} {fmtC(c.change7)}
+                  </div>
+
+                  <div class="flex items-center justify-end text-white/45 text-xs">
+                    {fmtL(c.marketCap)}
+                  </div>
+
+                  <div class="flex items-center justify-end text-white/30 text-xs">
+                    {fmtL(c.volume)}
                   </div>
 
                 </a>
-              ))}
-            </div>
-
-            <div id="empty-state" class="hidden items-center justify-center py-14">
-              <p class="text-white/25 text-sm">Sin resultados</p>
-            </div>
+              );
+            })}
           </div>
 
-          <p class="text-white/15 text-[11px] text-center mt-5">
-            Precios con retraso de 15 min. Datos provistos por Finnhub. No constituyen asesoramiento financiero.
-          </p>
+          <div id="empty-state" class="hidden items-center justify-center py-14">
+            <p class="text-white/25 text-sm">Sin resultados</p>
+          </div>
+
         </div>
+      </div>
       )}
 
       <!-- ════════════════════════════════════════
@@ -526,143 +456,149 @@ try {
       ════════════════════════════════════════ -->
       <div class="mt-10 space-y-5">
 
-        <!-- SEO 1: ¿Qué es una acción? -->
+        <!-- SEO 1: ¿Qué son las criptomonedas? -->
         <div class="seo-section">
-          <h2 class="seo-title">¿Qué es una acción y cómo funciona?</h2>
-          <p>Una <strong>acción</strong> representa una fracción de la propiedad de una empresa. Cuando comprás una acción de Apple (AAPL) o de NVIDIA (NVDA), te convertís en accionista: participás de sus ganancias, podés recibir dividendos y tu inversión sube o baja según el desempeño de la compañía en el mercado.</p>
-          <p>Las acciones cotizan en bolsas como el <strong>NYSE</strong> (New York Stock Exchange) y el <strong>NASDAQ</strong>. El precio de cada acción lo determina la oferta y la demanda en tiempo real durante el horario de mercado, de lunes a viernes de 9:30 a 16:00 hora del Este.</p>
+          <h2 class="seo-title">¿Qué son las criptomonedas y cómo funcionan?</h2>
+          <p>Las <strong>criptomonedas</strong> son activos digitales que utilizan criptografía para asegurar transacciones y controlar la creación de nuevas unidades. A diferencia del dinero tradicional, operan sobre redes descentralizadas llamadas <strong>blockchain</strong> — una cadena de bloques de datos verificada por miles de computadoras alrededor del mundo, sin necesidad de un banco central.</p>
+          <p>El primer y más conocido ejemplo es <strong>Bitcoin (BTC)</strong>, creado en 2009. Desde entonces han surgido miles de proyectos con propósitos distintos: Ethereum introdujo los contratos inteligentes, Solana prioriza la velocidad, y las stablecoins como USDT mantienen su valor anclado al dólar.</p>
           <div class="seo-table">
             <div class="seo-table-row seo-table-header">
-              <span>Sector</span><span>Ejemplos</span><span>Característica</span><span>Volatilidad</span>
+              <span>Tipo</span><span>Ejemplos</span><span>Propósito principal</span><span>Volatilidad</span>
             </div>
             <div class="seo-table-row">
-              <span>Tecnología</span><span>AAPL, NVDA, MSFT</span><span>Alto crecimiento</span><span>Alta</span>
+              <span>Store of Value</span><span>BTC, LTC</span><span>Reserva de valor, oro digital</span><span>Alta</span>
             </div>
             <div class="seo-table-row">
-              <span>Finanzas</span><span>JPM, GS, V</span><span>Estabilidad + dividendos</span><span>Media</span>
+              <span>Smart Contract</span><span>ETH, SOL, AVAX</span><span>Plataforma para aplicaciones</span><span>Alta</span>
             </div>
             <div class="seo-table-row">
-              <span>Consumo</span><span>MCD, KO, NKE</span><span>Defensivas, resilientes</span><span>Baja</span>
+              <span>Stablecoin</span><span>USDT, USDC, DAI</span><span>Valor estable en USD</span><span>Muy baja</span>
             </div>
             <div class="seo-table-row">
-              <span>Energía</span><span>XOM, CVX</span><span>Ligadas al precio del petróleo</span><span>Media</span>
+              <span>DeFi</span><span>UNI, AAVE, CRV</span><span>Finanzas descentralizadas</span><span>Muy alta</span>
             </div>
             <div class="seo-table-row">
-              <span>ETFs</span><span>SPY, QQQ</span><span>Diversificación automática</span><span>Media-baja</span>
+              <span>Memecoins</span><span>DOGE, SHIB, PEPE</span><span>Comunidad / especulación</span><span>Extrema</span>
             </div>
           </div>
-          <p>Cada sector reacciona distinto ante la economía. Las acciones tecnológicas tienden a crecer más en épocas de expansión pero caen con más fuerza en recesiones. Las defensivas como Coca-Cola (KO) o McDonald's (MCD) son más estables porque venden productos que la gente consume sin importar el ciclo económico.</p>
+          <p>Cada criptomoneda tiene características únicas. Antes de invertir, es fundamental entender para qué sirve el proyecto, quién lo desarrolla y qué problema resuelve. No todas las criptomonedas tienen el mismo nivel de riesgo ni el mismo respaldo tecnológico.</p>
         </div>
 
-        <!-- SEO 2: Acciones de crecimiento vs dividendos -->
+        <!-- SEO 2: Bitcoin vs Ethereum -->
         <div class="seo-section">
-          <h2 class="seo-title">Acciones de crecimiento vs acciones de dividendos — ¿cuál elegir?</h2>
-          <p>Existen dos grandes estrategias al invertir en acciones: apostar por el <strong>crecimiento del precio</strong> (growth) o por el <strong>flujo de dividendos</strong> (income). Ambas son válidas y muchos portafolios combinan las dos según el perfil del inversor.</p>
+          <h2 class="seo-title">Bitcoin vs Ethereum — ¿cuál es la diferencia?</h2>
+          <p><strong>Bitcoin (BTC)</strong> y <strong>Ethereum (ETH)</strong> son las dos criptomonedas más importantes por capitalización de mercado, pero tienen propósitos muy distintos. Bitcoin fue diseñado exclusivamente como dinero digital y reserva de valor. Ethereum es una plataforma programable que permite crear aplicaciones, contratos inteligentes, tokens y NFTs.</p>
           <div class="seo-table">
             <div class="seo-table-row seo-table-header">
-              <span>Característica</span><span>Crecimiento (Growth)</span><span>Dividendos (Income)</span><span>Ejemplo</span>
+              <span>Característica</span><span>Bitcoin (BTC)</span><span>Ethereum (ETH)</span><span>Ganador</span>
             </div>
             <div class="seo-table-row">
-              <span>Objetivo</span><span>Apreciación del precio</span><span>Flujo de ingresos pasivos</span><span>—</span>
+              <span>Creación</span><span>2009</span><span>2015</span><span>BTC (más veterano)</span>
             </div>
             <div class="seo-table-row">
-              <span>Pago de dividendos</span><span>No paga o muy poco</span><span>Paga cada trimestre</span><span>KO: ~3% anual</span>
+              <span>Oferta máxima</span><span>21 millones BTC</span><span>Sin límite fijo</span><span>BTC (escasez mayor)</span>
             </div>
             <div class="seo-table-row">
-              <span>Volatilidad</span><span>Alta</span><span>Baja-media</span><span>—</span>
+              <span>Velocidad</span><span>~7 tx/seg</span><span>~30 tx/seg</span><span>ETH (más rápido)</span>
             </div>
             <div class="seo-table-row">
-              <span>Perfil ideal</span><span>Inversor joven, largo plazo</span><span>Inversor conservador</span><span>—</span>
+              <span>Uso principal</span><span>Reserva de valor</span><span>Contratos inteligentes</span><span>Distinto</span>
             </div>
             <div class="seo-table-row">
-              <span>Ejemplos típicos</span><span>NVDA, TSLA, AMZN</span><span>JNJ, KO, JPM, XOM</span><span>—</span>
+              <span>Consenso</span><span>Proof of Work</span><span>Proof of Stake</span><span>ETH (más eficiente)</span>
             </div>
           </div>
-          <p>Las <strong>acciones de crecimiento</strong> como NVIDIA o Tesla reinvierten sus ganancias en expandirse, por lo que no distribuyen dividendos pero pueden multiplicar su valor en años. Las <strong>acciones de dividendos</strong> como Johnson & Johnson o Coca-Cola pagan una porción de sus ganancias regularmente, ideal para quienes buscan ingresos estables sin vender sus acciones.</p>
-          <p>Para inversores en Latinoamérica que reciben dividendos en dólares desde acciones americanas, hay que considerar la retención de impuestos del 30% que aplica EE.UU. a no residentes (puede reducirse según convenio fiscal de tu país).</p>
+          <p>Para inversores conservadores, <strong>Bitcoin</strong> es históricamente la opción más establecida y con mayor liquidez. Para quienes quieren exposición a DeFi, NFTs o el ecosistema Web3, <strong>Ethereum</strong> es la plataforma central. Muchos portafolios diversificados incluyen ambas en distintas proporciones.</p>
         </div>
 
-        <!-- SEO 3: Cómo comprar acciones desde LATAM -->
+        <!-- SEO 3: Cómo invertir desde LATAM -->
         <div class="seo-section">
-          <h2 class="seo-title">¿Cómo comprar acciones desde Latinoamérica?</h2>
-          <p>Comprar acciones del mercado estadounidense desde México, Argentina, Colombia, Honduras, Chile o cualquier país de LATAM es más accesible hoy que nunca. El proceso básico tiene 3 pasos: elegir un broker, verificar tu identidad (KYC) y depositar fondos en dólares o moneda local.</p>
+          <h2 class="seo-title">¿Cómo comprar criptomonedas desde Latinoamérica?</h2>
+          <p>Comprar criptomonedas desde México, Argentina, Colombia, Honduras, Chile o cualquier país de LATAM es más accesible hoy que nunca. El proceso básico tiene 3 pasos: elegir un exchange, verificar tu identidad (KYC) y depositar en moneda local o dólares.</p>
           <div class="seo-table">
             <div class="seo-table-row seo-table-header">
-              <span>Broker</span><span>Países LATAM</span><span>Comisión</span><span>Ideal para</span>
+              <span>Exchange</span><span>Monedas LATAM</span><span>Comisión</span><span>Ideal para</span>
             </div>
             <div class="seo-table-row">
-              <span>Interactive Brokers</span><span>Mayoría de LATAM</span><span>$0 acciones USA</span><span>Inversores activos</span>
+              <span>Binance</span><span>MXN, ARS, BRL, COP</span><span>0.10%</span><span>Traders activos</span>
             </div>
             <div class="seo-table-row">
-              <span>eToro</span><span>MX, CO, CL, AR</span><span>Spread variable</span><span>Principiantes</span>
+              <span>Bitso</span><span>MXN, ARS, BRL, COP</span><span>0.50%</span><span>Principiantes LATAM</span>
             </div>
             <div class="seo-table-row">
-              <span>Charles Schwab</span><span>Residentes USA</span><span>$0 acciones USA</span><span>Expatriados</span>
+              <span>Coinbase</span><span>USD</span><span>hasta 1.49%</span><span>Usuarios de EE.UU.</span>
             </div>
             <div class="seo-table-row">
-              <span>Nuinvest / XP</span><span>Brasil</span><span>Varía</span><span>Inversores brasileños</span>
+              <span>Bybit</span><span>USD, EUR</span><span>0.10%</span><span>Traders con experiencia</span>
             </div>
           </div>
-          <p><strong>Para Honduras (HNL):</strong> El método más común es abrir cuenta en Interactive Brokers o eToro con pasaporte y comprobante de domicilio. Los depósitos se hacen en USD vía transferencia bancaria internacional (SWIFT). También es posible usar tarjeta de crédito internacional en eToro, aunque con comisiones de cambio adicionales.</p>
-          <p><strong>Recomendación general:</strong> comenzá comprando ETFs como SPY o QQQ antes de seleccionar acciones individuales. Los ETFs te dan exposición a cientos de empresas en un solo instrumento, reduciendo el riesgo mientras aprendés cómo funciona el mercado.</p>
+          <p><strong>Para Honduras (HNL):</strong> El método más común es comprar dólares primero a través de una casa de cambio o banco, luego transferirlos a Binance o Bybit vía P2P en USD. También es posible usar tarjeta de crédito internacional, aunque con comisiones más altas (1–3%).</p>
+          <p><strong>Recomendación general:</strong> comenzá con una stablecoin como USDT para familiarizarte con el proceso, antes de pasar a activos más volátiles como BTC o ETH. Así aprendés sin exponerte a fluctuaciones de precio mientras entendés cómo funciona el exchange.</p>
         </div>
 
-        <!-- SEO 4: Cómo leer la tabla -->
+        <!-- SEO 4: Qué es capitalización de mercado -->
         <div class="seo-section">
-          <h2 class="seo-title">¿Cómo leer la tabla de acciones? Guía de columnas</h2>
-          <p>La tabla de arriba muestra 4 columnas clave para evaluar cualquier acción a simple vista. Acá explicamos qué significa cada una y cómo usarlas para tomar mejores decisiones de inversión.</p>
+          <h2 class="seo-title">¿Cómo leer la tabla de criptomonedas? Guía de columnas</h2>
+          <p>La tabla de arriba muestra 7 columnas de datos clave para evaluar cualquier criptomoneda. Acá explicamos qué significa cada una y cómo usarlas para tomar mejores decisiones.</p>
           <div class="seo-table">
             <div class="seo-table-row seo-table-header">
               <span>Columna</span><span>Qué mide</span><span>Cómo interpretarla</span><span>Ejemplo</span>
             </div>
             <div class="seo-table-row">
-              <span>Ticker</span><span>Código bursátil único</span><span>Identifica la acción en cualquier plataforma</span><span>AAPL = Apple</span>
+              <span>Precio</span><span>Valor unitario en USD</span><span>Comparalo con tu precio de compra</span><span>$85,000 BTC</span>
             </div>
             <div class="seo-table-row">
-              <span>Precio</span><span>Valor unitario en USD</span><span>Comparalo con tu precio de compra o promedio</span><span>$185.00</span>
+              <span>24h %</span><span>Variación últimas 24 horas</span><span>Verde = subió · Rojo = bajó</span><span>+3.2%</span>
             </div>
             <div class="seo-table-row">
-              <span>Cambio %</span><span>Variación del día actual</span><span>Verde = subió · Rojo = bajó respecto al cierre anterior</span><span>▲ +1.35%</span>
+              <span>7d %</span><span>Variación últimos 7 días</span><span>Tendencia de corto plazo</span><span>−8.5%</span>
             </div>
             <div class="seo-table-row">
-              <span>Sector</span><span>Industria de la empresa</span><span>Agrupa empresas similares para comparar</span><span>Tecnología</span>
+              <span>Cap. Mkt</span><span>Precio × unidades en circulación</span><span>Mayor cap = más establecida</span><span>$1.6T BTC</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Volumen</span><span>Total operado en las últimas 24h</span><span>Mayor volumen = más liquidez</span><span>$32B BTC</span>
             </div>
           </div>
-          <p>El <strong>precio de una acción</strong> por sí solo no dice si es cara o barata. Una acción a $10 puede estar más cara que una a $500 si la primera tiene pocas perspectivas de crecimiento. Para comparar valuaciones, los inversores usan métricas como el <strong>P/E ratio</strong> (precio sobre ganancias) que podés ver en el detalle de cada acción.</p>
-          <p>El <strong>cambio porcentual diario</strong> muestra cuánto se movió el precio respecto al cierre del día anterior. Un cambio de ±1% es normal para la mayoría de acciones. Movimientos de ±5% o más en un día suelen estar asociados a noticias específicas: resultados trimestrales, cambios de CEO, anuncios de productos o decisiones regulatorias.</p>
+          <p>La <strong>capitalización de mercado</strong> (Market Cap) es el indicador más importante para comparar criptomonedas entre sí, independientemente de su precio unitario. Una cripto a $0.001 puede tener mayor capitalización que una a $100 si tiene miles de millones de unidades en circulación.</p>
+          <p>El <strong>volumen de 24h</strong> indica liquidez: si una cripto tiene alto volumen, podés comprar o vender grandes cantidades sin mover el precio significativamente. Un volumen bajo respecto a la capitalización puede indicar una cripto con poca actividad o en riesgo de manipulación de precio.</p>
         </div>
 
       </div><!-- fin space-y-5 -->
 
     </div>
   </div>
-</Layout>
 
 <style>
   /* ── Ocultar fila (compatible con grid en desktop y flex en móvil) ── */
-  .accion-row.hidden-row { display: none !important; }
+  .coin-row.hidden-row { display: none !important; }
 
   @media (max-width: 767px) {
-    .accion-row {
+    .coin-row, .coin-row > div { all: unset; }
+    .coin-row {
       display: flex !important;
       align-items: center;
       gap: 0;
       padding: 10px 14px !important;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      text-decoration: none;
+      transition: background .12s;
     }
-    .accion-row > div:nth-child(1) { flex: 1; min-width: 0; }
-    .accion-row > div:nth-child(2) { flex-shrink: 0; }
-    .accion-row > div:nth-child(3) { flex-shrink: 0; min-width: 70px; justify-content: flex-end; display: flex; }
-    .accion-row > div:nth-child(4) { display: none !important; }
+    .coin-row:hover { background: rgba(255,255,255,.025); }
+    .coin-row > div:nth-child(1) { width:30px;flex-shrink:0;text-align:center;color:rgba(255,255,255,.2);font-size:11px; }
+    .coin-row > div:nth-child(2) { flex:1;display:flex;align-items:center;gap:8px;padding-left:6px;min-width:0; }
+    .coin-row > div:nth-child(3) { flex-shrink:0;font-weight:600;font-size:13px;color:#fff;font-family:'Syne',sans-serif; }
+    .coin-row > div:nth-child(4),
+    .coin-row > div:nth-child(5),
+    .coin-row > div:nth-child(6),
+    .coin-row > div:nth-child(7) { display:none !important; }
   }
 
-  .sort-btn { background: none; border: none; cursor: pointer; padding: 0; transition: color .15s; }
+  .sort-btn { background:none;border:none;cursor:pointer;padding:0; transition:color .15s; }
   .sort-btn:hover { color: rgba(255,255,255,.8) !important; }
-  .sort-btn.active { color: #10B981 !important; }
-  .sort-btn.active .sort-arrow { opacity: 1 !important; color: #10B981; }
-  .sort-arrow { opacity: .35; font-size: 10px; }
-
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-  .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+  .sort-btn.active { color: #D4A843 !important; }
+  .sort-btn.active .sort-arrow { opacity:1 !important; color:#D4A843; }
+  .sort-arrow { opacity:.35;font-size:10px; }
 
   /* ══════════════════════════════════════
      SEO SECTIONS
@@ -726,42 +662,53 @@ try {
 </style>
 
 <script>
-  const rows = Array.from(document.querySelectorAll('.accion-row')) as HTMLAnchorElement[];
-  const empty = document.getElementById('empty-state')!;
-  let activeFilter = 'all';
-  let activeSort = { key: 'price', dir: -1 };
-  let query = '';
+  const rows     = Array.from(document.querySelectorAll('.coin-row')) as HTMLAnchorElement[];
+  const empty    = document.getElementById('empty-state')!;
+  let   activeFilter = 'all';
+  let   activeSort   = { key: 'cap', dir: -1 };
+  let   query        = '';
 
   function applyFilters() {
     const q = query.trim().toLowerCase();
     let visible = 0;
+
     rows.forEach(row => {
-      const nombre  = row.dataset.nombre  || '';
-      const ticker  = row.dataset.ticker  || '';
-      const change  = parseFloat(row.dataset.change || '0');
-      const matchSearch = !q || nombre.includes(q) || ticker.includes(q);
+      const name   = row.dataset.name   || '';
+      const symbol = row.dataset.symbol || '';
+      const chg24  = parseFloat(row.dataset.chg24 || '0');
+      const rank   = parseInt(row.dataset.rank   || '0');
+
+      const matchSearch = !q || name.includes(q) || symbol.includes(q);
       const matchFilter =
         activeFilter === 'all'     ? true :
-        activeFilter === 'gainers' ? change > 0 :
-        activeFilter === 'losers'  ? change < 0 : true;
+        activeFilter === 'gainers' ? chg24 > 0 :
+        activeFilter === 'losers'  ? chg24 < 0 :
+        activeFilter === 'top10'   ? rank <= 10 : true;
+
       const show = matchSearch && matchFilter;
       row.classList.toggle('hidden-row', !show);
       if (show) visible++;
     });
+
     empty.classList.toggle('hidden', visible > 0);
-    empty.classList.toggle('flex',   visible === 0);
+    empty.classList.toggle('flex', visible === 0);
   }
 
   function applySort() {
     const body   = document.getElementById('table-body')!;
     const sorted = [...rows].sort((a, b) => {
-      const attr = activeSort.key === 'change' ? 'change' : 'price';
+      const km: Record<string, string> = {
+        price: 'price', change24: 'chg24', change7: 'chg7', cap: 'cap', volume: 'vol'
+      };
+      const attr = km[activeSort.key] || 'cap';
       const va = parseFloat(a.dataset[attr] || '0');
       const vb = parseFloat(b.dataset[attr] || '0');
       return (va - vb) * activeSort.dir;
     });
     sorted.forEach(r => body.appendChild(r));
   }
+
+  function update() { applySort(); applyFilters(); }
 
   document.getElementById('search')!.addEventListener('input', function(this: HTMLInputElement) {
     query = this.value;
@@ -773,10 +720,15 @@ try {
       activeFilter = (btn as HTMLElement).dataset.filter || 'all';
       document.querySelectorAll('.filter-btn').forEach(b => {
         const el = b as HTMLElement;
-        const isActive = el.dataset.filter === activeFilter;
-        el.style.background   = isActive ? 'rgba(16,185,129,.1)' : '#111318';
-        el.style.borderColor  = isActive ? 'rgba(16,185,129,.4)' : 'rgba(255,255,255,.08)';
-        el.style.color        = isActive ? '#10B981' : 'rgba(255,255,255,.4)';
+        if (el.dataset.filter === activeFilter) {
+          el.style.background = 'rgba(212,168,67,.1)';
+          el.style.borderColor = 'rgba(212,168,67,.4)';
+          el.style.color = '#D4A843';
+        } else {
+          el.style.background = '#111318';
+          el.style.borderColor = 'rgba(255,255,255,.08)';
+          el.style.color = 'rgba(255,255,255,.4)';
+        }
       });
       applyFilters();
     });
@@ -784,10 +736,11 @@ try {
 
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const key = (btn as HTMLElement).dataset.sort || 'price';
+      const key = (btn as HTMLElement).dataset.sort || 'cap';
       activeSort = activeSort.key === key
         ? { key, dir: activeSort.dir * -1 }
         : { key, dir: -1 };
+
       document.querySelectorAll('.sort-btn').forEach(b => {
         b.classList.remove('active');
         const arrow = b.querySelector('.sort-arrow');
@@ -796,8 +749,11 @@ try {
       btn.classList.add('active');
       const arrow = btn.querySelector('.sort-arrow');
       if (arrow) arrow.textContent = activeSort.dir === -1 ? '↓' : '↑';
-      applySort();
+
+      update();
     });
   });
 </script>
+
+</Layout>
 
