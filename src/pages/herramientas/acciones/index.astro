@@ -86,7 +86,7 @@ const dominiosPorTicker: Record<string, string> = {
   CAT:     'caterpillar.com',
 };
 
-// ── Lee de KV directamente (igual que forex/index.astro) ──────
+// ── Lee de KV directamente ──────
 const env = (Astro.locals.runtime?.env as any);
 const KV  = env?.INVERSA_KV as KVNamespace | undefined;
 
@@ -99,7 +99,6 @@ try {
 ---
 
 <Layout>
-
 
 <slot name="head" slot="head">
 
@@ -138,10 +137,9 @@ try {
   <meta name="target"           content="all" />
 
   <!-- ═══════════════════════════════════════
-       HREFLANG — página global, aplican los 36
+       HREFLANG
   ═══════════════════════════════════════ -->
   <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/acciones" />
-  <!-- América Latina -->
   <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/acciones" />
@@ -162,7 +160,6 @@ try {
   <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/acciones" />
-  <!-- Europa -->
   <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/acciones" />
@@ -172,7 +169,6 @@ try {
   <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/acciones" />
-  <!-- Resto del mundo -->
   <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/acciones" />
   <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/acciones" />
@@ -377,10 +373,9 @@ try {
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
 
-<a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
-  <ArrowLeft size={15} /> Herramientas
-</a>
-
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+        <ArrowLeft size={15} /> Herramientas
+      </a>
 
       <!-- Título -->
       <div class="mb-7">
@@ -525,6 +520,120 @@ try {
           </p>
         </div>
       )}
+
+      <!-- ════════════════════════════════════════
+           SEO SECTIONS — debajo de la tabla
+      ════════════════════════════════════════ -->
+      <div class="mt-10 space-y-5">
+
+        <!-- SEO 1: ¿Qué es una acción? -->
+        <div class="seo-section">
+          <h2 class="seo-title">¿Qué es una acción y cómo funciona?</h2>
+          <p>Una <strong>acción</strong> representa una fracción de la propiedad de una empresa. Cuando comprás una acción de Apple (AAPL) o de NVIDIA (NVDA), te convertís en accionista: participás de sus ganancias, podés recibir dividendos y tu inversión sube o baja según el desempeño de la compañía en el mercado.</p>
+          <p>Las acciones cotizan en bolsas como el <strong>NYSE</strong> (New York Stock Exchange) y el <strong>NASDAQ</strong>. El precio de cada acción lo determina la oferta y la demanda en tiempo real durante el horario de mercado, de lunes a viernes de 9:30 a 16:00 hora del Este.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Sector</span><span>Ejemplos</span><span>Característica</span><span>Volatilidad</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Tecnología</span><span>AAPL, NVDA, MSFT</span><span>Alto crecimiento</span><span>Alta</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Finanzas</span><span>JPM, GS, V</span><span>Estabilidad + dividendos</span><span>Media</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Consumo</span><span>MCD, KO, NKE</span><span>Defensivas, resilientes</span><span>Baja</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Energía</span><span>XOM, CVX</span><span>Ligadas al precio del petróleo</span><span>Media</span>
+            </div>
+            <div class="seo-table-row">
+              <span>ETFs</span><span>SPY, QQQ</span><span>Diversificación automática</span><span>Media-baja</span>
+            </div>
+          </div>
+          <p>Cada sector reacciona distinto ante la economía. Las acciones tecnológicas tienden a crecer más en épocas de expansión pero caen con más fuerza en recesiones. Las defensivas como Coca-Cola (KO) o McDonald's (MCD) son más estables porque venden productos que la gente consume sin importar el ciclo económico.</p>
+        </div>
+
+        <!-- SEO 2: Acciones de crecimiento vs dividendos -->
+        <div class="seo-section">
+          <h2 class="seo-title">Acciones de crecimiento vs acciones de dividendos — ¿cuál elegir?</h2>
+          <p>Existen dos grandes estrategias al invertir en acciones: apostar por el <strong>crecimiento del precio</strong> (growth) o por el <strong>flujo de dividendos</strong> (income). Ambas son válidas y muchos portafolios combinan las dos según el perfil del inversor.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Característica</span><span>Crecimiento (Growth)</span><span>Dividendos (Income)</span><span>Ejemplo</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Objetivo</span><span>Apreciación del precio</span><span>Flujo de ingresos pasivos</span><span>—</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Pago de dividendos</span><span>No paga o muy poco</span><span>Paga cada trimestre</span><span>KO: ~3% anual</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Volatilidad</span><span>Alta</span><span>Baja-media</span><span>—</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Perfil ideal</span><span>Inversor joven, largo plazo</span><span>Inversor conservador</span><span>—</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Ejemplos típicos</span><span>NVDA, TSLA, AMZN</span><span>JNJ, KO, JPM, XOM</span><span>—</span>
+            </div>
+          </div>
+          <p>Las <strong>acciones de crecimiento</strong> como NVIDIA o Tesla reinvierten sus ganancias en expandirse, por lo que no distribuyen dividendos pero pueden multiplicar su valor en años. Las <strong>acciones de dividendos</strong> como Johnson & Johnson o Coca-Cola pagan una porción de sus ganancias regularmente, ideal para quienes buscan ingresos estables sin vender sus acciones.</p>
+          <p>Para inversores en Latinoamérica que reciben dividendos en dólares desde acciones americanas, hay que considerar la retención de impuestos del 30% que aplica EE.UU. a no residentes (puede reducirse según convenio fiscal de tu país).</p>
+        </div>
+
+        <!-- SEO 3: Cómo comprar acciones desde LATAM -->
+        <div class="seo-section">
+          <h2 class="seo-title">¿Cómo comprar acciones desde Latinoamérica?</h2>
+          <p>Comprar acciones del mercado estadounidense desde México, Argentina, Colombia, Honduras, Chile o cualquier país de LATAM es más accesible hoy que nunca. El proceso básico tiene 3 pasos: elegir un broker, verificar tu identidad (KYC) y depositar fondos en dólares o moneda local.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Broker</span><span>Países LATAM</span><span>Comisión</span><span>Ideal para</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Interactive Brokers</span><span>Mayoría de LATAM</span><span>$0 acciones USA</span><span>Inversores activos</span>
+            </div>
+            <div class="seo-table-row">
+              <span>eToro</span><span>MX, CO, CL, AR</span><span>Spread variable</span><span>Principiantes</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Charles Schwab</span><span>Residentes USA</span><span>$0 acciones USA</span><span>Expatriados</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Nuinvest / XP</span><span>Brasil</span><span>Varía</span><span>Inversores brasileños</span>
+            </div>
+          </div>
+          <p><strong>Para Honduras (HNL):</strong> El método más común es abrir cuenta en Interactive Brokers o eToro con pasaporte y comprobante de domicilio. Los depósitos se hacen en USD vía transferencia bancaria internacional (SWIFT). También es posible usar tarjeta de crédito internacional en eToro, aunque con comisiones de cambio adicionales.</p>
+          <p><strong>Recomendación general:</strong> comenzá comprando ETFs como SPY o QQQ antes de seleccionar acciones individuales. Los ETFs te dan exposición a cientos de empresas en un solo instrumento, reduciendo el riesgo mientras aprendés cómo funciona el mercado.</p>
+        </div>
+
+        <!-- SEO 4: Cómo leer la tabla -->
+        <div class="seo-section">
+          <h2 class="seo-title">¿Cómo leer la tabla de acciones? Guía de columnas</h2>
+          <p>La tabla de arriba muestra 4 columnas clave para evaluar cualquier acción a simple vista. Acá explicamos qué significa cada una y cómo usarlas para tomar mejores decisiones de inversión.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Columna</span><span>Qué mide</span><span>Cómo interpretarla</span><span>Ejemplo</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Ticker</span><span>Código bursátil único</span><span>Identifica la acción en cualquier plataforma</span><span>AAPL = Apple</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Precio</span><span>Valor unitario en USD</span><span>Comparalo con tu precio de compra o promedio</span><span>$185.00</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Cambio %</span><span>Variación del día actual</span><span>Verde = subió · Rojo = bajó respecto al cierre anterior</span><span>▲ +1.35%</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Sector</span><span>Industria de la empresa</span><span>Agrupa empresas similares para comparar</span><span>Tecnología</span>
+            </div>
+          </div>
+          <p>El <strong>precio de una acción</strong> por sí solo no dice si es cara o barata. Una acción a $10 puede estar más cara que una a $500 si la primera tiene pocas perspectivas de crecimiento. Para comparar valuaciones, los inversores usan métricas como el <strong>P/E ratio</strong> (precio sobre ganancias) que podés ver en el detalle de cada acción.</p>
+          <p>El <strong>cambio porcentual diario</strong> muestra cuánto se movió el precio respecto al cierre del día anterior. Un cambio de ±1% es normal para la mayoría de acciones. Movimientos de ±5% o más en un día suelen estar asociados a noticias específicas: resultados trimestrales, cambios de CEO, anuncios de productos o decisiones regulatorias.</p>
+        </div>
+
+      </div><!-- fin space-y-5 -->
+
     </div>
   </div>
 </Layout>
@@ -545,13 +654,75 @@ try {
     .accion-row > div:nth-child(3) { flex-shrink: 0; min-width: 70px; justify-content: flex-end; display: flex; }
     .accion-row > div:nth-child(4) { display: none !important; }
   }
+
   .sort-btn { background: none; border: none; cursor: pointer; padding: 0; transition: color .15s; }
   .sort-btn:hover { color: rgba(255,255,255,.8) !important; }
   .sort-btn.active { color: #10B981 !important; }
   .sort-btn.active .sort-arrow { opacity: 1 !important; color: #10B981; }
   .sort-arrow { opacity: .35; font-size: 10px; }
+
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
   .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+
+  /* ══════════════════════════════════════
+     SEO SECTIONS
+  ══════════════════════════════════════ */
+  .seo-section {
+    padding: 1.75rem;
+    background: #111318;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 1.25rem;
+  }
+  .seo-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.875rem;
+  }
+  .seo-section p {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+  .seo-section p:last-child { margin-bottom: 0; }
+  .seo-section strong { color: rgba(255,255,255,0.8); }
+
+  /* ── SEO TABLE ── */
+  .seo-table {
+    margin: 0.875rem 0;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 0.875rem;
+    overflow: hidden;
+  }
+  .seo-table-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0.55rem 0.875rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    gap: 0.5rem;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+  .seo-table-row:last-child { border-bottom: none; }
+  .seo-table-row.seo-table-header {
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.25);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  @media (max-width: 540px) {
+    .seo-table-row { grid-template-columns: 1fr 1fr; font-size: 0.73rem; }
+    .seo-table-row span:nth-child(3),
+    .seo-table-row span:nth-child(4) { display: none; }
+    .seo-section { padding: 1.25rem; }
+  }
 </style>
 
 <script>
@@ -574,7 +745,6 @@ try {
         activeFilter === 'gainers' ? change > 0 :
         activeFilter === 'losers'  ? change < 0 : true;
       const show = matchSearch && matchFilter;
-      // ── FIX: usar clase en vez de inline style para no romper el flex de móvil ──
       row.classList.toggle('hidden-row', !show);
       if (show) visible++;
     });
@@ -630,4 +800,3 @@ try {
     });
   });
 </script>
-
