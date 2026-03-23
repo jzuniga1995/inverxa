@@ -44,16 +44,10 @@ try {
 
 <slot name="head" slot="head">
 
-  <!-- ═══════════════════════════════════════
-       PRECONNECT
-  ═══════════════════════════════════════ -->
   <link rel="preconnect" href="https://res.cloudinary.com" />
   <link rel="dns-prefetch" href="https://res.cloudinary.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <!-- ═══════════════════════════════════════
-       BASIC SEO
-  ═══════════════════════════════════════ -->
   <title>Precios de Criptomonedas Hoy — Top 100 en Tiempo Real | Inversax</title>
   <meta name="description"    content="Precios de las 100 principales criptomonedas en tiempo real: Bitcoin, Ethereum, Solana, XRP y más. Capitalización, volumen y variación 24h para inversores en Latinoamérica." />
   <meta name="author"         content="José Zúniga" />
@@ -62,15 +56,9 @@ try {
   <meta name="googlebot-news" content="index, follow" />
   <link rel="canonical"       href="https://inversax.com/herramientas/cripto" />
 
-  <!-- ═══════════════════════════════════════
-       KEYWORDS
-  ═══════════════════════════════════════ -->
   <meta name="keywords"      content="precio bitcoin hoy, precio ethereum hoy, criptomonedas en tiempo real, top 100 criptomonedas, precio crypto hoy, bitcoin en dolares, crypto latinoamerica, precio BTC ETH SOL XRP" />
   <meta name="news_keywords" content="precio bitcoin hoy, precio ethereum, criptomonedas, BTC, ETH, SOL, XRP, Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       GEO
-  ═══════════════════════════════════════ -->
   <meta name="geo.region"       content="LATAM" />
   <meta name="geo.placename"    content="Latinoamérica" />
   <meta name="language"         content="Spanish" />
@@ -78,11 +66,7 @@ try {
   <meta name="coverage"         content="Worldwide" />
   <meta name="target"           content="all" />
 
-  <!-- ═══════════════════════════════════════
-       HREFLANG — página global, aplican los 36
-  ═══════════════════════════════════════ -->
   <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/cripto" />
-  <!-- América Latina -->
   <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/cripto" />
@@ -103,7 +87,6 @@ try {
   <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/cripto" />
-  <!-- Europa -->
   <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/cripto" />
@@ -113,7 +96,6 @@ try {
   <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/cripto" />
-  <!-- Resto del mundo -->
   <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/cripto" />
@@ -123,9 +105,6 @@ try {
   <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/cripto" />
   <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/cripto" />
 
-  <!-- ═══════════════════════════════════════
-       OPEN GRAPH
-  ═══════════════════════════════════════ -->
   <meta property="og:site_name"   content="Inversax" />
   <meta property="og:locale"      content="es_LA" />
   <meta property="og:locale:alternate" content="es_MX" />
@@ -142,9 +121,6 @@ try {
   <meta property="og:image:alt"   content="Top 100 Criptomonedas en vivo — Inversax" />
   <meta property="og:image:type"  content="image/png" />
 
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:creator"     content="@inversax" />
@@ -153,9 +129,6 @@ try {
   <meta name="twitter:image"       content="https://inversax.com/og/herramientas/cripto.png" />
   <meta name="twitter:image:alt"   content="Top 100 Criptomonedas en vivo — Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebSite + SearchAction
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -165,17 +138,11 @@ try {
     "inLanguage": "es",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
-      },
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
       "query-input": "required name=search_term_string"
     }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -183,28 +150,16 @@ try {
     "description": "Precios en tiempo real de las 100 principales criptomonedas con capitalización, volumen y variación para inversores en Latinoamérica.",
     "url": "https://inversax.com/herramientas/cripto",
     "inLanguage": "es",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Inversax",
-      "url": "https://inversax.com"
-    },
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
     "publisher": {
       "@type": "Organization",
       "name": "Inversax",
       "url": "https://inversax.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://inversax.com/favicon.png",
-        "width": 512,
-        "height": 512
-      }
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
     },
     "about": { "@type": "Thing", "name": "Criptomonedas" }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — BreadcrumbList
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -215,9 +170,6 @@ try {
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — ItemList (Top 100)
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -328,9 +280,6 @@ try {
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — FAQPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -338,26 +287,17 @@ try {
       {
         "@type": "Question",
         "name": "¿Cuánto vale Bitcoin hoy?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "El precio de Bitcoin (BTC) se actualiza cada 5 minutos en Inversax. Puedes ver el precio en tiempo real junto con la variación 24h y capitalización de mercado."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "El precio de Bitcoin (BTC) se actualiza cada 5 minutos en Inversax. Puedes ver el precio en tiempo real junto con la variación 24h y capitalización de mercado." }
       },
       {
         "@type": "Question",
         "name": "¿Cuáles son las criptomonedas más importantes?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Las principales criptomonedas por capitalización de mercado son Bitcoin (BTC), Ethereum (ETH), Tether (USDT), BNB, Solana (SOL) y XRP. Inversax muestra el top 100 en tiempo real."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "Las principales criptomonedas por capitalización de mercado son Bitcoin (BTC), Ethereum (ETH), Tether (USDT), BNB, Solana (SOL) y XRP. Inversax muestra el top 100 en tiempo real." }
       },
       {
         "@type": "Question",
         "name": "¿Cómo comprar criptomonedas desde Latinoamérica?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Puedes comprar criptomonedas desde Latinoamérica usando exchanges como Binance, que acepta depósitos en pesos, reales y otras monedas locales. También puedes usar brokers como eToro que ofrecen acceso a los principales activos cripto."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "Puedes comprar criptomonedas desde Latinoamérica usando exchanges como Binance, que acepta depósitos en pesos, reales y otras monedas locales. También puedes usar brokers como eToro que ofrecen acceso a los principales activos cripto." }
       }
     ]
   })} />
@@ -366,16 +306,17 @@ try {
 
   <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
-<a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
-  <ArrowLeft size={15} /> Herramientas
-</a>
+
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+        <ArrowLeft size={15} /> Herramientas
+      </a>
 
       <!-- Título -->
       <div class="mb-7">
         <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
           Precios de Criptomonedas
         </h1>
-<p class="text-white/30 text-sm">Top 100 por capitalización · actualizado cada 5 minutos</p>
+        <p class="text-white/30 text-sm">Top 100 por capitalización · actualizado cada 5 minutos</p>
       </div>
 
       {fetchError ? (
@@ -510,9 +451,123 @@ try {
       </div>
       )}
 
+      <!-- ════════════════════════════════════════
+           SEO SECTIONS — debajo de la tabla
+      ════════════════════════════════════════ -->
+      <div class="mt-10 space-y-5">
+
+        <!-- SEO 1: ¿Qué son las criptomonedas? -->
+        <div class="seo-section">
+          <h2 class="seo-title">¿Qué son las criptomonedas y cómo funcionan?</h2>
+          <p>Las <strong>criptomonedas</strong> son activos digitales que utilizan criptografía para asegurar transacciones y controlar la creación de nuevas unidades. A diferencia del dinero tradicional, operan sobre redes descentralizadas llamadas <strong>blockchain</strong> — una cadena de bloques de datos verificada por miles de computadoras alrededor del mundo, sin necesidad de un banco central.</p>
+          <p>El primer y más conocido ejemplo es <strong>Bitcoin (BTC)</strong>, creado en 2009. Desde entonces han surgido miles de proyectos con propósitos distintos: Ethereum introdujo los contratos inteligentes, Solana prioriza la velocidad, y las stablecoins como USDT mantienen su valor anclado al dólar.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Tipo</span><span>Ejemplos</span><span>Propósito principal</span><span>Volatilidad</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Store of Value</span><span>BTC, LTC</span><span>Reserva de valor, oro digital</span><span>Alta</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Smart Contract</span><span>ETH, SOL, AVAX</span><span>Plataforma para aplicaciones</span><span>Alta</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Stablecoin</span><span>USDT, USDC, DAI</span><span>Valor estable en USD</span><span>Muy baja</span>
+            </div>
+            <div class="seo-table-row">
+              <span>DeFi</span><span>UNI, AAVE, CRV</span><span>Finanzas descentralizadas</span><span>Muy alta</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Memecoins</span><span>DOGE, SHIB, PEPE</span><span>Comunidad / especulación</span><span>Extrema</span>
+            </div>
+          </div>
+          <p>Cada criptomoneda tiene características únicas. Antes de invertir, es fundamental entender para qué sirve el proyecto, quién lo desarrolla y qué problema resuelve. No todas las criptomonedas tienen el mismo nivel de riesgo ni el mismo respaldo tecnológico.</p>
+        </div>
+
+        <!-- SEO 2: Bitcoin vs Ethereum -->
+        <div class="seo-section">
+          <h2 class="seo-title">Bitcoin vs Ethereum — ¿cuál es la diferencia?</h2>
+          <p><strong>Bitcoin (BTC)</strong> y <strong>Ethereum (ETH)</strong> son las dos criptomonedas más importantes por capitalización de mercado, pero tienen propósitos muy distintos. Bitcoin fue diseñado exclusivamente como dinero digital y reserva de valor. Ethereum es una plataforma programable que permite crear aplicaciones, contratos inteligentes, tokens y NFTs.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Característica</span><span>Bitcoin (BTC)</span><span>Ethereum (ETH)</span><span>Ganador</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Creación</span><span>2009</span><span>2015</span><span>BTC (más veterano)</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Oferta máxima</span><span>21 millones BTC</span><span>Sin límite fijo</span><span>BTC (escasez mayor)</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Velocidad</span><span>~7 tx/seg</span><span>~30 tx/seg</span><span>ETH (más rápido)</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Uso principal</span><span>Reserva de valor</span><span>Contratos inteligentes</span><span>Distinto</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Consenso</span><span>Proof of Work</span><span>Proof of Stake</span><span>ETH (más eficiente)</span>
+            </div>
+          </div>
+          <p>Para inversores conservadores, <strong>Bitcoin</strong> es históricamente la opción más establecida y con mayor liquidez. Para quienes quieren exposición a DeFi, NFTs o el ecosistema Web3, <strong>Ethereum</strong> es la plataforma central. Muchos portafolios diversificados incluyen ambas en distintas proporciones.</p>
+        </div>
+
+        <!-- SEO 3: Cómo invertir desde LATAM -->
+        <div class="seo-section">
+          <h2 class="seo-title">¿Cómo comprar criptomonedas desde Latinoamérica?</h2>
+          <p>Comprar criptomonedas desde México, Argentina, Colombia, Honduras, Chile o cualquier país de LATAM es más accesible hoy que nunca. El proceso básico tiene 3 pasos: elegir un exchange, verificar tu identidad (KYC) y depositar en moneda local o dólares.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Exchange</span><span>Monedas LATAM</span><span>Comisión</span><span>Ideal para</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Binance</span><span>MXN, ARS, BRL, COP</span><span>0.10%</span><span>Traders activos</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Bitso</span><span>MXN, ARS, BRL, COP</span><span>0.50%</span><span>Principiantes LATAM</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Coinbase</span><span>USD</span><span>hasta 1.49%</span><span>Usuarios de EE.UU.</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Bybit</span><span>USD, EUR</span><span>0.10%</span><span>Traders con experiencia</span>
+            </div>
+          </div>
+          <p><strong>Para Honduras (HNL):</strong> El método más común es comprar dólares primero a través de una casa de cambio o banco, luego transferirlos a Binance o Bybit vía P2P en USD. También es posible usar tarjeta de crédito internacional, aunque con comisiones más altas (1–3%).</p>
+          <p><strong>Recomendación general:</strong> comenzá con una stablecoin como USDT para familiarizarte con el proceso, antes de pasar a activos más volátiles como BTC o ETH. Así aprendés sin exponerte a fluctuaciones de precio mientras entendés cómo funciona el exchange.</p>
+        </div>
+
+        <!-- SEO 4: Qué es capitalización de mercado -->
+        <div class="seo-section">
+          <h2 class="seo-title">¿Cómo leer la tabla de criptomonedas? Guía de columnas</h2>
+          <p>La tabla de arriba muestra 7 columnas de datos clave para evaluar cualquier criptomoneda. Acá explicamos qué significa cada una y cómo usarlas para tomar mejores decisiones.</p>
+          <div class="seo-table">
+            <div class="seo-table-row seo-table-header">
+              <span>Columna</span><span>Qué mide</span><span>Cómo interpretarla</span><span>Ejemplo</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Precio</span><span>Valor unitario en USD</span><span>Comparalo con tu precio de compra</span><span>$85,000 BTC</span>
+            </div>
+            <div class="seo-table-row">
+              <span>24h %</span><span>Variación últimas 24 horas</span><span>Verde = subió · Rojo = bajó</span><span>+3.2%</span>
+            </div>
+            <div class="seo-table-row">
+              <span>7d %</span><span>Variación últimos 7 días</span><span>Tendencia de corto plazo</span><span>−8.5%</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Cap. Mkt</span><span>Precio × unidades en circulación</span><span>Mayor cap = más establecida</span><span>$1.6T BTC</span>
+            </div>
+            <div class="seo-table-row">
+              <span>Volumen</span><span>Total operado en las últimas 24h</span><span>Mayor volumen = más liquidez</span><span>$32B BTC</span>
+            </div>
+          </div>
+          <p>La <strong>capitalización de mercado</strong> (Market Cap) es el indicador más importante para comparar criptomonedas entre sí, independientemente de su precio unitario. Una cripto a $0.001 puede tener mayor capitalización que una a $100 si tiene miles de millones de unidades en circulación.</p>
+          <p>El <strong>volumen de 24h</strong> indica liquidez: si una cripto tiene alto volumen, podés comprar o vender grandes cantidades sin mover el precio significativamente. Un volumen bajo respecto a la capitalización puede indicar una cripto con poca actividad o en riesgo de manipulación de precio.</p>
+        </div>
+
+      </div><!-- fin space-y-5 -->
+
     </div>
   </div>
-</Layout>
 
 <style>
   /* ── Ocultar fila (compatible con grid en desktop y flex en móvil) ── */
@@ -544,6 +599,66 @@ try {
   .sort-btn.active { color: #D4A843 !important; }
   .sort-btn.active .sort-arrow { opacity:1 !important; color:#D4A843; }
   .sort-arrow { opacity:.35;font-size:10px; }
+
+  /* ══════════════════════════════════════
+     SEO SECTIONS
+  ══════════════════════════════════════ */
+  .seo-section {
+    padding: 1.75rem;
+    background: #111318;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 1.25rem;
+  }
+  .seo-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.875rem;
+  }
+  .seo-section p {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+  .seo-section p:last-child { margin-bottom: 0; }
+  .seo-section strong { color: rgba(255,255,255,0.8); }
+
+  /* ── SEO TABLE ── */
+  .seo-table {
+    margin: 0.875rem 0;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 0.875rem;
+    overflow: hidden;
+  }
+  .seo-table-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0.55rem 0.875rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    gap: 0.5rem;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+  .seo-table-row:last-child { border-bottom: none; }
+  .seo-table-row.seo-table-header {
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.25);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  @media (max-width: 540px) {
+    .seo-table-row { grid-template-columns: 1fr 1fr; font-size: 0.73rem; }
+    .seo-table-row span:nth-child(3),
+    .seo-table-row span:nth-child(4) { display: none; }
+    .seo-section { padding: 1.25rem; }
+  }
 </style>
 
 <script>
@@ -571,7 +686,6 @@ try {
         activeFilter === 'top10'   ? rank <= 10 : true;
 
       const show = matchSearch && matchFilter;
-      // ── FIX: usar clase en vez de inline style para no romper el flex de móvil ──
       row.classList.toggle('hidden-row', !show);
       if (show) visible++;
     });
@@ -640,4 +754,6 @@ try {
     });
   });
 </script>
+
+</Layout>
 
