@@ -1,0 +1,217 @@
+---
+// src/components/HerramientasSidebar.astro
+// Uso: <HerramientasSidebar /> en la página de artículo
+// Props opcionales: categoría del artículo para highlight futuro
+import {
+  BarChart2,
+  TrendingUp,
+  Layers,
+  Landmark,
+  DollarSign,
+  Calculator,
+  GitCompare,
+  ArrowRight,
+  Wrench,
+} from 'lucide-astro';
+
+interface Herramienta {
+  titulo:   string;
+  desc:     string;
+  href:     string;
+  icon:     string;
+  badge?:   string; // etiqueta opcional: "Nuevo", "Live", etc.
+}
+
+const herramientas: Herramienta[] = [
+  {
+    titulo: "Mercados Cripto",
+    desc:   "Precios en vivo de las principales criptomonedas.",
+    href:   "/herramientas/cripto",
+    icon:   "chart",
+    badge:  "Live",
+  },
+  {
+    titulo: "Forex",
+    desc:   "Tipos de cambio de divisas globales y LATAM.",
+    href:   "/herramientas/forex",
+    icon:   "forex",
+    badge:  "Live",
+  },
+  {
+    titulo: "Metales Preciosos",
+    desc:   "Oro, plata, platino y paladio por onza troy.",
+    href:   "/herramientas/metales",
+    icon:   "layers",
+  },
+  {
+    titulo: "Acciones",
+    desc:   "Cotizaciones en tiempo real del mercado estadounidense.",
+    href:   "/herramientas/acciones",
+    icon:   "acciones",
+    badge:  "Live",
+  },
+  {
+    titulo: "Precio del Dólar",
+    desc:   "Dólar oficial y paralelo por país.",
+    href:   "/herramientas/dolar",
+    icon:   "dollar",
+  },
+  {
+    titulo: "Calculadoras de Trading",
+    desc:   "Pips, posición, ganancias y margen para Forex.",
+    href:   "/herramientas/calculadora-trading",
+    icon:   "calc2",
+  },
+  {
+    titulo: "Calculadora Cripto",
+    desc:   "Convertí cripto a pesos y calculá ganancias.",
+    href:   "/herramientas/calculadora-cripto",
+    icon:   "calc",
+  },
+  {
+    titulo: "Comparar Brokers",
+    desc:   "Spreads, regulación y plataformas para LATAM.",
+    href:   "/herramientas/comparar-brokers",
+    icon:   "compare",
+  },
+];
+---
+
+<!-- ─────────────────────────────────────────────────────────
+     SIDEBAR DESKTOP (sticky) + SECCIÓN MOBILE (debajo)
+     Uso en la página de artículo:
+
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10">
+       <article>...tu contenido...</article>
+       <HerramientasSidebar />
+     </div>
+───────────────────────────────────────────────────────────── -->
+
+<aside
+  class="herramientas-sidebar w-full"
+  style="font-family: 'DM Sans', sans-serif;"
+  aria-label="Herramientas financieras"
+>
+  <div class="lg:sticky lg:top-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <Wrench size={15} class="text-[#D4A843]" />
+        <span
+          class="font-bold text-[13px] text-white uppercase tracking-wide"
+          style="font-family: 'Syne', sans-serif;"
+        >
+          Herramientas
+        </span>
+      </div>
+      <a
+        href="/herramientas"
+        class="text-[11px] text-white/30 hover:text-[#D4A843] no-underline transition-colors duration-200 flex items-center gap-1"
+      >
+        Ver todas <ArrowRight size={11} />
+      </a>
+    </div>
+
+    <!-- Lista desktop: compacta, una columna -->
+    <div class="hidden lg:flex flex-col bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+      {herramientas.map((h, i) => (
+        <a
+          href={h.href}
+          class={`herramienta-item group flex items-center gap-3 px-4 py-3.5 no-underline transition-all duration-200 hover:bg-white/[0.04] ${i < herramientas.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+        >
+          <!-- Ícono -->
+          <div class="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center text-[#D4A843] flex-shrink-0 group-hover:bg-[#D4A843]/20 transition-colors duration-200">
+            {h.icon === "chart"    && <BarChart2   size={14} />}
+            {h.icon === "forex"    && <TrendingUp  size={14} />}
+            {h.icon === "layers"   && <Layers      size={14} />}
+            {h.icon === "acciones" && <Landmark    size={14} />}
+            {h.icon === "dollar"   && <DollarSign  size={14} />}
+            {h.icon === "calc"     && <Calculator  size={14} />}
+            {h.icon === "calc2"    && <Calculator  size={14} />}
+            {h.icon === "compare"  && <GitCompare  size={14} />}
+          </div>
+
+          <!-- Texto -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span
+                class="text-[13px] font-semibold text-white/80 group-hover:text-white transition-colors duration-200 leading-tight"
+                style="font-family: 'Syne', sans-serif;"
+              >
+                {h.titulo}
+              </span>
+              {h.badge && (
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-emerald-500/15 text-emerald-400 flex-shrink-0">
+                  {h.badge}
+                </span>
+              )}
+            </div>
+            <p class="text-[11px] text-white/30 leading-snug mt-0.5 truncate">{h.desc}</p>
+          </div>
+
+          <!-- Arrow -->
+          <ArrowRight size={12} class="text-white/20 group-hover:text-[#D4A843] flex-shrink-0 transition-colors duration-200 group-hover:translate-x-0.5 transform" />
+        </a>
+      ))}
+    </div>
+
+    <!-- Grid mobile: 2 columnas, debajo del artículo -->
+    <div class="lg:hidden grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {herramientas.map((h) => (
+        <a
+          href={h.href}
+          class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 rounded-xl p-4 no-underline transition-all duration-200 hover:-translate-y-0.5"
+        >
+          <div class="flex items-center justify-between">
+            <div class="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center text-[#D4A843] group-hover:bg-[#D4A843]/20 transition-colors duration-200">
+              {h.icon === "chart"    && <BarChart2   size={14} />}
+              {h.icon === "forex"    && <TrendingUp  size={14} />}
+              {h.icon === "layers"   && <Layers      size={14} />}
+              {h.icon === "acciones" && <Landmark    size={14} />}
+              {h.icon === "dollar"   && <DollarSign  size={14} />}
+              {h.icon === "calc"     && <Calculator  size={14} />}
+              {h.icon === "calc2"    && <Calculator  size={14} />}
+              {h.icon === "compare"  && <GitCompare  size={14} />}
+            </div>
+            {h.badge && (
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-emerald-500/15 text-emerald-400">
+                {h.badge}
+              </span>
+            )}
+          </div>
+          <div>
+            <span
+              class="text-[12px] font-bold text-white/80 group-hover:text-[#D4A843] transition-colors duration-200 leading-snug block"
+              style="font-family: 'Syne', sans-serif;"
+            >
+              {h.titulo}
+            </span>
+            <p class="text-[11px] text-white/30 leading-snug mt-0.5 line-clamp-2">{h.desc}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- CTA banner -->
+    <a
+      href="/herramientas"
+      class="group mt-3 hidden lg:flex items-center justify-between bg-[#D4A843]/5 hover:bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/40 rounded-xl px-4 py-3 no-underline transition-all duration-200"
+    >
+      <span class="text-[12px] text-[#D4A843] font-semibold" style="font-family: 'Syne', sans-serif;">
+        Explorar todas las herramientas
+      </span>
+      <ArrowRight size={13} class="text-[#D4A843] group-hover:translate-x-0.5 transform transition-transform duration-200" />
+    </a>
+
+  </div>
+</aside>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
