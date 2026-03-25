@@ -495,7 +495,7 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
         height:              460,
         withdateranges:      true,
         allow_symbol_change: false,
-        fullscreen:          false,  
+        autosize:            true,
       });
     };
     document.head.appendChild(script);
@@ -518,13 +518,28 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
   });
 
   document.addEventListener('fullscreenchange', () => {
-    if (!btn) return;
+    if (!btn || !chart) return;
+
+    const iframe = chart.querySelector('iframe');
+
     if (document.fullscreenElement) {
-      btn.innerHTML = iconCollapse;
-      if (chart) chart.style.height = '100vh';
+      btn.innerHTML      = iconCollapse;
+      chart.style.height = '100vh';
+      chart.style.width  = '100vw';
+      if (iframe) {
+        iframe.style.width  = '100%';
+        iframe.style.height = '100%';
+      }
     } else {
-      btn.innerHTML = iconExpand;
-      if (chart) chart.style.height = '460px';
+      btn.innerHTML      = iconExpand;
+      chart.style.height = '460px';
+      chart.style.width  = '100%';
+      if (iframe) {
+        iframe.style.width  = '100%';
+        iframe.style.height = '460px';
+      }
     }
+
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
   });
 </script>
