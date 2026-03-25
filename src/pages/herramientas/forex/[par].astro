@@ -4,6 +4,7 @@ export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
 import { ArrowLeft, TrendingUp } from 'lucide-astro';
+import TVChart from '../../../components/TVChart.astro';
 import { obtenerForex } from '../../../lib/forex';
 
 const { par } = Astro.params;
@@ -385,24 +386,9 @@ const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? nu
             </div>
           </div>
 
-          <!-- Gráfico TradingView -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-            <div class="px-5 py-4 border-b border-white/[0.07] flex items-center justify-between">
-              <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Gráfica de precio</h2>
-              <span class="text-white/25 text-xs">TradingView</span>
-            </div>
-            {parData.tvDisponible ? (
-              <div id="tv-chart" style="height: 460px;"></div>
-            ) : (
-              <div class="flex flex-col items-center justify-center py-16 gap-3">
-                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
-                  <TrendingUp size={22} class="text-white/20" />
-                </div>
-                <p class="text-white/30 text-sm font-medium">Gráfica no disponible para {parData.par}</p>
-                <p class="text-white/20 text-xs text-center max-w-xs">TradingView no tiene datos históricos para esta moneda. El precio de referencia se muestra arriba.</p>
-              </div>
-            )}
-          </div>
+     <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+  <TVChart chartId="tv-forex" tvSymbol={tvDisponible ? tvSymbol : ''} />
+</div>
 
           <!-- Info monedas -->
           {(baseInfo || cotInfo) && (
@@ -461,36 +447,4 @@ const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? nu
     </div>
   </div>
 </Layout>
-
-<!-- TradingView Widget -->
-<script define:vars={{ tvSymbol, tvDisponible }}>
-  const container = document.getElementById('tv-chart');
-  if (container && tvSymbol && tvDisponible) {
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/tv.js';
-    script.onload = () => {
-      new TradingView.widget({
-        container_id:        'tv-chart',
-        symbol:              tvSymbol,
-        interval:            'D',
-        timezone:            'America/Tegucigalpa',
-        theme:               'dark',
-        style:               '1',
-        locale:              'es',
-        toolbar_bg:          '#111318',
-        enable_publishing:   false,
-        hide_top_toolbar:    false,
-        hide_legend:         false,
-        save_image:          false,
-        backgroundColor:     '#111318',
-        gridColor:           'rgba(255,255,255,0.03)',
-        width:               '100%',
-        height:              460,
-        withdateranges:      true,
-        allow_symbol_change: false,
-      });
-    };
-    document.head.appendChild(script);
-  }
-</script>
 
