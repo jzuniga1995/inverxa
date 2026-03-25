@@ -377,24 +377,37 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
             </div>
           </div>
 
-          <!-- Gráfico TradingView -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-            <div class="px-5 py-4 border-b border-white/[0.07] flex items-center justify-between">
-              <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Gráfica de precio</h2>
-              <span class="text-white/25 text-xs">TradingView</span>
-            </div>
-            {tvSymbol ? (
-              <div id="tv-chart" style="height: 460px;"></div>
-            ) : (
-              <div class="flex flex-col items-center justify-center py-16 gap-3">
-                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
-                  <span class="font-bold text-white/20">{metalData.simbolo}</span>
-                </div>
-                <p class="text-white/30 text-sm font-medium">Gráfica no disponible para {metalData.nombre}</p>
-                <p class="text-white/20 text-xs text-center max-w-xs">TradingView no tiene datos históricos para este metal en este momento.</p>
-              </div>
-            )}
-          </div>
+        <!-- Gráfico TradingView -->
+<div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+  <div class="px-5 py-4 border-b border-white/[0.07] flex items-center justify-between">
+    <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Gráfica de precio</h2>
+    <div class="flex items-center gap-3">
+      <span class="text-white/25 text-xs">TradingView</span>
+      {tvSymbol && (
+        <button
+          id="btn-fullscreen"
+          class="text-white/30 hover:text-white transition-colors p-1 rounded"
+          title="Pantalla completa"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+        </button>
+      )}
+    </div>
+  </div>
+  {tvSymbol ? (
+    <div id="tv-chart" style="height: 460px;"></div>
+  ) : (
+    <div class="flex flex-col items-center justify-center py-16 gap-3">
+      <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
+        <span class="font-bold text-white/20">{metalData.simbolo}</span>
+      </div>
+      <p class="text-white/30 text-sm font-medium">Gráfica no disponible para {metalData.nombre}</p>
+      <p class="text-white/20 text-xs text-center max-w-xs">TradingView no tiene datos históricos para este metal en este momento.</p>
+    </div>
+  )}
+</div>
 
           <!-- Datos clave -->
           {info && (
@@ -474,6 +487,7 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
         toolbar_bg:          '#111318',
         enable_publishing:   false,
         hide_top_toolbar:    false,
+        hide_side_toolbar:   false,
         save_image:          false,
         backgroundColor:     '#111318',
         gridColor:           'rgba(255,255,255,0.03)',
@@ -481,9 +495,36 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
         height:              460,
         withdateranges:      true,
         allow_symbol_change: false,
+        fullscreen:          false,  
       });
     };
     document.head.appendChild(script);
   }
 </script>
 
+<script>
+  const btn   = document.getElementById('btn-fullscreen');
+  const chart = document.getElementById('tv-chart');
+
+  const iconExpand   = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
+  const iconCollapse = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>`;
+
+  btn?.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      chart?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    if (!btn) return;
+    if (document.fullscreenElement) {
+      btn.innerHTML = iconCollapse;
+      if (chart) chart.style.height = '100vh';
+    } else {
+      btn.innerHTML = iconExpand;
+      if (chart) chart.style.height = '460px';
+    }
+  });
+</script>
