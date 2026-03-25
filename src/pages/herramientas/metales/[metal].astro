@@ -3,7 +3,7 @@
 export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
-import { ArrowLeft } from 'lucide-astro';
+import { ArrowLeft, CircleDollarSign, Gem, Hexagon, Cpu } from 'lucide-astro';
 import { fetchMetales } from '../../../lib/metales';
 
 const { metal } = Astro.params;
@@ -354,10 +354,13 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
           <!-- Header: nombre + precio -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
             <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={`background: ${color}15;`}>
-                <span class="font-extrabold text-lg" style={`color: ${color};`}>{metalData.simbolo}</span>
-              </div>
+           <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+  style={`background: ${color}15;`}>
+  {metalData.icono === 'CircleDollarSign' && <CircleDollarSign size={26} color={color} />}
+  {metalData.icono === 'Gem'              && <Gem              size={26} color={color} />}
+  {metalData.icono === 'Hexagon'          && <Hexagon          size={26} color={color} />}
+  {metalData.icono === 'Cpu'              && <Cpu              size={26} color={color} />}
+</div>
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
                   <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{metalData.nombre}</h1>

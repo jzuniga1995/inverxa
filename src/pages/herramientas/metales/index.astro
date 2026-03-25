@@ -2,12 +2,19 @@
 // src/pages/herramientas/metales/index.astro
 export const prerender = false;
 import Layout from '../../../layouts/Layout.astro';
-import { ArrowLeft, Layers } from 'lucide-astro';
+import { ArrowLeft, Layers, CircleDollarSign, Gem, Hexagon, Cpu } from 'lucide-astro';
 
 type MetalData = {
   nombre: string; simbolo: string; icono: string;
   color: string; precio: number; unidad: string;
   tradingviewSimbolo: string; slug: string;
+};
+
+const ICONOS: Record<string, any> = {
+  CircleDollarSign,
+  Gem,
+  Hexagon,
+  Cpu,
 };
 
 const colorPorSimbolo: Record<string, string> = {
@@ -36,7 +43,6 @@ const infoMetal: Record<string, { descripcion: string; usos: string[] }> = {
 const formatMetal = (p: number) =>
   p > 0 ? `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
 
-// ── Lee de KV directamente (clave 'cache:metales' que guarda el cron) ──
 const env = (Astro.locals.runtime?.env as any);
 const KV  = env?.INVERSA_KV as KVNamespace | undefined;
 
@@ -58,16 +64,10 @@ try {
 
 <slot name="head" slot="head">
 
-  <!-- ═══════════════════════════════════════
-       PRECONNECT
-  ═══════════════════════════════════════ -->
   <link rel="preconnect" href="https://res.cloudinary.com" />
   <link rel="dns-prefetch" href="https://res.cloudinary.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <!-- ═══════════════════════════════════════
-       BASIC SEO
-  ═══════════════════════════════════════ -->
   <title>Precio del Oro, Plata, Platino y Paladio Hoy — Metales Preciosos en Vivo | Inversax</title>
   <meta name="description"    content="Precio del oro, plata, platino y paladio hoy en USD por onza troy. Cotizaciones actualizadas de metales preciosos para inversores en Latinoamérica." />
   <meta name="author"         content="José Zúniga" />
@@ -76,15 +76,9 @@ try {
   <meta name="googlebot-news" content="index, follow" />
   <link rel="canonical"       href="https://inversax.com/herramientas/metales" />
 
-  <!-- ═══════════════════════════════════════
-       KEYWORDS
-  ═══════════════════════════════════════ -->
   <meta name="keywords"      content="precio oro hoy, precio plata hoy, precio platino, precio paladio, metales preciosos latinoamerica, XAU USD, XAG USD, onza troy precio, oro en dolares hoy, precio oro tiempo real" />
   <meta name="news_keywords" content="precio oro hoy, precio plata hoy, metales preciosos, XAU, XAG, Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       GEO
-  ═══════════════════════════════════════ -->
   <meta name="geo.region"       content="LATAM" />
   <meta name="geo.placename"    content="Latinoamérica" />
   <meta name="language"         content="Spanish" />
@@ -92,11 +86,7 @@ try {
   <meta name="coverage"         content="Worldwide" />
   <meta name="target"           content="all" />
 
-  <!-- ═══════════════════════════════════════
-       HREFLANG — página global, aplican los 36
-  ═══════════════════════════════════════ -->
   <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/metales" />
-  <!-- América Latina -->
   <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/metales" />
@@ -117,7 +107,6 @@ try {
   <link rel="alternate" hreflang="es-CU" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-PR" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/herramientas/metales" />
-  <!-- Europa -->
   <link rel="alternate" hreflang="es-ES" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-AD" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-DE" href="https://inversax.com/herramientas/metales" />
@@ -127,7 +116,6 @@ try {
   <link rel="alternate" hreflang="es-NL" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-GB" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-PT" href="https://inversax.com/herramientas/metales" />
-  <!-- Resto del mundo -->
   <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-CA" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="es-AU" href="https://inversax.com/herramientas/metales" />
@@ -137,9 +125,6 @@ try {
   <link rel="alternate" hreflang="es-MA" href="https://inversax.com/herramientas/metales" />
   <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/metales" />
 
-  <!-- ═══════════════════════════════════════
-       OPEN GRAPH
-  ═══════════════════════════════════════ -->
   <meta property="og:site_name"   content="Inversax" />
   <meta property="og:locale"      content="es_LA" />
   <meta property="og:locale:alternate" content="es_MX" />
@@ -156,9 +141,6 @@ try {
   <meta property="og:image:alt"   content="Precio del Oro y Plata hoy — Inversax" />
   <meta property="og:image:type"  content="image/png" />
 
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
   <meta name="twitter:creator"     content="@inversax" />
@@ -167,9 +149,6 @@ try {
   <meta name="twitter:image"       content="https://inversax.com/og/herramientas/metales.png" />
   <meta name="twitter:image:alt"   content="Precio del Oro y Plata hoy — Inversax" />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebSite + SearchAction
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -179,17 +158,11 @@ try {
     "inLanguage": "es",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
-      },
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
       "query-input": "required name=search_term_string"
     }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebPage
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -197,28 +170,16 @@ try {
     "description": "Cotizaciones actualizadas de metales preciosos en USD por onza troy para inversores en Latinoamérica.",
     "url": "https://inversax.com/herramientas/metales",
     "inLanguage": "es",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Inversax",
-      "url": "https://inversax.com"
-    },
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" },
     "publisher": {
       "@type": "Organization",
       "name": "Inversax",
       "url": "https://inversax.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://inversax.com/favicon.png",
-        "width": 512,
-        "height": 512
-      }
+      "logo": { "@type": "ImageObject", "url": "https://inversax.com/favicon.png", "width": 512, "height": 512 }
     },
     "about": { "@type": "Thing", "name": "Metales preciosos" }
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — BreadcrumbList
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -229,9 +190,6 @@ try {
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — ItemList de metales
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -246,10 +204,6 @@ try {
     ]
   })} />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — FAQPage
-       Rich results para queries de precio de metales
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -257,26 +211,17 @@ try {
       {
         "@type": "Question",
         "name": "¿Cuál es el precio del oro hoy en dólares?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "El precio del oro (XAU) se cotiza en USD por onza troy y se actualiza diariamente en Inversax. El oro es el metal precioso más utilizado como reserva de valor y refugio ante la inflación."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "El precio del oro (XAU) se cotiza en USD por onza troy y se actualiza diariamente en Inversax. El oro es el metal precioso más utilizado como reserva de valor y refugio ante la inflación." }
       },
       {
         "@type": "Question",
         "name": "¿Qué es una onza troy?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "La onza troy es la unidad de medida estándar para los metales preciosos. Equivale a 31.1 gramos, a diferencia de la onza avoirdupois (28.35g) usada para otros productos."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "La onza troy es la unidad de medida estándar para los metales preciosos. Equivale a 31.1 gramos, a diferencia de la onza avoirdupois (28.35g) usada para otros productos." }
       },
       {
         "@type": "Question",
         "name": "¿Por qué el paladio es más caro que el oro?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "El paladio es uno de los metales más escasos del planeta y tiene alta demanda industrial en convertidores catalíticos de automóviles, lo que en ciertos períodos ha llevado su precio por encima del oro."
-        }
+        "acceptedAnswer": { "@type": "Answer", "text": "El paladio es uno de los metales más escasos del planeta y tiene alta demanda industrial en convertidores catalíticos de automóviles, lo que en ciertos períodos ha llevado su precio por encima del oro." }
       }
     ]
   })} />
@@ -312,7 +257,6 @@ try {
           <p class="text-white/30 text-sm">No se pudieron cargar los precios. Intenta de nuevo.</p>
         </div>
       ) : metales.length === 0 ? (
-        <!-- Skeletons mientras el cron llena KV -->
         <div class="flex flex-col gap-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(4)].map(() => (
@@ -343,6 +287,7 @@ try {
             {metales.map((m) => {
               const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
               const info  = infoMetal[m.simbolo];
+              const Icono = ICONOS[m.icono];
               return (
                 <a
                   href={`/herramientas/metales/${m.slug}`}
@@ -351,7 +296,7 @@ try {
                   <div class="flex items-start justify-between">
                     <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={`background: ${color}15;`}>
-                      <span class="font-extrabold text-sm" style={`color: ${color};`}>{m.simbolo}</span>
+                      {Icono && <Icono size={20} color={color} />}
                     </div>
                     <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
                       style={`background: ${color}15; color: ${color};`}>

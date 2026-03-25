@@ -1,6 +1,6 @@
 ---
 // Hero.astro - Inversax — Full Responsive
-import { Globe, Users, FileText, BarChart2, ArrowRight, Zap } from 'lucide-astro';
+import { Globe, Users, FileText, BarChart2, ArrowRight, Zap, CircleDollarSign, Gem } from 'lucide-astro';
 
 // ── Sin fetch de APIs externas en SSR ───────────────────────────
 // Cripto, forex y metales cargan client-side para no bloquear TTFB.
@@ -219,9 +219,10 @@ const heroTabs = [
                 data-metal-simbolo={m.simbolo}
               >
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <div class="w-7 h-7 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
-                    <span class={`text-[10px] font-bold ${m.color}`}>{m.simbolo.slice(0,2)}</span>
-                  </div>
+                <div class="w-7 h-7 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
+  {m.simbolo === 'XAU' && <CircleDollarSign size={14} class={m.color} />}
+  {m.simbolo === 'XAG' && <Gem              size={14} class={m.color} />}
+</div>
                   <div>
                     <div class="font-bold text-sm text-white" style="font-family: 'Syne', sans-serif;">{m.nombre}</div>
                     <div class="text-[11px] text-white/35">{m.simbolo} · oz troy</div>
