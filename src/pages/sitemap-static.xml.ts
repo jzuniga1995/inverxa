@@ -118,8 +118,9 @@ export const GET: APIRoute = async ({ locals }) => {
   ${url('/herramientas/metales',           new Date(), 0.7, 'daily')}
   ${url('/herramientas/acciones',          new Date(), 0.8, 'daily')}
   ${url('/herramientas/dolar',             new Date(), 0.8, 'daily')}
-  ${url('/herramientas/calculadora-cripto',new Date(), 0.7, 'weekly')}
-  ${url('/herramientas/comparar-brokers',  new Date(), 0.8, 'weekly')}
+  ${url('/herramientas/calculadora-cripto',   new Date(), 0.7, 'weekly')}
+  ${url('/herramientas/calculadora-trading',  new Date(), 0.7, 'weekly')}
+  ${url('/herramientas/comparar-brokers',     new Date(), 0.8, 'weekly')}
 
   <!-- ── Dólar: páginas por país ── -->
   ${DOLAR_PAISES.map(codigo =>
