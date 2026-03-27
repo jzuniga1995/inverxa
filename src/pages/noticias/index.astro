@@ -256,7 +256,7 @@ function formatFecha(fecha: Date | null) {
         </a>
         {categorias.map((cat) => (
           <a
-           href={`/noticias?categoria=${cat.slug}`}
+          href={`/${cat.slug}`}
             class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
               categoriaActiva === cat.slug
                 ? 'bg-[#D4A843] text-[#0A0B0D]'
