@@ -3,7 +3,7 @@
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import { getArticulos, getCategorias } from '../../db/queries';
-import { Clock, ArrowRight } from 'lucide-astro';
+import { Clock, ArrowRight, Filter } from 'lucide-astro';
 
 const LIMIT = 12;
 
@@ -12,23 +12,14 @@ const categorias      = await getCategorias(db);
 const categoriaActiva = Astro.url.searchParams.get('categoria') ?? 'todas';
 
 const todosArticulos = await getArticulos(db, LIMIT + 1);
-const soloGlobales   = todosArticulos.filter(a => !a.pais || a.pais.codigo === 'global');
 
 const articulosFiltrados = categoriaActiva === 'todas'
-  ? soloGlobales
-  : soloGlobales.filter(a => a.categoria?.slug === categoriaActiva);
+  ? todosArticulos
+  : todosArticulos.filter(a => a.categoria?.slug === categoriaActiva);
 
 const hayMasInicial  = articulosFiltrados.length > LIMIT;
 const articulosInit  = articulosFiltrados.slice(0, LIMIT);
 const [principal, ...resto] = articulosInit;
-
-// Conteo por categoría
-const conteos: Record<string, number> = { todas: soloGlobales.length };
-soloGlobales.forEach(a => {
-  if (a.categoria?.slug) {
-    conteos[a.categoria.slug] = (conteos[a.categoria.slug] ?? 0) + 1;
-  }
-});
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
@@ -39,9 +30,11 @@ function formatFecha(fecha: Date | null) {
   const dias = Math.floor(horas / 24);
   return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
 }
+
 ---
 
 <Layout>
+
 
 <slot name="head" slot="head">
 
@@ -78,9 +71,10 @@ function formatFecha(fecha: Date | null) {
   <meta name="content-language" content="es" />
 
   <!-- ═══════════════════════════════════════
-       HREFLANG
+       HREFLANG — 36 países + genérico + x-default
   ═══════════════════════════════════════ -->
   <link rel="alternate" hreflang="es"    href="https://inversax.com/noticias" />
+  <!-- América Latina -->
   <link rel="alternate" hreflang="es-MX" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-AR" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-CO" href="https://inversax.com/noticias" />
@@ -101,6 +95,7 @@ function formatFecha(fecha: Date | null) {
   <link rel="alternate" hreflang="es-CU" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-PR" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/noticias" />
+  <!-- Europa -->
   <link rel="alternate" hreflang="es-ES" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-AD" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-DE" href="https://inversax.com/noticias" />
@@ -110,6 +105,7 @@ function formatFecha(fecha: Date | null) {
   <link rel="alternate" hreflang="es-NL" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-GB" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-PT" href="https://inversax.com/noticias" />
+  <!-- Resto del mundo -->
   <link rel="alternate" hreflang="es-US" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-CA" href="https://inversax.com/noticias" />
   <link rel="alternate" hreflang="es-AU" href="https://inversax.com/noticias" />
@@ -170,6 +166,8 @@ function formatFecha(fecha: Date | null) {
 
   <!-- ═══════════════════════════════════════
        JSON-LD — CollectionPage
+       Le dice a Google que esta página es un
+       índice de artículos, no un artículo suelto
   ═══════════════════════════════════════ -->
   <script type="application/ld+json">{JSON.stringify({
     "@context": "https://schema.org",
@@ -210,8 +208,18 @@ function formatFecha(fecha: Date | null) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
-      { "@type": "ListItem", "position": 2, "name": "Noticias", "item": "https://inversax.com/noticias" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://inversax.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Noticias",
+        "item": "https://inversax.com/noticias"
+      }
     ]
   })}</script>
 
@@ -233,62 +241,31 @@ function formatFecha(fecha: Date | null) {
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
-      <!-- ═══════════════════════════════════════
-           FILTROS — tabs estilo periódico
-      ═══════════════════════════════════════ -->
-      <div class="relative mb-8 sm:mb-10">
-
-        <!-- Gradiente fade derecha para indicar scroll en mobile -->
-        <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#0A0B0D] to-transparent z-10 lg:hidden"></div>
-
-        <div
-          id="tabs-categorias"
-          class="flex items-end gap-0 overflow-x-auto scrollbar-hide border-b border-white/[0.08]"
+      <!-- FILTROS DE CATEGORÍA -->
+      <div class="flex items-center gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide">
+        <Filter size={14} class="text-white/30 flex-shrink-0" />
+        <a
+          href="/noticias"
+          class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
+            categoriaActiva === 'todas'
+              ? 'bg-[#D4A843] text-[#0A0B0D]'
+              : 'bg-white/5 border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/10'
+          }`}
         >
-          <!-- Tab "Todas" -->
+          Todas
+        </a>
+        {categorias.map((cat) => (
           <a
-            href="/noticias"
-            data-slug="todas"
-            class={`tab-item flex-shrink-0 flex items-center gap-1.5 px-4 pb-3 pt-1 text-xs font-semibold tracking-wide border-b-2 -mb-px transition-all duration-200 no-underline whitespace-nowrap ${
-              categoriaActiva === 'todas'
-                ? 'border-[#D4A843] text-white'
-                : 'border-transparent text-white/35 hover:text-white/60 hover:border-white/15'
+           href={`/noticias?categoria=${cat.slug}`}
+            class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 no-underline ${
+              categoriaActiva === cat.slug
+                ? 'bg-[#D4A843] text-[#0A0B0D]'
+                : 'bg-white/5 border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/10'
             }`}
           >
-            Todas
-            <span class={`text-[10px] px-1.5 py-0.5 rounded font-bold tabular-nums transition-colors duration-200 ${
-              categoriaActiva === 'todas'
-                ? 'bg-[#D4A843]/15 text-[#D4A843]'
-                : 'bg-white/5 text-white/25'
-            }`}>
-              {conteos['todas'] ?? 0}
-            </span>
+            {cat.nombre}
           </a>
-
-          <!-- Tabs de categorías -->
-          {categorias.map((cat) => (
-            <a
-              href={`/noticias?categoria=${cat.slug}`}
-              data-slug={cat.slug}
-              class={`tab-item flex-shrink-0 flex items-center gap-1.5 px-4 pb-3 pt-1 text-xs font-semibold tracking-wide border-b-2 -mb-px transition-all duration-200 no-underline whitespace-nowrap ${
-                categoriaActiva === cat.slug
-                  ? 'border-[#D4A843] text-white'
-                  : 'border-transparent text-white/35 hover:text-white/60 hover:border-white/15'
-              }`}
-            >
-              {cat.nombre}
-              {(conteos[cat.slug] ?? 0) > 0 && (
-                <span class={`text-[10px] px-1.5 py-0.5 rounded font-bold tabular-nums transition-colors duration-200 ${
-                  categoriaActiva === cat.slug
-                    ? 'bg-[#D4A843]/15 text-[#D4A843]'
-                    : 'bg-white/5 text-white/25'
-                }`}>
-                  {conteos[cat.slug]}
-                </span>
-              )}
-            </a>
-          ))}
-        </div>
+        ))}
       </div>
 
       <!-- LAYOUT PRINCIPAL -->
@@ -303,7 +280,7 @@ function formatFecha(fecha: Date | null) {
               <p class="text-white/40 text-sm">No hay artículos en esta categoría todavía.</p>
             </div>
           ) : (
-            <div id="articulos-container" class="flex flex-col gap-5 sm:gap-6 animate-in">
+            <div class="flex flex-col gap-5 sm:gap-6">
 
               <!-- Artículo principal -->
               {principal && (
@@ -446,33 +423,11 @@ function formatFecha(fecha: Date | null) {
 </Layout>
 
 <script>
-  /* ─── Scroll automático al tab activo en mobile ─── */
-  const tabContainer = document.getElementById('tabs-categorias');
-  const activeTab    = tabContainer?.querySelector<HTMLElement>('.tab-item[class*="border-[#D4A843]"]');
-
-  if (tabContainer && activeTab) {
-    const containerRect = tabContainer.getBoundingClientRect();
-    const tabRect       = activeTab.getBoundingClientRect();
-    const offset        = tabRect.left - containerRect.left - 16;
-    tabContainer.scrollTo({ left: offset, behavior: 'smooth' });
-  }
-
-  /* ─── Animación al hacer clic en un tab ─── */
-  document.querySelectorAll<HTMLAnchorElement>('.tab-item').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const container = document.getElementById('articulos-container');
-      if (container) {
-        container.style.opacity = '0';
-        container.style.transform = 'translateY(8px)';
-      }
-    });
-  });
-
-  /* ─── Cargar más ─── */
   const btn      = document.getElementById('btn-cargar-mas') as HTMLButtonElement | null;
   const grid     = document.getElementById('noticias-grid');
   const wrapper  = document.getElementById('load-more-wrapper');
   const btnTexto = document.getElementById('btn-texto');
+  const btnIcon  = document.getElementById('btn-icon');
 
   function formatFecha(fechaStr: string) {
     const fecha = new Date(fechaStr);
@@ -488,7 +443,7 @@ function formatFecha(fecha: Date | null) {
     return `
       <a
         href="/noticias/${a.slug}"
-        class="group card-new flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl overflow-hidden no-underline transition-colors duration-200"
+        class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl overflow-hidden no-underline transition-colors duration-200"
       >
         ${a.imagen
           ? `<div class="w-full h-36 bg-[#1A1D24] overflow-hidden flex-shrink-0">
@@ -516,6 +471,7 @@ function formatFecha(fecha: Date | null) {
     const offset    = parseInt(btn.dataset.offset ?? '12');
     const categoria = btn.dataset.categoria ?? '';
 
+    // Estado cargando
     if (btnTexto) btnTexto.textContent = 'Cargando...';
     btn.disabled = true;
 
@@ -524,30 +480,22 @@ function formatFecha(fecha: Date | null) {
       if (categoria) params.set('categoria', categoria);
 
       const res  = await fetch(`/api/noticias?${params}`);
-      const json = await res.json() as any;
+     const json = await res.json() as any;
 
       if (!json.ok || !json.data.length) {
         if (wrapper) wrapper.classList.add('hidden');
         return;
       }
 
-      // Agregar cards con animación escalonada
-      json.data.forEach((a: any, i: number) => {
+      // Agregar cards al grid
+      json.data.forEach((a: any) => {
         grid.insertAdjacentHTML('beforeend', crearCard(a));
-        const newCard = grid.lastElementChild as HTMLElement | null;
-        if (newCard) {
-          newCard.style.opacity = '0';
-          newCard.style.transform = 'translateY(12px)';
-          newCard.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-          setTimeout(() => {
-            newCard.style.opacity = '1';
-            newCard.style.transform = 'translateY(0)';
-          }, i * 60);
-        }
       });
 
+      // Actualizar offset
       btn.dataset.offset = String(offset + json.data.length);
 
+      // Ocultar botón si no hay más
       if (!json.hayMas) {
         if (wrapper) wrapper.classList.add('hidden');
       }
@@ -562,29 +510,13 @@ function formatFecha(fecha: Date | null) {
 </script>
 
 <style>
-  /* Scrollbar oculto */
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-  /* Clamp */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
-  /* Animación de entrada del contenedor de artículos */
-  @keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .animate-in {
-    animation: fadeSlideIn 0.3s ease forwards;
-  }
-
-  /* Transición suave al salir (vía JS) */
-  #articulos-container {
-    transition: opacity 0.15s ease, transform 0.15s ease;
-  }
 </style>
+

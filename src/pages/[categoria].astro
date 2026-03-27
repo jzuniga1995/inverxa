@@ -26,7 +26,7 @@ const [articulos, todasCategorias] = await Promise.all([
 // Filtrar por país si no es global
 const articulosFiltrados = paisParam === 'global'
   ? articulos
-  : articulos.filter((a) => a.pais?.codigo === paisParam);
+  : articulos.filter((a) => !a.pais || a.pais.codigo === paisParam);
 
 // Datos de la categoría actual
 const categoriaActual = todasCategorias.find((c) => c.slug === slugParam);
