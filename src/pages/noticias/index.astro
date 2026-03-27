@@ -3,6 +3,7 @@
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import { getArticulos, getCategorias } from '../../db/queries';
+import HerramientasSidebar from '../../components/HerramientasSidebar.astro';
 import { Clock, ArrowRight, Filter } from 'lucide-astro';
 
 const LIMIT = 12;
@@ -376,46 +377,49 @@ function formatFecha(fecha: Date | null) {
           )}
         </div>
 
-        <!-- SIDEBAR -->
-        <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4">
+<!-- SIDEBAR -->
+<aside class="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4">
 
-          {resto.length > 0 && (
-            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-              <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Más recientes</h3>
-              <div class="flex flex-col gap-4">
-                {resto.slice(0, 6).map((a) => (
-                  <a href={`/noticias/${a.slug}`} class="group flex flex-col gap-1 no-underline">
-                    {a.categoria && (
-                      <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{a.categoria.nombre}</span>
-                    )}
-                    <span class="text-white/60 group-hover:text-white text-xs leading-snug line-clamp-2 transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
-                      {a.titulo}
-                    </span>
-                    <span class="text-white/25 text-[10px] flex items-center gap-1">
-                      <Clock size={9} /> {formatFecha(a.creadoEn)}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+  {resto.length > 0 && (
+    <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+      <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Más recientes</h3>
+      <div class="flex flex-col gap-4">
+        {resto.slice(0, 6).map((a) => (
+          <a href={`/noticias/${a.slug}`} class="group flex flex-col gap-1 no-underline">
+            {a.categoria && (
+              <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{a.categoria.nombre}</span>
+            )}
+            <span class="text-white/60 group-hover:text-white text-xs leading-snug line-clamp-2 transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+              {a.titulo}
+            </span>
+            <span class="text-white/25 text-[10px] flex items-center gap-1">
+              <Clock size={9} /> {formatFecha(a.creadoEn)}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 
-          <!-- Link a países -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-            <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Por País</h3>
-            <p class="text-white/40 text-xs leading-relaxed mb-3">
-              Encuentra noticias específicas de tu región.
-            </p>
-            <a
-              href="/paises"
-              class="flex items-center justify-between w-full bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/40 text-[#D4A843] text-sm px-4 py-2.5 rounded-xl no-underline transition-all duration-200"
-            >
-              Ver todos los países
-              <ArrowRight size={14} />
-            </a>
-          </div>
+  <!-- Link a países -->
+  <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+    <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">Por País</h3>
+    <p class="text-white/40 text-xs leading-relaxed mb-3">
+      Encuentra noticias específicas de tu región.
+    </p>
+    <a
+      href="/paises"
+      class="flex items-center justify-between w-full bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/40 text-[#D4A843] text-sm px-4 py-2.5 rounded-xl no-underline transition-all duration-200"
+    >
+      Ver todos los países
+      <ArrowRight size={14} />
+    </a>
+  </div>
 
-        </aside>
+  <!-- Herramientas -->
+  <HerramientasSidebar />
+
+</aside>
 
       </div>
     </div>
