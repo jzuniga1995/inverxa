@@ -37,9 +37,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
       .offset(offset);
 
     const hayMas    = data.length > limit;
-    const resultado = data.slice(0, limit).filter(
-      a => !a.pais || a.pais.codigo === 'global'
-    );
+    const resultado = data.slice(0, limit);
 
     return new Response(JSON.stringify({ ok: true, data: resultado, hayMas }), {
       headers: { 'Content-Type': 'application/json' },
@@ -53,3 +51,4 @@ export const GET: APIRoute = async ({ url, locals }) => {
     });
   }
 };
+
