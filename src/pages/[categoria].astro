@@ -3,7 +3,7 @@ export const prerender = false;
 // src/pages/[categoria].astro
 import Layout from '../layouts/Layout.astro';
 import { getArticulosPorCategoria, getCategorias } from '../db/queries';
-import { ArrowRight, Clock, Globe, Filter } from 'lucide-astro';
+import { ArrowRight, Clock, Globe } from 'lucide-astro';
 
 const SLUGS_VALIDOS = [
   'cripto', 'trading', 'bolsa', 'economia', 'forex',
@@ -283,39 +283,44 @@ const [principal, ...resto] = articulosFiltrados;
 
 </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-
+  <!-- ── PAGE HEADER EDITORIAL ─────────────────────────────── -->
+  <div style="background: #FAFAF8; border-bottom: 2px solid #1C1917;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
       <!-- Breadcrumb -->
-      <div class="flex items-center gap-2 text-white/30 text-sm mb-8">
-        <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
-        <ArrowRight size={13} />
-        <span class="text-white/60">{seo.title}</span>
+      <div class="flex items-center gap-1.5 text-xs mb-4" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+        <a href="/" class="no-underline transition-colors duration-200"
+           style="color: #A8A29E;"
+           onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+        <span>›</span>
+        <a href="/noticias" class="no-underline transition-colors duration-200"
+           style="color: #A8A29E;"
+           onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Noticias</a>
+        <span>›</span>
+        <span style="color: #1C1917; font-weight: 600;">{seo.title}</span>
       </div>
-
-      <!-- Header de categoría -->
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider mb-3 inline-block">
+          <span class="text-[11px] font-bold uppercase tracking-[0.2em] mb-2 block"
+                style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
             {categoriaActual?.nombre ?? seo.title}
           </span>
-          <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+          <h1 class="font-bold leading-tight mb-2"
+              style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: clamp(26px, 3.8vw, 44px);">
             {seo.title}
           </h1>
-          <p class="text-white/40 text-sm mt-2 max-w-xl leading-relaxed">{seo.desc}</p>
+          <p class="text-sm max-w-xl leading-relaxed" style="color: #78716C; font-family: 'DM Sans', sans-serif;">
+            {seo.desc}
+          </p>
         </div>
-
         <!-- Filtro por país -->
-        <div class="flex items-center gap-2 bg-[#111318] border border-white/[0.07] rounded-xl px-3.5 py-2.5 flex-shrink-0">
-          <Filter size={14} class="text-white/30" />
-          <Globe size={14} class="text-white/30" />
-          <select
-            id="pais-filter"
-            class="bg-transparent border-none text-white/60 text-sm outline-none cursor-pointer"
-            style="font-family: 'DM Sans', sans-serif;"
-          >
-            <option value="global" selected={paisParam === 'global'}>Todos los países</option>
-            <optgroup label="Latinoamérica" style="background:#1A1D24;">
+        <div class="flex items-center gap-2 px-3.5 py-2.5 flex-shrink-0"
+             style="background: #F5F1EC; border: 1px solid #E5E0D8;">
+          <Globe size={13} style="color: #A8A29E;" />
+          <select id="pais-filter"
+                  class="bg-transparent border-none text-sm outline-none cursor-pointer"
+                  style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <option value="global" selected={paisParam === 'global'} style="background:#FAFAF8;">Todos los países</option>
+            <optgroup label="Latinoamérica" style="background:#FAFAF8;">
               <option value="ar" selected={paisParam === 'ar'}>Argentina</option>
               <option value="bo" selected={paisParam === 'bo'}>Bolivia</option>
               <option value="br" selected={paisParam === 'br'}>Brasil</option>
@@ -329,7 +334,7 @@ const [principal, ...resto] = articulosFiltrados;
               <option value="uy" selected={paisParam === 'uy'}>Uruguay</option>
               <option value="ve" selected={paisParam === 've'}>Venezuela</option>
             </optgroup>
-            <optgroup label="América Central" style="background:#1A1D24;">
+            <optgroup label="América Central" style="background:#FAFAF8;">
               <option value="bz" selected={paisParam === 'bz'}>Belice</option>
               <option value="cr" selected={paisParam === 'cr'}>Costa Rica</option>
               <option value="sv" selected={paisParam === 'sv'}>El Salvador</option>
@@ -338,142 +343,211 @@ const [principal, ...resto] = articulosFiltrados;
               <option value="ni" selected={paisParam === 'ni'}>Nicaragua</option>
               <option value="pa" selected={paisParam === 'pa'}>Panamá</option>
             </optgroup>
-            <optgroup label="Caribe" style="background:#1A1D24;">
+            <optgroup label="Caribe" style="background:#FAFAF8;">
               <option value="do" selected={paisParam === 'do'}>República Dominicana</option>
               <option value="pr" selected={paisParam === 'pr'}>Puerto Rico</option>
             </optgroup>
-            <optgroup label="Norteamérica" style="background:#1A1D24;">
-              <option value="us" selected={paisParam === 'us'}>Estados Unidos</option>
-              <option value="ca" selected={paisParam === 'ca'}>Canadá</option>
-            </optgroup>
-            <optgroup label="Europa" style="background:#1A1D24;">
+            <optgroup label="Europa" style="background:#FAFAF8;">
               <option value="es" selected={paisParam === 'es'}>España</option>
-              <option value="ad" selected={paisParam === 'ad'}>Andorra</option>
-              <option value="de" selected={paisParam === 'de'}>Alemania</option>
-              <option value="fr" selected={paisParam === 'fr'}>Francia</option>
+              <option value="us" selected={paisParam === 'us'}>Estados Unidos</option>
               <option value="gb" selected={paisParam === 'gb'}>Reino Unido</option>
-              <option value="it" selected={paisParam === 'it'}>Italia</option>
-              <option value="nl" selected={paisParam === 'nl'}>Países Bajos</option>
-              <option value="pt" selected={paisParam === 'pt'}>Portugal</option>
-              <option value="ch" selected={paisParam === 'ch'}>Suiza</option>
-            </optgroup>
-            <optgroup label="África" style="background:#1A1D24;">
-              <option value="gq" selected={paisParam === 'gq'}>Guinea Ecuatorial</option>
-              <option value="ma" selected={paisParam === 'ma'}>Marruecos</option>
-            </optgroup>
-            <optgroup label="Oceanía / Asia" style="background:#1A1D24;">
-              <option value="au" selected={paisParam === 'au'}>Australia</option>
-              <option value="ph" selected={paisParam === 'ph'}>Filipinas</option>
             </optgroup>
           </select>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Nav de categorías -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide">
+  <div style="background: #FAFAF8; min-height: 60vh;" class="px-4 sm:px-6 py-8">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- NAVEGACIÓN DE CATEGORÍAS: línea activa editorial -->
+      <nav class="flex gap-0 overflow-x-auto scrollbar-hide mb-10 pb-0"
+           style="border-bottom: 1px solid #E5E0D8;">
         {todasCategorias.map((cat) => (
-          <a
-            href={`/${cat.slug}${paisParam !== 'global' ? `?pais=${paisParam}` : ''}`}
-            class={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium no-underline transition-all duration-200 ${
-              cat.slug === slugParam
-                ? 'bg-[#D4A843] text-[#0A0B0D]'
-                : 'bg-[#111318] border border-white/[0.07] text-white/50 hover:text-white hover:border-white/20'
-            }`}
+          <a href={`/${cat.slug}${paisParam !== 'global' ? `?pais=${paisParam}` : ''}`}
+             class="flex-shrink-0 text-sm px-5 py-3 no-underline transition-colors duration-200 whitespace-nowrap"
+             style={cat.slug === slugParam
+               ? 'color: #1C1917; font-weight: 600; border-bottom: 2px solid #B91C1C; margin-bottom: -1px; font-family: DM Sans, sans-serif;'
+               : 'color: #6B7280; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: DM Sans, sans-serif;'}
           >
             {cat.nombre}
           </a>
         ))}
-      </div>
+      </nav>
 
-      <!-- Artículos -->
       {articulosFiltrados.length === 0 ? (
-        <div class="flex flex-col items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <Globe size={32} class="text-white/10 mb-3" />
-          <p class="text-white/30 text-sm">No hay artículos publicados en esta categoría</p>
+        <div class="flex flex-col items-center justify-center py-24 border border-[#E5E0D8]"
+             style="background: #F0EDE7;">
+          <Globe size={28} style="color: #D6D0C8; margin-bottom: 12px;" />
+          <p class="text-sm mb-3" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+            No hay artículos publicados en esta categoría
+          </p>
           {paisParam !== 'global' && (
-            <a href={`/${slugParam}`} class="mt-4 text-[#D4A843] text-sm no-underline hover:underline">
+            <a href={`/${slugParam}`} class="text-sm no-underline"
+               style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
               Ver todos los países
             </a>
           )}
         </div>
       ) : (
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col">
 
-          <!-- Artículo principal grande -->
+          <!-- HERO: primera noticia full-width -->
           {principal && (
-            <a
-              href={`/noticias/${principal.slug}`}
-              class="group relative rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] hover:border-white/20 no-underline flex flex-col sm:flex-row min-h-[220px] transition-colors duration-300"
-            >
-              {principal.imagen && (
-                <div class="w-full sm:w-72 h-48 sm:h-auto flex-shrink-0 bg-[#1A1D24] overflow-hidden">
-                  <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <a href={`/noticias/${principal.slug}`}
+               class="block group no-underline mb-10 pb-10"
+               style="border-bottom: 1px solid #E5E0D8;">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div class="overflow-hidden order-first" style="aspect-ratio: 3/2;">
+                  {principal.imagen
+                    ? <img src={principal.imagen} alt={principal.titulo}
+                           class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                    : <div class="w-full h-full" style="background: #E8E3DB;"></div>
+                  }
                 </div>
-              )}
-              <div class="flex flex-col justify-center gap-3 p-6">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-                    {principal.categoria?.nombre}
-                  </span>
-                  {principal.pais && (
-                    <span class="flex items-center gap-1 text-white/30 text-xs border border-white/[0.07] px-2 py-0.5 rounded">
-                      <Globe size={10} /> {principal.pais.nombre}
+                <div class="flex flex-col justify-center gap-4 lg:py-6">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-[11px] font-bold uppercase tracking-[0.2em]"
+                          style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                      {principal.categoria?.nombre}
                     </span>
+                    {principal.pais && principal.pais.codigo !== 'global' && (
+                      <span class="flex items-center gap-1 text-xs px-2 py-0.5"
+                            style="color: #78716C; border: 1px solid #E5E0D8; font-family: 'DM Sans', sans-serif;">
+                        <Globe size={9} /> {principal.pais.nombre}
+                      </span>
+                    )}
+                  </div>
+                  <h2 class="font-bold leading-[1.1] text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
+                      style="font-family: 'Playfair Display', serif; font-size: clamp(22px, 2.8vw, 38px);">
+                    {principal.titulo}
+                  </h2>
+                  {principal.resumen && (
+                    <p class="text-base leading-relaxed line-clamp-3"
+                       style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+                      {principal.resumen}
+                    </p>
                   )}
-                  <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
-                    <Clock size={11} /> {formatFecha(principal.creadoEn)}
+                  <div class="flex items-center gap-2 text-xs" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                    <Clock size={11} />
+                    <span>{formatFecha(principal.creadoEn)}</span>
+                  </div>
+                  <span class="flex items-center gap-1.5 text-sm font-semibold"
+                        style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                    Leer artículo <ArrowRight size={13} />
                   </span>
                 </div>
-                <h2 class="font-bold text-white text-xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
-                  {principal.titulo}
-                </h2>
-                {principal.resumen && (
-                  <p class="text-white/40 text-sm leading-relaxed line-clamp-2">{principal.resumen}</p>
-                )}
-                <span class="flex items-center gap-1.5 text-[#D4A843] text-sm font-medium mt-1">
-                  Leer artículo <ArrowRight size={14} />
-                </span>
               </div>
             </a>
           )}
 
-          <!-- Grid del resto de artículos -->
-          {resto.length > 0 && (
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {resto.map((art) => (
-                <a
-                  href={`/noticias/${art.slug}`}
-                  class="group flex flex-col bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-200"
-                >
-                  {art.imagen ? (
-                    <div class="w-full h-44 bg-[#1A1D24] overflow-hidden flex-shrink-0">
-                      <img src={art.imagen} alt={art.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    </div>
-                  ) : (
-                    <div class="w-full h-44 bg-[#1A1D24] flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);"></div>
-                  )}
-                  <div class="flex flex-col gap-2 p-4 flex-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                      {art.pais && (
-                        <span class="flex items-center gap-1 text-white/25 text-[10px] border border-white/[0.05] px-1.5 py-0.5 rounded">
-                          <Globe size={9} /> {art.pais.nombre}
+          <!-- RESTO: patrón 2 medianas → 2 mini → hero → repite -->
+          {(() => {
+            const grupos: typeof resto[] = [];
+            for (let i = 0; i < resto.length; i += 5) grupos.push(resto.slice(i, i + 5));
+            return grupos.map((grupo) => (
+              <div class="mb-10 last:mb-0">
+
+                {/* — 2 MEDIANAS — */}
+                {grupo.slice(0, 2).length > 0 && (
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 pb-8"
+                       style="border-bottom: 1px solid #E5E0D8;">
+                    {grupo.slice(0, 2).map((art) => (
+                      <a href={`/noticias/${art.slug}`} class="group flex flex-col gap-3 no-underline">
+                        <div class="overflow-hidden" style="aspect-ratio: 4/3;">
+                          {art.imagen
+                            ? <img src={art.imagen} alt={art.titulo}
+                                   class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                            : <div class="w-full h-full" style="background: #E8E3DB;"></div>
+                          }
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.18em]"
+                              style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                          {art.categoria?.nombre}
                         </span>
-                      )}
-                      <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
-                        <Clock size={9} /> {formatFecha(art.creadoEn)}
-                      </span>
-                    </div>
-                    <h3 class="font-bold text-white text-sm leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-3" style="font-family: 'Syne', sans-serif;">
-                      {art.titulo}
-                    </h3>
-                    {art.resumen && (
-                      <p class="text-white/35 text-xs leading-relaxed line-clamp-2 mt-auto pt-1">{art.resumen}</p>
-                    )}
+                        <h3 class="font-bold leading-snug line-clamp-2 text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
+                            style="font-family: 'Playfair Display', serif; font-size: 18px;">
+                          {art.titulo}
+                        </h3>
+                        {art.resumen && (
+                          <p class="text-sm leading-relaxed line-clamp-2"
+                             style="color: #78716C; font-family: 'DM Sans', sans-serif;">
+                            {art.resumen}
+                          </p>
+                        )}
+                        <span class="text-xs flex items-center gap-1"
+                              style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                          <Clock size={10} /> {formatFecha(art.creadoEn)}
+                        </span>
+                      </a>
+                    ))}
                   </div>
-                </a>
-              ))}
-            </div>
-          )}
+                )}
+
+                {/* — 2 MINI sin imagen — */}
+                {grupo.slice(2, 4).length > 0 && (
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 pb-8"
+                       style="border-bottom: 1px solid #E5E0D8;">
+                    {grupo.slice(2, 4).map((art) => (
+                      <a href={`/noticias/${art.slug}`}
+                         class="group flex flex-col gap-2 no-underline py-2"
+                         style="border-left: 3px solid #B91C1C; padding-left: 16px;">
+                        <span class="text-[10px] font-bold uppercase tracking-[0.15em]"
+                              style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                          {art.categoria?.nombre}
+                        </span>
+                        <h4 class="font-bold leading-snug line-clamp-2 text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
+                            style="font-family: 'Playfair Display', serif; font-size: 15px;">
+                          {art.titulo}
+                        </h4>
+                        <span class="text-[11px]" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                          {formatFecha(art.creadoEn)}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {/* — HERO secundario — */}
+                {grupo[4] && (
+                  <a href={`/noticias/${grupo[4].slug}`} class="block group no-underline">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+                        {grupo[4].imagen
+                          ? <img src={grupo[4].imagen} alt={grupo[4].titulo}
+                                 class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                          : <div class="w-full h-full" style="background: #E8E3DB;"></div>
+                        }
+                      </div>
+                      <div class="flex flex-col gap-3">
+                        <span class="text-[11px] font-bold uppercase tracking-[0.2em]"
+                              style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                          {grupo[4].categoria?.nombre}
+                        </span>
+                        <h3 class="font-bold leading-[1.15] text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
+                            style="font-family: 'Playfair Display', serif; font-size: clamp(18px, 2vw, 26px);">
+                          {grupo[4].titulo}
+                        </h3>
+                        {grupo[4].resumen && (
+                          <p class="text-sm leading-relaxed line-clamp-2"
+                             style="color: #78716C; font-family: 'DM Sans', sans-serif;">
+                            {grupo[4].resumen}
+                          </p>
+                        )}
+                        <span class="text-xs flex items-center gap-1"
+                              style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                          <Clock size={10} /> {formatFecha(grupo[4].creadoEn)}
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                )}
+
+              </div>
+            ));
+          })()}
+
         </div>
       )}
 

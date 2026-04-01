@@ -27,300 +27,196 @@ const secciones = [
    <link rel="canonical" href={`${sitioWeb}/privacidad`} />  
   </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
-
-    <!-- HERO HEADER -->
-    <div class="relative border-b border-white/[0.07] overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-10"
-          style="background: radial-gradient(ellipse, #D4A843 0%, transparent 70%); filter: blur(60px);">
-        </div>
+  <!-- ── PAGE HEADER EDITORIAL ─────────────────────────────── -->
+  <div style="background: #FAFAF8; border-bottom: 2px solid #1C1917;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <div class="flex items-center gap-1.5 text-xs mb-4" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+        <a href="/" class="no-underline" style="color: #A8A29E;"
+           onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+        <span>›</span>
+        <span style="color: #1C1917; font-weight: 600;">Privacidad</span>
       </div>
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 relative z-10">
-        <div class="flex items-center gap-2 text-white/30 text-sm mb-6">
-          <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
-          <ArrowRight size={13} />
-          <span>Privacidad</span>
-        </div>
-        <div class="flex items-start gap-4 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-[#D4A843]/10 border border-[#D4A843]/20 flex items-center justify-center flex-shrink-0 mt-1">
-            <Shield size={22} class="text-[#D4A843]" />
+      <h1 class="font-bold leading-tight mb-2"
+          style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: clamp(26px, 4vw, 40px);">
+        Políticas de Privacidad
+      </h1>
+      <p class="text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+        Última actualización: <span style="color: #57534E;">{ultimaActualizacion}</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── CONTENIDO EDITORIAL ─────────────────────────────────── -->
+  <div style="background: #FAFAF8;" class="px-4 sm:px-6 py-10 sm:py-14">
+    <div class="mx-auto" style="max-width: 680px;">
+
+      <!-- Intro -->
+      <p class="text-base leading-relaxed mb-10" style="color: #57534E; font-family: 'DM Sans', sans-serif; border-left: 3px solid #B91C1C; padding-left: 20px;">
+        En <strong style="color: #1C1917;">Inversax</strong> nos tomamos muy en serio tu privacidad. Esta política explica de forma clara y transparente cómo recopilamos, usamos y protegemos tu información cuando utilizas nuestros servicios. Aplica a todos los servicios ofrecidos en <a href={sitioWeb} style="color: #B91C1C;" class="no-underline hover:underline">{sitioWeb}</a>.
+      </p>
+
+      <!-- Secciones -->
+      <div class="flex flex-col gap-10">
+
+        <section id="informacion" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            1. Información que Recopilamos
+          </h2>
+          <div class="flex flex-col gap-4 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Recopilamos información de dos maneras principales:</p>
+            <div class="p-5" style="background: #F5F1EC; border-left: 3px solid #E5E0D8;">
+              <p class="font-semibold mb-2" style="color: #1C1917;">Información que tú nos proporcionas</p>
+              <p>Cuando te suscribes a nuestro boletín, creas una cuenta o nos contactas, recopilamos tu nombre, dirección de correo electrónico y cualquier otra información que elijas compartir voluntariamente.</p>
+            </div>
+            <div class="p-5" style="background: #F5F1EC; border-left: 3px solid #E5E0D8;">
+              <p class="font-semibold mb-2" style="color: #1C1917;">Información recopilada automáticamente</p>
+              <p>Al visitar nuestro sitio recopilamos automáticamente datos técnicos como tu dirección IP, tipo de navegador, sistema operativo, páginas visitadas, tiempo de permanencia y la URL de referencia. Esta información se utiliza exclusivamente con fines estadísticos y de mejora del servicio.</p>
+            </div>
           </div>
-          <div>
-            <h1 class="font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-2" style="font-family: 'Syne', sans-serif;">
-              Políticas de Privacidad
-            </h1>
-            <p class="text-white/40 text-sm">
-              Última actualización: <span class="text-[#D4A843]">{ultimaActualizacion}</span>
+        </section>
+
+        <section id="uso" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            2. Uso de la Información
+          </h2>
+          <div class="flex flex-col gap-3 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Utilizamos la información recopilada únicamente para los siguientes propósitos:</p>
+            <ul class="flex flex-col gap-2 list-none p-0 m-0">
+              {[
+                "Operar y mejorar nuestros servicios",
+                "Personalizar tu experiencia en el sitio",
+                "Enviarte actualizaciones si te suscribiste",
+                "Analizar el uso del sitio con fines estadísticos",
+                "Detectar y prevenir actividades fraudulentas",
+                "Cumplir con obligaciones legales aplicables",
+              ].map((item) => (
+                <li class="flex items-start gap-2.5">
+                  <span class="mt-1.5 flex-shrink-0" style="width: 6px; height: 6px; background: #B91C1C; border-radius: 50%; display: inline-block;"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p>Nunca vendemos, alquilamos ni comercializamos tu información personal a terceros con fines propios de marketing.</p>
+          </div>
+        </section>
+
+        <section id="cookies" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            3. Cookies y Tecnologías de Rastreo
+          </h2>
+          <div class="flex flex-col gap-4 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Inversax utiliza cookies y tecnologías similares para mejorar tu experiencia de navegación:</p>
+            {[
+              { t: "Cookies esenciales", d: "Necesarias para el funcionamiento básico del sitio. No pueden desactivarse sin afectar la funcionalidad del servicio." },
+              { t: "Cookies analíticas", d: "Nos ayudan a entender cómo los visitantes interactúan con el sitio. Utilizamos herramientas como Google Analytics que procesan datos de forma anónima y agregada." },
+              { t: "Cookies publicitarias", d: "Utilizadas por nuestras redes publicitarias para mostrarte anuncios relevantes. Estas cookies pueden rastrear tu actividad en otros sitios web." },
+            ].map((c) => (
+              <div class="p-5" style="background: #F5F1EC; border-left: 3px solid #E5E0D8;">
+                <p class="font-semibold mb-2" style="color: #1C1917;">{c.t}</p>
+                <p>{c.d}</p>
+              </div>
+            ))}
+            <p>Puedes controlar y eliminar las cookies desde la configuración de tu navegador.</p>
+          </div>
+        </section>
+
+        <section id="publicidad" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            4. Publicidad y Anunciantes
+          </h2>
+          <div class="flex flex-col gap-3 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Inversax muestra publicidad de terceros para financiar la operación del sitio. Trabajamos con Google AdSense / Google Ad Manager y otras redes publicitarias certificadas.</p>
+            <p>Estos anunciantes pueden utilizar cookies y tecnologías de seguimiento para mostrarte anuncios personalizados. Inversax no tiene acceso ni control sobre las cookies utilizadas por anunciantes externos.</p>
+            <p class="p-4 text-sm" style="background: #FEF2F2; border-left: 3px solid #B91C1C; color: #1C1917;">
+              <strong>Publicidad basada en intereses:</strong> Puedes optar por no recibirla visitando <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style="color: #B91C1C;" class="hover:underline">google.com/settings/ads</a>.
             </p>
           </div>
-        </div>
-        <p class="text-white/50 text-base leading-relaxed max-w-2xl">
-          En <span class="text-white font-medium">Inversax</span> nos tomamos muy en serio tu privacidad. Esta política explica de forma clara y transparente cómo recopilamos, usamos y protegemos tu información cuando utilizas nuestros servicios.
-        </p>
-      </div>
-    </div>
+        </section>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div class="flex flex-col lg:flex-row gap-10">
+        <section id="afiliados" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            5. Programas de Afiliados
+          </h2>
+          <div class="flex flex-col gap-3 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Inversax participa en programas de marketing de afiliados. Algunos enlaces en nuestro sitio son de afiliado; si realizas una acción a través de ellos podemos recibir una comisión sin costo adicional para ti.</p>
+            <p class="p-4" style="background: #FEF2F2; border-left: 3px solid #B91C1C; color: #1C1917;">
+              <strong>Transparencia total:</strong> Siempre identificamos el contenido patrocinado o los enlaces de afiliado con la etiqueta "Publicidad", "Patrocinado" o "*". Nuestra política editorial permanece independiente de estas relaciones comerciales.
+            </p>
+          </div>
+        </section>
 
-        <!-- SIDEBAR NAVEGACIÓN -->
-        <aside class="lg:w-64 flex-shrink-0">
-          <div class="sticky top-6">
-            <p class="text-white/30 text-xs font-bold uppercase tracking-widest mb-4 px-1">Contenido</p>
-            <nav class="flex flex-col gap-1">
-              {secciones.map((s, i) => (
-                <a
-                  href={`#${s.id}`}
-                  class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white hover:bg-white/5 no-underline transition-all duration-200 text-sm"
-                >
-                  <span class="w-5 h-5 rounded-md bg-white/5 group-hover:bg-[#D4A843]/20 flex items-center justify-center flex-shrink-0 transition-colors duration-200">
-                    <ChevronRight size={11} class="text-white/30 group-hover:text-[#D4A843] transition-colors duration-200" />
-                  </span>
-                  <span class="truncate">{s.titulo}</span>
-                </a>
+        <section id="terceros" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            6. Compartir con Terceros
+          </h2>
+          <div class="flex flex-col gap-3 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>No compartimos tu información personal con terceros excepto en estos casos:</p>
+            {[
+              { t: "Proveedores de servicios", d: "Empresas que nos ayudan a operar el sitio como hosting, análisis web y envío de correos electrónicos. Están obligados contractualmente a proteger tu información." },
+              { t: "Cumplimiento legal", d: "Cuando lo exija la ley, una orden judicial u otro proceso legal válido." },
+              { t: "Protección de derechos", d: "Cuando sea necesario para proteger los derechos, la propiedad o la seguridad de Inversax, nuestros usuarios u otros." },
+            ].map((item) => (
+              <div class="p-5" style="background: #F5F1EC; border-left: 3px solid #E5E0D8;">
+                <p class="font-semibold mb-1.5" style="color: #1C1917;">{item.t}</p>
+                <p>{item.d}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="derechos" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            7. Tus Derechos
+          </h2>
+          <div class="flex flex-col gap-3 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Dependiendo de tu país de residencia, puedes tener los siguientes derechos respecto a tu información personal:</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { t: "Acceso", d: "Solicitar una copia de los datos que tenemos sobre ti." },
+                { t: "Rectificación", d: "Corregir información inexacta o incompleta." },
+                { t: "Eliminación", d: "Solicitar que eliminemos tus datos personales." },
+                { t: "Portabilidad", d: "Recibir tus datos en un formato estructurado." },
+                { t: "Oposición", d: "Oponerte al procesamiento de tus datos." },
+                { t: "Baja de suscripción", d: "Darte de baja de comunicaciones en cualquier momento." },
+              ].map((d) => (
+                <div class="p-4" style="background: #F5F1EC; border: 1px solid #E5E0D8;">
+                  <p class="font-bold text-xs uppercase tracking-wider mb-1" style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">{d.t}</p>
+                  <p class="text-xs" style="color: #57534E;">{d.d}</p>
+                </div>
               ))}
-            </nav>
-
-            <!-- Nota importante sidebar -->
-            <div class="mt-6 bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-4">
-              <p class="text-[#D4A843] text-xs font-bold uppercase tracking-wider mb-2">Nota</p>
-              <p class="text-white/40 text-xs leading-relaxed">
-                Al usar Inversax aceptas estas políticas. Si tienes dudas escríbenos a <span class="text-white/60">{correoContacto}</span>
-              </p>
             </div>
+            <p>Para ejercer estos derechos contáctanos en <a href={`mailto:${correoContacto}`} style="color: #B91C1C;" class="hover:underline">{correoContacto}</a>. Responderemos en un plazo máximo de 30 días hábiles.</p>
           </div>
-        </aside>
+        </section>
 
-        <!-- CONTENIDO -->
-        <main class="flex-1 min-w-0">
-          <div class="flex flex-col gap-3">
-
-            <!-- Intro -->
-            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7">
-              <p class="text-white/60 text-sm leading-relaxed">
-                Esta Política de Privacidad aplica a todos los servicios ofrecidos por <strong class="text-white">Inversax</strong> en el dominio <a href={sitioWeb} class="text-[#D4A843] no-underline hover:underline">{sitioWeb}</a>, incluyendo noticias financieras, precios de criptomonedas, herramientas de análisis y cobertura para los países disponibles en nuestra plataforma. Al acceder o utilizar nuestros servicios, aceptas los términos descritos en este documento.
-              </p>
-            </div>
-
-            <!-- 1. Información que recopilamos -->
-            <div id="informacion" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Database size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">1. Información que Recopilamos</h2>
+        <section id="contacto" class="scroll-mt-6 pt-8" style="border-top: 1px solid #E5E0D8;">
+          <h2 class="font-bold mb-4" style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 22px;">
+            8. Contáctanos
+          </h2>
+          <div class="flex flex-col gap-3 text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            <p>Si tienes preguntas sobre esta Política de Privacidad, escríbenos:</p>
+            <div class="flex flex-col gap-2 p-5" style="background: #F5F1EC; border: 1px solid #E5E0D8;">
+              <div class="flex items-center gap-3">
+                <Mail size={14} style="color: #B91C1C; flex-shrink: 0;" />
+                <a href={`mailto:${correoContacto}`} style="color: #B91C1C;" class="no-underline hover:underline">{correoContacto}</a>
               </div>
-              <div class="flex flex-col gap-4 text-sm text-white/60 leading-relaxed">
-                <p>Recopilamos información de dos maneras principales:</p>
-                <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5 flex flex-col gap-3">
-                  <p class="text-white/80 font-semibold text-sm" style="font-family: 'Syne', sans-serif;">Información que tú nos proporcionas</p>
-                  <p>Cuando te suscribes a nuestro boletín, creas una cuenta o nos contactas, recopilamos tu nombre, dirección de correo electrónico y cualquier otra información que elijas compartir voluntariamente.</p>
-                </div>
-                <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5 flex flex-col gap-3">
-                  <p class="text-white/80 font-semibold text-sm" style="font-family: 'Syne', sans-serif;">Información recopilada automáticamente</p>
-                  <p>Al visitar nuestro sitio recopilamos automáticamente datos técnicos como tu dirección IP, tipo de navegador, sistema operativo, páginas visitadas, tiempo de permanencia y la URL de referencia. Esta información se utiliza exclusivamente con fines estadísticos y de mejora del servicio.</p>
-                </div>
+              <div class="flex items-center gap-3">
+                <Globe size={14} style="color: #B91C1C; flex-shrink: 0;" />
+                <a href={sitioWeb} style="color: #B91C1C;" class="no-underline hover:underline">{sitioWeb}</a>
               </div>
             </div>
-
-            <!-- 2. Uso de la información -->
-            <div id="uso" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Eye size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">2. Uso de la Información</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-3">
-                <p>Utilizamos la información recopilada únicamente para los siguientes propósitos:</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
-                  {[
-                    "Operar y mejorar nuestros servicios",
-                    "Personalizar tu experiencia en el sitio",
-                    "Enviarte actualizaciones si te suscribiste",
-                    "Analizar el uso del sitio con fines estadísticos",
-                    "Detectar y prevenir actividades fraudulentas",
-                    "Cumplir con obligaciones legales aplicables",
-                  ].map((item) => (
-                    <div class="flex items-start gap-2.5 bg-[#0A0B0D] border border-white/[0.05] rounded-xl px-4 py-3">
-                      <span class="w-1.5 h-1.5 rounded-full bg-[#D4A843] mt-1.5 flex-shrink-0"></span>
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <p class="mt-1">Nunca vendemos, alquilamos ni comercializamos tu información personal a terceros con fines propios de marketing.</p>
-              </div>
-            </div>
-
-            <!-- 3. Cookies -->
-            <div id="cookies" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Cookie size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">3. Cookies y Tecnologías de Rastreo</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
-                <p>Inversax utiliza cookies y tecnologías similares para mejorar tu experiencia de navegación. Existen tres tipos de cookies que empleamos:</p>
-                <div class="flex flex-col gap-3">
-                  <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5">
-                    <p class="text-white/80 font-semibold mb-1.5" style="font-family: 'Syne', sans-serif;">Cookies esenciales</p>
-                    <p>Necesarias para el funcionamiento básico del sitio. No pueden desactivarse sin afectar la funcionalidad del servicio.</p>
-                  </div>
-                  <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5">
-                    <p class="text-white/80 font-semibold mb-1.5" style="font-family: 'Syne', sans-serif;">Cookies analíticas</p>
-                    <p>Nos ayudan a entender cómo los visitantes interactúan con el sitio. Utilizamos herramientas como Google Analytics que procesan datos de forma anónima y agregada.</p>
-                  </div>
-                  <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5">
-                    <p class="text-white/80 font-semibold mb-1.5" style="font-family: 'Syne', sans-serif;">Cookies publicitarias</p>
-                    <p>Utilizadas por nuestras redes publicitarias para mostrarte anuncios relevantes. Estas cookies pueden rastrear tu actividad en otros sitios web.</p>
-                  </div>
-                </div>
-                <p>Puedes controlar y eliminar las cookies desde la configuración de tu navegador. Ten en cuenta que deshabilitar ciertas cookies puede afectar la funcionalidad del sitio.</p>
-              </div>
-            </div>
-
-            <!-- 4. Publicidad -->
-            <div id="publicidad" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Users size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">4. Publicidad y Anunciantes</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
-                <p>Inversax muestra publicidad de terceros para financiar la operación del sitio y mantener nuestros servicios gratuitos. Trabajamos con redes publicitarias reconocidas que pueden incluir:</p>
-                <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5 flex flex-col gap-2">
-                  {["Google AdSense / Google Ad Manager", "Otras redes publicitarias certificadas"].map((item) => (
-                    <div class="flex items-center gap-2.5">
-                      <span class="w-1.5 h-1.5 rounded-full bg-[#D4A843] flex-shrink-0"></span>
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <p>Estos anunciantes pueden utilizar cookies y tecnologías de seguimiento para mostrarte anuncios personalizados basados en tus visitas a nuestro sitio y a otros sitios en Internet. Inversax no tiene acceso ni control sobre las cookies utilizadas por anunciantes externos.</p>
-                <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl p-4">
-                  <p class="text-[#D4A843]/90 text-xs leading-relaxed">
-                    <strong class="text-[#D4A843]">Publicidad basada en intereses:</strong> Puedes optar por no recibir publicidad personalizada de Google visitando <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-[#D4A843] hover:underline">google.com/settings/ads</a>.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 5. Afiliados -->
-            <div id="afiliados" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Globe size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">5. Programas de Afiliados</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
-                <p>Inversax participa en programas de marketing de afiliados. Esto significa que algunos de los enlaces publicados en nuestro sitio son enlaces de afiliado, y si realizas una acción a través de ellos (como registrarte en una plataforma o realizar una compra), podemos recibir una comisión sin costo adicional para ti.</p>
-                <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl p-4">
-                  <p class="text-[#D4A843]/90 text-xs leading-relaxed">
-                    <strong class="text-[#D4A843]">Transparencia total:</strong> Siempre identificamos el contenido patrocinado o los enlaces de afiliado con la etiqueta <strong>"Publicidad"</strong>, <strong>"Patrocinado"</strong> o <strong>"*"</strong> según corresponda. Nuestra política editorial permanece independiente de estas relaciones comerciales.
-                  </p>
-                </div>
-                <p>Los programas de afiliados con los que trabajamos pueden incluir exchanges de criptomonedas, brokers de inversión, plataformas financieras y servicios relacionados con el sector financiero. En todos los casos, solo recomendamos servicios que consideramos legítimos y relevantes para nuestros usuarios.</p>
-              </div>
-            </div>
-
-            <!-- 6. Terceros -->
-            <div id="terceros" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <AlertCircle size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">6. Compartir con Terceros</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
-                <p>No compartimos tu información personal con terceros excepto en los siguientes casos:</p>
-                <div class="flex flex-col gap-3">
-                  {[
-                    { titulo: "Proveedores de servicios", desc: "Empresas que nos ayudan a operar el sitio como hosting, análisis web y envío de correos electrónicos. Están obligados contractualmente a proteger tu información." },
-                    { titulo: "Cumplimiento legal", desc: "Cuando lo exija la ley, una orden judicial u otro proceso legal válido aplicable en la jurisdicción correspondiente." },
-                    { titulo: "Protección de derechos", desc: "Cuando sea necesario para proteger los derechos, la propiedad o la seguridad de Inversax, nuestros usuarios u otros." },
-                  ].map((item) => (
-                    <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5">
-                      <p class="text-white/80 font-semibold mb-1.5" style="font-family: 'Syne', sans-serif;">{item.titulo}</p>
-                      <p>{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <!-- 7. Derechos -->
-            <div id="derechos" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Shield size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">7. Tus Derechos</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
-                <p>Dependiendo de tu país de residencia, puedes tener los siguientes derechos respecto a tu información personal:</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    { titulo: "Acceso", desc: "Solicitar una copia de los datos que tenemos sobre ti." },
-                    { titulo: "Rectificación", desc: "Corregir información inexacta o incompleta." },
-                    { titulo: "Eliminación", desc: "Solicitar que eliminemos tus datos personales." },
-                    { titulo: "Portabilidad", desc: "Recibir tus datos en un formato estructurado." },
-                    { titulo: "Oposición", desc: "Oponerte al procesamiento de tus datos." },
-                    { titulo: "Cancelación de suscripción", desc: "Darte de baja de comunicaciones en cualquier momento." },
-                  ].map((d) => (
-                    <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-4">
-                      <p class="text-[#D4A843] font-bold text-xs uppercase tracking-wider mb-1">{d.titulo}</p>
-                      <p class="text-xs">{d.desc}</p>
-                    </div>
-                  ))}
-                </div>
-                <p>Para ejercer cualquiera de estos derechos, contáctanos en <a href={`mailto:${correoContacto}`} class="text-[#D4A843] no-underline hover:underline">{correoContacto}</a>. Responderemos en un plazo máximo de 30 días hábiles.</p>
-              </div>
-            </div>
-
-            <!-- 8. Contacto -->
-            <div id="contacto" class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 scroll-mt-6">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                  <Mail size={16} class="text-[#D4A843]" />
-                </div>
-                <h2 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">8. Contáctanos</h2>
-              </div>
-              <div class="text-sm text-white/60 leading-relaxed flex flex-col gap-4">
-                <p>Si tienes preguntas, dudas o comentarios sobre esta Política de Privacidad o sobre el manejo de tu información personal, puedes contactarnos a través de los siguientes medios:</p>
-                <div class="bg-[#0A0B0D] border border-white/[0.05] rounded-xl p-5 flex flex-col gap-2.5">
-                  <div class="flex items-center gap-3">
-                    <Mail size={14} class="text-[#D4A843] flex-shrink-0" />
-                    <a href={`mailto:${correoContacto}`} class="text-white/70 hover:text-[#D4A843] no-underline transition-colors duration-200">{correoContacto}</a>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <Globe size={14} class="text-[#D4A843] flex-shrink-0" />
-                    <a href={sitioWeb} class="text-white/70 hover:text-[#D4A843] no-underline transition-colors duration-200">{sitioWeb}</a>
-                  </div>
-                </div>
-                <p>Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Cuando lo hagamos, actualizaremos la fecha al inicio del documento. Te recomendamos revisarla periódicamente.</p>
-              </div>
-            </div>
-
-            <!-- Aviso legal final -->
-            <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-2xl p-6">
-              <div class="flex items-start gap-3">
-                <AlertCircle size={16} class="text-[#D4A843] flex-shrink-0 mt-0.5" />
-                <div class="flex flex-col gap-1.5">
-                  <p class="text-[#D4A843] font-bold text-sm" style="font-family: 'Syne', sans-serif;">Aviso Legal Importante</p>
-                  <p class="text-white/50 text-sm leading-relaxed">
-                    El contenido de Inversax es únicamente informativo y no constituye asesoramiento financiero, de inversión ni legal. Las criptomonedas y activos financieros conllevan riesgos significativos. Consulta siempre a un profesional calificado antes de tomar decisiones de inversión.
-                  </p>
-                </div>
-              </div>
-            </div>
-
+            <p>Nos reservamos el derecho de actualizar esta política en cualquier momento. Actualizaremos la fecha al inicio del documento.</p>
           </div>
-        </main>
+        </section>
+
+        <!-- Aviso legal final -->
+        <div class="mt-2 p-6" style="background: #F5F1EC; border-left: 3px solid #B91C1C; border-top: 1px solid #E5E0D8;">
+          <p class="font-bold text-sm mb-2" style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">Aviso Legal Importante</p>
+          <p class="text-sm leading-relaxed" style="color: #57534E; font-family: 'DM Sans', sans-serif;">
+            El contenido de Inversax es únicamente informativo y no constituye asesoramiento financiero, de inversión ni legal. Las criptomonedas y activos financieros conllevan riesgos significativos. Consulta siempre a un profesional calificado antes de tomar decisiones de inversión.
+          </p>
+        </div>
+
       </div>
     </div>
   </div>

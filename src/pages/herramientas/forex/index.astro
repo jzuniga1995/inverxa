@@ -324,99 +324,100 @@ try {
 </slot>
 
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+  <div style="background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif;">
     <div class="max-w-5xl mx-auto px-4 py-10">
 
       <!-- Breadcrumb -->
-      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-sm mb-6 no-underline transition-colors" style="color:#A8A29E;">
         <ArrowLeft size={15} /> Herramientas
       </a>
 
       <!-- Título -->
       <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-7">
         <div>
-          <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif;">
+          <h1 class="font-extrabold text-3xl mb-1" style="font-family:'Playfair Display',serif;color:#1C1917;">
             Forex
           </h1>
-          <p class="text-white/30 text-sm">{pares.length > 0 ? `${pares.length} pares de divisas` : 'Pares de divisas'} · Actualización diaria</p>
+          <p class="text-sm" style="color:#78716C;">{pares.length > 0 ? `${pares.length} pares de divisas` : 'Pares de divisas'} · Actualización diaria</p>
         </div>
 
         <!-- Buscador -->
         <div class="relative w-full sm:w-52 flex-shrink-0">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:#A8A29E;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input id="forex-search" type="text" placeholder="USD/MXN, Euro..."
             autocomplete="off"
-            class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#EC4899]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
+            class="w-full text-sm rounded-xl pl-8 pr-3 py-2 outline-none transition-colors"
+            style="background:#FAFAF8;border:1px solid #D6D0C8;color:#1C1917;" />
         </div>
       </div>
 
       <!-- Filtros -->
       <div class="flex gap-2 flex-wrap mb-5">
         <button data-filter="all" class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-          style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.4);color:#EC4899">
+          style="background:rgba(21,128,61,0.1);border-color:rgba(21,128,61,0.4);color:#15803D">
           Todos
         </button>
         <button data-filter="global" class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-          style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+          style="background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E">
           Globales
         </button>
         <button data-filter="latam" class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-          style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+          style="background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E">
           Latinoamérica
         </button>
       </div>
 
       {fetchError ? (
-        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">No se pudieron cargar los datos. Intenta de nuevo.</p>
+        <div class="flex items-center justify-center py-24 rounded-2xl" style="border:1px solid #E5E0D8;background:#FAFAF8;">
+          <p class="text-sm" style="color:#A8A29E;">No se pudieron cargar los datos. Intenta de nuevo.</p>
         </div>
       ) : pares.length === 0 ? (
         <!-- KV vacío — skeletons mientras el cron corre -->
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-            style="grid-template-columns: 60px 1fr 160px 140px">
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">#</div>
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider pl-2">Par</div>
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio</div>
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Descripción</div>
+        <div class="rounded-2xl overflow-hidden" style="border:1px solid #E5E0D8;background:#fff;">
+          <div class="hidden md:grid px-4 py-3"
+            style="grid-template-columns: 60px 1fr 160px 140px;border-bottom:1px solid #E5E0D8;background:#F5F1EC;">
+            <div class="text-[11px] font-semibold uppercase tracking-wider" style="color:#A8A29E;">#</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider pl-2" style="color:#A8A29E;">Par</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-right" style="color:#A8A29E;">Precio</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-right" style="color:#A8A29E;">Descripción</div>
           </div>
           {[...Array(10)].map((_, i) => (
-            <div class="grid px-4 py-3.5 border-b border-white/[0.04]"
-              style="grid-template-columns: 60px 1fr 160px 140px">
+            <div class="grid px-4 py-3.5"
+              style="grid-template-columns: 60px 1fr 160px 140px;border-top:1px solid #F0EDE7;">
               <div class="flex items-center">
-                <div class="w-4 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-4 h-3 rounded animate-pulse" style="background:#E5E0D8;"></div>
               </div>
               <div class="flex items-center gap-3 pl-2">
                 <div class="relative w-9 h-7 flex-shrink-0">
-                  <div class="absolute top-0 left-0 w-6 h-6 rounded-full bg-white/5 animate-pulse"></div>
-                  <div class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-white/5 animate-pulse"></div>
+                  <div class="absolute top-0 left-0 w-6 h-6 rounded-full animate-pulse" style="background:#E5E0D8;"></div>
+                  <div class="absolute bottom-0 right-0 w-6 h-6 rounded-full animate-pulse" style="background:#E5E0D8;"></div>
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-28 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-16 h-3 rounded animate-pulse" style="background:#E5E0D8;"></div>
+                  <div class="w-28 h-2.5 rounded animate-pulse" style="background:#E5E0D8;"></div>
                 </div>
               </div>
               <div class="flex items-center justify-end">
-                <div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-20 h-3 rounded animate-pulse" style="background:#E5E0D8;"></div>
               </div>
               <div class="hidden md:flex items-center justify-end">
-                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-16 h-3 rounded animate-pulse" style="background:#E5E0D8;"></div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div class="rounded-2xl overflow-hidden" style="border:1px solid #E5E0D8;background:#fff;">
 
           <!-- Cabecera -->
-          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-            style="grid-template-columns: 60px 1fr 160px 140px">
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">#</div>
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider pl-2">Par</div>
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio</div>
-            <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Descripción</div>
+          <div class="hidden md:grid px-4 py-3"
+            style="grid-template-columns: 60px 1fr 160px 140px;border-bottom:1px solid #E5E0D8;background:#F5F1EC;">
+            <div class="text-[11px] font-semibold uppercase tracking-wider" style="color:#A8A29E;">#</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider pl-2" style="color:#A8A29E;">Par</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-right" style="color:#A8A29E;">Precio</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-right" style="color:#A8A29E;">Descripción</div>
           </div>
 
           <!-- Filas -->
@@ -428,13 +429,13 @@ try {
               const isCaribe = CARIBE.includes(f.par);
               return (
                 <a href={`/herramientas/forex/${slug}`}
-                  class="forex-row grid px-4 py-3.5 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
-                  style="grid-template-columns: 60px 1fr 160px 140px"
+                  class="forex-row grid px-4 py-3.5 transition-colors no-underline"
+                  style="grid-template-columns: 60px 1fr 160px 140px;border-top:1px solid #F0EDE7;"
                   data-par={f.par.toLowerCase()}
                   data-nombre={(nombrePar[f.par] ?? f.par).toLowerCase()}
                   data-region={isGlobal ? 'global' : isCaribe ? 'caribe' : 'latam'}>
 
-                  <div class="flex items-center text-white/20 text-xs" style="font-family:'Syne',sans-serif;">
+                  <div class="flex items-center text-xs" style="color:#A8A29E;">
                     {i + 1}
                   </div>
 
@@ -443,30 +444,32 @@ try {
                       <img
                         src={`https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png`}
                         alt={f.banderaBase}
-                        class="absolute top-0 left-0 w-6 h-6 rounded-full object-cover border-2 border-[#111318]"
+                        class="absolute top-0 left-0 w-6 h-6 rounded-full object-cover"
+                        style="border:2px solid #fff;"
                         onerror="this.style.display='none'"
                       />
                       <img
                         src={`https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png`}
                         alt={f.banderaCotizada}
-                        class="absolute bottom-0 right-0 w-6 h-6 rounded-full object-cover border-2 border-[#111318]"
+                        class="absolute bottom-0 right-0 w-6 h-6 rounded-full object-cover"
+                        style="border:2px solid #fff;"
                         onerror="this.style.display='none'"
                       />
                     </div>
                     <div class="min-w-0">
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">{f.par}</div>
-                      <div class="text-white/30 text-[11px] truncate">{nombrePar[f.par] ?? f.par}</div>
+                      <div class="font-bold text-sm" style="color:#1C1917;">{f.par}</div>
+                      <div class="text-[11px] truncate" style="color:#78716C;">{nombrePar[f.par] ?? f.par}</div>
                     </div>
                     {isGlobal && (
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide bg-[#EC4899]/10 text-[#EC4899] flex-shrink-0">Global</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide flex-shrink-0" style="background:#F0F9FF;color:#0369A1;">Global</span>
                     )}
                   </div>
 
-                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">
+                  <div class="flex items-center justify-end font-semibold text-sm" style="color:#1C1917;">
                     {formatForex(f.precio)}
                   </div>
 
-                  <div class="hidden md:flex items-center justify-end text-white/30 text-xs truncate pl-2">
+                  <div class="hidden md:flex items-center justify-end text-xs truncate pl-2" style="color:#78716C;">
                     {f.base.toUpperCase()}/{f.cotizada.toUpperCase()}
                   </div>
 
@@ -476,7 +479,7 @@ try {
           </div>
 
           <div id="forex-empty" class="hidden items-center justify-center py-14">
-            <p class="text-white/25 text-sm">Sin resultados</p>
+            <p class="text-sm" style="color:#A8A29E;">Sin resultados</p>
           </div>
 
         </div>
@@ -491,6 +494,7 @@ try {
     .forex-row { grid-template-columns: 50px 1fr 120px !important; }
     .forex-row > div:nth-child(4) { display: none !important; }
   }
+  .forex-row:hover { background: #F9F7F4; }
   .filter-btn { transition: all .15s; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
   .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
@@ -537,13 +541,13 @@ try {
       document.querySelectorAll('.filter-btn').forEach(b => {
         const el = b as HTMLElement;
         if (el.dataset.filter === activeFilter) {
-          el.style.background  = 'rgba(236,72,153,.1)';
-          el.style.borderColor = 'rgba(236,72,153,.4)';
-          el.style.color       = '#EC4899';
+          el.style.background  = 'rgba(21,128,61,0.1)';
+          el.style.borderColor = 'rgba(21,128,61,0.4)';
+          el.style.color       = '#15803D';
         } else {
-          el.style.background  = '#111318';
-          el.style.borderColor = 'rgba(255,255,255,.08)';
-          el.style.color       = 'rgba(255,255,255,.4)';
+          el.style.background  = '#F5F1EC';
+          el.style.borderColor = '#D6D0C8';
+          el.style.color       = '#57534E';
         }
       });
       applyFilters();

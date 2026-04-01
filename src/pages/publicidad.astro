@@ -95,240 +95,153 @@ const pasos = [
     <link rel="canonical" href={`${sitioWeb}/publicidad`} />
   </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
-
-    <!-- HERO -->
-    <div class="relative border-b border-white/[0.07] overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10"
-          style="background: radial-gradient(ellipse, #D4A843 0%, transparent 65%); filter: blur(80px);">
-        </div>
-        <div class="absolute inset-0 opacity-[0.025]"
-          style="background-image: linear-gradient(#D4A843 1px, transparent 1px), linear-gradient(90deg, #D4A843 1px, transparent 1px); background-size: 60px 60px;">
-        </div>
+  <!-- HEADER EDITORIAL -->
+  <div style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <div class="flex items-center gap-2 text-sm mb-6" style="color: #A8A29E;">
+        <a href="/" class="no-underline hover:underline" style="color: #A8A29E;">Inicio</a>
+        <span>›</span>
+        <span style="color: #57534E;">Publicidad</span>
       </div>
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 relative z-10">
-
-        <!-- Breadcrumb -->
-        <div class="flex items-center gap-2 text-white/30 text-sm mb-10">
-          <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
-          <ArrowRight size={13} />
-          <span>Publicidad</span>
-        </div>
-
-        <!-- Eyebrow -->
-        <div class="inline-flex items-center gap-2 bg-[#D4A843]/10 border border-[#D4A843]/20 rounded-full px-4 py-1.5 mb-6">
-          <Megaphone size={13} class="text-[#D4A843]" />
-          <span class="text-[#D4A843] text-xs font-bold uppercase tracking-widest">Medios &amp; Publicidad</span>
-        </div>
-
-        <h1 class="font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-[1.1] mb-6 max-w-3xl" style="font-family: 'Syne', sans-serif;">
-          Llega a miles de<br />
-          <span style="color: #D4A843;">inversores en LATAM.</span>
-        </h1>
-
-        <p class="text-white/50 text-lg leading-relaxed max-w-2xl mb-10">
-          Inversax conecta tu marca con una audiencia hispanohablante activamente interesada en criptomonedas, trading, bolsa y finanzas personales, en 37 países.
-        </p>
-
-        <!-- Stats audiencia -->
-        <div class="flex flex-wrap gap-8">
-          {audiencia.map((s) => (
-            <div class="flex flex-col gap-0.5">
-              <span class="font-extrabold text-2xl sm:text-3xl" style="font-family: 'Syne', sans-serif; color: #D4A843;">{s.valor}</span>
-              <span class="text-white/40 text-sm">{s.label}</span>
-            </div>
-          ))}
-        </div>
+      <p style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #B91C1C; margin: 0 0 12px;">Medios &amp; Publicidad</p>
+      <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 700; color: #1C1917; line-height: 1.15; margin: 0 0 16px;">
+        Llega a miles de<br />inversores en LATAM.
+      </h1>
+      <p style="color: #57534E; font-size: 16px; line-height: 1.7; max-width: 600px; margin: 0 0 28px;">
+        Inversax conecta tu marca con una audiencia hispanohablante activamente interesada en criptomonedas, trading, bolsa y finanzas personales, en 37 países.
+      </p>
+      <div class="flex flex-wrap gap-8">
+        {audiencia.map((s) => (
+          <div>
+            <div style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #B91C1C; line-height: 1;">{s.valor}</div>
+            <div style="font-size: 13px; color: #78716C; margin-top: 4px;">{s.label}</div>
+          </div>
+        ))}
       </div>
     </div>
+  </div>
 
-    <!-- CONTENIDO -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
-      <div class="flex flex-col gap-16">
+  <!-- CONTENIDO -->
+  <div style="background: #FAFAF8; min-height: 60vh;">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-14" style="display: flex; flex-direction: column; gap: 48px;">
 
-        <!-- POR QUÉ INVERSAX -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[
-            { icon: "globe",  titulo: "Alcance regional",  desc: "Cobertura activa en los mercados más grandes de habla hispana. Una sola campaña, múltiples países." },
-            { icon: "target", titulo: "Audiencia calificada", desc: "Visitantes que buscan activamente información sobre cripto, forex, bolsa e inversiones. Alta intención de compra." },
-            { icon: "zap",    titulo: "Contexto financiero", desc: "Tu marca aparece rodeada de contenido relevante del nicho, no en sitios genéricos. Mejor conversión." },
-          ].map((item) => (
-            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex flex-col gap-4">
-              <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
-                {item.icon === "globe"  && <Globe size={17} class="text-[#D4A843]" />}
-                {item.icon === "target" && <Target size={17} class="text-[#D4A843]" />}
-                {item.icon === "zap"    && <Zap size={17} class="text-[#D4A843]" />}
-              </div>
-              <div>
-                <h3 class="font-bold text-white text-sm mb-1.5" style="font-family: 'Syne', sans-serif;">{item.titulo}</h3>
-                <p class="text-white/40 text-sm leading-relaxed">{item.desc}</p>
+      <!-- POR QUÉ INVERSAX -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          { titulo: "Alcance regional",      desc: "Cobertura activa en los mercados más grandes de habla hispana. Una sola campaña, múltiples países." },
+          { titulo: "Audiencia calificada",  desc: "Visitantes que buscan activamente información sobre cripto, forex, bolsa e inversiones. Alta intención de compra." },
+          { titulo: "Contexto financiero",   desc: "Tu marca aparece rodeada de contenido relevante del nicho, no en sitios genéricos. Mejor conversión." },
+        ].map((item) => (
+          <div style="border: 1px solid #E5E0D8; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="width: 32px; height: 3px; background: #B91C1C;"></div>
+            <h3 style="font-size: 15px; font-weight: 700; color: #1C1917; margin: 0;">{item.titulo}</h3>
+            <p style="font-size: 13px; color: #78716C; line-height: 1.6; margin: 0;">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- OPCIONES DE PUBLICIDAD -->
+      <div>
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1C1917; margin: 0 0 24px;">Opciones de publicidad</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {opciones.map((op) => (
+            <div style={`position: relative; border: 1px solid ${op.badge ? '#B91C1C' : '#E5E0D8'}; padding: 28px; display: flex; flex-direction: column; gap: 16px;`}>
+              {op.badge && (
+                <div style="position: absolute; top: 16px; right: 16px;">
+                  <span style="background: #B91C1C; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; text-transform: uppercase; letter-spacing: 0.06em;">{op.badge}</span>
+                </div>
+              )}
+              <h3 style="font-size: 16px; font-weight: 700; color: #1C1917; margin: 0;">{op.nombre}</h3>
+              <p style="font-size: 14px; color: #57534E; line-height: 1.7; margin: 0;">{op.desc}</p>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+                {op.incluye.map((item) => (
+                  <div style="display: flex; align-items: flex-start; gap: 10px;">
+                    <span style="color: #B91C1C; font-size: 14px; line-height: 1.4; flex-shrink: 0;">✓</span>
+                    <span style="font-size: 13px; color: #57534E; line-height: 1.5;">{item}</span>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
         </div>
+      </div>
 
-        <!-- OPCIONES DE PUBLICIDAD -->
-        <div>
-          <div class="flex items-center gap-3 mb-7">
-            <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
-              <BarChart2 size={17} class="text-[#D4A843]" />
+      <!-- IDEAL PARA -->
+      <div>
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1C1917; margin: 0 0 20px;">¿Tu marca encaja aquí?</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {ideal.map((item) => (
+            <div style="border: 1px solid #E5E0D8; padding: 14px 16px; display: flex; align-items: center; gap: 10px;">
+              <span style="width: 6px; height: 6px; background: #B91C1C; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; color: #57534E; line-height: 1.4;">{item.label}</span>
             </div>
-            <h2 class="font-bold text-xl text-white" style="font-family: 'Syne', sans-serif;">Opciones de publicidad</h2>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {opciones.map((op) => (
-              <div class={`relative bg-[#111318] border rounded-2xl p-7 flex flex-col gap-5 transition-all duration-200 ${op.badge ? 'border-[#D4A843]/30' : 'border-white/[0.07]'}`}>
-
-                {op.badge && (
-                  <div class="absolute top-5 right-5">
-                    <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
-                      <Star size={9} />
-                      {op.badge}
-                    </span>
-                  </div>
-                )}
-
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center flex-shrink-0">
-                    {op.icon === "display"   && <Target size={17} class="text-[#D4A843]" />}
-                    {op.icon === "content"   && <Award size={17} class="text-[#D4A843]" />}
-                    {op.icon === "affiliate" && <TrendingUp size={17} class="text-[#D4A843]" />}
-                    {op.icon === "email"     && <Mail size={17} class="text-[#D4A843]" />}
-                  </div>
-                  <h3 class="font-bold text-white text-base" style="font-family: 'Syne', sans-serif;">{op.nombre}</h3>
-                </div>
-
-                <p class="text-white/50 text-sm leading-relaxed">{op.desc}</p>
-
-                <div class="flex flex-col gap-2 mt-auto">
-                  {op.incluye.map((item) => (
-                    <div class="flex items-start gap-2.5">
-                      <CheckCircle size={13} class="text-[#D4A843] flex-shrink-0 mt-0.5" />
-                      <span class="text-white/50 text-sm">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
+        <p style="font-size: 13px; color: #A8A29E; margin: 16px 0 0;">
+          ¿Tu categoría no está en la lista pero crees que encaja? Escríbenos igualmente, evaluamos cada caso.
+        </p>
+      </div>
 
-        <!-- IDEAL PARA -->
-        <div>
-          <div class="flex items-center gap-3 mb-7">
-            <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
-              <Users size={17} class="text-[#D4A843]" />
+      <!-- CÓMO FUNCIONA -->
+      <div>
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1C1917; margin: 0 0 24px;">¿Cómo funciona?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {pasos.map((p) => (
+            <div style="border: 1px solid #E5E0D8; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+              <span style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: #E5E0D8; line-height: 1;">{p.num}</span>
+              <h3 style="font-size: 14px; font-weight: 700; color: #1C1917; margin: 0;">{p.titulo}</h3>
+              <p style="font-size: 13px; color: #78716C; line-height: 1.6; margin: 0;">{p.desc}</p>
             </div>
-            <h2 class="font-bold text-xl text-white" style="font-family: 'Syne', sans-serif;">¿Tu marca encaja aquí?</h2>
-          </div>
+          ))}
+        </div>
+      </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {ideal.map((item) => (
-              <div class="bg-[#111318] border border-white/[0.07] rounded-xl px-4 py-3.5 flex items-center gap-2.5">
-                <span class="w-2 h-2 rounded-full bg-[#D4A843] flex-shrink-0"></span>
-                <span class="text-white/60 text-sm">{item.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <p class="text-white/30 text-sm mt-4">
-            ¿Tu categoría no está en la lista pero crees que encaja? Escríbenos igualmente, evaluamos cada caso.
+      <!-- POLÍTICA EDITORIAL + TRANSPARENCIA -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div style="background: #F5F1EC; border: 1px solid #E5E0D8; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
+          <h3 style="font-size: 15px; font-weight: 700; color: #1C1917; margin: 0;">Política editorial</h3>
+          <p style="color: #57534E; font-size: 14px; line-height: 1.7; margin: 0;">
+            La publicidad nunca influye en nuestra línea editorial. Las noticias, análisis y recomendaciones que publicamos son independientes de las relaciones comerciales del sitio. Nunca aceptamos dinero por publicar reseñas positivas no declaradas.
+          </p>
+          <p style="color: #57534E; font-size: 14px; line-height: 1.7; margin: 0;">
+            Nos reservamos el derecho de rechazar cualquier anuncio que consideremos engañoso, de alto riesgo para el usuario, o que no cumpla con los estándares mínimos de legitimidad financiera.
           </p>
         </div>
-
-        <!-- CÓMO FUNCIONA -->
-        <div>
-          <div class="flex items-center gap-3 mb-7">
-            <div class="w-9 h-9 rounded-xl bg-[#D4A843]/10 flex items-center justify-center">
-              <Zap size={17} class="text-[#D4A843]" />
-            </div>
-            <h2 class="font-bold text-xl text-white" style="font-family: 'Syne', sans-serif;">¿Cómo funciona?</h2>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {pasos.map((p, i) => (
-              <div class="relative bg-[#111318] border border-white/[0.07] rounded-2xl p-6 flex flex-col gap-3">
-                <span class="font-extrabold text-3xl" style={`font-family: 'Syne', sans-serif; color: rgba(212,168,67,0.15);`}>{p.num}</span>
-                <h3 class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">{p.titulo}</h3>
-                <p class="text-white/40 text-sm leading-relaxed">{p.desc}</p>
-              </div>
-            ))}
-          </div>
+        <div style="border: 1px solid #E5E0D8; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
+          <h3 style="font-size: 15px; font-weight: 700; color: #1C1917; margin: 0;">Transparencia con el usuario</h3>
+          <p style="color: #57534E; font-size: 14px; line-height: 1.7; margin: 0;">
+            Todo el contenido patrocinado y los enlaces de afiliado están claramente etiquetados como <strong style="color: #1C1917;">"Patrocinado"</strong> o <strong style="color: #1C1917;">"Publicidad"</strong>. Nuestros lectores siempre saben qué es contenido editorial y qué es comercial.
+          </p>
+          <p style="color: #57534E; font-size: 14px; line-height: 1.7; margin: 0;">
+            Esta política protege a nuestros usuarios y también protege el valor de la asociación con Inversax: nuestra audiencia confía en nosotros porque somos honestos.
+          </p>
         </div>
-
-        <!-- POLÍTICA EDITORIAL + TRANSPARENCIA -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 flex flex-col gap-4">
-            <div class="flex items-center gap-2.5">
-              <Shield size={16} class="text-[#D4A843]" />
-              <h3 class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">Política editorial</h3>
-            </div>
-            <p class="text-white/45 text-sm leading-relaxed">
-              La publicidad nunca influye en nuestra línea editorial. Las noticias, análisis y recomendaciones que publicamos son independientes de las relaciones comerciales del sitio. Nunca aceptamos dinero por publicar reseñas positivas no declaradas.
-            </p>
-            <p class="text-white/45 text-sm leading-relaxed">
-              Nos reservamos el derecho de rechazar cualquier anuncio que consideremos engañoso, de alto riesgo para el usuario, o que no cumpla con los estándares mínimos de legitimidad financiera.
-            </p>
-          </div>
-
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-7 flex flex-col gap-4">
-            <div class="flex items-center gap-2.5">
-              <CheckCircle size={16} class="text-[#D4A843]" />
-              <h3 class="font-bold text-white text-sm" style="font-family: 'Syne', sans-serif;">Transparencia con el usuario</h3>
-            </div>
-            <p class="text-white/45 text-sm leading-relaxed">
-              Todo el contenido patrocinado y los enlaces de afiliado están claramente etiquetados como <strong class="text-white/70">"Patrocinado"</strong> o <strong class="text-white/70">"Publicidad"</strong>. Nuestros lectores siempre saben qué es contenido editorial y qué es comercial.
-            </p>
-            <p class="text-white/45 text-sm leading-relaxed">
-              Esta política protege a nuestros usuarios y también protege el valor de la asociación con Inversax: nuestra audiencia confía en nosotros porque somos honestos.
-            </p>
-          </div>
-        </div>
-
-        <!-- CTA CONTACTO -->
-        <div class="relative bg-[#D4A843]/8 border border-[#D4A843]/20 rounded-2xl p-8 sm:p-10 overflow-hidden">
-          <div class="absolute inset-0 pointer-events-none">
-            <div class="absolute right-0 top-0 w-64 h-64 rounded-full opacity-5"
-              style="background: radial-gradient(circle, #D4A843 0%, transparent 70%); filter: blur(40px); transform: translate(30%, -30%);">
-            </div>
-          </div>
-
-          <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-            <div class="flex flex-col gap-3 max-w-xl">
-              <div class="flex items-center gap-2">
-                <Megaphone size={18} class="text-[#D4A843]" />
-                <span class="text-[#D4A843] text-xs font-bold uppercase tracking-widest">Contacto comercial</span>
-              </div>
-              <h2 class="font-extrabold text-2xl sm:text-3xl text-white" style="font-family: 'Syne', sans-serif;">
-                ¿Listo para comenzar?
-              </h2>
-              <p class="text-white/50 text-sm leading-relaxed">
-                Escríbenos con el nombre de tu empresa, el tipo de campaña que te interesa y los países a los que quieres llegar. Te respondemos con una propuesta en menos de 48 horas.
-              </p>
-              <div class="flex items-center gap-2 mt-1">
-                <Mail size={14} class="text-[#D4A843]" />
-                <a href={`mailto:${correoAds}`} class="text-[#D4A843] text-sm font-medium no-underline hover:underline">
-                  {correoAds}
-                </a>
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-3 w-full lg:w-auto flex-shrink-0">
-              <a
-                href={`mailto:${correoAds}?subject=Solicitud%20de%20publicidad%20en%20Inversax`}
-                class="flex items-center justify-center gap-2 bg-[#D4A843] text-[#0A0B0D] font-bold text-sm rounded-xl px-8 py-4 no-underline hover:bg-[#D4A843]/90 transition-colors duration-200 whitespace-nowrap"
-              >
-                Solicitar propuesta <ArrowRight size={15} />
-              </a>
-              <p class="text-white/25 text-xs text-center">Respuesta en menos de 48 horas</p>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <!-- CTA CONTACTO -->
+      <div style="border: 2px solid #B91C1C; padding: 40px;">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+          <div style="display: flex; flex-direction: column; gap: 12px; max-width: 560px;">
+            <p style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #B91C1C; margin: 0;">Contacto comercial</p>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; color: #1C1917; margin: 0; line-height: 1.2;">¿Listo para comenzar?</h2>
+            <p style="color: #57534E; font-size: 14px; line-height: 1.7; margin: 0;">
+              Escríbenos con el nombre de tu empresa, el tipo de campaña que te interesa y los países a los que quieres llegar. Te respondemos con una propuesta en menos de 48 horas.
+            </p>
+            <a href={`mailto:${correoAds}`} class="no-underline" style="color: #B91C1C; font-size: 14px; font-weight: 600;">{correoAds}</a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;">
+            <a
+              href={`mailto:${correoAds}?subject=Solicitud%20de%20publicidad%20en%20Inversax`}
+              class="no-underline"
+              style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #B91C1C; color: #fff; font-size: 14px; font-weight: 700; padding: 14px 28px; white-space: nowrap;"
+            >
+              Solicitar propuesta <ArrowRight size={15} />
+            </a>
+            <p style="font-size: 12px; color: #A8A29E; text-align: center; margin: 0;">Respuesta en menos de 48 horas</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </Layout>

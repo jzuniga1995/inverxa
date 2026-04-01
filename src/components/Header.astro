@@ -1,6 +1,6 @@
 ---
 // Header.astro - Inversax
-import { Search, Globe, Menu, X, ChevronDown } from 'lucide-astro';
+import { Search, Globe, Menu, ChevronDown } from 'lucide-astro';
 import { getCategorias, getPaises } from '../db/queries';
 
 // ── Solo queries a DB (rápidas, sin APIs externas) ──────────────
@@ -9,12 +9,12 @@ const categorias    = await getCategorias(db);
 const paises        = await getPaises(db);
 const paisesLocales = paises.filter(p => p.codigo !== 'global');
 
-// Colores de badge por tipo
+// Colores de badge por tipo (tema claro editorial)
 const tipoBadge: Record<string, string> = {
-  crypto: 'text-[#D4A843]',
-  forex:  'text-[#EC4899]',
-  metal:  'text-yellow-300',
-  stock:  'text-emerald-400',
+  crypto: '#1D4ED8',
+  forex:  '#15803D',
+  metal:  '#B45309',
+  stock:  '#374151',
 };
 const tipoLabel: Record<string, string> = {
   crypto: 'C',
@@ -46,40 +46,42 @@ const TICKER_SKELETON = [
 ] as const;
 ---
 
-<header class="fixed top-0 left-0 right-0 w-full z-[100] bg-[#0A0B0D]" style="font-family: 'DM Sans', sans-serif;">
+<header class="fixed top-0 left-0 right-0 w-full z-[100]"
+        style="background: #FAFAF8; border-bottom: 2px solid #1C1917; font-family: 'DM Sans', sans-serif;">
 
   <!-- TOP BAR: ticker mixto + selector de país -->
-  <div class="bg-[#111318] border-b border-white/[0.07] h-9 overflow-hidden">
+  <div style="background: #F5F1EC; border-bottom: 1px solid #E5E0D8; height: 36px; overflow: hidden;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between">
 
       <!-- Ticker (skeleton SSR → datos reales client-side) -->
-      <div class="flex-1 overflow-hidden" style="mask-image: linear-gradient(to right, transparent, black 50px, black calc(100% - 50px), transparent);">
-        <div id="ticker-track" class="ticker-track flex gap-8 whitespace-nowrap w-max">
+      <div class="flex-1 overflow-hidden" style="mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);">
+        <div id="ticker-track" class="ticker-track flex gap-7 whitespace-nowrap w-max">
           {[...TICKER_SKELETON, ...TICKER_SKELETON].map((item) => (
-            <span class="ticker-item inline-flex items-center gap-1.5 text-[11.5px]" data-symbol={item.symbol} data-tipo={item.tipo}>
-              <span class={`text-[9px] font-bold tracking-widest opacity-60 ${tipoBadge[item.tipo]}`}>
+            <span class="ticker-item inline-flex items-center gap-1.5 text-[11px]" data-symbol={item.symbol} data-tipo={item.tipo}>
+              <span class="text-[8px] font-bold tracking-widest"
+                    style={`color: ${tipoBadge[item.tipo]};`}>
                 {tipoLabel[item.tipo]}
               </span>
-              <span class="font-bold text-white/50 text-[10px] tracking-wider">{item.symbol}</span>
-              <span class="ticker-price text-white/40 font-medium animate-pulse">···</span>
-              <span class="ticker-change text-[11px] font-medium text-white/20"></span>
-              <span class="text-white/10 text-xs">·</span>
+              <span class="font-semibold text-[10px] tracking-wide" style="color: #57534E;">{item.symbol}</span>
+              <span class="ticker-price font-medium animate-pulse" style="color: #A8A29E;">···</span>
+              <span class="ticker-change text-[10px] font-medium" style="color: transparent;"></span>
+              <span class="text-[10px]" style="color: #D6D0C8;">·</span>
             </span>
           ))}
         </div>
       </div>
 
       <!-- Selector de país (desktop) -->
-      <div class="hidden md:flex items-center gap-1.5 pl-6 flex-shrink-0">
-        <Globe size={13} class="text-white/40" />
+      <div class="hidden md:flex items-center gap-1.5 pl-4 flex-shrink-0">
+        <Globe size={12} style="color: #A8A29E;" />
         <select
           id="country-select"
-          class="bg-transparent border-none text-white/40 text-xs cursor-pointer outline-none max-w-[140px]"
-          style="font-family: 'DM Sans', sans-serif;"
+          class="bg-transparent border-none text-xs cursor-pointer outline-none max-w-[140px]"
+          style="color: #78716C; font-family: 'DM Sans', sans-serif;"
         >
-          <option value="global" class="bg-[#1A1D24] text-white">Global</option>
+          <option value="global" style="background: #FAFAF8; color: #1C1917;">Global</option>
           {paisesLocales.map((p) => (
-            <option value={p.codigo} class="bg-[#1A1D24] text-white text-xs">{p.nombre}</option>
+            <option value={p.codigo} style="background: #FAFAF8; color: #1C1917;">{p.nombre}</option>
           ))}
         </select>
       </div>
@@ -88,22 +90,22 @@ const TICKER_SKELETON = [
   </div>
 
   <!-- MAIN NAV -->
-  <div class="border-b border-white/[0.07]">
+  <div style="background: #FAFAF8;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
 
       <!-- Logo -->
       <a href="/" class="flex items-center gap-2.5 flex-shrink-0 no-underline">
-        <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-          <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#D4A843" stroke-width="2"/>
-          <polyline points="8,16 12,12 16,15 20,10" stroke="#D4A843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+          <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#B91C1C" stroke-width="2"/>
+          <polyline points="8,16 12,12 16,15 20,10" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="font-extrabold text-[22px] text-white tracking-tight leading-none" style="font-family: 'Syne', sans-serif;">
-          Inversax<span class="text-[#D4A843] font-normal text-sm">.com</span>
+        <span class="font-extrabold text-[20px] tracking-tight leading-none" style="color: #1C1917; font-family: 'Playfair Display', serif;">
+          Inversax<span class="font-normal text-sm" style="color: #B91C1C;">.com</span>
         </span>
       </a>
 
       <!-- Divisor -->
-      <div class="hidden lg:block h-5 w-px bg-white/10 flex-shrink-0"></div>
+      <div class="hidden lg:block h-5 w-px flex-shrink-0" style="background: #E5E0D8;"></div>
 
       <!-- Nav desktop -->
       <nav class="hidden lg:flex items-center gap-0.5 flex-1">
@@ -118,7 +120,10 @@ const TICKER_SKELETON = [
               {top.map((cat) => (
                 <a
                   href={`/${cat.slug}`}
-                  class="nav-cat-link flex-shrink-0 text-white/45 hover:text-white hover:bg-white/5 text-sm px-3 py-1.5 rounded-lg transition-colors duration-200 no-underline whitespace-nowrap"
+                  class="nav-cat-link flex-shrink-0 text-sm px-3 py-1.5 transition-colors duration-200 no-underline whitespace-nowrap"
+                  style="color: #57534E; border-radius: 4px;"
+                  onmouseover="this.style.color='#1C1917'; this.style.background='#F0EDE7';"
+                  onmouseout="this.style.background=''; this.style.color=this.dataset.active==='1'?'#B91C1C':'#57534E';"
                 >
                   {cat.nombre}
                 </a>
@@ -128,27 +133,36 @@ const TICKER_SKELETON = [
                 <div class="relative flex-shrink-0" id="mas-wrapper">
                   <button
                     id="mas-toggle"
-                    class="flex items-center gap-1 text-white/45 hover:text-white hover:bg-white/5 text-sm px-3 py-1.5 rounded-lg transition-colors duration-200 cursor-pointer border-none bg-transparent whitespace-nowrap"
+                    class="flex items-center gap-1 text-sm px-3 py-1.5 transition-colors duration-200 cursor-pointer border-none whitespace-nowrap"
+                    style="color: #57534E; background: transparent; border-radius: 4px; font-family: 'DM Sans', sans-serif;"
+                    onmouseover="this.style.color='#1C1917'; this.style.background='#F0EDE7';"
+                    onmouseout="this.style.background=''; this.style.color='#57534E';"
                   >
                     Más <ChevronDown size={13} id="mas-chevron" class="transition-transform duration-200" />
                   </button>
                   <div
                     id="mas-dropdown"
-                    class="absolute top-full left-0 mt-2 bg-[#111318] border border-white/[0.07] rounded-2xl p-2 hidden"
-                    style="min-width: 200px; box-shadow: 0 20px 60px rgba(0,0,0,0.7); z-index:200;"
+                    class="absolute top-full left-0 mt-1 p-1.5 hidden"
+                    style="min-width: 200px; background: #FFFFFF; border: 1px solid #E5E0D8; border-radius: 8px; box-shadow: 0 8px 32px rgba(28,25,23,0.12); z-index:200;"
                   >
                     {extra.map((cat) => (
                       <a
                         href={`/${cat.slug}`}
-                        class="flex px-3 py-2.5 rounded-xl no-underline hover:bg-white/5 transition-colors duration-150 text-white/70 hover:text-white text-sm"
+                        class="flex px-3 py-2 no-underline text-sm transition-colors duration-150"
+                        style="color: #57534E; border-radius: 4px;"
+                        onmouseover="this.style.background='#F5F1EC'; this.style.color='#1C1917';"
+                        onmouseout="this.style.background=''; this.style.color='#57534E';"
                       >
                         {cat.nombre}
                       </a>
                     ))}
-                    <div class="border-t border-white/[0.07] mt-1 pt-1">
+                    <div class="mt-1 pt-1" style="border-top: 1px solid #E5E0D8;">
                       <a
                         href="/noticias"
-                        class="flex px-3 py-2 rounded-xl no-underline hover:bg-white/5 text-white/35 hover:text-white text-xs transition-colors duration-150"
+                        class="flex px-3 py-2 no-underline text-xs transition-colors duration-150"
+                        style="color: #A8A29E; border-radius: 4px;"
+                        onmouseover="this.style.background='#F5F1EC'; this.style.color='#57534E';"
+                        onmouseout="this.style.background=''; this.style.color='#A8A29E';"
                       >
                         Ver todas las noticias →
                       </a>
@@ -160,11 +174,14 @@ const TICKER_SKELETON = [
           );
         })()}
 
-        <div class="h-4 w-px bg-white/10 mx-1.5 flex-shrink-0"></div>
+        <div class="h-4 w-px mx-1.5 flex-shrink-0" style="background: #E5E0D8;"></div>
 
         <a
           href="/herramientas"
-          class="nav-link flex-shrink-0 text-[#D4A843]/70 hover:text-[#D4A843] hover:bg-[#D4A843]/5 text-sm px-3 py-1.5 rounded-lg transition-colors duration-200 no-underline whitespace-nowrap font-medium"
+          class="nav-link flex-shrink-0 text-sm px-3 py-1.5 transition-colors duration-200 no-underline whitespace-nowrap font-semibold"
+          style="color: #B91C1C; border-radius: 4px;"
+          onmouseover="this.style.background='#FEF2F2';"
+          onmouseout="this.style.background='';"
         >
           Herramientas
         </a>
@@ -174,15 +191,21 @@ const TICKER_SKELETON = [
       <div class="flex items-center gap-2 flex-shrink-0 ml-auto lg:ml-0">
         <button
           id="search-toggle"
-          class="w-9 h-9 flex items-center justify-center bg-white/5 border border-white/[0.07] text-white/50 hover:text-white hover:border-white/20 rounded-lg transition-colors duration-200 cursor-pointer"
+          class="w-9 h-9 flex items-center justify-center transition-colors duration-200 cursor-pointer"
+          style="background: #F0EDE7; border: 1px solid #E5E0D8; color: #78716C; border-radius: 6px;"
           aria-label="Buscar"
+          onmouseover="this.style.color='#1C1917'; this.style.borderColor='#B91C1C';"
+          onmouseout="this.style.color='#78716C'; this.style.borderColor='#E5E0D8';"
         >
           <Search size={16} />
         </button>
         <button
           id="menu-toggle"
-          class="lg:hidden w-9 h-9 flex items-center justify-center text-white/50 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-none"
+          class="lg:hidden w-9 h-9 flex items-center justify-center transition-colors duration-200 cursor-pointer"
+          style="color: #78716C; background: transparent; border: none;"
           aria-label="Menú"
+          onmouseover="this.style.color='#1C1917';"
+          onmouseout="this.style.color='#78716C';"
         >
           <Menu size={20} />
         </button>
@@ -190,33 +213,34 @@ const TICKER_SKELETON = [
     </div>
 
     <!-- Search bar -->
-    <div id="search-bar" class="border-t border-white/[0.07] bg-[#111318]" style="max-height: 0; transition: max-height 0.25s ease; overflow: hidden;">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3 text-white/40">
+    <div id="search-bar" style="max-height: 0; transition: max-height 0.25s ease; overflow: hidden; border-top: 1px solid #E5E0D8; background: #F5F1EC;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3" style="color: #A8A29E;">
         <Search size={16} class="flex-shrink-0" />
         <input
           id="search-input"
           type="text"
           placeholder="Buscar noticias, criptos, indicadores..."
-          class="flex-1 bg-transparent border-none outline-none text-white text-sm placeholder:text-white/30"
-          style="font-family: 'DM Sans', sans-serif;"
+          class="flex-1 bg-transparent border-none outline-none text-sm"
+          style="color: #1C1917; font-family: 'DM Sans', sans-serif;"
           autocomplete="off"
         />
-        <kbd class="bg-white/5 border border-white/[0.07] text-white/30 text-[10px] px-1.5 py-0.5 rounded flex-shrink-0">ESC</kbd>
+        <kbd class="text-[10px] px-1.5 py-0.5 flex-shrink-0"
+             style="background: #E8E3DB; border: 1px solid #D6D0C8; color: #A8A29E; border-radius: 3px;">ESC</kbd>
       </div>
     </div>
 
     <!-- Resultados búsqueda -->
     <div
       id="search-results"
-      class="hidden bg-[#111318] border-t border-white/[0.07]"
-      style="box-shadow: 0 20px 60px rgba(0,0,0,0.8);"
+      class="hidden"
+      style="background: #FFFFFF; border-top: 1px solid #E5E0D8; box-shadow: 0 8px 32px rgba(28,25,23,0.1);"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div id="search-results-inner" class="flex flex-col gap-1"></div>
-        <div id="search-empty" class="hidden text-white/25 text-sm py-4 text-center">
+        <div id="search-empty" class="hidden text-sm py-4 text-center" style="color: #A8A29E;">
           Sin resultados para esta búsqueda
         </div>
-        <div id="search-loading" class="hidden text-white/25 text-sm py-4 text-center">
+        <div id="search-loading" class="hidden text-sm py-4 text-center" style="color: #A8A29E;">
           Buscando...
         </div>
       </div>
@@ -224,39 +248,50 @@ const TICKER_SKELETON = [
   </div>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="lg:hidden overflow-hidden bg-[#111318] border-b border-white/[0.07]" style="max-height: 0; transition: max-height 0.4s ease;">
+  <div id="mobile-menu" class="lg:hidden overflow-hidden" style="max-height: 0; transition: max-height 0.4s ease; background: #FAFAF8; border-bottom: 1px solid #E5E0D8;">
     <nav class="flex flex-col px-4 sm:px-6 py-3 gap-0.5">
 
-      <span class="text-white/25 text-[10px] uppercase tracking-widest px-3 pt-2 pb-1">Noticias por categoría</span>
+      <span class="text-[10px] uppercase tracking-widest px-3 pt-2 pb-1" style="color: #A8A29E;">Noticias por categoría</span>
       {categorias.map((cat) => (
         <a
           href={`/${cat.slug}`}
-          class="text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-2 rounded-lg transition-colors duration-200 no-underline"
+          class="text-sm px-3 py-2 transition-colors duration-200 no-underline"
+          style="color: #57534E; border-radius: 4px;"
+          onmouseover="this.style.background='#F0EDE7'; this.style.color='#1C1917';"
+          onmouseout="this.style.background=''; this.style.color='#57534E';"
         >
           {cat.nombre}
         </a>
       ))}
 
-      <div class="border-t border-white/[0.07] my-2" />
+      <div class="my-2" style="border-top: 1px solid #E5E0D8;" />
 
-      <a href="/noticias" class="text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-2.5 rounded-lg transition-colors duration-200 no-underline">
+      <a href="/noticias"
+         class="text-sm px-3 py-2.5 transition-colors duration-200 no-underline"
+         style="color: #57534E; border-radius: 4px;"
+         onmouseover="this.style.background='#F0EDE7'; this.style.color='#1C1917';"
+         onmouseout="this.style.background=''; this.style.color='#57534E';">
         Todas las noticias
       </a>
-      <a href="/herramientas" class="text-white/50 hover:text-white hover:bg-white/5 text-sm px-3 py-2.5 rounded-lg transition-colors duration-200 no-underline">
+      <a href="/herramientas"
+         class="text-sm px-3 py-2.5 transition-colors duration-200 no-underline font-semibold"
+         style="color: #B91C1C; border-radius: 4px;"
+         onmouseover="this.style.background='#FEF2F2';"
+         onmouseout="this.style.background='';">
         Herramientas
       </a>
 
       <!-- Selector de país mobile -->
-      <div class="flex items-center gap-2 px-3 py-2.5 border-t border-white/[0.07] mt-1">
-        <Globe size={14} class="text-white/40 flex-shrink-0" />
+      <div class="flex items-center gap-2 px-3 py-2.5 mt-1" style="border-top: 1px solid #E5E0D8;">
+        <Globe size={14} style="color: #A8A29E; flex-shrink: 0;" />
         <select
           id="country-select-mobile"
-          class="bg-transparent border-none text-white/40 text-sm outline-none flex-1 cursor-pointer"
-          style="font-family: 'DM Sans', sans-serif;"
+          class="bg-transparent border-none text-sm outline-none flex-1 cursor-pointer"
+          style="color: #78716C; font-family: 'DM Sans', sans-serif;"
         >
-          <option value="global" class="bg-[#1A1D24] text-white">Global</option>
+          <option value="global" style="background: #FAFAF8; color: #1C1917;">Global</option>
           {paisesLocales.map((p) => (
-            <option value={p.codigo} class="bg-[#1A1D24] text-white">{p.nombre}</option>
+            <option value={p.codigo} style="background: #FAFAF8; color: #1C1917;">{p.nombre}</option>
           ))}
         </select>
       </div>
@@ -364,24 +399,27 @@ const TICKER_SKELETON = [
       }
       searchEmpty.classList.add('hidden');
       searchResultsInner.innerHTML = json.data.map((n: any) => {
-        const color = n.categoria ? (categoriaColores[n.categoria.nombre] ?? '#D4A843') : '#D4A843';
+        const color = n.categoria ? (categoriaColores[n.categoria.nombre] ?? '#B91C1C') : '#B91C1C';
         return `
           <a href="/noticias/${n.slug}"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 no-underline transition-colors duration-150 group">
+            class="flex items-center gap-3 px-3 py-2.5 no-underline transition-colors duration-150"
+            style="border-radius: 4px;"
+            onmouseover="this.style.background='#F5F1EC';"
+            onmouseout="this.style.background='';">
             ${n.imagen
-              ? `<div class="w-10 h-10 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
+              ? `<div class="w-10 h-10 rounded overflow-hidden flex-shrink-0" style="background:#F0EDE7;">
                    <img src="${n.imagen}" alt="" class="w-full h-full object-cover" />
                  </div>`
-              : `<div class="w-10 h-10 rounded-lg bg-white/5 flex-shrink-0 flex items-center justify-center">
+              : `<div class="w-10 h-10 rounded flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7;">
                    <span style="color:${color}; font-size:14px;">◈</span>
                  </div>`
             }
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-0.5">
                 ${n.categoria ? `<span class="text-[10px] font-bold uppercase tracking-wider" style="color:${color};">${n.categoria.nombre}</span>` : ''}
-                <span class="text-white/25 text-[10px] ml-auto">${n.creadoEn ? formatFecha(n.creadoEn) : ''}</span>
+                <span class="text-[10px] ml-auto" style="color:#A8A29E;">${n.creadoEn ? formatFecha(n.creadoEn) : ''}</span>
               </div>
-              <p class="text-white/80 group-hover:text-white text-sm font-medium leading-snug truncate transition-colors duration-150" style="font-family: 'Syne', sans-serif;">
+              <p class="text-sm font-semibold leading-snug truncate" style="color:#1C1917; font-family:'DM Sans',sans-serif;">
                 ${n.titulo}
               </p>
             </div>
@@ -451,10 +489,11 @@ const TICKER_SKELETON = [
 
   // ── Active link ──────────────────────────────────────────────
   const path = window.location.pathname;
-  document.querySelectorAll('.nav-link, .nav-cat-link').forEach((link) => {
+  document.querySelectorAll<HTMLElement>('.nav-link, .nav-cat-link').forEach((link) => {
     const href = link.getAttribute('href');
     if (href && (path === href || (href !== '/' && path.startsWith(href)))) {
-      link.classList.replace('text-white/45', 'text-[#D4A843]');
+      link.style.color = '#B91C1C';
+      link.dataset.active = '1';
     }
   });
 
@@ -487,13 +526,14 @@ const TICKER_SKELETON = [
         const changeEl = node.querySelector('.ticker-change');
         if (priceEl) {
           priceEl.textContent = price;
-          priceEl.classList.remove('animate-pulse', 'text-white/40');
-          priceEl.classList.add('text-white/85');
+          priceEl.classList.remove('animate-pulse');
+          (priceEl as HTMLElement).style.color = '#1C1917';
         }
         if (changeEl) {
           if (change !== undefined) {
             changeEl.textContent = change;
-            changeEl.className = `ticker-change text-[11px] font-medium ${up ? 'text-emerald-400' : 'text-red-400'}`;
+            (changeEl as HTMLElement).style.color = up ? '#15803D' : '#DC2626';
+            changeEl.className = 'ticker-change text-[10px] font-medium';
           } else {
             changeEl.textContent = '';
           }

@@ -17,8 +17,7 @@ const [todasNoticias, destacados, categorias] = await Promise.all([
 
 const noticiaPrincipal    = destacados[0] ?? todasNoticias[0] ?? null;
 const noticiasSecundarias = todasNoticias
-  .filter(n => n.slug !== noticiaPrincipal?.slug)
-  .slice(0, 7);
+  .filter(n => n.slug !== noticiaPrincipal?.slug);
 
 const noticiasPorCategoria = await getArticulosPorCategorias(db, categorias.map(c => c.slug), 4);
 const primeraConNoticias = categorias.find(c => (noticiasPorCategoria[c.slug]?.length ?? 0) > 0);
@@ -349,110 +348,162 @@ const categoriaColores: Record<string, string> = {
 </slot>
 
 
-  <Hero />
+  <Hero noticiaPrincipal={noticiaPrincipal} noticiasSecundarias={noticiasSecundarias} />
 
   <!-- ── 1. ÚLTIMAS NOTICIAS ───────────────────────────────── -->
-  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14" style="font-family: 'DM Sans', sans-serif;">
+  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
     <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-2.5">
-          <Flame size={18} class="text-[#D4A843]" />
-          <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Últimas Noticias</h2>
-        </div>
-        <a href="/noticias" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">
+      <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#E5E0D8]">
+        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
+          Últimas Noticias
+        </h2>
+        <a href="/noticias" class="flex items-center gap-1.5 text-sm no-underline transition-colors duration-200 hover:opacity-70"
+           style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
           Ver todas <ArrowRight size={14} />
         </a>
       </div>
 
-      {noticiaPrincipal ? (
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <a href={`/noticias/${noticiaPrincipal.slug}`} class="lg:col-span-2 group relative rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] no-underline flex flex-col min-h-[380px] hover:border-white/20 transition-colors duration-300">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0B0D] via-[#0A0B0D]/50 to-transparent z-10"></div>
-            <div class="absolute inset-0">
-              {noticiaPrincipal.imagen
-                ? <img src={noticiaPrincipal.imagen} alt={noticiaPrincipal.titulo} class="w-full h-full object-cover" />
-                : <div class="w-full h-full" style="background: linear-gradient(135deg, #1A1D24 0%, #23272F 100%);"></div>
-              }
-            </div>
-            <div class="relative z-20 mt-auto p-6 flex flex-col gap-3">
-              <div class="flex items-center gap-2 flex-wrap">
-                {noticiaPrincipal.categoria && (
-                  <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">{noticiaPrincipal.categoria.nombre}</span>
-                )}
-                {noticiaPrincipal.pais && noticiaPrincipal.pais.codigo !== 'global' && (
-                  <span class="text-white/40 text-[10px] border border-white/20 px-2 py-0.5 rounded uppercase">{noticiaPrincipal.pais.nombre}</span>
-                )}
-                <span class="text-white/30 text-xs flex items-center gap-1 ml-auto"><Clock size={11} />{formatFecha(noticiaPrincipal.creadoEn)}</span>
-              </div>
-              <h3 class="font-bold text-white text-xl sm:text-2xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">{noticiaPrincipal.titulo}</h3>
-              {noticiaPrincipal.resumen && <p class="text-white/50 text-sm leading-relaxed line-clamp-2">{noticiaPrincipal.resumen}</p>}
-            </div>
-          </a>
-
-          <div class="flex flex-col gap-3">
-            {noticiasSecundarias.slice(0, 4).map((n) => (
-              <a href={`/noticias/${n.slug}`} class="group flex gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-3.5 no-underline transition-colors duration-200">
-                {n.imagen && (
-                  <div class="w-16 h-16 rounded-lg overflow-hidden bg-[#1A1D24] flex-shrink-0">
-                    <img src={n.imagen} alt={n.titulo} class="w-full h-full object-cover" />
-                  </div>
-                )}
-                <div class="flex-1 flex flex-col gap-1.5 min-w-0">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    {n.categoria && <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{n.categoria.nombre}</span>}
-                    <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto"><Clock size={9} />{formatFecha(n.creadoEn)}</span>
-                  </div>
-                  <h4 class="text-white text-sm font-medium leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-2" style="font-family: 'Syne', sans-serif;">{n.titulo}</h4>
-                </div>
-              </a>
-            ))}
-          </div>
+      {noticiasSecundarias.slice(3).length === 0 ? (
+        <div class="flex flex-col items-center justify-center py-20 border border-[#E5E0D8]" style="background: #F0EDE7;">
+          <p class="text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Aún no hay noticias publicadas</p>
         </div>
       ) : (
-        <div class="flex flex-col items-center justify-center py-20 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <Flame size={32} class="text-white/10 mb-3" />
-          <p class="text-white/30 text-sm">Aún no hay noticias publicadas</p>
-        </div>
-      )}
+        <>
+          {/* Patrón: hero → 2 medianas → 2 mini → repite */}
+          {(() => {
+            const arts = noticiasSecundarias.slice(3);
+            const grupos: typeof arts[] = [];
+            for (let i = 0; i < arts.length; i += 5) grupos.push(arts.slice(i, i + 5));
+            return grupos.map((grupo) => (
+              <div class="mb-10 last:mb-0">
 
-      {noticiasSecundarias.length > 4 && (
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
-          {noticiasSecundarias.slice(4).map((n) => (
-            <a href={`/noticias/${n.slug}`} class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl p-4 no-underline transition-colors duration-200">
-              {n.imagen && <div class="w-full h-36 rounded-lg overflow-hidden bg-[#1A1D24]"><img src={n.imagen} alt={n.titulo} class="w-full h-full object-cover" /></div>}
-              <div class="flex items-center gap-2">
-                {n.categoria && <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{n.categoria.nombre}</span>}
-                <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto"><Clock size={9} />{formatFecha(n.creadoEn)}</span>
+                {/* — Card HERO (full width) — */}
+                {grupo[0] && (
+                  <a href={`/noticias/${grupo[0].slug}`}
+                     class="block group no-underline mb-6 pb-6 border-b border-[#E5E0D8]">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+                        {grupo[0].imagen
+                          ? <img src={grupo[0].imagen} alt={grupo[0].titulo}
+                                 class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                          : <div class="w-full h-full" style="background: #E8E3DB;"></div>
+                        }
+                      </div>
+                      <div class="flex flex-col justify-center gap-3">
+                        {grupo[0].categoria && (
+                          <span class="text-[11px] font-bold uppercase tracking-[0.2em]"
+                                style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                            {grupo[0].categoria.nombre}
+                          </span>
+                        )}
+                        <h3 class="font-bold leading-[1.15] text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
+                            style="font-family: 'Playfair Display', serif; font-size: clamp(22px, 2.4vw, 32px);">
+                          {grupo[0].titulo}
+                        </h3>
+                        {grupo[0].resumen && (
+                          <p class="text-sm leading-relaxed line-clamp-3"
+                             style="color: #78716C; font-family: 'DM Sans', sans-serif;">
+                            {grupo[0].resumen}
+                          </p>
+                        )}
+                        <span class="text-xs flex items-center gap-1.5"
+                              style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                          <Clock size={11} />{formatFecha(grupo[0].creadoEn)}
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                )}
+
+                {/* — 2 cards MEDIANAS — */}
+                {grupo.slice(1, 3).length > 0 && (
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6 pb-6 border-b border-[#E5E0D8]">
+                    {grupo.slice(1, 3).map((n) => (
+                      <a href={`/noticias/${n.slug}`}
+                         class="group no-underline flex flex-col gap-3">
+                        <div class="overflow-hidden" style="aspect-ratio: 4/3;">
+                          {n.imagen
+                            ? <img src={n.imagen} alt={n.titulo}
+                                   class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                            : <div class="w-full h-full" style="background: #E8E3DB;"></div>
+                          }
+                        </div>
+                        {n.categoria && (
+                          <span class="text-[10px] font-bold uppercase tracking-[0.18em]"
+                                style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                            {n.categoria.nombre}
+                          </span>
+                        )}
+                        <h4 class="font-bold leading-snug text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200 line-clamp-3"
+                            style="font-family: 'Playfair Display', serif; font-size: 18px;">
+                          {n.titulo}
+                        </h4>
+                        <span class="text-xs" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                          {formatFecha(n.creadoEn)}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {/* — 2 cards MINI (sin imagen) — */}
+                {grupo.slice(3, 5).length > 0 && (
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {grupo.slice(3, 5).map((n) => (
+                      <a href={`/noticias/${n.slug}`}
+                         class="group no-underline flex gap-4 items-start py-2"
+                         style="border-left: 3px solid #B91C1C; padding-left: 14px;">
+                        <div class="flex flex-col gap-1.5 min-w-0">
+                          {n.categoria && (
+                            <span class="text-[10px] font-bold uppercase tracking-[0.15em]"
+                                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                              {n.categoria.nombre}
+                            </span>
+                          )}
+                          <h4 class="font-bold leading-snug text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200 line-clamp-2"
+                              style="font-family: 'Playfair Display', serif; font-size: 15px;">
+                            {n.titulo}
+                          </h4>
+                          <span class="text-[11px]" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                            {formatFecha(n.creadoEn)}
+                          </span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                )}
+
               </div>
-              <h4 class="text-white text-sm font-medium leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-2" style="font-family: 'Syne', sans-serif;">{n.titulo}</h4>
-            </a>
-          ))}
-        </div>
+            ));
+          })()}
+        </>
       )}
     </div>
   </section>
 
   <!-- ── 2. EXPLORA POR CATEGORÍA ──────────────────────────── -->
-  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
     <div class="max-w-7xl mx-auto">
-      <div class="flex items-center gap-2.5 mb-6">
-        <Layers size={18} class="text-[#D4A843]" />
-        <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Explora por Categoría</h2>
+      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#E5E0D8]">
+        <Layers size={17} style="color: #B91C1C;" />
+        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
+          Explora por Categoría
+        </h2>
       </div>
       <div class="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
         {categorias.map((cat) => {
-          const color  = categoriaColores[cat.nombre] ?? '#D4A843';
+          const color  = categoriaColores[cat.nombre] ?? '#B91C1C';
           const activa = cat.slug === primeraConNoticias?.slug;
           return (
             <button
               data-tab={cat.slug}
               data-color={color}
-              class={`tab-btn flex-shrink-0 text-sm px-4 py-2 rounded-lg border transition-all duration-200 cursor-pointer whitespace-nowrap ${
-                activa
-                  ? 'font-semibold text-[#0A0B0D] border-transparent'
-                  : 'text-white/40 border-white/[0.07] bg-transparent hover:text-white hover:border-white/20'
+              class={`tab-btn flex-shrink-0 text-xs font-semibold px-4 py-2 border transition-all duration-200 cursor-pointer whitespace-nowrap uppercase tracking-wider ${
+                activa ? '' : 'bg-transparent hover:opacity-70'
               }`}
-              style={activa ? `background:${color}; border-color:${color};` : ''}
+              style={activa
+                ? `background: ${color}15; border-color: ${color}; color: ${color}; font-family: 'DM Sans', sans-serif;`
+                : `background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;`}
             >
               {cat.nombre}
             </button>
@@ -463,35 +514,46 @@ const categoriaColores: Record<string, string> = {
         {categorias.map((cat) => {
           const noticias = noticiasPorCategoria[cat.slug] ?? [];
           const activa   = cat.slug === primeraConNoticias?.slug;
-          const color    = categoriaColores[cat.nombre] ?? '#D4A843';
+          const color    = categoriaColores[cat.nombre] ?? '#B91C1C';
           return (
             <div data-panel={cat.slug} class={`cat-panel ${activa ? '' : 'hidden'}`}>
               {noticias.length > 0 ? (
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {noticias.map((n) => (
-                    <a href={`/noticias/${n.slug}`} class="group flex flex-col bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl overflow-hidden no-underline transition-all duration-200 hover:-translate-y-0.5">
-                      <div class="w-full h-36 overflow-hidden bg-[#1A1D24] flex-shrink-0">
+                    <a href={`/noticias/${n.slug}`}
+                       class="group flex flex-col no-underline transition-all duration-200 hover:-translate-y-0.5"
+                       style="border: 1px solid #E5E0D8; background: #FFFFFF;">
+                      <div class="w-full overflow-hidden flex-shrink-0" style="aspect-ratio: 4/3;">
                         {n.imagen
-                          ? <img src={n.imagen} alt={n.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                          : <div class="w-full h-full" style={`background: linear-gradient(135deg, ${color}15, #1A1D24);`}></div>
+                          ? <img src={n.imagen} alt={n.titulo}
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          : <div class="w-full h-full" style={`background: ${color}12;`}></div>
                         }
                       </div>
-                      <div class="flex flex-col gap-2 p-3.5">
-                        <span class="text-[10px] flex items-center gap-1" style={`color: ${color}99;`}>
+                      <div class="flex flex-col gap-2 p-4">
+                        <span class="text-[10px] flex items-center gap-1"
+                              style={`color: ${color}; font-family: 'DM Sans', sans-serif;`}>
                           <Clock size={9} />{formatFecha(n.creadoEn)}
                         </span>
-                        <h4 class="text-white text-sm font-medium leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-2" style="font-family: 'Syne', sans-serif;">{n.titulo}</h4>
+                        <h4 class="font-bold leading-snug line-clamp-2 group-hover:opacity-70 transition-opacity duration-200"
+                            style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 15px;">
+                          {n.titulo}
+                        </h4>
                       </div>
                     </a>
                   ))}
                 </div>
               ) : (
-                <div class="flex flex-col items-center justify-center py-16 bg-[#111318] border border-white/[0.07] rounded-2xl">
-                  <p class="text-white/20 text-sm">Próximamente noticias de {cat.nombre}</p>
+                <div class="flex flex-col items-center justify-center py-16 border border-[#E5E0D8]" style="background: #F0EDE7;">
+                  <p class="text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+                    Próximamente noticias de {cat.nombre}
+                  </p>
                 </div>
               )}
-              <div class="flex justify-end mt-4">
-                <a href={`/${cat.slug}`} class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity duration-200" style={`color: ${color};`}>
+              <div class="flex justify-end mt-5">
+                <a href={`/${cat.slug}`}
+                   class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity duration-200"
+                   style={`color: ${color}; font-family: 'DM Sans', sans-serif;`}>
                   Ver todo en {cat.nombre} <ArrowRight size={14} />
                 </a>
               </div>
@@ -503,33 +565,66 @@ const categoriaColores: Record<string, string> = {
   </section>
 
   <!-- ── 3. CONCEPTO DEL DÍA ───────────────────────────────── -->
-  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
     <div class="max-w-7xl mx-auto">
-      <div class="flex items-center gap-2.5 mb-8">
-        <BookOpen size={18} class="text-[#D4A843]" />
-        <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Concepto del Día</h2>
+      <div class="flex items-center gap-3 mb-8 pb-4 border-b border-[#E5E0D8]">
+        <BookOpen size={17} style="color: #B91C1C;" />
+        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
+          Concepto del Día
+        </h2>
       </div>
-      <div class="relative bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 opacity-[0.03]" style="background: radial-gradient(circle at top right, #D4A843, transparent);"></div>
-        <div class="flex flex-col lg:flex-row gap-0">
-          <div class="flex flex-col justify-center gap-4 p-6 sm:p-8 lg:p-10 lg:w-80 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.07]">
+
+      <!-- Tarjeta oscura tipo colección -->
+      <div class="relative overflow-hidden" style="background: #1C1917;">
+        <!-- Textura sutil de fondo -->
+        <div class="absolute inset-0 pointer-events-none opacity-[0.04]"
+             style="background-image: repeating-linear-gradient(0deg, #F5F0E8 0px, #F5F0E8 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #F5F0E8 0px, #F5F0E8 1px, transparent 1px, transparent 60px);"></div>
+
+        <div class="relative flex flex-col lg:flex-row">
+
+          <!-- Columna izquierda: término -->
+          <div class="flex flex-col justify-between gap-5 p-7 sm:p-10 lg:w-72 xl:w-80 flex-shrink-0"
+               style="border-bottom: 1px solid rgba(245,240,232,0.1);"
+               class="lg:border-b-0 lg:border-r-[1px] lg:border-r-[rgba(245,240,232,0.1)]">
             <div>
-              <span class="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3"
-                style={`background: ${categoriaColores[conceptoHoy.categoria] ?? '#D4A843'}20; color: ${categoriaColores[conceptoHoy.categoria] ?? '#D4A843'};`}>
+              <span class="inline-block text-[10px] font-bold uppercase tracking-[0.22em] mb-4 px-2.5 py-1"
+                    style="background: #B91C1C; color: #F5F0E8; font-family: 'DM Sans', sans-serif;">
                 {conceptoHoy.categoria}
               </span>
-              <h3 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">{conceptoHoy.termino}</h3>
+              <h3 class="font-bold leading-[1.1] mt-1"
+                  style="font-family: 'Playfair Display', serif; color: #F5F0E8; font-size: clamp(28px, 3vw, 42px);">
+                {conceptoHoy.termino}
+              </h3>
             </div>
-            <p class="text-white/30 text-xs">Actualizado cada día con un nuevo término</p>
+            <p class="text-[11px] uppercase tracking-[0.18em]"
+               style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">
+              Actualizado cada día
+            </p>
           </div>
-          <div class="flex flex-col gap-5 p-6 sm:p-8 lg:p-10 flex-1">
+
+          <!-- Columna derecha: definición + ejemplo -->
+          <div class="flex flex-col gap-6 p-7 sm:p-10 flex-1"
+               style="border-top: 1px solid rgba(245,240,232,0.1);"
+               class="lg:border-t-0">
             <div>
-              <span class="text-white/40 text-xs uppercase tracking-widest font-medium mb-2 block">Definición</span>
-              <p class="text-white/80 text-base leading-relaxed">{conceptoHoy.definicion}</p>
+              <span class="block text-[10px] font-bold uppercase tracking-[0.22em] mb-3"
+                    style="color: rgba(245,240,232,0.35); font-family: 'DM Sans', sans-serif;">
+                Definición
+              </span>
+              <p class="text-base leading-relaxed"
+                 style="color: rgba(245,240,232,0.85); font-family: 'DM Sans', sans-serif;">
+                {conceptoHoy.definicion}
+              </p>
             </div>
-            <div class="bg-[#D4A843]/5 border border-[#D4A843]/15 rounded-xl p-4">
-              <span class="text-[#D4A843] text-xs font-bold uppercase tracking-widest mb-2 block">Ejemplo práctico</span>
-              <p class="text-white/60 text-sm leading-relaxed">{conceptoHoy.ejemplo}</p>
+            <div class="p-5" style="border-left: 3px solid #B91C1C; background: rgba(245,240,232,0.04);">
+              <span class="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
+                    style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                Ejemplo práctico
+              </span>
+              <p class="text-sm leading-relaxed"
+                 style="color: rgba(245,240,232,0.6); font-family: 'DM Sans', sans-serif; font-style: italic;">
+                {conceptoHoy.ejemplo}
+              </p>
             </div>
           </div>
         </div>
@@ -538,192 +633,283 @@ const categoriaColores: Record<string, string> = {
   </section>
 
   <!-- ── 4. PRECIOS DEL MERCADO (todo client-side) ─────────── -->
-  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
     <div class="max-w-7xl mx-auto">
 
-      <div class="flex items-center gap-2.5 mb-6">
-        <BarChart2 size={18} class="text-[#D4A843]" />
-        <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Precios del Mercado</h2>
+      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#E5E0D8]">
+        <BarChart2 size={17} style="color: #B91C1C;" />
+        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
+          Precios del Mercado
+        </h2>
       </div>
 
       <div class="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
-        <button id="tab-cripto"   class="market-tab flex-shrink-0 text-sm px-4 py-2 rounded-lg border font-semibold cursor-pointer transition-all duration-200 bg-[#D4A843] text-[#0A0B0D] border-[#D4A843]">Cripto</button>
-        <button id="tab-forex"    class="market-tab flex-shrink-0 text-sm px-4 py-2 rounded-lg border cursor-pointer transition-all duration-200 bg-transparent text-white/40 border-white/[0.07] hover:text-white hover:border-white/20">Forex</button>
-        <button id="tab-metales"  class="market-tab flex-shrink-0 text-sm px-4 py-2 rounded-lg border cursor-pointer transition-all duration-200 bg-transparent text-white/40 border-white/[0.07] hover:text-white hover:border-white/20">Metales</button>
-        <button id="tab-acciones" class="market-tab flex-shrink-0 text-sm px-4 py-2 rounded-lg border cursor-pointer transition-all duration-200 bg-transparent text-white/40 border-white/[0.07] hover:text-white hover:border-white/20">Acciones</button>
+        <button id="tab-cripto"
+          class="market-tab flex-shrink-0 text-xs font-bold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
+          style="background: #1D4ED815; border-color: #1D4ED8; color: #1D4ED8; font-family: 'DM Sans', sans-serif;">
+          Cripto
+        </button>
+        <button id="tab-forex"
+          class="market-tab flex-shrink-0 text-xs font-semibold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
+          style="background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;">
+          Forex
+        </button>
+        <button id="tab-metales"
+          class="market-tab flex-shrink-0 text-xs font-semibold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
+          style="background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;">
+          Metales
+        </button>
+        <button id="tab-acciones"
+          class="market-tab flex-shrink-0 text-xs font-semibold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
+          style="background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;">
+          Acciones
+        </button>
       </div>
-
-      <!-- Skeleton reutilizable -->
-      <template id="tpl-skeleton">
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div id="sk-rows">
-            <div class="flex items-center gap-4 px-6 py-4 border-b border-white/[0.07]">
-              <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
-              <div class="flex-1 flex flex-col gap-2">
-                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
-                <div class="w-24 h-2.5 bg-white/5 rounded animate-pulse"></div>
-              </div>
-              <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
-              <div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-      </template>
 
       <!-- ── PANEL CRIPTO ── -->
       <div id="panel-cripto" class="mkt-panel">
-        <div id="cripto-skeleton" class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div id="cripto-skeleton" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
           {[...Array(6)].map(() => (
-            <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+            <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
                 <div class="flex flex-col gap-1.5">
-                  <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-20 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-12 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
+                  <div class="w-20 h-2.5 rounded animate-pulse" style="background: #E5E0D8;"></div>
                 </div>
               </div>
-              <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
-              <div class="flex items-center justify-end"><div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div></div>
-              <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
+              <div class="flex items-center justify-end"><div class="w-14 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
+              <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
             </div>
           ))}
         </div>
-        <div id="cripto-content" class="hidden bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Activo</span>
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio</span>
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">24h</span>
-            <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Cap. Mercado</span>
+        <div id="cripto-content" class="hidden" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
+          <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Activo</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">24h</span>
+            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Cap. Mercado</span>
           </div>
           <div id="cripto-rows"></div>
         </div>
         <div class="flex justify-end mt-3">
-          <a href="/herramientas/cripto" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">Ver todos <ArrowRight size={14} /></a>
+          <a href="/herramientas/cripto" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
+             style="color: #1D4ED8; font-family: 'DM Sans', sans-serif;">
+            Ver todos <ArrowRight size={14} />
+          </a>
         </div>
       </div>
 
       <!-- ── PANEL FOREX ── -->
       <div id="panel-forex" class="mkt-panel hidden">
-        <div id="forex-skeleton" class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div id="forex-skeleton" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
           {[...Array(6)].map(() => (
-            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
-                <div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
+                <div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
               </div>
-              <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
-              <div class="hidden sm:flex items-center justify-end"><div class="w-24 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
+              <div class="hidden sm:flex items-center justify-end"><div class="w-24 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
             </div>
           ))}
         </div>
-        <div id="forex-content" class="hidden bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Par</span>
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio</span>
-            <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Descripción</span>
+        <div id="forex-content" class="hidden" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
+          <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Par</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio</span>
+            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Descripción</span>
           </div>
           <div id="forex-rows"></div>
         </div>
         <div class="flex justify-end mt-3">
-          <a href="/herramientas/forex" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#EC4899] no-underline transition-colors duration-200">Ver todos <ArrowRight size={14} /></a>
+          <a href="/herramientas/forex" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
+             style="color: #15803D; font-family: 'DM Sans', sans-serif;">
+            Ver todos <ArrowRight size={14} />
+          </a>
         </div>
       </div>
 
       <!-- ── PANEL METALES ── -->
       <div id="panel-metales" class="mkt-panel hidden">
-        <div id="metales-skeleton" class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div id="metales-skeleton" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
           {[...Array(4)].map(() => (
-            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
-                <div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
+                <div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
               </div>
-              <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
-              <div class="hidden sm:flex items-center justify-end"><div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div></div>
+              <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
+              <div class="hidden sm:flex items-center justify-end"><div class="w-12 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
             </div>
           ))}
         </div>
-        <div id="metales-content" class="hidden bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Metal</span>
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio / oz</span>
-            <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Símbolo</span>
+        <div id="metales-content" class="hidden" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
+          <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Metal</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio / oz</span>
+            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Símbolo</span>
           </div>
           <div id="metales-rows"></div>
         </div>
         <div class="flex justify-end mt-3">
-          <a href="/herramientas/metales" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">Ver todos <ArrowRight size={14} /></a>
+          <a href="/herramientas/metales" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
+             style="color: #B45309; font-family: 'DM Sans', sans-serif;">
+            Ver todos <ArrowRight size={14} />
+          </a>
         </div>
       </div>
 
       <!-- ── PANEL ACCIONES ── -->
       <div id="panel-acciones" class="mkt-panel hidden">
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3 border-b border-white/[0.07]">
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Empresa</span>
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Precio</span>
-            <span class="text-white/30 text-xs font-medium uppercase tracking-wider text-right">Cambio</span>
-            <span class="hidden sm:block text-white/30 text-xs font-medium uppercase tracking-wider text-right">Sector</span>
+        <div style="border: 1px solid #E5E0D8; background: #FFFFFF;">
+          <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Empresa</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Cambio</span>
+            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Sector</span>
           </div>
           <div id="acciones-loading">
             {[...Array(6)].map(() => (
-              <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none">
+              <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
                 <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                  <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
                   <div class="flex flex-col gap-1.5">
-                    <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
-                    <div class="w-20 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                    <div class="w-12 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
+                    <div class="w-20 h-2.5 rounded animate-pulse" style="background: #E5E0D8;"></div>
                   </div>
                 </div>
-                <div class="flex items-center justify-end"><div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div></div>
-                <div class="flex items-center justify-end"><div class="w-14 h-3 bg-white/5 rounded animate-pulse"></div></div>
-                <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 bg-white/5 rounded animate-pulse"></div></div>
+                <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
+                <div class="flex items-center justify-end"><div class="w-14 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
+                <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
               </div>
             ))}
           </div>
           <div id="acciones-content" class="hidden"></div>
-          <div id="acciones-error" class="hidden px-6 py-10 text-center text-white/20 text-sm">No se pudieron cargar las cotizaciones</div>
+          <div id="acciones-error" class="hidden px-6 py-10 text-center text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+            No se pudieron cargar las cotizaciones
+          </div>
         </div>
         <div class="flex justify-end mt-3">
-          <a href="/herramientas/acciones" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#10B981] no-underline transition-colors duration-200">Ver todas <ArrowRight size={14} /></a>
+          <a href="/herramientas/acciones" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
+             style="color: #374151; font-family: 'DM Sans', sans-serif;">
+            Ver todas <ArrowRight size={14} />
+          </a>
         </div>
       </div>
 
     </div>
   </section>
 
-
-
   <!-- ── 6. HERRAMIENTAS ───────────────────────────────────── -->
-  <section class="bg-[#0A0B0D] px-4 sm:px-6 py-14 border-t border-white/[0.07]" style="font-family: 'DM Sans', sans-serif;">
+  <section style="background: #FAFAF8;" class="px-4 sm:px-6 py-12">
     <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#E5E0D8]">
         <div class="flex items-center gap-2.5">
-          <BarChart2 size={18} class="text-[#D4A843]" />
-          <h2 class="font-bold text-white text-xl" style="font-family: 'Syne', sans-serif;">Herramientas</h2>
+          <BarChart2 size={17} style="color: #B91C1C;" />
+          <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
+            Herramientas
+          </h2>
         </div>
-        <a href="/herramientas" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-[#D4A843] no-underline transition-colors duration-200">
+        <a href="/herramientas" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
+           style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
           Ver todas <ArrowRight size={14} />
         </a>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {herramientas.map((h) => (
-          <a href={h.href} class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 rounded-2xl p-6 no-underline transition-all duration-300 hover:-translate-y-0.5">
-            <div class="w-10 h-10 rounded-xl bg-[#D4A843]/10 flex items-center justify-center text-[#D4A843]">
-              {h.icon === "chart"    && <BarChart2   size={18} />}
-              {h.icon === "forex"    && <TrendingUp  size={18} />}
-              {h.icon === "layers"   && <Layers      size={18} />}
-              {h.icon === "acciones" && <Landmark    size={18} />}
-              {h.icon === "dollar"   && <DollarSign  size={18} />}
-              {h.icon === "calc"     && <Calculator  size={18} />}
-              {h.icon === "compare"  && <GitCompare  size={18} />}
-              {h.icon === "calc2"    && <Calculator  size={18} />}
+          <a href={h.href}
+             class="group flex flex-col gap-4 no-underline transition-all duration-200 hover:-translate-y-0.5"
+             style="border: 1px solid #E5E0D8; background: #FFFFFF; padding: 24px;">
+
+            <!-- Cabecera: ícono + dato vivo -->
+            <div class="flex items-start justify-between">
+              <div class="w-9 h-9 flex items-center justify-center flex-shrink-0"
+                   style="background: #B91C1C14; color: #B91C1C;">
+                {h.icon === "chart"    && <BarChart2   size={17} />}
+                {h.icon === "forex"    && <TrendingUp  size={17} />}
+                {h.icon === "layers"   && <Layers      size={17} />}
+                {h.icon === "acciones" && <Landmark    size={17} />}
+                {h.icon === "dollar"   && <DollarSign  size={17} />}
+                {h.icon === "calc"     && <Calculator  size={17} />}
+                {h.icon === "compare"  && <GitCompare  size={17} />}
+                {h.icon === "calc2"    && <Calculator  size={17} />}
+              </div>
+              <!-- Dato vivo según tipo de herramienta -->
+              {h.icon === "chart" && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">BTC</span>
+                  <span data-live="btc-price"
+                        class="font-bold text-sm animate-pulse"
+                        style="color: #1D4ED8; font-family: 'DM Sans', sans-serif;">···</span>
+                </span>
+              )}
+              {h.icon === "forex" && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">EUR/USD</span>
+                  <span data-live="eurusd-rate"
+                        class="font-bold text-sm animate-pulse"
+                        style="color: #15803D; font-family: 'DM Sans', sans-serif;">···</span>
+                </span>
+              )}
+              {h.icon === "layers" && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Oro / oz</span>
+                  <span data-live="gold-price"
+                        class="font-bold text-sm animate-pulse"
+                        style="color: #B45309; font-family: 'DM Sans', sans-serif;">···</span>
+                </span>
+              )}
+              {h.icon === "acciones" && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">NYSE · NASDAQ</span>
+                  <span class="inline-block w-12 h-1.5 mt-1" style="background: linear-gradient(90deg, #374151 60%, #D6D0C8 60%);"></span>
+                </span>
+              )}
+              {h.icon === "dollar" && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">16 países</span>
+                  <span class="font-bold text-sm" style="color: #374151; font-family: 'DM Sans', sans-serif;">USD</span>
+                </span>
+              )}
+              {(h.icon === "calc" || h.icon === "calc2") && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Riesgo</span>
+                  <span class="font-bold text-sm" style="color: #374151; font-family: 'DM Sans', sans-serif;">%</span>
+                </span>
+              )}
+              {h.icon === "compare" && (
+                <span class="text-right flex-shrink-0">
+                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
+                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Brokers</span>
+                  <span class="font-bold text-sm" style="color: #374151; font-family: 'DM Sans', sans-serif;">12+</span>
+                </span>
+              )}
             </div>
-            <div class="flex flex-col gap-1">
-              <span class="font-bold text-white text-[15px] group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">{h.titulo}</span>
-              <span class="text-white/40 text-sm leading-relaxed">{h.desc}</span>
+
+            <!-- Título + descripción -->
+            <div class="flex flex-col gap-1 flex-1">
+              <span class="font-bold text-[15px] group-hover:opacity-70 transition-opacity duration-200"
+                    style="color: #1C1917; font-family: 'DM Sans', sans-serif;">
+                {h.titulo}
+              </span>
+              <span class="text-sm leading-relaxed" style="color: #78716C; font-family: 'DM Sans', sans-serif;">
+                {h.desc}
+              </span>
             </div>
-            <span class="flex items-center gap-1 text-[#D4A843] text-sm font-medium mt-auto">Usar ahora <ArrowRight size={14} /></span>
+
+            <!-- CTA -->
+            <span class="flex items-center gap-1 text-sm font-semibold mt-auto group-hover:gap-2 transition-all duration-200"
+                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+              Abrir <ArrowRight size={13} />
+            </span>
           </a>
         ))}
       </div>
@@ -740,16 +926,15 @@ const categoriaColores: Record<string, string> = {
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       const target = tab.dataset.tab!;
-      const color  = tab.dataset.color ?? '#D4A843';
+      const color  = tab.dataset.color ?? '#B91C1C';
       tabs.forEach((t) => {
-        t.style.background = t.style.borderColor = t.style.color = '';
-        t.classList.remove('font-semibold');
-        t.classList.add('text-white/40', 'border-white/[0.07]');
+        t.style.background  = 'transparent';
+        t.style.borderColor = '#D6D0C8';
+        t.style.color       = '#78716C';
       });
-      tab.style.background = tab.style.borderColor = color;
-      tab.style.color = '#0A0B0D';
-      tab.classList.add('font-semibold');
-      tab.classList.remove('text-white/40', 'border-white/[0.07]');
+      tab.style.background  = `${color}15`;
+      tab.style.borderColor = color;
+      tab.style.color       = color;
       panels.forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== target));
     });
   });
@@ -807,31 +992,41 @@ const categoriaColores: Record<string, string> = {
         const up = coin.change24 >= 0;
         return `
           <a href="/herramientas/cripto/${coin.id}" data-coin-id="${coin.id}"
-            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
+            style="border-bottom: 1px solid #E5E0D8;"
+            onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
-                ${coin.image ? `<img src="${coin.image}" alt="${coin.name}" class="w-full h-full object-cover" loading="lazy" />` : `<span class="text-[10px] font-bold text-white/60">${coin.symbol.slice(0,2)}</span>`}
+              <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center" style="background: #F0EDE7;">
+                ${coin.image ? `<img src="${coin.image}" alt="${coin.name}" class="w-full h-full object-cover" loading="lazy" />` : `<span class="text-[10px] font-bold" style="color:#78716C">${coin.symbol.slice(0,2)}</span>`}
               </div>
               <div class="min-w-0">
-                <div class="font-bold text-sm text-white">${coin.symbol.toUpperCase()}</div>
-                <div class="text-xs text-white/40 truncate">${coin.name}</div>
+                <div class="font-bold text-sm" style="color:#1C1917">${coin.symbol.toUpperCase()}</div>
+                <div class="text-xs truncate" style="color:#78716C">${coin.name}</div>
               </div>
             </div>
             <div class="flex items-center justify-end">
-              <span data-field="price" class="font-semibold text-sm text-white">${fmtPrice(coin.price)}</span>
+              <span class="font-semibold text-sm" style="color:#1C1917">${fmtPrice(coin.price)}</span>
             </div>
             <div class="flex items-center justify-end">
-              <span data-field="change" class="flex items-center gap-1 text-sm font-medium ${up ? 'text-emerald-400' : 'text-red-400'}">
+              <span class="flex items-center gap-1 text-sm font-medium" style="color:${up ? '#15803D' : '#B91C1C'}">
                 ${up ? '▲' : '▼'} ${up ? '+' : ''}${coin.change24.toFixed(2)}%
               </span>
             </div>
             <div class="hidden sm:flex items-center justify-end">
-              <span data-field="cap" class="text-sm text-white/50">${fmtCap(coin.marketCap)}</span>
+              <span class="text-sm" style="color:#A8A29E">${fmtCap(coin.marketCap)}</span>
             </div>
           </a>`;
       }).join('');
       document.getElementById('cripto-skeleton')!.classList.add('hidden');
       document.getElementById('cripto-content')!.classList.remove('hidden');
+      // Actualiza datos en vivo en cards de herramientas
+      const btc = data.find((c: any) => c.id === 'bitcoin');
+      if (btc) {
+        document.querySelectorAll<HTMLElement>('[data-live="btc-price"]').forEach(el => {
+          el.textContent = fmtPrice(btc.price);
+          el.classList.remove('animate-pulse');
+        });
+      }
     } catch { /* muestra skeleton */ }
   }
 
@@ -845,23 +1040,33 @@ const categoriaColores: Record<string, string> = {
       const rows = document.getElementById('forex-rows')!;
       rows.innerHTML = data.map((f: any) => `
         <a href="/herramientas/forex/${f.par.replace('/', '-').toLowerCase()}"
-          class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+          class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
+          style="border-bottom: 1px solid #E5E0D8;"
+          onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
           <div class="flex items-center gap-2 sm:gap-3 min-w-0">
             <div class="relative w-8 h-8 flex-shrink-0">
-              <img src="https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png" class="absolute top-0 left-0 w-5 h-5 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
-              <img src="https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png" class="absolute bottom-0 right-0 w-5 h-5 rounded-full object-cover border border-white/10" onerror="this.style.display='none'" />
+              <img src="https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png" class="absolute top-0 left-0 w-5 h-5 rounded-full object-cover" style="border:1px solid #E5E0D8" onerror="this.style.display='none'" />
+              <img src="https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png" class="absolute bottom-0 right-0 w-5 h-5 rounded-full object-cover" style="border:1px solid #E5E0D8" onerror="this.style.display='none'" />
             </div>
-            <div class="font-bold text-sm text-white">${f.par}</div>
+            <div class="font-bold text-sm" style="color:#1C1917">${f.par}</div>
           </div>
           <div class="flex items-center justify-end">
-            <span class="font-semibold text-sm text-white">${fmtForex(f.precio)}</span>
+            <span class="font-semibold text-sm" style="color:#1C1917">${fmtForex(f.precio)}</span>
           </div>
           <div class="hidden sm:flex items-center justify-end">
-            <span class="text-xs text-white/40 truncate">${nombreForex[f.par] ?? f.par}</span>
+            <span class="text-xs truncate" style="color:#78716C">${nombreForex[f.par] ?? f.par}</span>
           </div>
         </a>`).join('');
       document.getElementById('forex-skeleton')!.classList.add('hidden');
       document.getElementById('forex-content')!.classList.remove('hidden');
+      // Actualiza EUR/USD en cards de herramientas
+      const eurusd = data.find((f: any) => f.par === 'EUR/USD');
+      if (eurusd) {
+        document.querySelectorAll<HTMLElement>('[data-live="eurusd-rate"]').forEach(el => {
+          el.textContent = fmtForex(eurusd.precio);
+          el.classList.remove('animate-pulse');
+        });
+      }
     } catch { /* muestra skeleton */ }
   }
 
@@ -879,26 +1084,36 @@ const categoriaColores: Record<string, string> = {
           : '—';
         return `
           <a href="/herramientas/metales/${m.slug}"
-            class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
+            style="border-bottom: 1px solid #E5E0D8;"
+            onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
-                <span class="text-xs font-bold text-white/60">${m.simbolo.slice(1,3)}</span>
+              <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7; border:1px solid #E5E0D8;">
+                <span class="text-xs font-bold" style="color:#B45309">${m.simbolo.slice(1,3)}</span>
               </div>
               <div class="min-w-0">
-                <div class="font-bold text-sm text-white">${m.nombre}</div>
-                <div class="text-xs text-white/40">${m.unidad} troy</div>
+                <div class="font-bold text-sm" style="color:#1C1917">${m.nombre}</div>
+                <div class="text-xs" style="color:#78716C">${m.unidad} troy</div>
               </div>
             </div>
             <div class="flex items-center justify-end">
-              <span class="font-semibold text-sm text-white">${precio}</span>
+              <span class="font-semibold text-sm" style="color:#1C1917">${precio}</span>
             </div>
             <div class="hidden sm:flex items-center justify-end">
-              <span class="text-xs text-white/40">${m.simbolo}</span>
+              <span class="text-xs" style="color:#A8A29E">${m.simbolo}</span>
             </div>
           </a>`;
       }).join('');
       document.getElementById('metales-skeleton')!.classList.add('hidden');
       document.getElementById('metales-content')!.classList.remove('hidden');
+      // Actualiza Oro en cards de herramientas
+      const oro = data.find((m: any) => m.slug === 'oro' || m.simbolo === 'XAU');
+      if (oro && oro.precio > 0) {
+        document.querySelectorAll<HTMLElement>('[data-live="gold-price"]').forEach(el => {
+          el.textContent = `$${oro.precio.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+          el.classList.remove('animate-pulse');
+        });
+      }
     } catch { /* muestra skeleton */ }
   }
 
@@ -917,25 +1132,28 @@ const categoriaColores: Record<string, string> = {
         const dominio   = dominiosAcciones[a.ticker] ?? '';
         const logo      = dominio
           ? `<img src="https://www.google.com/s2/favicons?domain=${dominio}&sz=64" alt="${a.nombre}" class="w-5 h-5 object-contain" onerror="this.style.display='none'" />`
-          : `<span class="text-[9px] font-bold text-white/50">${a.ticker.slice(0,2)}</span>`;
+          : `<span class="text-[9px] font-bold" style="color:#78716C;">${a.ticker.slice(0,2)}</span>`;
+        const colorCambio = a.alza ? '#15803D' : '#DC2626';
         return `
           <a href="/herramientas/acciones/${a.slug}"
-            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 border-b border-white/[0.07] last:border-none hover:bg-white/5 transition-colors duration-200 no-underline">
+            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
+            style="border-bottom: 1px solid #E5E0D8;"
+            onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">${logo}</div>
+              <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7; border:1px solid #E5E0D8;">${logo}</div>
               <div class="min-w-0">
-                <div class="font-bold text-sm text-white">${a.ticker}</div>
-                <div class="text-xs text-white/40 truncate">${a.nombre}</div>
+                <div class="font-bold text-sm" style="color:#1C1917;">${a.ticker}</div>
+                <div class="text-xs truncate" style="color:#78716C;">${a.nombre}</div>
               </div>
             </div>
             <div class="flex items-center justify-end">
-              <span class="font-semibold text-sm text-white">${precio}</span>
+              <span class="font-semibold text-sm" style="color:#1C1917;">${precio}</span>
             </div>
             <div class="flex items-center justify-end">
-              ${precio === '—' ? '<span class="text-sm text-white/30">—</span>' : `<span class="flex items-center gap-1 text-sm font-medium ${colorC}">${a.alza ? '▲' : '▼'} ${cambio}</span>`}
+              ${precio === '—' ? '<span class="text-sm" style="color:#A8A29E;">—</span>' : `<span class="flex items-center gap-1 text-sm font-medium" style="color:${colorCambio};">${a.alza ? '▲' : '▼'} ${cambio}</span>`}
             </div>
             <div class="hidden sm:flex items-center justify-end">
-              <span class="text-xs text-white/40">${a.sector}</span>
+              <span class="text-xs" style="color:#A8A29E;">${a.sector}</span>
             </div>
           </a>`;
       }).join('');
@@ -952,17 +1170,19 @@ const categoriaColores: Record<string, string> = {
   const mktPanels = document.querySelectorAll<HTMLElement>('.mkt-panel');
   const loaders   = [cargarCripto, cargarForex, cargarMetales, cargarAcciones];
 
+  const mktActiveColors = ['#1D4ED8', '#15803D', '#B45309', '#374151'];
+
   mktTabs.forEach((tab, i) => {
     tab.addEventListener('click', () => {
       mktTabs.forEach(t => {
-        t.style.background = t.style.borderColor = t.style.color = '';
-        t.classList.remove('font-semibold', 'bg-[#D4A843]', 'text-[#0A0B0D]', 'border-[#D4A843]');
-        t.classList.add('text-white/40', 'border-white/[0.07]', 'bg-transparent');
+        t.style.background  = 'transparent';
+        t.style.borderColor = '#D6D0C8';
+        t.style.color       = '#78716C';
       });
-      tab.style.background = tab.style.borderColor = '#D4A843';
-      tab.style.color = '#0A0B0D';
-      tab.classList.add('font-semibold');
-      tab.classList.remove('text-white/40', 'border-white/[0.07]', 'bg-transparent');
+      const c = mktActiveColors[i] ?? '#B91C1C';
+      tab.style.background  = `${c}15`;
+      tab.style.borderColor = c;
+      tab.style.color       = c;
       mktPanels.forEach((p, j) => p.classList.toggle('hidden', i !== j));
       loaders[i]?.();
     });

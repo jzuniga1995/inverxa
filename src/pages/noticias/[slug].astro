@@ -275,7 +275,7 @@ function formatFecha(fecha: Date | null) {
 
 </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+  <div style="background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <div class="flex flex-col lg:flex-row gap-10">
 
@@ -283,7 +283,7 @@ function formatFecha(fecha: Date | null) {
         <article class="flex-1 min-w-0">
 
           <!-- Volver -->
-          <a href="/noticias" class="inline-flex items-center gap-1.5 text-white/40 hover:text-white text-sm no-underline transition-colors duration-200 mb-6">
+          <a href="/noticias" class="inline-flex items-center gap-1.5 text-sm no-underline transition-colors duration-200 mb-6" style="color:#78716C;">
             <ArrowLeft size={15} /> Volver a noticias
           </a>
 
@@ -292,38 +292,39 @@ function formatFecha(fecha: Date | null) {
             {articulo.categoria && (
               <a
                 href={`/noticias?categoria=${articulo.categoria.slug}`}
-                class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider no-underline hover:bg-[#E8C060] transition-colors duration-200"
+                class="text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider no-underline transition-colors duration-200"
+                style="background:#B91C1C;color:#fff;"
               >
                 {articulo.categoria.nombre}
               </a>
             )}
             {articulo.pais && (
-              <span class="flex items-center gap-1 text-white/30 text-xs border border-white/[0.07] px-2 py-0.5 rounded">
+              <span class="flex items-center gap-1 text-xs px-2 py-0.5 rounded" style="color:#A8A29E;border:1px solid #E5E0D8;">
                 <Globe size={10} />
                 {articulo.pais.nombre}
               </span>
             )}
-            <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
+            <span class="text-xs flex items-center gap-1 ml-auto" style="color:#A8A29E;">
               <Clock size={11} />
               {formatFecha(articulo.creadoEn)}
             </span>
           </div>
 
           <!-- Título -->
-          <h1 class="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white leading-tight mb-4" style="font-family: 'Syne', sans-serif;">
+          <h1 class="font-extrabold text-2xl sm:text-3xl lg:text-4xl leading-tight mb-4" style="font-family:'Playfair Display',serif;color:#1C1917;">
             {articulo.titulo}
           </h1>
 
           <!-- Resumen -->
           {articulo.resumen && (
-            <p class="article-summary text-white/50 text-base sm:text-lg leading-relaxed border-l-2 border-[#D4A843] pl-4 mb-8 font-light">
+            <p class="article-summary text-base sm:text-lg leading-relaxed pl-4 mb-8 font-light" style="color:#57534E;border-left:3px solid #B91C1C;">
               {articulo.resumen}
             </p>
           )}
 
           <!-- Imagen principal -->
           {articulo.imagen && (
-            <div class="w-full h-56 sm:h-80 rounded-2xl overflow-hidden mb-8 bg-[#1A1D24]">
+            <div class="w-full h-56 sm:h-80 rounded-2xl overflow-hidden mb-8" style="background:#F0EDE7;">
               <img
                 src={articulo.imagen}
                 alt={articulo.titulo}
@@ -333,17 +334,17 @@ function formatFecha(fecha: Date | null) {
           )}
 
           <!-- Contenido -->
-          <div class="article-content text-white/70 leading-relaxed text-base sm:text-[16.5px]" set:html={articulo.contenido} />
+          <div class="article-content leading-relaxed text-base sm:text-[16.5px]" style="color:#1C1917;" set:html={articulo.contenido} />
 
           <!-- Firma del autor -->
           <AutorFirma fecha={articulo.creadoEn} />
 
           <!-- Footer del artículo -->
-          <div class="flex items-center justify-between mt-10 pt-6 border-t border-white/[0.07] flex-wrap gap-4">
-            <span class="text-white/25 text-xs">
+          <div class="flex items-center justify-between mt-10 pt-6 flex-wrap gap-4" style="border-top:1px solid #E5E0D8;">
+            <span class="text-xs" style="color:#A8A29E;">
               Actualizado: {formatFecha(articulo.actualizadoEn)}
             </span>
-            <a href="/noticias" class="inline-flex items-center gap-1.5 text-[#D4A843] text-sm font-medium no-underline hover:text-[#E8C060] transition-colors duration-200">
+            <a href="/noticias" class="inline-flex items-center gap-1.5 text-sm font-medium no-underline transition-colors duration-200" style="color:#B91C1C;">
               <ArrowLeft size={14} /> Ver más noticias
             </a>
           </div>
@@ -355,7 +356,7 @@ function formatFecha(fecha: Date | null) {
             la lectura. El componente muestra su versión grid (lg:hidden)
             solo en este bloque mobile dedicado.
           -->
-          <div class="mt-10 pt-8 border-t border-white/[0.07] lg:hidden">
+          <div class="mt-10 pt-8 lg:hidden" style="border-top:1px solid #E5E0D8;">
             <HerramientasSidebar />
           </div>
 
@@ -366,25 +367,25 @@ function formatFecha(fecha: Date | null) {
 
           <!-- Artículos relacionados -->
           {filtrados.length > 0 && (
-            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-              <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
+            <div class="rounded-2xl p-5" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+              <h3 class="font-bold text-sm mb-4" style="color:#1C1917;">
                 Relacionados
               </h3>
               <div class="flex flex-col gap-4">
                 {filtrados.map((rel) => (
                   <a href={`/noticias/${rel.slug}`} class="group flex flex-col gap-1.5 no-underline">
                     {rel.imagen && (
-                      <div class="w-full h-28 rounded-lg overflow-hidden bg-[#1A1D24]">
+                      <div class="w-full h-28 rounded-lg overflow-hidden" style="background:#E5E0D8;">
                         <img src={rel.imagen} alt={rel.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       </div>
                     )}
                     {rel.categoria && (
-                      <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">{rel.categoria.nombre}</span>
+                      <span class="text-[10px] font-bold uppercase tracking-wider" style="color:#B91C1C;">{rel.categoria.nombre}</span>
                     )}
-                    <span class="text-white/60 group-hover:text-white text-xs leading-snug line-clamp-2 transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+                    <span class="text-xs leading-snug line-clamp-2 transition-colors duration-200 group-hover:text-[#B91C1C]" style="color:#1C1917;">
                       {rel.titulo}
                     </span>
-                    <span class="text-white/25 text-[10px] flex items-center gap-1">
+                    <span class="text-[10px] flex items-center gap-1" style="color:#A8A29E;">
                       <Clock size={9} /> {formatFecha(rel.creadoEn)}
                     </span>
                   </a>
@@ -394,8 +395,8 @@ function formatFecha(fecha: Date | null) {
           )}
 
           <!-- Explorar categorías -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-            <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
+          <div class="rounded-2xl p-5" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+            <h3 class="font-bold text-sm mb-4" style="color:#1C1917;">
               Explorar
             </h3>
             <div class="flex flex-col gap-1">
@@ -408,7 +409,8 @@ function formatFecha(fecha: Date | null) {
               ].map((cat) => (
                 <a
                   href={`/noticias?categoria=${cat.slug}`}
-                  class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/5 no-underline transition-colors duration-200"
+                  class="flex items-center justify-between px-3 py-2 rounded-lg text-sm no-underline transition-colors duration-200 hover:bg-[#EDE8E1]"
+                  style="color:#57534E;"
                 >
                   <span>{cat.label}</span>
                   <ArrowRight size={13} />
@@ -445,26 +447,26 @@ function formatFecha(fecha: Date | null) {
   }
 
   .article-content h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #E8EAF0;
+    color: #1C1917;
     margin: 2rem 0 1rem;
   }
 
   .article-content h3 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.15rem;
     font-weight: 600;
-    color: #E8EAF0;
+    color: #1C1917;
     margin: 1.5rem 0 0.75rem;
   }
 
   .article-content h4 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1rem;
     font-weight: 600;
-    color: #E8EAF0;
+    color: #1C1917;
     margin: 1.25rem 0 0.5rem;
   }
 
@@ -474,12 +476,12 @@ function formatFecha(fecha: Date | null) {
   }
 
   .article-content a {
-    color: #D4A843;
+    color: #B91C1C;
     text-decoration: underline;
   }
 
   .article-content a:hover {
-    color: #E8C060;
+    color: #991B1B;
   }
 
   .article-content ul,
@@ -503,21 +505,21 @@ function formatFecha(fecha: Date | null) {
   }
 
   .article-content blockquote {
-    border-left: 3px solid #D4A843;
+    border-left: 3px solid #B91C1C;
     padding-left: 1rem;
-    color: rgba(232,234,240,0.5);
+    color: #57534E;
     font-style: italic;
     margin: 1.5rem 0;
   }
 
   .article-content strong {
-    color: #E8EAF0;
+    color: #1C1917;
     font-weight: 600;
   }
 
   .article-content em {
     font-style: italic;
-    color: rgba(232,234,240,0.8);
+    color: #57534E;
   }
 
   .article-content img {
@@ -527,17 +529,17 @@ function formatFecha(fecha: Date | null) {
   }
 
   .article-content code {
-    background: rgba(255,255,255,0.07);
+    background: #F0EDE7;
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.875rem;
-    color: #D4A843;
+    color: #B91C1C;
     font-family: monospace;
   }
 
   .article-content pre {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: #F5F1EC;
+    border: 1px solid #E5E0D8;
     border-radius: 8px;
     padding: 1rem 1.25rem;
     overflow-x: auto;
@@ -548,12 +550,12 @@ function formatFecha(fecha: Date | null) {
     background: transparent;
     padding: 0;
     font-size: 0.85rem;
-    color: #E8EAF0;
+    color: #1C1917;
   }
 
   .article-content hr {
     border: none;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid #E5E0D8;
     margin: 2rem 0;
   }
 
@@ -565,22 +567,22 @@ function formatFecha(fecha: Date | null) {
   }
 
   .article-content th {
-    background: rgba(212,168,67,0.1);
-    color: #D4A843;
+    background: #F5F1EC;
+    color: #78716C;
     font-weight: 600;
     text-align: left;
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid #E5E0D8;
   }
 
   .article-content td {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.7);
+    border-bottom: 1px solid #F0EDE7;
+    color: #1C1917;
   }
 
   .article-content tr:hover td {
-    background: rgba(255,255,255,0.02);
+    background: #F9F7F4;
   }
 </style>
 

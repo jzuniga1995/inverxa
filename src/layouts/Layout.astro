@@ -27,7 +27,7 @@ const { bodyClass = '', mostrarBrokers = true } = Astro.props;
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E8YH3R6PPW"></script>
@@ -45,7 +45,7 @@ const { bodyClass = '', mostrarBrokers = true } = Astro.props;
   <slot name="head" />
 </head>
 
-<body class={`bg-[#0A0B0D] min-h-screen ${bodyClass}`} style="font-family: 'DM Sans', sans-serif;">
+<body class={`min-h-screen ${bodyClass}`} style="background: #FAFAF8; font-family: 'DM Sans', sans-serif;">
 
   <Header />
 
@@ -78,13 +78,13 @@ const { bodyClass = '', mostrarBrokers = true } = Astro.props;
   }
 
   ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #0A0B0D; }
-  ::-webkit-scrollbar-thumb { background: #23272F; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #D4A843; }
+  ::-webkit-scrollbar-track { background: #F0EDE7; }
+  ::-webkit-scrollbar-thumb { background: #D6D0C8; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #B91C1C; }
 
   ::selection {
-    background: rgba(212, 168, 67, 0.25);
-    color: #E8EAF0;
+    background: rgba(185, 28, 28, 0.15);
+    color: #1C1917;
   }
 </style>
 

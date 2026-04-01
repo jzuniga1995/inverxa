@@ -333,68 +333,69 @@ const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? nu
 </slot>
 
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+  <div style="background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif;">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Breadcrumb -->
-      <a href="/herramientas/forex" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas/forex" class="inline-flex items-center gap-2 text-sm mb-6 no-underline" style="color:#A8A29E;">
         <ArrowLeft size={15} /> Forex
       </a>
 
       {fetchError || !parData ? (
-        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">
+        <div style="display:flex;align-items:center;justify-content:center;padding:80px 20px;border:1px solid #E5E0D8;">
+          <p style="color:#A8A29E;font-size:14px;">
             No se pudo cargar la información.{' '}
-            <a href="/herramientas/forex" class="text-[#EC4899]">Volver</a>
+            <a href="/herramientas/forex" style="color:#B91C1C;">Volver</a>
           </p>
         </div>
       ) : (
         <div class="flex flex-col gap-6">
 
           <!-- Header: banderas + precio -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="border:1px solid #E5E0D8;background:#fff;padding:20px 24px;">
             <div class="flex items-center gap-4">
-              <!-- Banderas solapadas -->
               <div class="relative w-14 h-10 flex-shrink-0">
                 <img
                   src={`https://flagcdn.com/w80/${parData.banderaBase.toLowerCase()}.png`}
                   alt={parData.banderaBase}
-                  class="absolute top-0 left-0 w-10 h-10 rounded-full object-cover border-2 border-[#111318] shadow-lg"
+                  class="absolute top-0 left-0 w-10 h-10 rounded-full object-cover"
+                  style="border:2px solid #fff;"
                   onerror="this.style.display='none'"
                 />
                 <img
                   src={`https://flagcdn.com/w80/${parData.banderaCotizada.toLowerCase()}.png`}
                   alt={parData.banderaCotizada}
-                  class="absolute bottom-0 right-0 w-10 h-10 rounded-full object-cover border-2 border-[#111318] shadow-lg"
+                  class="absolute bottom-0 right-0 w-10 h-10 rounded-full object-cover"
+                  style="border:2px solid #fff;"
                   onerror="this.style.display='none'"
                 />
               </div>
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{parData.par}</h1>
-                  <span class="text-white/30 text-sm bg-white/5 px-2 py-0.5 rounded">{nombre}</span>
+                  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(18px,2.5vw,24px);font-weight:700;color:#1C1917;margin:0;">{parData.par}</h1>
+                  <span style="color:#78716C;font-size:13px;background:#F0EDE7;padding:2px 8px;">{nombre}</span>
                 </div>
                 <div class="flex items-center gap-3 mt-1 flex-wrap">
-                  <span class="text-white font-bold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">{precioFmt}</span>
-                  <span class="text-xs bg-[#EC4899]/10 text-[#EC4899] px-2 py-0.5 rounded font-medium">Precio de referencia</span>
+                  <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(20px,3vw,28px);color:#1C1917;">{precioFmt}</span>
+                  <span style="font-size:11px;background:rgba(21,128,61,0.1);color:#15803D;padding:2px 8px;font-weight:600;">Precio de referencia</span>
                 </div>
               </div>
             </div>
-            <div class="text-white/20 text-xs text-right leading-relaxed">
+            <div style="color:#A8A29E;font-size:12px;text-align:right;line-height:1.6;">
               Fuente: fawazahmed0 API<br/>
               Actualización diaria
             </div>
           </div>
 
-     <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-  <TVChart chartId="tv-forex" tvSymbol={tvDisponible ? tvSymbol : ''} />
-</div>
+          <div style="border:1px solid #E5E0D8;overflow:hidden;">
+            <TVChart chartId="tv-forex" tvSymbol={tvDisponible ? tvSymbol : ''} />
+          </div>
 
           <!-- Info monedas -->
           {(baseInfo || cotInfo) && (
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {baseInfo && (
-                <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+                <div style="border:1px solid #E5E0D8;background:#fff;padding:20px;">
                   <div class="flex items-center gap-3 mb-3">
                     <img
                       src={`https://flagcdn.com/w40/${parData.banderaBase.toLowerCase()}.png`}
@@ -403,17 +404,17 @@ const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? nu
                       onerror="this.style.display='none'"
                     />
                     <div>
-                      <div class="text-white/30 text-[10px] uppercase tracking-widest">Moneda base</div>
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">
+                      <div style="color:#A8A29E;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;">Moneda base</div>
+                      <div style="color:#1C1917;font-weight:700;font-size:14px;">
                         {baseInfo.nombre} ({parData.base.toUpperCase()})
                       </div>
                     </div>
                   </div>
-                  <p class="text-white/40 text-sm leading-relaxed">{baseInfo.descripcion}</p>
+                  <p style="color:#57534E;font-size:14px;line-height:1.7;margin:0;">{baseInfo.descripcion}</p>
                 </div>
               )}
               {cotInfo && (
-                <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
+                <div style="border:1px solid #E5E0D8;background:#fff;padding:20px;">
                   <div class="flex items-center gap-3 mb-3">
                     <img
                       src={`https://flagcdn.com/w40/${parData.banderaCotizada.toLowerCase()}.png`}
@@ -422,22 +423,22 @@ const cotInfo      = parData ? (infoMoneda[parData.cotizada.toUpperCase()] ?? nu
                       onerror="this.style.display='none'"
                     />
                     <div>
-                      <div class="text-white/30 text-[10px] uppercase tracking-widest">Moneda cotizada</div>
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif;">
+                      <div style="color:#A8A29E;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;">Moneda cotizada</div>
+                      <div style="color:#1C1917;font-weight:700;font-size:14px;">
                         {cotInfo.nombre} ({parData.cotizada.toUpperCase()})
                       </div>
                     </div>
                   </div>
-                  <p class="text-white/40 text-sm leading-relaxed">{cotInfo.descripcion}</p>
+                  <p style="color:#57534E;font-size:14px;line-height:1.7;margin:0;">{cotInfo.descripcion}</p>
                 </div>
               )}
             </div>
           )}
 
           <!-- Nota sobre datos -->
-          <div class="bg-[#EC4899]/5 border border-[#EC4899]/10 rounded-xl p-4">
-            <p class="text-white/40 text-xs leading-relaxed">
-              <span class="text-[#EC4899] font-bold">Nota:</span> Los precios mostrados son tasas de referencia con actualización diaria.
+          <div style="background:#F5F1EC;border-left:3px solid #E5E0D8;padding:14px 18px;">
+            <p style="color:#57534E;font-size:13px;line-height:1.6;margin:0;">
+              <strong style="color:#15803D;">Nota:</strong> Los precios mostrados son tasas de referencia con actualización diaria.
               Para trading activo, consultá los precios en tiempo real de tu broker. Las tasas de cambio oficiales pueden diferir.
             </p>
           </div>

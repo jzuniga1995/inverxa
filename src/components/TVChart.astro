@@ -8,12 +8,20 @@ const { chartId, tvSymbol, height = 460 } = Astro.props;
 ---
 
 <!-- Header -->
-<div class="px-5 py-4 border-b border-white/[0.07] flex items-center justify-between">
-  <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Gráfica de precio</h2>
+<div class="px-5 py-4 flex items-center justify-between"
+     style="border-bottom: 1px solid #E5E0D8;">
+  <h2 class="font-bold text-base" style="color: #1C1917; font-family: 'DM Sans', sans-serif;">Gráfica de precio</h2>
   <div class="flex items-center gap-3">
-    <span class="text-white/25 text-xs">TradingView</span>
+    <span class="text-xs" style="color: #A8A29E;">TradingView</span>
     {tvSymbol && (
-      <button data-chart={chartId} class="tv-fs-btn text-white/30 hover:text-white transition-colors p-1 rounded" title="Pantalla completa">
+      <button
+        data-chart={chartId}
+        class="tv-fs-btn transition-colors p-1"
+        style="color: #78716C;"
+        title="Pantalla completa"
+        onmouseover="this.style.color='#1C1917'"
+        onmouseout="this.style.color='#78716C'"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
         </svg>
@@ -27,7 +35,7 @@ const { chartId, tvSymbol, height = 460 } = Astro.props;
   <div id={chartId} style={`height: ${height}px;`}></div>
 ) : (
   <div class="flex flex-col items-center justify-center py-16 gap-3">
-    <p class="text-white/30 text-sm font-medium">Gráfica no disponible</p>
+    <p class="text-sm font-medium" style="color: #A8A29E;">Gráfica no disponible</p>
   </div>
 )}
 

@@ -229,52 +229,42 @@ try {
 </slot>
 
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+  <div style="background: #FAFAF8; min-height: 100vh; font-family: 'DM Sans', sans-serif;">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
       <!-- Breadcrumb -->
-      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-sm mb-6 no-underline" style="color: #A8A29E;">
         <ArrowLeft size={15} /> Herramientas
       </a>
 
       <!-- Título -->
-      <div class="mb-7">
-        <div class="flex items-center gap-2.5 mb-1">
-          <div class="w-9 h-9 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center flex-shrink-0">
-            <Layers size={18} class="text-[#F59E0B]" />
-          </div>
-          <h1 class="text-white font-extrabold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">
-            Metales Preciosos
-          </h1>
-        </div>
-        <p class="text-white/30 text-sm ml-11">
+      <div class="mb-7" style="border-bottom: 1px solid #E5E0D8; padding-bottom: 20px;">
+        <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 32px); font-weight: 700; color: #1C1917; margin: 0 0 6px;">
+          Metales Preciosos
+        </h1>
+        <p style="color: #78716C; font-size: 14px; margin: 0;">
           {metales.length > 0 ? `${metales.length} metales · ` : ''}Precio USD por onza troy · Actualización diaria
         </p>
       </div>
 
       {fetchError ? (
-        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">No se pudieron cargar los precios. Intenta de nuevo.</p>
+        <div style="display: flex; align-items: center; justify-content: center; padding: 80px 20px; border: 1px solid #E5E0D8;">
+          <p style="color: #A8A29E; font-size: 14px;">No se pudieron cargar los precios. Intenta de nuevo.</p>
         </div>
       ) : metales.length === 0 ? (
         <div class="flex flex-col gap-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(4)].map(() => (
-              <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 flex flex-col gap-4">
+              <div style="border: 1px solid #E5E0D8; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
                 <div class="flex items-start justify-between">
-                  <div class="w-11 h-11 rounded-xl bg-white/5 animate-pulse"></div>
-                  <div class="w-14 h-5 bg-white/5 rounded-full animate-pulse"></div>
+                  <div class="w-11 h-11 animate-pulse" style="background: #E5E0D8;"></div>
+                  <div class="w-14 h-5 animate-pulse" style="background: #E5E0D8;"></div>
                 </div>
                 <div class="flex flex-col gap-2">
-                  <div class="w-28 h-8 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-20 h-4 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-28 h-8 animate-pulse" style="background: #E5E0D8;"></div>
+                  <div class="w-20 h-4 animate-pulse" style="background: #E5E0D8;"></div>
                 </div>
-                <div class="w-full h-8 bg-white/5 rounded animate-pulse"></div>
-                <div class="flex gap-1.5">
-                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-16 h-5 bg-white/5 rounded animate-pulse"></div>
-                </div>
+                <div class="w-full h-8 animate-pulse" style="background: #E5E0D8;"></div>
               </div>
             ))}
           </div>
@@ -285,49 +275,45 @@ try {
           <!-- Cards visuales -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {metales.map((m) => {
-              const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
+              const color = colorPorSimbolo[m.simbolo] ?? '#B45309';
               const info  = infoMetal[m.simbolo];
               const Icono = ICONOS[m.icono];
               return (
                 <a
                   href={`/herramientas/metales/${m.slug}`}
-                  class="group flex flex-col gap-4 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl p-5 no-underline transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+                  class="group flex flex-col gap-4 no-underline transition-all duration-200"
+                  style="border: 1px solid #E5E0D8; background: #fff; padding: 20px;"
                 >
                   <div class="flex items-start justify-between">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={`background: ${color}15;`}>
+                    <div style={`width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: ${color}15; flex-shrink: 0;`}>
                       {Icono && <Icono size={20} color={color} />}
                     </div>
-                    <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide"
-                      style={`background: ${color}15; color: ${color};`}>
+                    <span style={`font-size: 10px; font-weight: 700; padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.06em; background: ${color}15; color: ${color};`}>
                       USD/oz
                     </span>
                   </div>
 
                   <div>
-                    <div class="text-white font-extrabold text-2xl sm:text-3xl" style="font-family:'Syne',sans-serif;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #1C1917;">
                       {formatMetal(m.precio)}
                     </div>
-                    <div class="text-white/50 text-sm font-medium mt-0.5">{m.nombre}</div>
+                    <div style="color: #57534E; font-size: 14px; font-weight: 500; margin-top: 2px;">{m.nombre}</div>
                   </div>
 
                   {info && (
-                    <p class="text-white/30 text-xs leading-relaxed line-clamp-2">{info.descripcion}</p>
+                    <p class="line-clamp-2" style="color: #78716C; font-size: 12px; line-height: 1.6; margin: 0;">{info.descripcion}</p>
                   )}
 
                   <div class="flex flex-wrap gap-1.5 mt-auto">
                     {(info?.usos ?? []).slice(0, 3).map((uso) => (
-                      <span class="text-[10px] px-2 py-0.5 rounded border"
-                        style={`background: ${color}08; border-color: ${color}20; color: ${color}80;`}>
+                      <span style={`font-size: 10px; padding: 2px 8px; border: 1px solid ${color}30; color: ${color}; background: ${color}08;`}>
                         {uso}
                       </span>
                     ))}
                   </div>
 
-                  <div class="flex items-center gap-1 pt-2 border-t border-white/[0.07]">
-                    <span class="text-xs font-medium group-hover:opacity-70 transition-opacity" style={`color: ${color};`}>
-                      Ver gráfica →
-                    </span>
+                  <div style="border-top: 1px solid #E5E0D8; padding-top: 10px;">
+                    <span style={`font-size: 12px; font-weight: 600; color: ${color};`}>Ver gráfica →</span>
                   </div>
                 </a>
               );
@@ -335,45 +321,45 @@ try {
           </div>
 
           <!-- Tabla detallada -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-            <div class="px-5 py-4 border-b border-white/[0.07]">
-              <h2 class="text-white font-bold text-base" style="font-family:'Syne',sans-serif;">Resumen de precios</h2>
+          <div style="border: 1px solid #E5E0D8; overflow: hidden;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #E5E0D8; background: #F5F1EC;">
+              <h2 style="font-size: 14px; font-weight: 700; color: #1C1917; margin: 0;">Resumen de precios</h2>
             </div>
 
-            <div class="hidden md:grid border-b border-white/[0.07] px-5 py-3 table-cols">
-              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider">Metal</div>
-              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Precio / oz</div>
-              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Símbolo</div>
-              <div class="text-white/40 text-[11px] font-semibold uppercase tracking-wider text-right">Fuente</div>
+            <div class="hidden md:grid table-cols" style="border-bottom: 1px solid #E5E0D8; padding: 10px 20px; background: #F9F7F4;">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #A8A29E;">Metal</div>
+              <div class="text-right" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #A8A29E;">Precio / oz</div>
+              <div class="text-right" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #A8A29E;">Símbolo</div>
+              <div class="text-right" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #A8A29E;">Fuente</div>
             </div>
 
             {metales.map((m) => {
-              const color = colorPorSimbolo[m.simbolo] ?? '#D4A843';
+              const color = colorPorSimbolo[m.simbolo] ?? '#B45309';
               return (
                 <a
                   href={`/herramientas/metales/${m.slug}`}
-                  class="flex md:grid items-center px-5 py-4 border-b border-white/[0.04] last:border-none hover:bg-white/[0.025] transition-colors no-underline gap-3 md:gap-0 table-cols"
+                  class="flex md:grid items-center gap-3 md:gap-0 no-underline table-cols metal-row"
+                  style="padding: 14px 20px; border-top: 1px solid #F0EDE7;"
                 >
                   <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={`background: ${color}15;`}>
-                      <span class="text-[10px] font-bold" style={`color: ${color};`}>{m.simbolo.slice(1, 3)}</span>
+                    <div style={`width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: ${color}15;`}>
+                      <span style={`font-size: 10px; font-weight: 700; color: ${color};`}>{m.simbolo.slice(1, 3)}</span>
                     </div>
                     <div class="min-w-0">
-                      <div class="text-white font-bold text-sm truncate" style="font-family:'Syne',sans-serif;">{m.nombre}</div>
-                      <div class="text-white/30 text-[11px]">{m.simbolo}</div>
+                      <div style="font-weight: 700; font-size: 14px; color: #1C1917;" class="truncate">{m.nombre}</div>
+                      <div style="color: #A8A29E; font-size: 11px;">{m.simbolo}</div>
                     </div>
                   </div>
 
-                  <div class="flex items-center md:justify-end text-white font-semibold text-sm flex-shrink-0" style="font-family:'Syne',sans-serif;">
+                  <div class="flex items-center md:justify-end flex-shrink-0" style="font-weight: 700; font-size: 14px; color: #1C1917;">
                     {formatMetal(m.precio)}
                   </div>
 
-                  <div class="hidden md:flex items-center justify-end text-white/30 text-xs">
+                  <div class="hidden md:flex items-center justify-end" style="color: #78716C; font-size: 12px;">
                     {m.simbolo}/USD
                   </div>
 
-                  <div class="hidden md:flex items-center justify-end text-white/20 text-xs">
+                  <div class="hidden md:flex items-center justify-end" style="color: #A8A29E; font-size: 12px;">
                     fawazahmed0 API
                   </div>
                 </a>
@@ -382,9 +368,9 @@ try {
           </div>
 
           <!-- Nota -->
-          <div class="bg-[#F59E0B]/5 border border-[#F59E0B]/10 rounded-xl p-4">
-            <p class="text-white/40 text-xs leading-relaxed">
-              <span class="text-[#F59E0B] font-bold">Nota:</span> Los precios son tasas de referencia en USD por onza troy con actualización diaria.
+          <div style="background: #F5F1EC; border-left: 3px solid #D6D0C8; padding: 14px 18px;">
+            <p style="color: #57534E; font-size: 13px; line-height: 1.6; margin: 0;">
+              <strong style="color: #B45309;">Nota:</strong> Los precios son tasas de referencia en USD por onza troy con actualización diaria.
               Para trading activo de metales, consultá los precios en tiempo real de tu broker o exchange.
             </p>
           </div>
@@ -405,6 +391,7 @@ try {
   @media (min-width: 768px) {
     .table-cols { grid-template-columns: 1fr 160px 160px 200px; }
   }
+  .metal-row:hover { background: #F9F7F4; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
   .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
 </style>

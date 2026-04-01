@@ -334,62 +334,60 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
 </slot>
 
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif;">
+  <div style="background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif;">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Breadcrumb -->
-      <a href="/herramientas/metales" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas/metales" class="inline-flex items-center gap-2 text-sm mb-6 no-underline" style="color:#A8A29E;">
         <ArrowLeft size={15} /> Metales Preciosos
       </a>
 
       {fetchError || !metalData ? (
-        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">
+        <div style="display:flex;align-items:center;justify-content:center;padding:80px 20px;border:1px solid #E5E0D8;">
+          <p style="color:#A8A29E;font-size:14px;">
             No se pudo cargar la información.{' '}
-            <a href="/herramientas/metales" class="text-[#F59E0B]">Volver</a>
+            <a href="/herramientas/metales" style="color:#B91C1C;">Volver</a>
           </p>
         </div>
       ) : (
         <div class="flex flex-col gap-6">
 
           <!-- Header: nombre + precio -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="border:1px solid #E5E0D8;background:#fff;padding:20px 24px;">
             <div class="flex items-center gap-4">
-           <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-  style={`background: ${color}15;`}>
-  {metalData.icono === 'CircleDollarSign' && <CircleDollarSign size={26} color={color} />}
-  {metalData.icono === 'Gem'              && <Gem              size={26} color={color} />}
-  {metalData.icono === 'Hexagon'          && <Hexagon          size={26} color={color} />}
-  {metalData.icono === 'Cpu'              && <Cpu              size={26} color={color} />}
-</div>
+              <div style={`width:56px;height:56px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${color}15;`}>
+                {metalData.icono === 'CircleDollarSign' && <CircleDollarSign size={26} color={color} />}
+                {metalData.icono === 'Gem'              && <Gem              size={26} color={color} />}
+                {metalData.icono === 'Hexagon'          && <Hexagon          size={26} color={color} />}
+                {metalData.icono === 'Cpu'              && <Cpu              size={26} color={color} />}
+              </div>
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
-                  <h1 class="text-white font-extrabold text-xl sm:text-2xl" style="font-family:'Syne',sans-serif;">{metalData.nombre}</h1>
-                  <span class="text-white/30 text-sm bg-white/5 px-2 py-0.5 rounded">{metalData.simbolo}/USD</span>
+                  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(18px,2.5vw,24px);font-weight:700;color:#1C1917;margin:0;">{metalData.nombre}</h1>
+                  <span style="color:#78716C;font-size:13px;background:#F0EDE7;padding:2px 8px;">{metalData.simbolo}/USD</span>
                 </div>
                 <div class="flex items-center gap-3 mt-1 flex-wrap">
-                  <span class="text-white font-bold text-2xl sm:text-3xl" style={`font-family:'Syne',sans-serif; color: ${color};`}>{precioFmt}</span>
-                  <span class="text-white/30 text-xs">por onza troy</span>
+                  <span style={`font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(20px,3vw,28px);color:${color};`}>{precioFmt}</span>
+                  <span style="color:#78716C;font-size:12px;">por onza troy</span>
                 </div>
               </div>
             </div>
-            <div class="text-white/20 text-xs text-right leading-relaxed">
+            <div style="color:#A8A29E;font-size:12px;text-align:right;line-height:1.6;">
               Fuente: fawazahmed0 API<br/>Actualización diaria
             </div>
           </div>
 
-<div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-  <TVChart chartId="tv-chart" tvSymbol={tvSymbol} />
-</div>
-
+          <div style="border:1px solid #E5E0D8;overflow:hidden;">
+            <TVChart chartId="tv-chart" tvSymbol={tvSymbol} />
+          </div>
 
           <!-- Datos clave -->
           {info && (
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {info.datos.map(({ label, valor }) => (
-                <div class="bg-[#111318] border border-white/[0.07] rounded-xl p-4">
-                  <div class="text-white/30 text-xs mb-1.5">{label}</div>
-                  <div class="text-white font-bold text-sm leading-snug" style="font-family:'Syne',sans-serif;">{valor}</div>
+                <div style="border:1px solid #E5E0D8;background:#fff;padding:16px;">
+                  <div style="color:#A8A29E;font-size:12px;margin-bottom:6px;">{label}</div>
+                  <div style="color:#1C1917;font-weight:700;font-size:14px;line-height:1.4;">{valor}</div>
                 </div>
               ))}
             </div>
@@ -397,12 +395,11 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
 
           <!-- Usos -->
           {info && (
-            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5 sm:p-6">
-              <h2 class="text-white font-bold text-base mb-4" style="font-family:'Syne',sans-serif;">Principales usos</h2>
+            <div style="border:1px solid #E5E0D8;background:#fff;padding:20px 24px;">
+              <h2 style="font-size:16px;font-weight:700;color:#1C1917;margin:0 0 16px;">Principales usos</h2>
               <div class="flex flex-wrap gap-2">
                 {info.usos.map(uso => (
-                  <span class="text-sm px-3 py-1.5 rounded-lg border font-medium"
-                    style={`background: ${color}10; border-color: ${color}25; color: ${color};`}>
+                  <span style={`font-size:13px;padding:6px 12px;border:1px solid ${color}25;font-weight:500;background:${color}10;color:${color};`}>
                     {uso}
                   </span>
                 ))}
@@ -413,26 +410,25 @@ const precioFmt = metalData ? formatMetal(metalData.precio) : '—';
           <!-- Descripción + Historia + LATAM -->
           {info && (
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-                <h3 class="text-white font-bold text-sm mb-3" style="font-family:'Syne',sans-serif;">¿Qué es?</h3>
-                <p class="text-white/45 text-sm leading-relaxed">{info.descripcion}</p>
+              <div style="border:1px solid #E5E0D8;background:#F5F1EC;padding:20px;">
+                <h3 style="font-size:14px;font-weight:700;color:#1C1917;margin:0 0 12px;">¿Qué es?</h3>
+                <p style="color:#57534E;font-size:13px;line-height:1.7;margin:0;">{info.descripcion}</p>
               </div>
-              <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-                <h3 class="text-white font-bold text-sm mb-3" style="font-family:'Syne',sans-serif;">Historia y mercado</h3>
-                <p class="text-white/45 text-sm leading-relaxed">{info.historia}</p>
+              <div style="border:1px solid #E5E0D8;background:#F5F1EC;padding:20px;">
+                <h3 style="font-size:14px;font-weight:700;color:#1C1917;margin:0 0 12px;">Historia y mercado</h3>
+                <p style="color:#57534E;font-size:13px;line-height:1.7;margin:0;">{info.historia}</p>
               </div>
-              <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5"
-                style={`border-color: ${color}20;`}>
-                <h3 class="font-bold text-sm mb-3" style={`font-family:'Syne',sans-serif; color: ${color};`}>Relevancia en LATAM</h3>
-                <p class="text-white/45 text-sm leading-relaxed">{info.latam}</p>
+              <div style={`border:1px solid ${color}25;background:${color}05;padding:20px;`}>
+                <h3 style={`font-size:14px;font-weight:700;color:${color};margin:0 0 12px;`}>Relevancia en LATAM</h3>
+                <p style="color:#57534E;font-size:13px;line-height:1.7;margin:0;">{info.latam}</p>
               </div>
             </div>
           )}
 
           <!-- Nota -->
-          <div class="rounded-xl p-4" style={`background: ${color}08; border: 1px solid ${color}15;`}>
-            <p class="text-white/40 text-xs leading-relaxed">
-              <span class="font-bold" style={`color: ${color};`}>Nota:</span> Los precios mostrados son tasas de referencia con actualización diaria.
+          <div style="background:#F5F1EC;border-left:3px solid #D6D0C8;padding:14px 18px;">
+            <p style="color:#57534E;font-size:13px;line-height:1.6;margin:0;">
+              <strong style={`color:${color};`}>Nota:</strong> Los precios mostrados son tasas de referencia con actualización diaria.
               Para trading activo de metales, consultá precios en tiempo real en tu broker. Los precios spot pueden diferir.
             </p>
           </div>

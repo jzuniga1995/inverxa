@@ -53,34 +53,34 @@ function formatFecha(fecha: Date | null) {
     })} />
   </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+  <div style="background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif;">
 
     <!-- HERO -->
-    <div class="border-b border-white/[0.07] bg-[#111318]">
+    <div style="border-bottom:1px solid #E5E0D8;background:#fff;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div class="flex flex-col sm:flex-row items-center sm:items-start gap-7">
 
           <div class="relative flex-shrink-0">
-            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border border-[#D4A843]/20 overflow-hidden">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden" style="border:1px solid #E5E0D8;">
               <img src="/foto-jose.jpg" alt="José Zúniga" class="w-full h-full object-cover" />
             </div>
-            <span class="absolute -bottom-2 -right-2 bg-[#D4A843] text-[#0A0B0D] text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
+            <span class="absolute -bottom-2 -right-2 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider" style="background:#B91C1C;color:#fff;">
               Editor
             </span>
           </div>
 
           <div class="flex flex-col gap-3 text-center sm:text-left">
             <div>
-              <h1 class="font-extrabold text-2xl sm:text-3xl text-white" style="font-family: 'Syne', sans-serif;">
+              <h1 class="font-extrabold text-2xl sm:text-3xl" style="font-family:'Playfair Display',serif;color:#1C1917;">
                 {autor.nombre}
               </h1>
-              <p class="text-[#D4A843] text-sm font-medium mt-0.5">{autor.rol} · Inversax</p>
+              <p class="text-sm font-medium mt-0.5" style="color:#B91C1C;">{autor.rol} · Inversax</p>
             </div>
-            <p class="text-white/50 text-sm leading-relaxed max-w-xl">{autor.bio}</p>
+            <p class="text-sm leading-relaxed max-w-xl" style="color:#57534E;">{autor.bio}</p>
             <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
               {autor.skills.map((s) => {
                 return (
-                  <span class="bg-white/5 border border-white/[0.07] text-white/40 text-[10px] px-2.5 py-1 rounded-full">
+                  <span class="text-[10px] px-2.5 py-1 rounded-full" style="background:#F0EDE7;border:1px solid #E5E0D8;color:#78716C;">
                     {s}
                   </span>
                 );
@@ -89,13 +89,13 @@ function formatFecha(fecha: Date | null) {
             <div class="flex items-center gap-3 justify-center sm:justify-start">
               {autor.social.twitter && (
                 <a href={autor.social.twitter} target="_blank" rel="noopener noreferrer"
-                   class="flex items-center gap-1.5 text-white/40 hover:text-[#D4A843] text-xs no-underline transition-colors duration-200">
+                   class="flex items-center gap-1.5 text-xs no-underline transition-colors duration-200" style="color:#78716C;">
                   <Twitter size={13} /> Twitter / X
                 </a>
               )}
               {autor.social.web && (
                 <a href={autor.social.web} target="_blank" rel="noopener noreferrer"
-                   class="flex items-center gap-1.5 text-white/40 hover:text-[#D4A843] text-xs no-underline transition-colors duration-200">
+                   class="flex items-center gap-1.5 text-xs no-underline transition-colors duration-200" style="color:#78716C;">
                   <Globe size={13} /> inversax.com
                 </a>
               )}
@@ -110,14 +110,14 @@ function formatFecha(fecha: Date | null) {
 
         <!-- ARTÍCULOS -->
         <div class="flex-1 min-w-0">
-          <h2 class="font-bold text-base text-white mb-6" style="font-family: 'Syne', sans-serif;">
+          <h2 class="font-bold text-base mb-6" style="font-family:'Playfair Display',serif;color:#1C1917;">
             Artículos publicados
           </h2>
 
           {articulos.length === 0 ? (
             <div class="flex flex-col items-center justify-center py-24 gap-4 text-center">
               <span class="text-5xl">📰</span>
-              <p class="text-white/40 text-sm">No hay artículos publicados todavía.</p>
+              <p class="text-sm" style="color:#78716C;">No hay artículos publicados todavía.</p>
             </div>
           ) : (
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -125,37 +125,38 @@ function formatFecha(fecha: Date | null) {
                 return (
                   <a
                     href={`/noticias/${articulo.slug}`}
-                    class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-xl overflow-hidden no-underline transition-colors duration-200"
+                    class="group flex flex-col gap-3 rounded-xl overflow-hidden no-underline transition-colors duration-200"
+                    style="background:#fff;border:1px solid #E5E0D8;"
                   >
                     {articulo.imagen ? (
-                      <div class="w-full h-36 bg-[#1A1D24] overflow-hidden flex-shrink-0">
+                      <div class="w-full h-36 overflow-hidden flex-shrink-0" style="background:#F0EDE7;">
                         <img src={articulo.imagen} alt={articulo.titulo} class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                       </div>
                     ) : (
-                      <div class="w-full h-36 flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);" />
+                      <div class="w-full h-36 flex-shrink-0" style="background:linear-gradient(135deg,#F0EDE7,#E5E0D8);" />
                     )}
                     <div class="flex flex-col gap-2 px-4 pb-4">
                       <div class="flex items-center gap-2 flex-wrap">
                         {articulo.categoria && (
-                          <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">
+                          <span class="text-[10px] font-bold uppercase tracking-wider" style="color:#B91C1C;">
                             {articulo.categoria.nombre}
                           </span>
                         )}
                         {articulo.pais && articulo.pais.codigo !== 'global' && (
-                          <span class="text-white/30 text-[10px] border border-white/10 px-1.5 py-0.5 rounded uppercase">
+                          <span class="text-[10px] px-1.5 py-0.5 rounded uppercase" style="color:#A8A29E;border:1px solid #E5E0D8;">
                             {articulo.pais.nombre}
                           </span>
                         )}
-                        <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
+                        <span class="text-[10px] flex items-center gap-0.5 ml-auto" style="color:#A8A29E;">
                           <Clock size={9} />
                           {formatFecha(articulo.creadoEn)}
                         </span>
                       </div>
-                      <h3 class="font-bold text-sm text-white group-hover:text-[#D4A843] transition-colors duration-200 leading-snug line-clamp-2" style="font-family: 'Syne', sans-serif;">
+                      <h3 class="font-bold text-sm group-hover:text-[#B91C1C] transition-colors duration-200 leading-snug line-clamp-2" style="color:#1C1917;">
                         {articulo.titulo}
                       </h3>
                       {articulo.resumen && (
-                        <p class="text-white/40 text-xs leading-relaxed line-clamp-2">{articulo.resumen}</p>
+                        <p class="text-xs leading-relaxed line-clamp-2" style="color:#78716C;">{articulo.resumen}</p>
                       )}
                     </div>
                   </a>
@@ -168,13 +169,13 @@ function formatFecha(fecha: Date | null) {
         <!-- SIDEBAR -->
         <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4">
 
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-            <h3 class="font-bold text-sm text-white mb-3" style="font-family: 'Syne', sans-serif;">Sobre el editor</h3>
-            <p class="text-white/40 text-xs leading-relaxed">{autor.bioExtra}</p>
+          <div class="rounded-2xl p-5" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+            <h3 class="font-bold text-sm mb-3" style="color:#1C1917;">Sobre el editor</h3>
+            <p class="text-xs leading-relaxed" style="color:#78716C;">{autor.bioExtra}</p>
           </div>
 
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-            <h3 class="font-bold text-sm text-white mb-3" style="font-family: 'Syne', sans-serif;">Metodología editorial</h3>
+          <div class="rounded-2xl p-5" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+            <h3 class="font-bold text-sm mb-3" style="color:#1C1917;">Metodología editorial</h3>
             <div class="flex flex-col gap-3">
               {[
                 { icon: '🔍', label: 'Investigación',   desc: 'Cada tema se verifica con múltiples fuentes antes de redactarse.' },
@@ -185,8 +186,8 @@ function formatFecha(fecha: Date | null) {
                   <div class="flex gap-3 items-start">
                     <span class="text-base flex-shrink-0 mt-0.5">{item.icon}</span>
                     <div>
-                      <p class="text-white/70 text-xs font-medium">{item.label}</p>
-                      <p class="text-white/30 text-[11px] leading-relaxed">{item.desc}</p>
+                      <p class="text-xs font-medium" style="color:#1C1917;">{item.label}</p>
+                      <p class="text-[11px] leading-relaxed" style="color:#A8A29E;">{item.desc}</p>
                     </div>
                   </div>
                 );
@@ -194,16 +195,17 @@ function formatFecha(fecha: Date | null) {
             </div>
           </div>
 
-          <div class="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5">
-            <h3 class="font-bold text-xs text-white/40 mb-2 uppercase tracking-wider">Aviso legal</h3>
-            <p class="text-white/25 text-[11px] leading-relaxed">
+          <div class="rounded-2xl p-5" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+            <h3 class="font-bold text-xs mb-2 uppercase tracking-wider" style="color:#A8A29E;">Aviso legal</h3>
+            <p class="text-[11px] leading-relaxed" style="color:#A8A29E;">
               El contenido de Inversax es informativo y no constituye asesoramiento financiero. Siempre consultá un profesional antes de invertir.
             </p>
           </div>
 
           <a
             href="/noticias"
-            class="flex items-center justify-between w-full bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/40 text-[#D4A843] text-sm px-4 py-3 rounded-xl no-underline transition-all duration-200"
+            class="flex items-center justify-between w-full text-sm px-4 py-3 rounded-xl no-underline transition-all duration-200"
+            style="background:rgba(185,28,28,0.08);border:1px solid rgba(185,28,28,0.2);color:#B91C1C;"
           >
             Ver todas las noticias
             <ArrowRight size={14} />

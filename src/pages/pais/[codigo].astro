@@ -267,18 +267,18 @@ function formatFecha(fecha: Date | null) {
 
 </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
+  <div style="background:#FAFAF8;min-height:100vh;font-family: 'DM Sans', sans-serif;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
       <!-- Breadcrumb -->
-      <div class="flex items-center gap-2 text-white/30 text-sm mb-8 flex-wrap">
-        <a href="/" class="hover:text-white transition-colors duration-200 no-underline">Inicio</a>
+      <div class="flex items-center gap-2 text-sm mb-8 flex-wrap" style="color:#A8A29E;">
+        <a href="/" class="hover:text-[#1C1917] transition-colors duration-200 no-underline">Inicio</a>
         <ArrowRight size={13} />
-        <a href="/paises" class="hover:text-white transition-colors duration-200 no-underline">Países</a>
+        <a href="/paises" class="hover:text-[#1C1917] transition-colors duration-200 no-underline">Países</a>
         <ArrowRight size={13} />
-        <span class="text-white/25 text-xs">{region}</span>
+        <span class="text-xs" style="color:#A8A29E;">{region}</span>
         <ArrowRight size={13} />
-        <span class="text-white/60">{paisActual.nombre}</span>
+        <span style="color:#1C1917;">{paisActual.nombre}</span>
       </div>
 
       <!-- Header -->
@@ -295,39 +295,37 @@ function formatFecha(fecha: Date | null) {
             style="width:40px;height:28px;"
           />
           <div>
-            <span class="text-white/30 text-xs uppercase tracking-widest">{region}</span>
-            <h1 class="font-extrabold text-2xl sm:text-3xl text-white leading-tight" style="font-family: 'Syne', sans-serif;">
+            <span class="text-xs uppercase tracking-widest" style="color:#A8A29E;">{region}</span>
+            <h1 class="font-extrabold text-2xl sm:text-3xl leading-tight" style="color:#1C1917;font-family:'Playfair Display',serif;">
               {paisActual.nombre}
             </h1>
           </div>
         </div>
         <!-- ✅ DESCRIPCIÓN SEO ESPECÍFICA POR PAÍS -->
-        <p class="text-white/40 text-sm max-w-xl leading-relaxed">
+        <p class="text-sm max-w-xl leading-relaxed" style="color:#78716C;">
           {descripcion}
         </p>
       </div>
 
       <!-- Filtro por categoría -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide">
-        <Filter size={14} class="text-white/30 flex-shrink-0" />
+        <Filter size={14} class="flex-shrink-0" style="color:#A8A29E;" />
         <a
           href={`/pais/${codigo}`}
-          class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium no-underline transition-all duration-200 ${
-            categoriaParam === 'todas'
-              ? 'bg-[#D4A843] text-[#0A0B0D]'
-              : 'bg-[#111318] border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/5'
-          }`}
+          class="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium no-underline transition-all duration-200"
+          style={categoriaParam === 'todas'
+            ? 'background:#B91C1C;color:#fff;'
+            : 'background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E;'}
         >
           Todas
         </a>
         {categorias.map((cat) => (
           <a
             href={`/pais/${codigo}?categoria=${cat.slug}`}
-            class={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium no-underline transition-all duration-200 ${
-              categoriaParam === cat.slug
-                ? 'bg-[#D4A843] text-[#0A0B0D]'
-                : 'bg-[#111318] border border-white/[0.07] text-white/50 hover:text-white hover:bg-white/5'
-            }`}
+            class="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium no-underline transition-all duration-200"
+            style={categoriaParam === cat.slug
+              ? 'background:#B91C1C;color:#fff;'
+              : 'background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E;'}
           >
             {cat.nombre}
           </a>
@@ -336,15 +334,15 @@ function formatFecha(fecha: Date | null) {
 
       <!-- Sin artículos -->
       {articulosFiltrados.length === 0 ? (
-        <div class="flex flex-col items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl gap-4 text-center">
-          <MapPin size={32} class="text-white/10" />
-          <p class="text-white/50 text-base font-medium" style="font-family: 'Syne', sans-serif;">
+        <div class="flex flex-col items-center justify-center py-24 rounded-2xl gap-4 text-center" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+          <MapPin size={32} style="color:#C7BFB5;" />
+          <p class="text-base font-medium" style="color:#57534E;font-family:'DM Sans',sans-serif;">
             Próximamente en {paisActual.nombre}
           </p>
-          <p class="text-white/30 text-sm max-w-xs leading-relaxed">
+          <p class="text-sm max-w-xs leading-relaxed" style="color:#A8A29E;">
             Estamos trabajando para traerte contenido local. Por ahora podés explorar las noticias globales.
           </p>
-          <a href="/noticias" class="mt-2 text-[#D4A843] text-sm font-medium hover:underline no-underline">
+          <a href="/noticias" class="mt-2 text-sm font-medium hover:underline no-underline" style="color:#B91C1C;">
             Ver noticias globales →
           </a>
         </div>
@@ -359,32 +357,33 @@ function formatFecha(fecha: Date | null) {
             {principal && (
               <a
                 href={`/noticias/${principal.slug}`}
-                class="group rounded-2xl overflow-hidden bg-[#111318] border border-white/[0.07] hover:border-white/20 no-underline flex flex-col sm:flex-row sm:min-h-[220px] transition-colors duration-300"
+                class="group rounded-2xl overflow-hidden no-underline flex flex-col sm:flex-row sm:min-h-[220px] transition-colors duration-300"
+                style="background:#fff;border:1px solid #E5E0D8;"
               >
-                <div class="w-full sm:w-72 lg:w-80 h-52 sm:h-full flex-shrink-0 bg-[#1A1D24] overflow-hidden">
+                <div class="w-full sm:w-72 lg:w-80 h-52 sm:h-full flex-shrink-0 overflow-hidden" style="background:#F0EDE7;">
                   {principal.imagen
                     ? <img src={principal.imagen} alt={principal.titulo} class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
-                    : <div class="w-full h-full" style="background: linear-gradient(135deg, #1A1D24, #23272F);" />
+                    : <div class="w-full h-full" style="background: linear-gradient(135deg, #F0EDE7, #E5E0D8);" />
                   }
                 </div>
                 <div class="flex flex-col justify-center gap-3 p-6">
                   <div class="flex items-center gap-2 flex-wrap">
                     {principal.categoria && (
-                      <span class="bg-[#D4A843] text-[#0A0B0D] text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider" style="color:#B91C1C;background:#FEF2F2;">
                         {principal.categoria.nombre}
                       </span>
                     )}
-                    <span class="text-white/30 text-xs flex items-center gap-1 ml-auto">
+                    <span class="text-xs flex items-center gap-1 ml-auto" style="color:#A8A29E;">
                       <Clock size={11} /> {formatFecha(principal.creadoEn)}
                     </span>
                   </div>
-                  <h2 class="font-bold text-white text-xl leading-snug group-hover:text-[#D4A843] transition-colors duration-200" style="font-family: 'Syne', sans-serif;">
+                  <h2 class="font-bold text-xl leading-snug group-hover:text-[#B91C1C] transition-colors duration-200" style="color:#1C1917;font-family:'Playfair Display',serif;">
                     {principal.titulo}
                   </h2>
                   {principal.resumen && (
-                    <p class="text-white/40 text-sm leading-relaxed line-clamp-2">{principal.resumen}</p>
+                    <p class="text-sm leading-relaxed line-clamp-2" style="color:#78716C;">{principal.resumen}</p>
                   )}
-                  <span class="flex items-center gap-1.5 text-[#D4A843] text-sm font-medium mt-1">
+                  <span class="flex items-center gap-1.5 text-sm font-medium mt-1" style="color:#B91C1C;">
                     Leer artículo <ArrowRight size={14} />
                   </span>
                 </div>
@@ -397,33 +396,34 @@ function formatFecha(fecha: Date | null) {
                 {resto.map((art) => (
                   <a
                     href={`/noticias/${art.slug}`}
-                    class="group flex flex-col bg-[#111318] border border-white/[0.07] hover:border-white/20 rounded-2xl overflow-hidden no-underline transition-colors duration-200"
+                    class="group flex flex-col rounded-2xl overflow-hidden no-underline transition-colors duration-200"
+                    style="background:#fff;border:1px solid #E5E0D8;"
                   >
                     {art.imagen
                       ? (
-                        <div class="w-full h-44 bg-[#1A1D24] overflow-hidden flex-shrink-0">
+                        <div class="w-full h-44 overflow-hidden flex-shrink-0" style="background:#F0EDE7;">
                           <img src={art.imagen} alt={art.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         </div>
                       ) : (
-                        <div class="w-full h-44 flex-shrink-0" style="background: linear-gradient(135deg, #1A1D24, #23272F);"></div>
+                        <div class="w-full h-44 flex-shrink-0" style="background: linear-gradient(135deg, #F0EDE7, #E5E0D8);"></div>
                       )
                     }
                     <div class="flex flex-col gap-2 p-4 flex-1">
                       <div class="flex items-center gap-2 flex-wrap">
                         {art.categoria && (
-                          <span class="text-[#D4A843] text-[10px] font-bold uppercase tracking-wider">
+                          <span class="text-[10px] font-bold uppercase tracking-wider" style="color:#B91C1C;background:#FEF2F2;padding:1px 6px;border-radius:3px;">
                             {art.categoria.nombre}
                           </span>
                         )}
-                        <span class="text-white/25 text-[10px] flex items-center gap-0.5 ml-auto">
+                        <span class="text-[10px] flex items-center gap-0.5 ml-auto" style="color:#A8A29E;">
                           <Clock size={9} /> {formatFecha(art.creadoEn)}
                         </span>
                       </div>
-                      <h3 class="font-bold text-white text-sm leading-snug group-hover:text-[#D4A843] transition-colors duration-200 line-clamp-3" style="font-family: 'Syne', sans-serif;">
+                      <h3 class="font-bold text-sm leading-snug group-hover:text-[#B91C1C] transition-colors duration-200 line-clamp-3" style="color:#1C1917;font-family:'Playfair Display',serif;">
                         {art.titulo}
                       </h3>
                       {art.resumen && (
-                        <p class="text-white/35 text-xs leading-relaxed line-clamp-2 mt-auto pt-1">{art.resumen}</p>
+                        <p class="text-xs leading-relaxed line-clamp-2 mt-auto pt-1" style="color:#78716C;">{art.resumen}</p>
                       )}
                     </div>
                   </a>
@@ -435,8 +435,8 @@ function formatFecha(fecha: Date | null) {
 
           <!-- SIDEBAR — países de la región con banderas -->
           <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0">
-            <div class="bg-[#111318] border border-white/[0.07] rounded-2xl p-5">
-              <h3 class="font-bold text-sm text-white mb-4" style="font-family: 'Syne', sans-serif;">
+            <div class="rounded-2xl p-5" style="background:#F5F1EC;border:1px solid #E5E0D8;">
+              <h3 class="font-bold text-sm mb-4" style="color:#1C1917;font-family:'DM Sans',sans-serif;">
                 {region}
               </h3>
               <div class="flex flex-col gap-1">
@@ -447,7 +447,8 @@ function formatFecha(fecha: Date | null) {
                     <!-- ✅ BANDERAS EN SIDEBAR -->
                     <a
                       href={`/pais/${p.codigo}`}
-                      class="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/5 no-underline transition-colors duration-200"
+                      class="flex items-center justify-between px-3 py-2 rounded-lg text-sm no-underline transition-colors duration-200 hover:bg-[#E8E3DC]"
+                      style="color:#57534E;"
                     >
                       <span class="flex items-center gap-2">
                         <img
@@ -467,7 +468,8 @@ function formatFecha(fecha: Date | null) {
                 }
                 <a
                   href="/paises"
-                  class="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#D4A843] hover:bg-white/5 no-underline transition-colors duration-200 mt-1 border-t border-white/[0.07] pt-3"
+                  class="flex items-center justify-between px-3 py-2 rounded-lg text-xs no-underline transition-colors duration-200 mt-1 pt-3 hover:bg-[#E8E3DC]"
+                  style="color:#B91C1C;border-top:1px solid #E5E0D8;"
                 >
                   Ver todos los países
                   <ArrowRight size={12} />

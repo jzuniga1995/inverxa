@@ -306,83 +306,183 @@ const herramientas = [
 </slot>
 
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family: 'DM Sans', sans-serif;">
-
-    <!-- PAGE HEADER -->
-    <div class="border-b border-white/[0.07] bg-[#111318]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <h1 class="font-extrabold text-2xl sm:text-4xl text-white mb-2" style="font-family: 'Syne', sans-serif;">
-          Herramientas
-        </h1>
-        <p class="text-white/40 text-sm sm:text-base">
-          Precios en vivo, gráficas y recursos financieros para inversores en Latinoamérica
-        </p>
+  <!-- ── PAGE HEADER EDITORIAL ─────────────────────────────── -->
+  <div style="background: #FAFAF8; border-bottom: 2px solid #1C1917;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <div class="flex items-center gap-1.5 text-xs mb-4" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
+        <a href="/" class="no-underline" style="color: #A8A29E;"
+           onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+        <span>›</span>
+        <span style="color: #1C1917; font-weight: 600;">Herramientas</span>
       </div>
+      <h1 class="font-bold leading-tight mb-2"
+          style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: clamp(28px, 4vw, 48px);">
+        Herramientas de Mercado
+      </h1>
+      <p class="text-sm sm:text-base" style="color: #78716C; font-family: 'DM Sans', sans-serif;">
+        Precios en vivo, gráficas y recursos financieros para inversores en Latinoamérica
+      </p>
     </div>
+  </div>
 
-    <!-- GRID -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+  <!-- ── GRID DE HERRAMIENTAS: fondo oscuro #1C1917 ─────────── -->
+  <section style="background: #1C1917;" class="px-4 sm:px-6 py-10 sm:py-14">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Eyebrow de sección -->
+      <p class="text-[10px] font-bold uppercase tracking-[0.22em] mb-8"
+         style="color: rgba(245,240,232,0.35); font-family: 'DM Sans', sans-serif;">
+        8 herramientas disponibles · Actualizadas en tiempo real
+      </p>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-
         {herramientas.map((h) => (
-          <div class={`relative flex flex-col gap-4 bg-[#111318] border rounded-2xl p-6 transition-all duration-200 ${
-            h.disponible
-              ? 'border-white/[0.07] hover:border-white/20 cursor-pointer group hover:-translate-y-0.5'
-              : 'border-white/[0.04] opacity-50'
-          }`}>
+          <a href={h.href}
+             class="relative flex flex-col gap-5 no-underline transition-all duration-200 hover:-translate-y-0.5 group"
+             style="background: rgba(245,240,232,0.05); border: 1px solid rgba(245,240,232,0.1); padding: 24px;"
+             onmouseover="this.style.borderColor='rgba(245,240,232,0.25)';"
+             onmouseout="this.style.borderColor='rgba(245,240,232,0.1)';">
 
-            <!-- Icono + Badge -->
+            <!-- Cabecera: ícono + dato vivo -->
             <div class="flex items-start justify-between">
-              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={h.disponible ? `background: ${h.color}15;` : 'background: rgba(255,255,255,0.05);'}>
-                {h.icon === 'calculator' && <Calculator  size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
-                {h.icon === 'dollar'     && <DollarSign  size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
-                {h.icon === 'chart'      && <BarChart2   size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
-                {h.icon === 'forex'      && <TrendingUp  size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
-                {h.icon === 'layers'     && <Layers      size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
-                {h.icon === 'acciones'   && <Landmark    size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
-                {h.icon === 'shield'     && <Shield      size={20} class={h.disponible ? '' : 'text-white/30'} style={h.disponible ? `color: ${h.color}` : ''} />}
+              <div class="w-10 h-10 flex items-center justify-center flex-shrink-0"
+                   style={`background: ${h.color}25;`}>
+                {h.icon === 'calculator' && <Calculator  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'dollar'     && <DollarSign  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'chart'      && <BarChart2   size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'forex'      && <TrendingUp  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'layers'     && <Layers      size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'acciones'   && <Landmark    size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'shield'     && <Shield      size={18} style={`color: ${h.color};`} />}
               </div>
-              <span class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider"
-                style={h.disponible
-                  ? `background: ${h.color}15; color: ${h.color};`
-                  : 'background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3);'
-                }>
-                {h.badge}
-              </span>
+
+              <!-- Dato en vivo según tipo -->
+              {h.icon === 'chart' && (
+                <span class="text-right">
+                  <span class="block text-[9px] uppercase tracking-widest mb-0.5"
+                        style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">BTC</span>
+                  <span data-live="btc-price"
+                        class="font-bold text-sm animate-pulse"
+                        style="color: #60A5FA; font-family: 'DM Sans', sans-serif;">···</span>
+                </span>
+              )}
+              {h.icon === 'forex' && (
+                <span class="text-right">
+                  <span class="block text-[9px] uppercase tracking-widest mb-0.5"
+                        style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">EUR/USD</span>
+                  <span data-live="eurusd-rate"
+                        class="font-bold text-sm animate-pulse"
+                        style="color: #4ADE80; font-family: 'DM Sans', sans-serif;">···</span>
+                </span>
+              )}
+              {h.icon === 'layers' && (
+                <span class="text-right">
+                  <span class="block text-[9px] uppercase tracking-widest mb-0.5"
+                        style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">Oro / oz</span>
+                  <span data-live="gold-price"
+                        class="font-bold text-sm animate-pulse"
+                        style="color: #FCD34D; font-family: 'DM Sans', sans-serif;">···</span>
+                </span>
+              )}
+              {h.icon === 'acciones' && (
+                <span class="text-right">
+                  <span class="block text-[9px] uppercase tracking-widest mb-0.5"
+                        style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">NYSE · NASDAQ</span>
+                  <span class="font-bold text-sm" style="color: #9CA3AF; font-family: 'DM Sans', sans-serif;">En vivo</span>
+                </span>
+              )}
+              {h.icon === 'dollar' && (
+                <span class="text-right">
+                  <span class="block text-[9px] uppercase tracking-widest mb-0.5"
+                        style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">Países</span>
+                  <span class="font-bold text-sm" style="color: #9CA3AF; font-family: 'DM Sans', sans-serif;">16+</span>
+                </span>
+              )}
+              {(h.icon === 'calculator' || h.icon === 'shield') && (
+                <span class="text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider"
+                      style={`background: ${h.color}20; color: ${h.color}; font-family: 'DM Sans', sans-serif;`}>
+                  {h.badge}
+                </span>
+              )}
             </div>
 
-            <!-- Texto -->
+            <!-- Nombre + descripción -->
             <div class="flex flex-col gap-2 flex-1">
-              <h2 class={`font-bold text-base leading-snug transition-colors duration-200 ${
-                h.disponible ? 'text-white group-hover:text-[#D4A843]' : 'text-white/40'
-              }`} style="font-family: 'Syne', sans-serif;">
+              <h2 class="font-bold text-base leading-snug transition-colors duration-200"
+                  style="color: rgba(245,240,232,0.9); font-family: 'DM Sans', sans-serif;">
                 {h.nombre}
               </h2>
-              <p class="text-white/35 text-sm leading-relaxed">
+              <p class="text-sm leading-relaxed" style="color: rgba(245,240,232,0.45); font-family: 'DM Sans', sans-serif;">
                 {h.descripcion}
               </p>
             </div>
 
             <!-- CTA -->
-            {h.disponible ? (
-              <span class="flex items-center gap-1.5 text-sm font-medium no-underline mt-auto" style={`color: ${h.color};`}>
-                Abrir herramienta <ArrowRight size={14} />
-              </span>
-            ) : (
-              <span class="text-white/20 text-xs mt-auto">En desarrollo</span>
-            )}
+            <span class="flex items-center gap-1.5 text-sm font-semibold mt-auto transition-all duration-200 group-hover:gap-2.5"
+                  style={`color: ${h.color}; font-family: 'DM Sans', sans-serif;`}>
+              Abrir herramienta <ArrowRight size={13} />
+            </span>
 
-            <!-- Overlay clickeable -->
-            {h.disponible && (
-              <a href={h.href} class="absolute inset-0 rounded-2xl no-underline" aria-label={h.nombre} />
-            )}
-
-          </div>
+          </a>
         ))}
-
       </div>
-    </div>
 
-  </div>
+    </div>
+  </section>
 </Layout>
+
+<script>
+  // Carga datos en vivo para las cards de herramientas
+  const fmtPrice = (p: number) => {
+    if (!p) return '···';
+    if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+  const fmtForex = (p: number) => {
+    if (!p) return '···';
+    return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+  };
+
+  async function cargarDatos() {
+    const [resCripto, resForex, resMetales] = await Promise.allSettled([
+      fetch('/api/precios'),
+      fetch('/api/forex'),
+      fetch('/api/metales'),
+    ]);
+
+    if (resCripto.status === 'fulfilled' && resCripto.value.ok) {
+      const data = await resCripto.value.json() as any[];
+      const btc = data.find((c: any) => c.id === 'bitcoin');
+      if (btc) {
+        document.querySelectorAll<HTMLElement>('[data-live="btc-price"]').forEach(el => {
+          el.textContent = fmtPrice(btc.price);
+          el.classList.remove('animate-pulse');
+        });
+      }
+    }
+    if (resForex.status === 'fulfilled' && resForex.value.ok) {
+      const json = await resForex.value.json() as any;
+      const forex = json.data ?? json;
+      const eurusd = forex.find((f: any) => f.par === 'EUR/USD');
+      if (eurusd) {
+        document.querySelectorAll<HTMLElement>('[data-live="eurusd-rate"]').forEach(el => {
+          el.textContent = fmtForex(eurusd.precio);
+          el.classList.remove('animate-pulse');
+        });
+      }
+    }
+    if (resMetales.status === 'fulfilled' && resMetales.value.ok) {
+      const json = await resMetales.value.json() as any;
+      const metales = json.data ?? json;
+      const oro = metales.find((m: any) => m.slug === 'oro' || m.simbolo === 'XAU');
+      if (oro && oro.precio > 0) {
+        document.querySelectorAll<HTMLElement>('[data-live="gold-price"]').forEach(el => {
+          el.textContent = `$${oro.precio.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+          el.classList.remove('animate-pulse');
+        });
+      }
+    }
+  }
+
+  cargarDatos();
+</script>

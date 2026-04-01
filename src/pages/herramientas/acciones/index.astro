@@ -370,49 +370,49 @@ try {
 </slot>
 
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
+  <div style="background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
 
-      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-sm mb-6 no-underline transition-colors" style="color:#A8A29E">
         <ArrowLeft size={15} /> Herramientas
       </a>
 
       <!-- Título -->
       <div class="mb-7">
-        <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
+        <h1 class="font-extrabold text-3xl mb-1" style="font-family:'Playfair Display',serif;color:#1C1917">
           Acciones
         </h1>
-        <p class="text-white/30 text-sm">Mercado estadounidense · cotizaciones en tiempo real</p>
+        <p class="text-sm" style="color:#78716C">Mercado estadounidense · cotizaciones en tiempo real</p>
       </div>
 
       {acciones.length === 0 ? (
         <!-- KV vacío — skeletons -->
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-            style="grid-template-columns: 1fr 130px 100px 140px">
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Empresa</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right">Precio</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right">Cambio</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right pr-1">Sector</div>
+        <div style="border:1px solid #E5E0D8;background:#fff;border-radius:1rem;overflow:hidden">
+          <div class="hidden md:grid px-4 py-3"
+            style="grid-template-columns: 1fr 130px 100px 140px;border-bottom:1px solid #E5E0D8;background:#F5F1EC">
+            <div class="pl-2" style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">Empresa</div>
+            <div class="text-right" style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">Precio</div>
+            <div class="text-right" style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">Cambio</div>
+            <div class="text-right pr-1" style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">Sector</div>
           </div>
           {[...Array(10)].map(() => (
-            <div class="grid px-4 py-3.5 border-b border-white/[0.04]"
-              style="grid-template-columns: 1fr 130px 100px 140px">
+            <div class="grid px-4 py-3.5"
+              style="grid-template-columns: 1fr 130px 100px 140px;border-top:1px solid #F0EDE7">
               <div class="flex items-center gap-3 pl-2">
-                <div class="w-9 h-9 rounded-full bg-white/5 animate-pulse flex-shrink-0"></div>
+                <div class="w-9 h-9 rounded-full animate-pulse flex-shrink-0" style="background:#E5E0D8"></div>
                 <div class="flex flex-col gap-1.5">
-                  <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
-                  <div class="w-20 h-2.5 bg-white/5 rounded animate-pulse"></div>
+                  <div class="w-12 h-3 rounded animate-pulse" style="background:#E5E0D8"></div>
+                  <div class="w-20 h-2.5 rounded animate-pulse" style="background:#E5E0D8"></div>
                 </div>
               </div>
               <div class="flex items-center justify-end">
-                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-16 h-3 rounded animate-pulse" style="background:#E5E0D8"></div>
               </div>
               <div class="flex items-center justify-end">
-                <div class="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-12 h-3 rounded animate-pulse" style="background:#E5E0D8"></div>
               </div>
               <div class="hidden md:flex items-center justify-end">
-                <div class="w-16 h-3 bg-white/5 rounded animate-pulse"></div>
+                <div class="w-16 h-3 rounded animate-pulse" style="background:#E5E0D8"></div>
               </div>
             </div>
           ))}
@@ -430,13 +430,13 @@ try {
               </button>
               <button data-filter="gainers"
                 class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-                style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+                style="background:#F5F1EC;border-color:#D6D0C8;color:#57534E">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
                 Ganadoras
               </button>
               <button data-filter="losers"
                 class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-                style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+                style="background:#F5F1EC;border-color:#D6D0C8;color:#57534E">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
                 Perdedoras
               </button>
@@ -444,37 +444,36 @@ try {
 
             <!-- Búsqueda -->
             <div class="relative w-48 flex-shrink-0">
-              <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:#A8A29E" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
               <input id="search" type="text" placeholder="AAPL, Tesla..."
                 autocomplete="off"
-                class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#10B981]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
+                style="width:100%;background:#FAFAF8;color:#1C1917;font-size:14px;border:1px solid #D6D0C8;border-radius:8px;padding:7px 12px 7px 30px;outline:none;" />
             </div>
           </div>
 
           <!-- Tabla -->
-          <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
-            <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-              style="grid-template-columns: 1fr 130px 100px 140px">
-              <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Empresa</div>
-              <button data-sort="price"  class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Precio <span class="sort-arrow">↕</span></button>
-              <button data-sort="change" class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Cambio <span class="sort-arrow">↕</span></button>
-              <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right pr-1">Sector</div>
+          <div style="border:1px solid #E5E0D8;overflow:hidden;background:#fff;">
+            <div class="hidden md:grid" style="border-bottom:1px solid #E5E0D8;padding:10px 16px;background:#F5F1EC;grid-template-columns: 1fr 130px 100px 140px">
+              <div style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;padding-left:8px;">Empresa</div>
+              <button data-sort="price"  class="sort-btn" style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:4px;background:none;border:none;cursor:pointer;">Precio <span class="sort-arrow">↕</span></button>
+              <button data-sort="change" class="sort-btn" style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:4px;background:none;border:none;cursor:pointer;">Cambio <span class="sort-arrow">↕</span></button>
+              <div style="color:#A8A29E;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;text-align:right;padding-right:4px;">Sector</div>
             </div>
 
             <div id="table-body">
               {acciones.map((a) => (
                 <a href={`/herramientas/acciones/${a.slug}`}
-                  class="accion-row grid px-4 py-3.5 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
-                  style="grid-template-columns: 1fr 130px 100px 140px"
+                  class="accion-row grid no-underline"
+                  style="grid-template-columns: 1fr 130px 100px 140px; padding:12px 16px; border-top:1px solid #F0EDE7;"
                   data-nombre={a.nombre.toLowerCase()}
                   data-ticker={a.ticker.toLowerCase()}
                   data-change={a.cambioPct}
                   data-price={a.precio}>
 
                   <div class="flex items-center gap-3 pl-2 min-w-0">
-                    <div class="w-9 h-9 rounded-full overflow-hidden bg-white/5 border border-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                    <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#F0EDE7;border:1px solid #E5E0D8;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
                       {dominiosPorTicker[a.ticker] ? (
                         <img
                           src={`https://www.google.com/s2/favicons?domain=${dominiosPorTicker[a.ticker]}&sz=64`}
@@ -484,26 +483,26 @@ try {
                           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                         />
                       ) : null}
-                      <span class="text-[9px] font-bold text-white/50" style={dominiosPorTicker[a.ticker] ? 'display:none' : ''}>
+                      <span style="font-size:9px;font-weight:700;color:#78716C;" style={dominiosPorTicker[a.ticker] ? 'display:none' : ''}>
                         {a.ticker.slice(0, 2)}
                       </span>
                     </div>
                     <div class="min-w-0">
-                      <div class="text-white font-bold text-sm" style="font-family:'Syne',sans-serif">{a.ticker}</div>
-                      <div class="text-white/30 text-[11px] truncate">{a.nombre}</div>
+                      <div style="color:#374151;font-weight:700;font-size:14px;">{a.ticker}</div>
+                      <div style="color:#78716C;font-size:11px;" class="truncate">{a.nombre}</div>
                     </div>
                   </div>
 
-                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif">
+                  <div class="flex items-center justify-end" style="font-weight:600;font-size:14px;color:#1C1917;">
                     {fmt(a.precio)}
                   </div>
 
-                  <div class={`flex items-center justify-end text-xs font-semibold ${a.alza ? 'text-emerald-400' : 'text-red-400'}`}>
+                  <div class="flex items-center justify-end" style={`font-size:12px;font-weight:600;color:${a.alza ? '#15803D' : '#DC2626'};`}>
                     {a.precio > 0 ? (`${a.alza ? '▲' : '▼'} ${fmtC(a.cambioPct)}`) : '—'}
                   </div>
 
                   <div class="hidden md:flex items-center justify-end">
-                    <span class="text-[10px] text-white/30 bg-white/5 px-2 py-0.5 rounded truncate max-w-[130px]">{a.sector}</span>
+                    <span style="font-size:10px;color:#57534E;background:#F5F1EC;padding:2px 8px;max-width:130px;" class="truncate">{a.sector}</span>
                   </div>
 
                 </a>
@@ -511,11 +510,11 @@ try {
             </div>
 
             <div id="empty-state" class="hidden items-center justify-center py-14">
-              <p class="text-white/25 text-sm">Sin resultados</p>
+              <p style="color:#A8A29E;font-size:14px;">Sin resultados</p>
             </div>
           </div>
 
-          <p class="text-white/15 text-[11px] text-center mt-5">
+          <p style="color:#A8A29E;font-size:11px;text-align:center;margin-top:16px;">
             Precios con retraso de 15 min. Datos provistos por Finnhub. No constituyen asesoramiento financiero.
           </p>
         </div>
@@ -667,33 +666,33 @@ try {
   /* ══════════════════════════════════════
      SEO SECTIONS
   ══════════════════════════════════════ */
+  .accion-row:hover { background: #F9F7F4; }
   .seo-section {
     padding: 1.75rem;
-    background: #111318;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 1.25rem;
+    background: #F5F1EC;
+    border: 1px solid #E5E0D8;
   }
   .seo-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.05rem;
     font-weight: 700;
-    color: rgba(255,255,255,0.85);
+    color: #1C1917;
     margin-bottom: 0.875rem;
   }
   .seo-section p {
     font-size: 0.875rem;
-    color: rgba(255,255,255,0.45);
+    color: #57534E;
     line-height: 1.7;
     margin-bottom: 0.75rem;
   }
   .seo-section p:last-child { margin-bottom: 0; }
-  .seo-section strong { color: rgba(255,255,255,0.8); }
+  .seo-section strong { color: #1C1917; }
+  .seo-section a { color: #B91C1C; }
 
   /* ── SEO TABLE ── */
   .seo-table {
     margin: 0.875rem 0;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 0.875rem;
+    border: 1px solid #E5E0D8;
     overflow: hidden;
   }
   .seo-table-row {
@@ -701,15 +700,15 @@ try {
     grid-template-columns: repeat(4, 1fr);
     padding: 0.55rem 0.875rem;
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.5);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #57534E;
+    border-bottom: 1px solid #E5E0D8;
     gap: 0.5rem;
     font-family: 'DM Mono', 'Courier New', monospace;
   }
   .seo-table-row:last-child { border-bottom: none; }
   .seo-table-row.seo-table-header {
-    background: rgba(0,0,0,0.3);
-    color: rgba(255,255,255,0.25);
+    background: #E5E0D8;
+    color: #78716C;
     font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -774,9 +773,9 @@ try {
       document.querySelectorAll('.filter-btn').forEach(b => {
         const el = b as HTMLElement;
         const isActive = el.dataset.filter === activeFilter;
-        el.style.background   = isActive ? 'rgba(16,185,129,.1)' : '#111318';
-        el.style.borderColor  = isActive ? 'rgba(16,185,129,.4)' : 'rgba(255,255,255,.08)';
-        el.style.color        = isActive ? '#10B981' : 'rgba(255,255,255,.4)';
+        el.style.background   = isActive ? 'rgba(55,65,81,.1)' : '#F5F1EC';
+        el.style.borderColor  = isActive ? 'rgba(55,65,81,.4)' : '#D6D0C8';
+        el.style.color        = isActive ? '#374151' : '#57534E';
       });
       applyFilters();
     });

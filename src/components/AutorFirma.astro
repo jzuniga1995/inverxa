@@ -20,11 +20,15 @@ function formatFecha(f: Date | null | undefined) {
 }
 ---
 
-<div class="flex items-center gap-4 py-5 px-5 sm:px-6 rounded-2xl bg-[#111318] border border-white/[0.07] my-8">
+<div class="flex items-center gap-4 py-5 px-5 sm:px-6 my-8"
+     style="background: #F5F1EC; border: 1px solid #E5E0D8; font-family: 'DM Sans', sans-serif;">
 
   <!-- Avatar -->
   <a href="/autor/jose-zuniga" class="flex-shrink-0 no-underline">
-    <div class="w-12 h-12 rounded-xl border border-[#D4A843]/20 overflow-hidden hover:border-[#D4A843]/50 transition-colors duration-200">
+    <div class="w-12 h-12 overflow-hidden transition-colors duration-200"
+         style="border: 1px solid #E5E0D8;"
+         onmouseover="this.style.borderColor='#B91C1C'"
+         onmouseout="this.style.borderColor='#E5E0D8'">
       <img src="/foto-jose.jpg" alt="José Zúñiga" class="w-full h-full object-cover" />
     </div>
   </a>
@@ -34,20 +38,23 @@ function formatFecha(f: Date | null | undefined) {
     <div class="flex items-center gap-2 flex-wrap">
       <a
         href="/autor/jose-zuniga"
-        class="font-bold text-sm text-white hover:text-[#D4A843] no-underline transition-colors duration-200"
-        style="font-family: 'Syne', sans-serif;"
+        class="font-bold text-sm no-underline transition-colors duration-200"
+        style="color: #1C1917; font-family: 'DM Sans', sans-serif;"
+        onmouseover="this.style.color='#B91C1C'"
+        onmouseout="this.style.color='#1C1917'"
       >
         José Zúniga
       </a>
-      <span class="text-[#D4A843] text-[10px] font-bold bg-[#D4A843]/10 border border-[#D4A843]/20 px-1.5 py-0.5 rounded uppercase tracking-wider">
+      <span class="text-[10px] font-bold px-1.5 py-0.5 uppercase tracking-wider"
+            style="color: #B91C1C; background: #FEF2F2; border: 1px solid rgba(185,28,28,0.2);">
         Editor
       </span>
     </div>
-    <p class="text-white/35 text-xs leading-snug">
+    <p class="text-xs leading-snug" style="color: #78716C;">
       Desarrollador de software · Finanzas & Cripto · Inversax
     </p>
     {fecha && (
-      <p class="text-white/20 text-[10px] mt-0.5">
+      <p class="text-[10px] mt-0.5" style="color: #A8A29E;">
         Publicado el {formatFecha(fecha)}
       </p>
     )}
@@ -59,7 +66,10 @@ function formatFecha(f: Date | null | undefined) {
       href="https://twitter.com/inversax"
       target="_blank"
       rel="noopener noreferrer"
-      class="w-8 h-8 rounded-lg bg-white/5 border border-white/[0.07] hover:border-[#D4A843]/40 hover:text-[#D4A843] text-white/30 flex items-center justify-center transition-all duration-200 no-underline"
+      class="w-8 h-8 flex items-center justify-center transition-all duration-200 no-underline"
+      style="background: #F0EDE7; border: 1px solid #E5E0D8; color: #78716C;"
+      onmouseover="this.style.borderColor='rgba(185,28,28,0.3)'; this.style.color='#B91C1C';"
+      onmouseout="this.style.borderColor='#E5E0D8'; this.style.color='#78716C';"
     >
       <Twitter size={13} />
     </a>
@@ -67,7 +77,10 @@ function formatFecha(f: Date | null | undefined) {
       href="https://inversax.com"
       target="_blank"
       rel="noopener noreferrer"
-      class="w-8 h-8 rounded-lg bg-white/5 border border-white/[0.07] hover:border-[#D4A843]/40 hover:text-[#D4A843] text-white/30 flex items-center justify-center transition-all duration-200 no-underline"
+      class="w-8 h-8 flex items-center justify-center transition-all duration-200 no-underline"
+      style="background: #F0EDE7; border: 1px solid #E5E0D8; color: #78716C;"
+      onmouseover="this.style.borderColor='rgba(185,28,28,0.3)'; this.style.color='#B91C1C';"
+      onmouseout="this.style.borderColor='#E5E0D8'; this.style.color='#78716C';"
     >
       <Globe size={13} />
     </a>

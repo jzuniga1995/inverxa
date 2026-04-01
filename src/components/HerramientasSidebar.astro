@@ -97,31 +97,52 @@ const herramientas: Herramienta[] = [
     <!-- Header -->
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
-        <Wrench size={15} class="text-[#D4A843]" />
+        <Wrench size={15} style="color: #B91C1C;" />
         <span
-          class="font-bold text-[13px] text-white uppercase tracking-wide"
-          style="font-family: 'Syne', sans-serif;"
+          class="font-bold text-[13px] uppercase tracking-wide"
+          style="color: #1C1917; font-family: 'DM Sans', sans-serif;"
         >
           Herramientas
         </span>
       </div>
       <a
         href="/herramientas"
-        class="text-[11px] text-white/30 hover:text-[#D4A843] no-underline transition-colors duration-200 flex items-center gap-1"
+        class="text-[11px] no-underline transition-colors duration-200 flex items-center gap-1"
+        style="color: #78716C;"
+        onmouseover="this.style.color='#B91C1C'"
+        onmouseout="this.style.color='#78716C'"
       >
         Ver todas <ArrowRight size={11} />
       </a>
     </div>
 
     <!-- Lista desktop: compacta, una columna -->
-    <div class="hidden lg:flex flex-col bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+    <div class="hidden lg:flex flex-col overflow-hidden" style="background: #FFFFFF; border: 1px solid #E5E0D8;">
       {herramientas.map((h, i) => (
         <a
           href={h.href}
-          class={`herramienta-item group flex items-center gap-3 px-4 py-3.5 no-underline transition-all duration-200 hover:bg-white/[0.04] ${i < herramientas.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+          class={`herramienta-item group flex items-center gap-3 px-4 py-3.5 no-underline transition-all duration-200 ${i < herramientas.length - 1 ? 'border-b' : ''}`}
+          style={i < herramientas.length - 1 ? 'border-color: #E5E0D8;' : ''}
+          onmouseover="this.style.background='#F9F7F4'"
+          onmouseout="this.style.background=''"
         >
           <!-- Ícono -->
-          <div class="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center text-[#D4A843] flex-shrink-0 group-hover:bg-[#D4A843]/20 transition-colors duration-200">
+          <div
+            class="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors duration-200"
+            style={`background: ${
+              h.icon === 'chart'    ? 'rgba(29,78,216,0.08)'  :
+              h.icon === 'forex'   ? 'rgba(21,128,61,0.08)'  :
+              h.icon === 'layers'  ? 'rgba(180,83,9,0.08)'   :
+              h.icon === 'acciones'? 'rgba(55,65,81,0.08)'   :
+              'rgba(120,113,108,0.08)'
+            }; color: ${
+              h.icon === 'chart'    ? '#1D4ED8' :
+              h.icon === 'forex'   ? '#15803D' :
+              h.icon === 'layers'  ? '#B45309' :
+              h.icon === 'acciones'? '#374151' :
+              '#78716C'
+            };`}
+          >
             {h.icon === "chart"    && <BarChart2   size={14} />}
             {h.icon === "forex"    && <TrendingUp  size={14} />}
             {h.icon === "layers"   && <Layers      size={14} />}
@@ -136,22 +157,23 @@ const herramientas: Herramienta[] = [
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
               <span
-                class="text-[13px] font-semibold text-white/80 group-hover:text-white transition-colors duration-200 leading-tight"
-                style="font-family: 'Syne', sans-serif;"
+                class="herramienta-titulo text-[13px] font-semibold leading-tight transition-colors duration-200"
+                style="color: #1C1917; font-family: 'DM Sans', sans-serif;"
               >
                 {h.titulo}
               </span>
               {h.badge && (
-                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-emerald-500/15 text-emerald-400 flex-shrink-0">
+                <span class="text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider flex-shrink-0"
+                      style="background: #F0FDF4; color: #15803D; border: 1px solid rgba(21,128,61,0.2);">
                   {h.badge}
                 </span>
               )}
             </div>
-            <p class="text-[11px] text-white/30 leading-snug mt-0.5 truncate">{h.desc}</p>
+            <p class="text-[11px] leading-snug mt-0.5 truncate" style="color: #78716C;">{h.desc}</p>
           </div>
 
           <!-- Arrow -->
-          <ArrowRight size={12} class="text-white/20 group-hover:text-[#D4A843] flex-shrink-0 transition-colors duration-200 group-hover:translate-x-0.5 transform" />
+          <ArrowRight size={12} class="herramienta-arrow flex-shrink-0 transition-colors duration-200 group-hover:translate-x-0.5 transform" style="color: #D6D0C8;" />
         </a>
       ))}
     </div>
@@ -161,10 +183,28 @@ const herramientas: Herramienta[] = [
       {herramientas.map((h) => (
         <a
           href={h.href}
-          class="group flex flex-col gap-3 bg-[#111318] border border-white/[0.07] hover:border-[#D4A843]/30 rounded-xl p-4 no-underline transition-all duration-200 hover:-translate-y-0.5"
+          class="group flex flex-col gap-3 p-4 no-underline transition-all duration-200 hover:-translate-y-0.5"
+          style="background: #FFFFFF; border: 1px solid #E5E0D8;"
+          onmouseover="this.style.borderColor='rgba(185,28,28,0.25)'"
+          onmouseout="this.style.borderColor='#E5E0D8'"
         >
           <div class="flex items-center justify-between">
-            <div class="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center text-[#D4A843] group-hover:bg-[#D4A843]/20 transition-colors duration-200">
+            <div
+              class="w-8 h-8 flex items-center justify-center transition-colors duration-200"
+              style={`background: ${
+                h.icon === 'chart'    ? 'rgba(29,78,216,0.08)'  :
+                h.icon === 'forex'   ? 'rgba(21,128,61,0.08)'  :
+                h.icon === 'layers'  ? 'rgba(180,83,9,0.08)'   :
+                h.icon === 'acciones'? 'rgba(55,65,81,0.08)'   :
+                'rgba(120,113,108,0.08)'
+              }; color: ${
+                h.icon === 'chart'    ? '#1D4ED8' :
+                h.icon === 'forex'   ? '#15803D' :
+                h.icon === 'layers'  ? '#B45309' :
+                h.icon === 'acciones'? '#374151' :
+                '#78716C'
+              };`}
+            >
               {h.icon === "chart"    && <BarChart2   size={14} />}
               {h.icon === "forex"    && <TrendingUp  size={14} />}
               {h.icon === "layers"   && <Layers      size={14} />}
@@ -175,19 +215,20 @@ const herramientas: Herramienta[] = [
               {h.icon === "compare"  && <GitCompare  size={14} />}
             </div>
             {h.badge && (
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-emerald-500/15 text-emerald-400">
+              <span class="text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider"
+                    style="background: #F0FDF4; color: #15803D; border: 1px solid rgba(21,128,61,0.2);">
                 {h.badge}
               </span>
             )}
           </div>
           <div>
             <span
-              class="text-[12px] font-bold text-white/80 group-hover:text-[#D4A843] transition-colors duration-200 leading-snug block"
-              style="font-family: 'Syne', sans-serif;"
+              class="herramienta-titulo-mobile text-[12px] font-bold leading-snug block transition-colors duration-200"
+              style="color: #1C1917; font-family: 'DM Sans', sans-serif;"
             >
               {h.titulo}
             </span>
-            <p class="text-[11px] text-white/30 leading-snug mt-0.5 line-clamp-2">{h.desc}</p>
+            <p class="text-[11px] leading-snug mt-0.5 line-clamp-2" style="color: #78716C;">{h.desc}</p>
           </div>
         </a>
       ))}
@@ -196,12 +237,15 @@ const herramientas: Herramienta[] = [
     <!-- CTA banner -->
     <a
       href="/herramientas"
-      class="group mt-3 hidden lg:flex items-center justify-between bg-[#D4A843]/5 hover:bg-[#D4A843]/10 border border-[#D4A843]/20 hover:border-[#D4A843]/40 rounded-xl px-4 py-3 no-underline transition-all duration-200"
+      class="group mt-3 hidden lg:flex items-center justify-between px-4 py-3 no-underline transition-all duration-200"
+      style="background: #FEF2F2; border: 1px solid rgba(185,28,28,0.2);"
+      onmouseover="this.style.borderColor='rgba(185,28,28,0.45)'; this.style.background='#FEE2E2';"
+      onmouseout="this.style.borderColor='rgba(185,28,28,0.2)'; this.style.background='#FEF2F2';"
     >
-      <span class="text-[12px] text-[#D4A843] font-semibold" style="font-family: 'Syne', sans-serif;">
+      <span class="text-[12px] font-semibold" style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
         Explorar todas las herramientas
       </span>
-      <ArrowRight size={13} class="text-[#D4A843] group-hover:translate-x-0.5 transform transition-transform duration-200" />
+      <ArrowRight size={13} class="group-hover:translate-x-0.5 transform transition-transform duration-200" style="color: #B91C1C;" />
     </a>
 
   </div>

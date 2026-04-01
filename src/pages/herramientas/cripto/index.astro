@@ -304,24 +304,24 @@ try {
 
 </slot>
 
-  <div class="bg-[#0A0B0D] min-h-screen" style="font-family:'DM Sans',sans-serif">
+  <div class="min-h-screen" style="background:#FAFAF8;font-family:'DM Sans',sans-serif">
     <div class="max-w-5xl mx-auto px-4 py-10">
 
-      <a href="/herramientas" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-sm mb-6 no-underline transition-colors">
+      <a href="/herramientas" class="inline-flex items-center gap-2 text-sm mb-6 no-underline transition-colors" style="color:#A8A29E">
         <ArrowLeft size={15} /> Herramientas
       </a>
 
       <!-- Título -->
       <div class="mb-7">
-        <h1 class="text-white font-extrabold text-3xl mb-1" style="font-family:'Syne',sans-serif">
+        <h1 class="font-extrabold text-3xl mb-1" style="font-family:'Playfair Display',serif;color:#1C1917">
           Precios de Criptomonedas
         </h1>
-        <p class="text-white/30 text-sm">Top 100 por capitalización · actualizado cada 5 minutos</p>
+        <p class="text-sm" style="color:#78716C">Top 100 por capitalización · actualizado cada 5 minutos</p>
       </div>
 
       {fetchError ? (
-        <div class="flex items-center justify-center py-24 bg-[#111318] border border-white/[0.07] rounded-2xl">
-          <p class="text-white/30 text-sm">No se pudieron cargar los precios.</p>
+        <div class="flex items-center justify-center py-24 rounded-2xl" style="background:#fff;border:1px solid #E5E0D8">
+          <p class="text-sm" style="color:#A8A29E">No se pudieron cargar los precios.</p>
         </div>
       ) : (
       <div>
@@ -333,25 +333,25 @@ try {
           <div class="flex gap-2 flex-wrap">
             <button data-filter="all"
               class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-              style="background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.4);color:#D4A843">
+              style="background:rgba(29,78,216,0.1);border-color:rgba(29,78,216,0.4);color:#1D4ED8">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
               Todas
             </button>
             <button data-filter="gainers"
               class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              style="background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               Ganadoras
             </button>
             <button data-filter="losers"
               class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              style="background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
               Perdedoras
             </button>
             <button data-filter="top10"
               class="filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all duration-150"
-              style="background:#111318;border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.4)">
+              style="background:#F5F1EC;border:1px solid #D6D0C8;color:#57534E">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               Top 10
             </button>
@@ -359,28 +359,29 @@ try {
 
           <!-- Búsqueda -->
           <div class="relative w-48 flex-shrink-0">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:#A8A29E" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input id="search" type="text" placeholder="BTC, Ethereum..."
               autocomplete="off"
-              class="w-full bg-[#111318] text-white text-sm placeholder-white/20 border border-white/10 focus:border-[#D4A843]/50 rounded-xl pl-8 pr-3 py-2 outline-none transition-colors" />
+              class="w-full text-sm rounded-xl pl-8 pr-3 py-2 transition-colors"
+              style="background:#FAFAF8;border:1px solid #D6D0C8;color:#1C1917;outline:none" />
           </div>
         </div>
 
         <!-- Tabla -->
-        <div class="bg-[#111318] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div class="rounded-2xl overflow-hidden" style="border:1px solid #E5E0D8;background:#fff">
 
           <!-- Cabecera -->
-          <div class="hidden md:grid border-b border-white/[0.07] px-4 py-3"
-            style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px">
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider text-center">#</div>
-            <div class="text-white/50 text-[11px] font-semibold uppercase tracking-wider pl-2">Moneda</div>
-            <button data-sort="price"    class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Precio    <span class="sort-arrow">↕</span></button>
-            <button data-sort="change24" class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">24h       <span class="sort-arrow">↕</span></button>
-            <button data-sort="change7"  class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">7d        <span class="sort-arrow">↕</span></button>
-            <button data-sort="cap"      class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Cap. Mkt  <span class="sort-arrow">↕</span></button>
-            <button data-sort="volume"   class="sort-btn text-white/50 text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1">Volumen   <span class="sort-arrow">↕</span></button>
+          <div class="hidden md:grid px-4 py-3"
+            style="border-bottom:1px solid #E5E0D8;background:#F5F1EC;grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-center" style="color:#A8A29E">#</div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider pl-2" style="color:#A8A29E">Moneda</div>
+            <button data-sort="price"    class="sort-btn text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1" style="color:#A8A29E">Precio    <span class="sort-arrow">↕</span></button>
+            <button data-sort="change24" class="sort-btn text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1" style="color:#A8A29E">24h       <span class="sort-arrow">↕</span></button>
+            <button data-sort="change7"  class="sort-btn text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1" style="color:#A8A29E">7d        <span class="sort-arrow">↕</span></button>
+            <button data-sort="cap"      class="sort-btn text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1" style="color:#A8A29E">Cap. Mkt  <span class="sort-arrow">↕</span></button>
+            <button data-sort="volume"   class="sort-btn text-[11px] font-semibold uppercase tracking-wider text-right flex items-center justify-end gap-1" style="color:#A8A29E">Volumen   <span class="sort-arrow">↕</span></button>
           </div>
 
           <!-- Filas -->
@@ -390,8 +391,8 @@ try {
               const up7  = c.change7  >= 0;
               return (
                 <a href={`/herramientas/cripto/${c.id}`}
-                  class="coin-row grid px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.025] transition-colors no-underline"
-                  style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px"
+                  class="coin-row grid px-4 py-3 transition-colors no-underline"
+                  style="grid-template-columns: 44px 1fr 120px 88px 88px 140px 120px;border-top:1px solid #F0EDE7"
                   data-name={c.name.toLowerCase()}
                   data-symbol={c.symbol.toLowerCase()}
                   data-chg24={c.change24}
@@ -401,40 +402,40 @@ try {
                   data-vol={c.volume}
                   data-chg7={c.change7}>
 
-                  <div class="flex items-center justify-center text-white/20 text-xs" style="font-family:'Syne',sans-serif">
+                  <div class="flex items-center justify-center text-xs" style="color:#A8A29E">
                     {c.rank}
                   </div>
 
                   <div class="flex items-center gap-2.5 pl-2 min-w-0">
-                    <div class="w-8 h-8 rounded-full overflow-hidden bg-white/[0.07] flex-shrink-0 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7">
                       {c.image
                         ? <img src={c.image} alt={c.name} class="w-full h-full object-cover" loading="lazy" />
-                        : <span class="text-[9px] font-bold text-white/40">{c.symbol.slice(0,2)}</span>
+                        : <span class="text-[9px] font-bold" style="color:#A8A29E">{c.symbol.slice(0,2)}</span>
                       }
                     </div>
                     <div class="min-w-0">
-                      <div class="text-white font-bold text-sm truncate" style="font-family:'Syne',sans-serif">{c.name}</div>
-                      <div class="text-white/30 text-[11px]">{c.symbol}</div>
+                      <div class="font-bold text-sm truncate" style="color:#1C1917">{c.name}</div>
+                      <div class="text-[11px]" style="color:#A8A29E">{c.symbol}</div>
                     </div>
                   </div>
 
-                  <div class="flex items-center justify-end text-white font-semibold text-sm" style="font-family:'Syne',sans-serif">
+                  <div class="flex items-center justify-end font-semibold text-sm" style="color:#1C1917">
                     {fmt(c.price)}
                   </div>
 
-                  <div class={`flex items-center justify-end text-xs font-semibold ${up24 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  <div class={`flex items-center justify-end text-xs font-semibold`} style={`color:${up24 ? '#15803D' : '#DC2626'}`}>
                     {up24 ? '▲' : '▼'} {fmtC(c.change24)}
                   </div>
 
-                  <div class={`flex items-center justify-end text-xs font-semibold ${up7 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  <div class={`flex items-center justify-end text-xs font-semibold`} style={`color:${up7 ? '#15803D' : '#DC2626'}`}>
                     {up7 ? '▲' : '▼'} {fmtC(c.change7)}
                   </div>
 
-                  <div class="flex items-center justify-end text-white/45 text-xs">
+                  <div class="flex items-center justify-end text-xs" style="color:#57534E">
                     {fmtL(c.marketCap)}
                   </div>
 
-                  <div class="flex items-center justify-end text-white/30 text-xs">
+                  <div class="flex items-center justify-end text-xs" style="color:#78716C">
                     {fmtL(c.volume)}
                   </div>
 
@@ -444,7 +445,7 @@ try {
           </div>
 
           <div id="empty-state" class="hidden items-center justify-center py-14">
-            <p class="text-white/25 text-sm">Sin resultados</p>
+            <p class="text-sm" style="color:#A8A29E">Sin resultados</p>
           </div>
 
         </div>
@@ -573,6 +574,9 @@ try {
   /* ── Ocultar fila (compatible con grid en desktop y flex en móvil) ── */
   .coin-row.hidden-row { display: none !important; }
 
+  .coin-row:first-child { border-top: none !important; }
+  .coin-row:hover { background: #F9F7F4 !important; }
+
   @media (max-width: 767px) {
     .coin-row, .coin-row > div { all: unset; }
     .coin-row {
@@ -580,14 +584,14 @@ try {
       align-items: center;
       gap: 0;
       padding: 10px 14px !important;
-      border-bottom: 1px solid rgba(255,255,255,.04);
+      border-bottom: 1px solid #F0EDE7;
       text-decoration: none;
       transition: background .12s;
     }
-    .coin-row:hover { background: rgba(255,255,255,.025); }
-    .coin-row > div:nth-child(1) { width:30px;flex-shrink:0;text-align:center;color:rgba(255,255,255,.2);font-size:11px; }
+    .coin-row:hover { background: #F9F7F4 !important; }
+    .coin-row > div:nth-child(1) { width:30px;flex-shrink:0;text-align:center;color:#A8A29E;font-size:11px; }
     .coin-row > div:nth-child(2) { flex:1;display:flex;align-items:center;gap:8px;padding-left:6px;min-width:0; }
-    .coin-row > div:nth-child(3) { flex-shrink:0;font-weight:600;font-size:13px;color:#fff;font-family:'Syne',sans-serif; }
+    .coin-row > div:nth-child(3) { flex-shrink:0;font-weight:600;font-size:13px;color:#1C1917; }
     .coin-row > div:nth-child(4),
     .coin-row > div:nth-child(5),
     .coin-row > div:nth-child(6),
@@ -595,9 +599,9 @@ try {
   }
 
   .sort-btn { background:none;border:none;cursor:pointer;padding:0; transition:color .15s; }
-  .sort-btn:hover { color: rgba(255,255,255,.8) !important; }
-  .sort-btn.active { color: #D4A843 !important; }
-  .sort-btn.active .sort-arrow { opacity:1 !important; color:#D4A843; }
+  .sort-btn:hover { color: #57534E !important; }
+  .sort-btn.active { color: #1D4ED8 !important; }
+  .sort-btn.active .sort-arrow { opacity:1 !important; color:#1D4ED8; }
   .sort-arrow { opacity:.35;font-size:10px; }
 
   /* ══════════════════════════════════════
@@ -605,30 +609,31 @@ try {
   ══════════════════════════════════════ */
   .seo-section {
     padding: 1.75rem;
-    background: #111318;
-    border: 1px solid rgba(255,255,255,0.07);
+    background: #F5F1EC;
+    border: 1px solid #E5E0D8;
     border-radius: 1.25rem;
   }
   .seo-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.05rem;
     font-weight: 700;
-    color: rgba(255,255,255,0.85);
+    color: #1C1917;
     margin-bottom: 0.875rem;
   }
   .seo-section p {
     font-size: 0.875rem;
-    color: rgba(255,255,255,0.45);
+    color: #57534E;
     line-height: 1.7;
     margin-bottom: 0.75rem;
   }
   .seo-section p:last-child { margin-bottom: 0; }
-  .seo-section strong { color: rgba(255,255,255,0.8); }
+  .seo-section strong { color: #1C1917; }
+  .seo-section a { color: #B91C1C; }
 
   /* ── SEO TABLE ── */
   .seo-table {
     margin: 0.875rem 0;
-    border: 1px solid rgba(255,255,255,0.07);
+    border: 1px solid #E5E0D8;
     border-radius: 0.875rem;
     overflow: hidden;
   }
@@ -637,15 +642,15 @@ try {
     grid-template-columns: repeat(4, 1fr);
     padding: 0.55rem 0.875rem;
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.5);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #57534E;
+    border-bottom: 1px solid #E5E0D8;
     gap: 0.5rem;
     font-family: 'DM Mono', 'Courier New', monospace;
   }
   .seo-table-row:last-child { border-bottom: none; }
   .seo-table-row.seo-table-header {
-    background: rgba(0,0,0,0.3);
-    color: rgba(255,255,255,0.25);
+    background: #E5E0D8;
+    color: #78716C;
     font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -721,13 +726,13 @@ try {
       document.querySelectorAll('.filter-btn').forEach(b => {
         const el = b as HTMLElement;
         if (el.dataset.filter === activeFilter) {
-          el.style.background = 'rgba(212,168,67,.1)';
-          el.style.borderColor = 'rgba(212,168,67,.4)';
-          el.style.color = '#D4A843';
+          el.style.background = 'rgba(29,78,216,0.1)';
+          el.style.borderColor = 'rgba(29,78,216,0.4)';
+          el.style.color = '#1D4ED8';
         } else {
-          el.style.background = '#111318';
-          el.style.borderColor = 'rgba(255,255,255,.08)';
-          el.style.color = 'rgba(255,255,255,.4)';
+          el.style.background = '#F5F1EC';
+          el.style.borderColor = '#D6D0C8';
+          el.style.color = '#57534E';
         }
       });
       applyFilters();
