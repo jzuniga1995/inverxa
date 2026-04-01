@@ -1,9 +1,10 @@
 ---
+export const prerender = false;
 // src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import { TrendingUp, ArrowRight, DollarSign, BarChart2,GitCompare, Clock, Flame, BookOpen, Layers, Landmark, Calculator } from 'lucide-astro';
-import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategoria } from '../db/queries';
+import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategorias } from '../db/queries';
 
 // ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
 const db = Astro.locals.db;
@@ -19,13 +20,7 @@ const noticiasSecundarias = todasNoticias
   .filter(n => n.slug !== noticiaPrincipal?.slug)
   .slice(0, 7);
 
-const noticiasPorCategoriaArr = await Promise.all(
-  categorias.map(cat => getArticulosPorCategoria(db, cat.slug, 4))
-);
-const noticiasPorCategoria: Record<string, Awaited<ReturnType<typeof getArticulosPorCategoria>>> = {};
-categorias.forEach((cat, i) => {
-  noticiasPorCategoria[cat.slug] = noticiasPorCategoriaArr[i];
-});
+const noticiasPorCategoria = await getArticulosPorCategorias(db, categorias.map(c => c.slug), 4);
 const primeraConNoticias = categorias.find(c => (noticiasPorCategoria[c.slug]?.length ?? 0) > 0);
 
 const herramientas = [

@@ -1,4 +1,5 @@
 // src/pages/api/noticias.ts
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { articulos, categorias, paises } from '../../db/schema';
 import { eq, desc, and } from 'drizzle-orm';

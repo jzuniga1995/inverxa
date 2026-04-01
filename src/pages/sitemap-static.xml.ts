@@ -1,4 +1,5 @@
 // src/pages/sitemap-static.xml.ts
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { getCategorias, getPaises } from '../db/queries';
 

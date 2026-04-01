@@ -1,4 +1,5 @@
 // src/pages/api/buscar.ts
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { articulos, categorias, paises } from '../../db/schema';
 import { eq, and, or, ilike, desc } from 'drizzle-orm';

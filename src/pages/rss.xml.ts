@@ -7,7 +7,7 @@ export async function GET(context: any) {
   const db = context.locals.db;
   const articulos = await getArticulos(db, 50);
 
-  return rss({
+  const feed = await rss({
     title: 'Inversax — Cripto, Trading y Finanzas',
     description: 'Noticias de criptomonedas, trading, forex y bolsa en español para Latinoamérica.',
     site: 'https://inversax.com',
@@ -25,4 +25,6 @@ export async function GET(context: any) {
       } : {}),
     })),
   });
+  feed.headers.set('Cache-Control', 'public, max-age=3600');
+  return feed;
 }

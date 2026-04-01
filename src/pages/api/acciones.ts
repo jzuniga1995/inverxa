@@ -1,3 +1,4 @@
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { fetchAcciones } from '../../lib/acciones';
 import type { AccionData } from '../../lib/acciones';

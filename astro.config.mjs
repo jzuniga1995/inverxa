@@ -5,7 +5,7 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://inversax.com',
   integrations: [tailwind()],
-  output: 'server',
+  output: 'static',
   adapter: cloudflare(),
   trailingSlash: "never",
   build: {

@@ -1,4 +1,5 @@
 // src/pages/sitemap-noticias.xml.ts
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { getArticulos } from '../db/queries';
 
@@ -8,10 +9,9 @@ const POR_ARCHIVO = 1000;
 export const GET: APIRoute = async ({ locals, url }) => {
   const db = locals.db;
   const page = Number(url.searchParams.get('page') ?? '1');
+  const offset = (page - 1) * POR_ARCHIVO;
 
-  const todos = await getArticulos(db, 99999);
-  const inicio = (page - 1) * POR_ARCHIVO;
-  const articulos = todos.slice(inicio, inicio + POR_ARCHIVO);
+  const articulos = await getArticulos(db, POR_ARCHIVO, offset);
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
