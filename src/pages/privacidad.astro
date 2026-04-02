@@ -24,7 +24,15 @@ const secciones = [
   <slot name="head" slot="head">
     <title>Políticas de Privacidad — Inversax</title>
     <meta name="description" content="Conoce cómo Inversax recopila, usa y protege tu información personal. Política de privacidad actualizada para todos nuestros usuarios." />
-   <link rel="canonical" href={`${sitioWeb}/privacidad`} />  
+    <link rel="canonical" href={`${sitioWeb}/privacidad`} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="Políticas de Privacidad — Inversax" />
+    <meta property="og:description" content="Conoce cómo Inversax recopila, usa y protege tu información personal. Política de privacidad actualizada para todos nuestros usuarios." />
+    <meta property="og:url"         content={`${sitioWeb}/privacidad`} />
+    <meta property="og:image"       content={`${sitioWeb}/og/home.png`} />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"   content="Inversax — Finanzas en Español para Latinoamérica" />
   </slot>
 
   <!-- ── PAGE HEADER EDITORIAL ─────────────────────────────── -->

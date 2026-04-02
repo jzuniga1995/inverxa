@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(grep -l \"bg-\\\\[#0A0B0D\\\\]\\\\|bg-\\\\[#111318\\\\]\\\\|text-white\\\\b\" c:/Users/Jose/Inversax/src/pages/herramientas/**/*.astro)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(printf '\\\\n')",
+      "Bash(npx tsx --env-file=.env -e ':*)"
+    ]
+  }
+}

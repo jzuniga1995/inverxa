@@ -93,11 +93,11 @@ function formatFecha(fecha: Date | null) {
   <meta property="og:title"       content={articulo.titulo} />
   <meta property="og:description" content={articulo.resumen ?? ''} />
   <meta property="og:url"         content={`https://inversax.com/noticias/${articulo.slug}`} />
-  {articulo.imagen && <meta property="og:image"       content={articulo.imagen} />}
-  {articulo.imagen && <meta property="og:image:width"  content="1200" />}
-  {articulo.imagen && <meta property="og:image:height" content="630" />}
-  {articulo.imagen && <meta property="og:image:alt"    content={articulo.titulo} />}
-  {articulo.imagen && <meta property="og:image:type"   content="image/png" />}
+  <meta property="og:image"       content={articulo.imagen || "https://inversax.com/og/home.png"} />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content={articulo.imagen ? articulo.titulo : "Inversax — Finanzas en Español"} />
+  <meta property="og:image:type"   content="image/png" />
 
   <meta property="article:published_time" content={articulo.creadoEn?.toISOString() ?? ''} />
   <meta property="article:modified_time"  content={articulo.actualizadoEn?.toISOString() ?? ''} />
@@ -113,8 +113,8 @@ function formatFecha(fecha: Date | null) {
   <meta name="twitter:creator"     content="@inversax" />
   <meta name="twitter:title"       content={articulo.titulo} />
   <meta name="twitter:description" content={articulo.resumen ?? ''} />
-  {articulo.imagen && <meta name="twitter:image"     content={articulo.imagen} />}
-  {articulo.imagen && <meta name="twitter:image:alt" content={articulo.titulo} />}
+  <meta name="twitter:image"     content={articulo.imagen || "https://inversax.com/og/home.png"} />
+  <meta name="twitter:image:alt" content={articulo.imagen ? articulo.titulo : "Inversax — Finanzas en Español"} />
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
