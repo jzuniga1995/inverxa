@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import { TrendingUp, ArrowRight, DollarSign, BarChart2,GitCompare, Clock, Flame, BookOpen, Layers, Landmark, Calculator } from 'lucide-astro';
 import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategorias } from '../db/queries';
+import { getCloudinaryUrl } from '../lib/cloudinary';
 
 // ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
 const db = Astro.locals.db;
@@ -384,7 +385,10 @@ const categoriaColores: Record<string, string> = {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                       <div class="overflow-hidden" style="aspect-ratio: 16/9;">
                         {grupo[0].imagen
-                          ? <img src={grupo[0].imagen} alt={grupo[0].titulo}
+                          ? <img src={getCloudinaryUrl(grupo[0].imagen, 800)!}
+                                 alt={grupo[0].titulo}
+                                 width="800" height="450"
+                                 loading="lazy"
                                  class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                           : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                         }
@@ -423,7 +427,10 @@ const categoriaColores: Record<string, string> = {
                          class="group no-underline flex flex-col gap-3">
                         <div class="overflow-hidden" style="aspect-ratio: 4/3;">
                           {n.imagen
-                            ? <img src={n.imagen} alt={n.titulo}
+                            ? <img src={getCloudinaryUrl(n.imagen, 600)!}
+                                   alt={n.titulo}
+                                   width="600" height="450"
+                                   loading="lazy"
                                    class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                             : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                           }
@@ -525,7 +532,10 @@ const categoriaColores: Record<string, string> = {
                        style="border: 1px solid #E5E0D8; background: #FFFFFF;">
                       <div class="w-full overflow-hidden flex-shrink-0" style="aspect-ratio: 4/3;">
                         {n.imagen
-                          ? <img src={n.imagen} alt={n.titulo}
+                          ? <img src={getCloudinaryUrl(n.imagen, 400)!}
+                                 alt={n.titulo}
+                                 width="400" height="300"
+                                 loading="lazy"
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                           : <div class="w-full h-full" style={`background: ${color}12;`}></div>
                         }

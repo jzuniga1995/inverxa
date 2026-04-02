@@ -1,6 +1,7 @@
 ---
 // Hero.astro - Inversax — Editorial Hero
 import { ArrowRight, Clock } from 'lucide-astro';
+import { getCloudinaryUrl } from '../lib/cloudinary';
 
 interface Props {
   noticiaPrincipal: {
@@ -56,7 +57,11 @@ function formatFecha(fecha: Date | null) {
             <div class="order-first lg:order-last lg:mt-0 mb-5">
               {noticiaPrincipal.imagen
                 ? <div class="overflow-hidden" style="aspect-ratio: 16/9;">
-                    <img src={noticiaPrincipal.imagen} alt={noticiaPrincipal.titulo}
+                    <img src={getCloudinaryUrl(noticiaPrincipal.imagen, 800)!}
+                         alt={noticiaPrincipal.titulo}
+                         width="800" height="450"
+                         loading="eager"
+                         fetchpriority="high"
                          class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                   </div>
                 : <div class="border border-[#E5E0D8]" style="aspect-ratio: 16/9; background: #F0EDE7;"></div>

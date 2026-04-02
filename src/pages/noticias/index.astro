@@ -4,6 +4,7 @@ export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import { getArticulos, getCategorias } from '../../db/queries';
 import { Clock, ArrowRight } from 'lucide-astro';
+import { getCloudinaryUrl } from '../../lib/cloudinary';
 
 const LIMIT = 12;
 
@@ -287,7 +288,11 @@ function formatFecha(fecha: Date | null) {
                 <!-- Imagen prominente -->
                 <div class="overflow-hidden order-first" style="aspect-ratio: 3/2;">
                   {principal.imagen
-                    ? <img src={principal.imagen} alt={principal.titulo}
+                    ? <img src={getCloudinaryUrl(principal.imagen, 800)!}
+                           alt={principal.titulo}
+                           width="800" height="533"
+                           loading="eager"
+                           fetchpriority="high"
                            class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                     : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                   }
@@ -341,7 +346,10 @@ function formatFecha(fecha: Date | null) {
                            class="group flex flex-col gap-3 no-underline">
                           <div class="overflow-hidden" style="aspect-ratio: 4/3;">
                             {n.imagen
-                              ? <img src={n.imagen} alt={n.titulo}
+                              ? <img src={getCloudinaryUrl(n.imagen, 600)!}
+                                     alt={n.titulo}
+                                     width="600" height="450"
+                                     loading="lazy"
                                      class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                               : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                             }
@@ -405,7 +413,10 @@ function formatFecha(fecha: Date | null) {
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         <div class="overflow-hidden" style="aspect-ratio: 16/9;">
                           {grupo[4].imagen
-                            ? <img src={grupo[4].imagen} alt={grupo[4].titulo}
+                            ? <img src={getCloudinaryUrl(grupo[4].imagen, 800)!}
+                                   alt={grupo[4].titulo}
+                                   width="800" height="450"
+                                   loading="lazy"
                                    class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                             : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                           }
@@ -470,6 +481,13 @@ function formatFecha(fecha: Date | null) {
   const btnTexto = document.getElementById('btn-texto');
   const btnIcon  = document.getElementById('btn-icon');
 
+  function clUrl(url: string | null, w: number): string | null {
+    if (!url || !url.includes('/image/upload/')) return url;
+    const seg = url.split('/image/upload/')[1]?.split('/')[0] ?? '';
+    if (seg.includes('_')) return url;
+    return url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`);
+  }
+
   function formatFecha(fechaStr: string) {
     const fecha = new Date(fechaStr);
     const diff  = Date.now() - fecha.getTime();
@@ -487,7 +505,7 @@ function formatFecha(fecha: Date | null) {
          class="group flex flex-col gap-3 no-underline">
         <div class="overflow-hidden" style="aspect-ratio: 4/3;">
           ${a.imagen
-            ? `<img src="${a.imagen}" alt="${a.titulo}" class="w-full h-full object-cover" loading="lazy" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" />`
+            ? `<img src="${clUrl(a.imagen, 600)}" alt="${a.titulo}" width="600" height="450" class="w-full h-full object-cover" loading="lazy" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" />`
             : `<div class="w-full h-full" style="background: #E8E3DB;"></div>`
           }
         </div>

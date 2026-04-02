@@ -331,7 +331,7 @@ const descClean = desc.replace(/<[^>]*>/g, '').slice(0, 400);
           <!-- Header: logo + precio + cambio -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="border:1px solid #E5E0D8;background:#fff;padding:20px 24px;">
             <div class="flex items-center gap-4">
-              <img src={coin.image.large} alt={coin.name} class="w-12 h-12 rounded-full" />
+              <img src={coin.image.large} alt={coin.name} width="48" height="48" loading="eager" class="w-12 h-12 rounded-full" />
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
                   <h1 style="font-family:'Playfair Display',serif;font-size:clamp(18px,2.5vw,24px);font-weight:700;color:#1C1917;margin:0;">{coin.name}</h1>

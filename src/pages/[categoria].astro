@@ -4,6 +4,7 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import { getArticulosPorCategoria, getCategorias } from '../db/queries';
 import { ArrowRight, Clock, Globe } from 'lucide-astro';
+import { getCloudinaryUrl } from '../lib/cloudinary';
 
 const SLUGS_VALIDOS = [
   'cripto', 'trading', 'bolsa', 'economia', 'forex',
@@ -401,7 +402,11 @@ const [principal, ...resto] = articulosFiltrados;
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 <div class="overflow-hidden order-first" style="aspect-ratio: 3/2;">
                   {principal.imagen
-                    ? <img src={principal.imagen} alt={principal.titulo}
+                    ? <img src={getCloudinaryUrl(principal.imagen, 800)!}
+                           alt={principal.titulo}
+                           width="800" height="533"
+                           loading="eager"
+                           fetchpriority="high"
                            class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                     : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                   }
@@ -457,7 +462,10 @@ const [principal, ...resto] = articulosFiltrados;
                       <a href={`/noticias/${art.slug}`} class="group flex flex-col gap-3 no-underline">
                         <div class="overflow-hidden" style="aspect-ratio: 4/3;">
                           {art.imagen
-                            ? <img src={art.imagen} alt={art.titulo}
+                            ? <img src={getCloudinaryUrl(art.imagen, 600)!}
+                                   alt={art.titulo}
+                                   width="600" height="450"
+                                   loading="lazy"
                                    class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                             : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                           }
@@ -515,7 +523,10 @@ const [principal, ...resto] = articulosFiltrados;
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                       <div class="overflow-hidden" style="aspect-ratio: 16/9;">
                         {grupo[4].imagen
-                          ? <img src={grupo[4].imagen} alt={grupo[4].titulo}
+                          ? <img src={getCloudinaryUrl(grupo[4].imagen, 800)!}
+                                 alt={grupo[4].titulo}
+                                 width="800" height="450"
+                                 loading="lazy"
                                  class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                           : <div class="w-full h-full" style="background: #E8E3DB;"></div>
                         }
