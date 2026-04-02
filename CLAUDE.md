@@ -116,3 +116,41 @@ Skeleton pulse: background:#E5E0D8 (reemplaza bg-white/5)
 ### Nota sobre JS inline templates
 En páginas con `renderVariantes`, `renderDesktop`, `renderMobile` (dolar/[codigo], comparar-brokers):
 los strings de innerHTML también fueron migrados a la paleta clara.
+
+---
+
+## Newsletter — COMPLETADO
+
+### Flujo de base de datos
+- El proyecto usa **`drizzle-kit push`** (`npm run db:push`), NO `drizzle-kit migrate`.
+- `drizzle-kit generate` solo crea el SQL local en `drizzle/` — **no lo aplica**.
+- Para crear tablas nuevas en Neon, ejecutar `npm run db:push` (interactivo) o aplicar el SQL directamente con el driver neon vía `node --env-file=.env --input-type=module`.
+
+### Tabla `subscribers` (creada en Neon)
+```ts
+subscribers (
+  id:         serial primary key,
+  email:      text not null unique,
+  pais:       text,
+  created_at: timestamp default now(),
+  active:     boolean default true
+)
+```
+
+### Archivos involucrados
+- `src/db/schema.ts` — tabla `subscribers` + tipo `Subscriber` añadidos
+- `src/pages/api/newsletter.ts` — endpoint `POST /api/newsletter`
+  - Valida formato email con regex
+  - 409 si el email ya existe (`"Ya estás suscrito"`)
+  - 400 si formato inválido, 200 con `{ success: true }` si OK
+  - `prerender = false`
+- `src/components/Footer.astro` — formulario conectado con JS client-side
+  - Lee el país de `#country-select` (desktop) o `#country-select-mobile`; ignora "global"
+  - Deshabilita botón durante el envío
+  - Éxito: "¡Listo! Te avisamos cada día." (verde), limpia el campo
+  - Error: mensaje en rojo según respuesta del API
+  - Enter en el input también dispara el envío
+
+### Notas
+- El envío de emails lo maneja Make externamente — el endpoint solo guarda el registro.
+- `drizzle/0000_bored_invaders.sql` existe en el repo pero es referencial; la tabla real se creó con `CREATE TABLE IF NOT EXISTS` directo a Neon.
