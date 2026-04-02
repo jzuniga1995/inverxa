@@ -64,12 +64,14 @@ const nosotros = [
           </div>
           <div class="flex items-center gap-2">
             <input
+              id="nl-email"
               type="email"
               placeholder="tu@email.com"
               class="flex-1 border-none outline-none text-sm min-w-0"
               style="background: rgba(245,240,232,0.08); color: #F5F0E8; padding: 10px 14px; font-family: 'DM Sans', sans-serif;"
             />
             <button
+              id="nl-btn"
               class="flex-shrink-0 cursor-pointer border-none transition-colors duration-200"
               style="background: #B91C1C; color: white; padding: 10px 16px;"
               onmouseover="this.style.background='#991B1B';"
@@ -78,6 +80,7 @@ const nosotros = [
               <ArrowRight size={16} />
             </button>
           </div>
+          <p id="nl-msg" style="display:none; font-size: 12px; margin: 0; font-family: 'DM Sans', sans-serif;"></p>
         </div>
 
         <!-- Redes sociales -->
@@ -229,6 +232,63 @@ const nosotros = [
 
     </div>
   </div>
+
+  <!-- ── SCRIPT NEWSLETTER ──────────────────────────────────── -->
+  <script>
+    const emailInput = document.getElementById('nl-email') as HTMLInputElement | null;
+    const btn        = document.getElementById('nl-btn')   as HTMLButtonElement | null;
+    const msg        = document.getElementById('nl-msg')   as HTMLParagraphElement | null;
+
+    function getPais(): string | null {
+      const desktop = (document.getElementById('country-select') as HTMLSelectElement | null)?.value;
+      const mobile  = (document.getElementById('country-select-mobile') as HTMLSelectElement | null)?.value;
+      const val     = desktop ?? mobile ?? null;
+      return val && val !== 'global' ? val : null;
+    }
+
+    function showMsg(text: string, color: string) {
+      if (!msg) return;
+      msg.textContent = text;
+      msg.style.color = color;
+      msg.style.display = 'block';
+    }
+
+    btn?.addEventListener('click', async () => {
+      if (!emailInput || !btn) return;
+      const email = emailInput.value.trim();
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      showMsg('Enviando…', 'rgba(245,240,232,0.4)');
+
+      try {
+        const res  = await fetch('/api/newsletter', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, pais: getPais() }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showMsg('¡Listo! Te avisamos cada día.', '#4ADE80');
+          emailInput.value = '';
+        } else {
+          showMsg(data.error ?? 'Algo salió mal, intenta de nuevo.', '#F87171');
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        }
+      } catch {
+        showMsg('Error de red. Intenta de nuevo.', '#F87171');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    });
+
+    emailInput?.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter') btn?.click();
+    });
+  </script>
 
   <!-- ── FRANJA INFERIOR: copyright + disclaimer + redes ─────── -->
   <div style="border-top: 1px solid rgba(245,240,232,0.08);">

@@ -38,9 +38,19 @@ export const articulos = pgTable('articulos', {
   destacadoPublicadoIdx: index('articulos_destacado_publicado_idx').on(table.destacado, table.publicado),
 }));
 
+// ─── SUSCRIPTORES NEWSLETTER ──────────────────────────────────
+export const subscribers = pgTable('subscribers', {
+  id:        serial('id').primaryKey(),
+  email:     text('email').notNull().unique(),
+  pais:      text('pais'),
+  createdAt: timestamp('created_at').defaultNow(),
+  active:    boolean('active').default(true),
+});
+
 // ─── TIPOS TYPESCRIPT ─────────────────────────────────────────
 export type Articulo      = typeof articulos.$inferSelect;
 export type NuevoArticulo = typeof articulos.$inferInsert;
 export type Categoria     = typeof categorias.$inferSelect;
 export type Pais          = typeof paises.$inferSelect;
+export type Subscriber    = typeof subscribers.$inferSelect;
 
