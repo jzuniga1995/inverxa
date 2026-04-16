@@ -2,11 +2,16 @@
 export const prerender = false;
 // src/pages/paises.astro
 import Layout from '../layouts/Layout.astro';
-import { getPaises } from '../db/queries';
+import { getPaises, getCategorias } from '../db/queries';
 import { Globe, ArrowRight, MapPin } from 'lucide-astro';
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=60');
+
 const db = Astro.locals.db;
-const todosPaises = await getPaises(db);
+const [todosPaises, categorias] = await Promise.all([
+  getPaises(db),
+  getCategorias(db),
+]);
 
 const regiones = [
   {
@@ -59,7 +64,7 @@ function getFlagCode(codigo: string): string {
 }
 ---
 
-<Layout>
+<Layout categorias={categorias} paises={todosPaises}>
 
 <slot name="head" slot="head">
 

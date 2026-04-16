@@ -25,6 +25,6 @@ export async function GET(context: any) {
       } : {}),
     })),
   });
-  feed.headers.set('Cache-Control', 'public, max-age=3600');
+  feed.headers.set('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=60');
   return feed;
 }

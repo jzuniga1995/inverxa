@@ -2,7 +2,7 @@
 export const prerender = false;
 // src/pages/[categoria].astro
 import Layout from '../layouts/Layout.astro';
-import { getArticulosPorCategoria, getCategorias } from '../db/queries';
+import { getArticulosPorCategoria, getCategorias, getPaises } from '../db/queries';
 import { ArrowRight, Clock, Globe } from 'lucide-astro';
 import { getCloudinaryUrl } from '../lib/cloudinary';
 
@@ -20,9 +20,10 @@ if (!slugParam || !SLUGS_VALIDOS.includes(slugParam)) {
 const paisParam = Astro.url.searchParams.get('pais') ?? 'global';
 
 const db = Astro.locals.db;
-const [articulos, todasCategorias] = await Promise.all([
+const [articulos, todasCategorias, todosPaises] = await Promise.all([
   getArticulosPorCategoria(db, slugParam, 30),
   getCategorias(db),
+  getPaises(db),
 ]);
 
 // Filtrar por país si no es global
@@ -89,7 +90,7 @@ function formatFecha(fecha: Date | null) {
 const [principal, ...resto] = articulosFiltrados;
 ---
 
-<Layout>
+<Layout categorias={todasCategorias} paises={todosPaises}>
 
 <slot name="head" slot="head">
 

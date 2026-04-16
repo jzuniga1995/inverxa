@@ -2,11 +2,15 @@
 // src/pages/autor/jose-zuniga.astro
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
-import { getArticulos } from '../../db/queries';
+import { getArticulos, getCategorias, getPaises } from '../../db/queries';
 import { Clock, ArrowRight, Globe, Twitter } from 'lucide-astro';
 
 const db = Astro.locals.db;
-const articulos = await getArticulos(db, 24);
+const [articulos, categorias, todosPaises] = await Promise.all([
+  getArticulos(db, 24),
+  getCategorias(db),
+  getPaises(db),
+]);
 
 const autor = {
   nombre:    'José Zúniga',
@@ -32,7 +36,7 @@ function formatFecha(fecha: Date | null) {
 }
 ---
 
-<Layout>
+<Layout categorias={categorias} paises={todosPaises}>
   <slot name="head" slot="head">
     <title>{autor.nombre} — Editor en Inversax</title>
     <meta name="description" content={`${autor.nombre} es el fundador y editor de Inversax. Desarrollador de software apasionado por las finanzas y la economía latinoamericana.`} />

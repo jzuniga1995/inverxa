@@ -3,10 +3,21 @@
 import { Search, Globe, Menu, ChevronDown } from 'lucide-astro';
 import { getCategorias, getPaises } from '../db/queries';
 
-// ── Solo queries a DB (rápidas, sin APIs externas) ──────────────
+interface CategoriaNav { nombre: string; slug: string; }
+interface PaisNav      { nombre: string; codigo: string; }
+
+interface Props {
+  categorias?: CategoriaNav[];
+  paises?: PaisNav[];
+}
+
+// Si la página ya trajo estos datos, los reutilizamos — sin queries extra a Neon.
+// Si no los recibe, los consulta como antes.
+const { categorias: categoriasProp, paises: paisesProp } = Astro.props;
+
 const db            = Astro.locals.db;
-const categorias    = await getCategorias(db);
-const paises        = await getPaises(db);
+const categorias    = categoriasProp ?? await getCategorias(db);
+const paises        = paisesProp     ?? await getPaises(db);
 const paisesLocales = paises.filter(p => p.codigo !== 'global');
 
 // Colores de badge por tipo (tema claro editorial)

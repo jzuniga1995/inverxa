@@ -5,8 +5,14 @@ import Footer from '../components/Footer.astro';
 import NavProgress from '../components/NavProgress.astro';
 import BrokerBanner from '../components/BrokerBanner.astro';
 
+interface Props {
+  bodyClass?: string;
+  mostrarBrokers?: boolean;
+  categorias?: Array<{ nombre: string; slug: string }>;
+  paises?: Array<{ nombre: string; codigo: string }>;
+}
 
-const { bodyClass = '', mostrarBrokers = true } = Astro.props;
+const { bodyClass = '', mostrarBrokers = true, categorias, paises } = Astro.props;
 
 ---
 
@@ -47,7 +53,7 @@ const { bodyClass = '', mostrarBrokers = true } = Astro.props;
 
 <body class={`min-h-screen ${bodyClass}`} style="background: #FAFAF8; font-family: 'DM Sans', sans-serif;">
 
-  <Header />
+  <Header categorias={categorias} paises={paises} />
 
   <!-- pt-[100px] compensa el header fijo: 36px topbar + 64px nav = 100px -->
   <main class="pt-[100px]">

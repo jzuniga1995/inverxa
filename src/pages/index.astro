@@ -4,16 +4,17 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import { TrendingUp, ArrowRight, DollarSign, BarChart2,GitCompare, Clock, Flame, BookOpen, Layers, Landmark, Calculator } from 'lucide-astro';
-import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategorias } from '../db/queries';
+import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategorias, getPaises } from '../db/queries';
 import { getCloudinaryUrl } from '../lib/cloudinary';
 
 // ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
 const db = Astro.locals.db;
 
-const [todasNoticias, destacados, categorias] = await Promise.all([
+const [todasNoticias, destacados, categorias, todosPaises] = await Promise.all([
   getArticulos(db, 20),
   getArticulosDestacados(db, 3),
   getCategorias(db),
+  getPaises(db),
 ]);
 
 const noticiaPrincipal    = destacados[0] ?? todasNoticias[0] ?? null;
@@ -62,6 +63,8 @@ const ahora       = new Date();
 const diaDelAno   = Math.floor((ahora.getTime() - new Date(ahora.getFullYear(), 0, 0).getTime()) / 86400000);
 const conceptoHoy = conceptos[diaDelAno % conceptos.length];
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=30');
+
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
@@ -89,7 +92,7 @@ const categoriaColores: Record<string, string> = {
 };
 ---
 
-<Layout>
+<Layout categorias={categorias} paises={todosPaises}>
 
 
 <slot name="head" slot="head">

@@ -1,11 +1,9 @@
 import { neon } from '@neondatabase/serverless'
 
 export async function getUnpostedArticles(
-  databaseUrl: string,
+  sql: any,
   urls: string[]
 ): Promise<string[]> {
-  const sql = neon(databaseUrl)
-
   const normalizedUrls = urls.map(u => u.replace(/\/$/, ''))
   const urlsWithSlash = normalizedUrls.map(u => u + '/')
 
@@ -14,16 +12,17 @@ export async function getUnpostedArticles(
     WHERE article_url = ANY(${normalizedUrls})
     OR article_url = ANY(${urlsWithSlash})
   `
-  const postedSet = new Set(posted.map((r: any) => r.article_url.replace(/\/$/, '')))
+  const postedSet = new Set(
+    posted.map((r: any) => r.article_url.replace(/\/$/, ''))
+  )
   return normalizedUrls.filter(url => !postedSet.has(url))
 }
 
 export async function markAsPosted(
-  databaseUrl: string,
+  sql: any,
   articleUrl: string,
   platforms: string[]
 ): Promise<void> {
-  const sql = neon(databaseUrl)
   const normalizedUrl = articleUrl.replace(/\/$/, '')
   await sql`
     INSERT INTO social_posts (article_url, posted_to)
@@ -32,4 +31,3 @@ export async function markAsPosted(
     DO UPDATE SET posted_to = social_posts.posted_to || ${platforms}
   `
 }
-

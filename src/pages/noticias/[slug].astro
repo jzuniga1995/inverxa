@@ -2,7 +2,7 @@
 // src/pages/noticias/[slug].astro
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
-import { getArticuloPorSlug, getArticulosPorCategoria } from '../../db/queries';
+import { getArticuloPorSlug, getArticulosPorCategoria, getCategorias, getPaises } from '../../db/queries';
 import { Clock, ArrowLeft, ArrowRight, Globe } from 'lucide-astro';
 import AutorFirma from '../../components/AutorFirma.astro';
 import HerramientasSidebar from '../../components/HerramientasSidebar.astro';
@@ -17,11 +17,14 @@ const articulo = await getArticuloPorSlug(db, slug);
 
 if (!articulo) return Astro.redirect('/404');
 
-const filtrados = articulo.categoria?.slug
-  ? (await getArticulosPorCategoria(db, articulo.categoria.slug, 4))
-      .filter(a => a.slug !== slug)
-      .slice(0, 3)
-  : [];
+const [filtradosRaw, categorias, todosPaises] = await Promise.all([
+  articulo.categoria?.slug
+    ? getArticulosPorCategoria(db, articulo.categoria.slug, 4)
+    : Promise.resolve([]),
+  getCategorias(db),
+  getPaises(db),
+]);
+const filtrados = filtradosRaw.filter(a => a.slug !== slug).slice(0, 3);
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
@@ -33,7 +36,7 @@ function formatFecha(fecha: Date | null) {
 }
 ---
 
-<Layout>
+<Layout categorias={categorias} paises={todosPaises}>
 
 <slot name="head" slot="head">
 

@@ -10,7 +10,14 @@ export const onRequest = defineMiddleware((context, next) => {
     throw new Error('DATABASE_URL no está definida en las variables de entorno.');
   }
 
-  context.locals.db = getDb(dbUrl);
+  // Lazy: solo crea la instancia de Neon cuando alguna página accede a locals.db.
+  // Páginas que nunca acceden (herramientas solo-KV) no despiertan la DB.
+  let _db: ReturnType<typeof getDb> | undefined;
+  Object.defineProperty(context.locals, 'db', {
+    get() { return (_db ??= getDb(dbUrl)); },
+    configurable: true,
+    enumerable: true,
+  });
 
   // Proteger rutas específicas
   const esRutaProtegida = RUTAS_PROTEGIDAS.some(r =>

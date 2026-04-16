@@ -2,17 +2,22 @@
 // src/pages/noticias/index.astro
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
-import { getArticulos, getCategorias } from '../../db/queries';
+import { getArticulos, getCategorias, getPaises } from '../../db/queries';
 import { Clock, ArrowRight } from 'lucide-astro';
 import { getCloudinaryUrl } from '../../lib/cloudinary';
 
 const LIMIT = 12;
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=30');
+
 const db              = Astro.locals.db;
-const categorias      = await getCategorias(db);
 const categoriaActiva = Astro.url.searchParams.get('categoria') ?? 'todas';
 
-const todosArticulos = await getArticulos(db, LIMIT + 1);
+const [categorias, todosPaises, todosArticulos] = await Promise.all([
+  getCategorias(db),
+  getPaises(db),
+  getArticulos(db, LIMIT + 1),
+]);
 
 const articulosFiltrados = categoriaActiva === 'todas'
   ? todosArticulos
@@ -34,7 +39,7 @@ function formatFecha(fecha: Date | null) {
 
 ---
 
-<Layout>
+<Layout categorias={categorias} paises={todosPaises}>
 
 
 <slot name="head" slot="head">

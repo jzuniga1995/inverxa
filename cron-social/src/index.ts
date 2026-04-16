@@ -1,3 +1,4 @@
+import { neon } from '@neondatabase/serverless'
 import { fetchRSS } from './rss'
 import { getUnpostedArticles, markAsPosted } from './db'
 import { postToX } from './x'
@@ -18,7 +19,6 @@ export default {
     ctx.waitUntil(run(env))
   },
 
-  // Para testear manualmente con GET /
   async fetch(_req: Request, env: Env) {
     await run(env)
     return new Response('OK')
@@ -26,9 +26,11 @@ export default {
 }
 
 async function run(env: Env) {
+  // Una sola instancia para todo el ciclo
+  const sql = neon(env.DATABASE_URL)
+
   console.log('[Social] Iniciando cron...')
 
-  // 1. Leer RSS
   const articles = await fetchRSS('https://inversax.com/rss.xml')
   console.log(`[Social] ${articles.length} artículos recientes en RSS`)
 
@@ -37,16 +39,14 @@ async function run(env: Env) {
     return
   }
 
-  // 2. Filtrar no publicados
   const allUrls = articles.map(a => a.url)
-  const unpostedUrls = await getUnpostedArticles(env.DATABASE_URL, allUrls)
-  const toPost = articles.filter(a => 
+  const unpostedUrls = await getUnpostedArticles(sql, allUrls)
+  const toPost = articles.filter(a =>
     unpostedUrls.includes(a.url.replace(/\/$/, ''))
   )
 
   console.log(`[Social] ${toPost.length} artículos por publicar`)
 
-  // 3. Publicar uno por uno
   for (const article of toPost) {
     const results = await Promise.allSettled([
       postToX(env, article),
@@ -58,11 +58,10 @@ async function run(env: Env) {
     if ((results[1] as PromiseFulfilledResult<boolean>)?.value) platforms.push('threads')
 
     if (platforms.length > 0) {
-      await markAsPosted(env.DATABASE_URL, article.url, platforms)
+      await markAsPosted(sql, article.url, platforms)
       console.log(`[Social] Publicado en: ${platforms.join(', ')} — ${article.title}`)
     }
 
-    // Delay entre artículos
     await new Promise(r => setTimeout(r, 5000))
   }
 
