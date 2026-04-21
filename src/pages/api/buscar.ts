@@ -9,7 +9,10 @@ export const GET: APIRoute = async ({ url, locals }) => {
 
   if (q.length < 2) {
     return new Response(JSON.stringify({ ok: true, data: [] }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300, s-maxage=300',
+      },
     });
   }
 
@@ -43,7 +46,10 @@ export const GET: APIRoute = async ({ url, locals }) => {
       .limit(8);
 
     return new Response(JSON.stringify({ ok: true, data: resultados }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300, s-maxage=300',
+      },
     });
   } catch (error) {
     console.error('[/api/buscar] Error:', error);
