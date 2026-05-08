@@ -1,47 +1,31 @@
 // src/pages/api/noticias.ts
+// Lee desde KV (cache:noticias). Neon solo lo toca el cron inversa-cron-noticias.
 export const prerender = false;
 import type { APIRoute } from 'astro';
-import { articulos, categorias, paises } from '../../db/schema';
-import { eq, desc, and } from 'drizzle-orm';
 
 export const GET: APIRoute = async ({ url, locals }) => {
   try {
-    const db = locals.db;
+    const KV = (locals.runtime?.env as any)?.INVERSA_KV as KVNamespace | undefined;
 
-    const offset        = parseInt(url.searchParams.get('offset')    ?? '0');
-    const limit         = parseInt(url.searchParams.get('limit')     ?? '10');
+    const offset        = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0', 10));
+    const limit         = Math.max(1, Math.min(50, parseInt(url.searchParams.get('limit') ?? '10', 10)));
     const categoriaSlug = url.searchParams.get('categoria') ?? null;
 
-    const conditions = [eq(articulos.publicado, true)];
-    if (categoriaSlug) {
-      conditions.push(eq(categorias.slug, categoriaSlug));
-    }
+    const todos = (await KV?.get('cache:noticias', 'json') as any[] | null) ?? [];
 
-    const data = await db
-      .select({
-        id:        articulos.id,
-        titulo:    articulos.titulo,
-        slug:      articulos.slug,
-        resumen:   articulos.resumen,
-        imagen:    articulos.imagen,
-        destacado: articulos.destacado,
-        creadoEn:  articulos.creadoEn,
-        categoria: { nombre: categorias.nombre, slug: categorias.slug },
-        pais:      { nombre: paises.nombre, codigo: paises.codigo },
-      })
-      .from(articulos)
-      .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
-      .leftJoin(paises,     eq(articulos.paisId,      paises.id))
-      .where(and(...conditions))
-      .orderBy(desc(articulos.creadoEn))
-      .limit(limit + 1)
-      .offset(offset);
+    const filtrados = categoriaSlug
+      ? todos.filter((a: any) => a.categoria?.slug === categoriaSlug)
+      : todos;
 
-    const hayMas    = data.length > limit;
-    const resultado = data.slice(0, limit);
+    const pagina = filtrados.slice(offset, offset + limit + 1);
+    const hayMas = pagina.length > limit;
+    const data   = pagina.slice(0, limit);
 
-    return new Response(JSON.stringify({ ok: true, data: resultado, hayMas }), {
-      headers: { 'Content-Type': 'application/json' },
+    return new Response(JSON.stringify({ ok: true, data, hayMas }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300, s-maxage=300',
+      },
     });
 
   } catch (error) {
@@ -52,4 +36,3 @@ export const GET: APIRoute = async ({ url, locals }) => {
     });
   }
 };
-

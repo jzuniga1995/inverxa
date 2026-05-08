@@ -1,15 +1,14 @@
 // src/pages/api/buscar.ts
+// Búsqueda en memoria sobre cache:noticias (KV). Neon no interviene en runtime.
 export const prerender = false;
 import type { APIRoute } from 'astro';
-import { articulos, categorias, paises } from '../../db/schema';
-import { eq, and, or, ilike, desc } from 'drizzle-orm';
 
 export const GET: APIRoute = async ({ url, locals }) => {
   const q = url.searchParams.get('q')?.trim() ?? '';
 
   if (q.length < 2) {
     return new Response(JSON.stringify({ ok: true, data: [] }), {
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=300, s-maxage=300',
       },
@@ -17,36 +16,28 @@ export const GET: APIRoute = async ({ url, locals }) => {
   }
 
   try {
-    const db      = locals.db;
-    const pattern = `%${q}%`;
+    const KV   = (locals.runtime?.env as any)?.INVERSA_KV as KVNamespace | undefined;
+    const todos = (await KV?.get('cache:noticias', 'json') as any[] | null) ?? [];
 
-    const resultados = await db
-      .select({
-        id:       articulos.id,
-        titulo:   articulos.titulo,
-        slug:     articulos.slug,
-        resumen:  articulos.resumen,
-        imagen:   articulos.imagen,
-        creadoEn: articulos.creadoEn,
-        categoria: { nombre: categorias.nombre, slug: categorias.slug },
-      })
-      .from(articulos)
-      .leftJoin(categorias, eq(articulos.categoriaId, categorias.id))
-      .leftJoin(paises, eq(articulos.paisId, paises.id))
-      .where(
-        and(
-          eq(articulos.publicado, true),
-          or(
-            ilike(articulos.titulo,  pattern),
-            ilike(articulos.resumen, pattern),
-          )
-        )
+    const qLower = q.toLowerCase();
+    const data = todos
+      .filter((a: any) =>
+        a.titulo?.toLowerCase().includes(qLower) ||
+        a.resumen?.toLowerCase().includes(qLower)
       )
-      .orderBy(desc(articulos.creadoEn))
-      .limit(8);
+      .slice(0, 8)
+      .map((a: any) => ({
+        id:       a.id,
+        titulo:   a.titulo,
+        slug:     a.slug,
+        resumen:  a.resumen,
+        imagen:   a.imagen,
+        creadoEn: a.creadoEn,
+        categoria: a.categoria,
+      }));
 
-    return new Response(JSON.stringify({ ok: true, data: resultados }), {
-      headers: { 
+    return new Response(JSON.stringify({ ok: true, data }), {
+      headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=300, s-maxage=300',
       },
@@ -59,4 +50,3 @@ export const GET: APIRoute = async ({ url, locals }) => {
     );
   }
 };
-
