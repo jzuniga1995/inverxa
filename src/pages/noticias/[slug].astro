@@ -17,6 +17,8 @@ const articulo = await getArticuloPorSlug(db, slug);
 
 if (!articulo) return Astro.redirect('/404');
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+
 const [filtradosRaw, categorias, todosPaises] = await Promise.all([
   articulo.categoria?.slug
     ? getArticulosPorCategoria(db, articulo.categoria.slug, 4)

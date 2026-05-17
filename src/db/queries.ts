@@ -5,6 +5,21 @@ import type { getDb } from './index';
 
 type Db = ReturnType<typeof getDb>;
 
+// Module-level cache: in Cloudflare Workers, module scope persists within
+// the same isolation instance, so repeated requests to the same worker
+// instance skip the DB round-trip for rarely-changing tables.
+const _cache = new Map<string, { data: unknown; expiresAt: number }>();
+const STATIC_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function cached<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const hit = _cache.get(key);
+  if (hit && hit.expiresAt > now) return hit.data as T;
+  const data = await fn();
+  _cache.set(key, { data, expiresAt: now + STATIC_TTL });
+  return data;
+}
+
 export async function getArticulos(db: Db, limit = 20, offset = 0) {
   return db
     .select({
@@ -152,10 +167,10 @@ export async function getArticulosPorCategorias(
 }
 
 export async function getCategorias(db: Db) {
-  return db.select().from(categorias).orderBy(categorias.nombre);
+  return cached('categorias', () => db.select().from(categorias).orderBy(categorias.nombre));
 }
 
 export async function getPaises(db: Db) {
-  return db.select().from(paises).orderBy(paises.nombre);
+  return cached('paises', () => db.select().from(paises).orderBy(paises.nombre));
 }
 

@@ -6,6 +6,8 @@ import { getArticulos, getCategorias, getPaises } from '../../db/queries';
 import { Clock, ArrowRight, Globe, Twitter } from 'lucide-astro';
 
 const db = Astro.locals.db;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+
 const [articulos, categorias, todosPaises] = await Promise.all([
   getArticulos(db, 24),
   getCategorias(db),

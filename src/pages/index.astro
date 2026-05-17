@@ -9,6 +9,7 @@ import { getCloudinaryUrl } from '../lib/cloudinary';
 
 // ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
 const db = Astro.locals.db;
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=180, stale-while-revalidate=3600');
 
 const [todasNoticias, destacados, categorias, todosPaises] = await Promise.all([
   getArticulos(db, 20),

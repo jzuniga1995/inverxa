@@ -13,6 +13,8 @@ const todosPaises = await getPaises(db);
 const paisActual  = todosPaises.find((p) => p.codigo === codigo && p.codigo !== 'global');
 if (!paisActual) return Astro.redirect('/paises');
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+
 const categoriaParam = Astro.url.searchParams.get('categoria') ?? 'todas';
 
 const [articulos, categorias] = await Promise.all([

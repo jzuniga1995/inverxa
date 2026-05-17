@@ -17,6 +17,8 @@ if (!slugParam || !SLUGS_VALIDOS.includes(slugParam)) {
   return Astro.redirect('/404');
 }
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+
 const paisParam = Astro.url.searchParams.get('pais') ?? 'global';
 
 const db = Astro.locals.db;
