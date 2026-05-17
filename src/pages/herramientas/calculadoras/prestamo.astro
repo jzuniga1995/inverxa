@@ -1,0 +1,367 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Préstamo con Tabla de Amortización | Inversax</title>
+  <meta name="description" content="Calcula tu cuota mensual de préstamo y obtén la tabla de amortización completa. Desglose de capital e intereses por cada período. Gratis y al instante." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora prestamo, tabla amortizacion, calcular cuota mensual prestamo, simulador credito, calculo prestamo personal, amortizacion francesa, cuota fija prestamo" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <meta property="og:title" content="Calculadora de Préstamo con Tabla de Amortización | Inversax" />
+  <meta property="og:description" content="Cuota mensual, total pagado, total de intereses y tabla de amortización completa. Gratis." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/prestamo" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Préstamo y Amortización", "item": "https://inversax.com/herramientas/calculadoras/prestamo" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadora de Préstamo con Amortización — Inversax",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "url": "https://inversax.com/herramientas/calculadoras/prestamo",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Calcula la cuota mensual de un préstamo y genera la tabla de amortización completa.",
+    "inLanguage": "es"
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cómo se calcula la cuota mensual de un préstamo?",
+        "acceptedAnswer": { "@type": "Answer", "text": "La cuota mensual se calcula con la fórmula: C = P × [r(1+r)^n] / [(1+r)^n − 1], donde P es el monto del préstamo, r es la tasa de interés mensual (tasa anual ÷ 12), y n es el número de cuotas." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es la tabla de amortización?",
+        "acceptedAnswer": { "@type": "Answer", "text": "La tabla de amortización es un desglose período a período que muestra cuánto de cada cuota va a pagar el capital y cuánto se destina a intereses, junto con el saldo pendiente después de cada pago." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuánto pago en total por un préstamo de $10.000 al 12% a 3 años?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Con un préstamo de $10.000 USD al 12% anual (1% mensual) a 36 meses, la cuota mensual sería aproximadamente $332 USD. En total pagarías $11.957 USD, de los cuales $1.957 son intereses." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Conviene pagar un préstamo antes de tiempo?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Generalmente sí, si no hay penalización por pago anticipado. Pagar cuotas extra reduce el capital pendiente, lo que disminuye los intereses futuros. En préstamos a largo plazo, pagar una cuota extra al año puede reducir el plazo varios meses." }
+      }
+    ]
+  })} />
+</slot>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" is:inline></script>
+
+<!-- Breadcrumb -->
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Herramientas</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Préstamo y Amortización</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Préstamo con Amortización
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Cuota mensual, total de intereses y tabla de amortización período a período.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- Inputs -->
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Datos del préstamo</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Monto del préstamo</label>
+            <input id="monto" type="number" value="15000" min="100" step="500"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#B91C1C';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcularPrestamo();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Tasa de interés anual (%)</label>
+            <input id="tasaP" type="number" value="12" min="0.1" max="100" step="0.5"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#B91C1C';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcularPrestamo();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Plazo</label>
+            <div style="display:flex; gap:8px; margin-top:6px;">
+              <input id="plazo" type="number" value="36" min="1" step="1"
+                style="flex:1; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+                onfocus="this.style.borderColor='#B91C1C';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcularPrestamo();" />
+              <select id="unidadPlazo"
+                style="padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; outline:none;"
+                onchange="calcularPrestamo();">
+                <option value="meses">Meses</option>
+                <option value="anos">Años</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultados -->
+      <div class="flex flex-col gap-4">
+        <div style="background:#B91C1C; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.6); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Cuota mensual</p>
+          <p id="pres-cuota" style="font-size:40px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">$0</p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total pagado</p>
+            <p id="pres-total" style="font-size:20px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total intereses</p>
+            <p id="pres-intereses" style="font-size:20px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Costo del crédito</p>
+            <p id="pres-costo" style="font-size:20px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">0%</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Tasa mensual</p>
+            <p id="pres-tasamen" style="font-size:20px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">0%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:24px; margin-top:20px;">
+      <p class="text-sm font-semibold mb-4" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Distribución anual: capital vs intereses</p>
+      <canvas id="chart-prestamo" height="260"></canvas>
+    </div>
+
+    <!-- Tabla de amortización -->
+    <div style="background:#fff; border:1px solid #E5E0D8; margin-top:20px; overflow:hidden;">
+      <div style="padding:16px 20px; border-bottom:1px solid #E5E0D8; display:flex; align-items:center; justify-content:space-between;">
+        <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px;">Tabla de amortización completa</p>
+        <span id="tabla-info" style="font-size:12px; color:#78716C; font-family:'DM Sans',sans-serif;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-family:'DM Sans',sans-serif; font-size:13px;">
+          <thead>
+            <tr style="background:#F5F1EC;">
+              <th style="padding:10px 16px; text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#78716C; font-weight:600; border-bottom:1px solid #E5E0D8;">#</th>
+              <th style="padding:10px 16px; text-align:right; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#78716C; font-weight:600; border-bottom:1px solid #E5E0D8;">Cuota</th>
+              <th style="padding:10px 16px; text-align:right; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#78716C; font-weight:600; border-bottom:1px solid #E5E0D8;">Capital</th>
+              <th style="padding:10px 16px; text-align:right; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#78716C; font-weight:600; border-bottom:1px solid #E5E0D8;">Interés</th>
+              <th style="padding:10px 16px; text-align:right; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#78716C; font-weight:600; border-bottom:1px solid #E5E0D8;">Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Broker CTA -->
+    <div style="background:#FEF2F2; border:1px solid #FECACA; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#B91C1C; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Alternativa al préstamo bancario</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">¿Estás pagando demasiados intereses? Considera invertir en paralelo.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">Mientras pagas tu préstamo, hacer pequeñas inversiones puede generar rendimientos que compensen parcialmente el costo del crédito. Estos brokers permiten empezar sin monto mínimo.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#B91C1C';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Sin mínimo · 0% comisión</p>
+          </div>
+          <span style="font-size:12px; color:#B91C1C; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://pepperstone.sjv.io/c/7061517/3194997/21941" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#B91C1C';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">Pepperstone</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Sin mínimo · Top regulado</p>
+          </div>
+          <span style="font-size:12px; color:#B91C1C; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa de brokers →</a>
+    </div>
+
+    <!-- Contenido editorial -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">Cómo funciona la amortización de un préstamo</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">Cuando pides un préstamo personal, de carro o cualquier crédito con cuota fija, generalmente se aplica el <strong style="color:#1C1917;">sistema francés de amortización</strong>. En este sistema, la cuota mensual es constante durante todo el plazo, pero la proporción de capital e intereses dentro de esa cuota cambia con el tiempo.</p>
+        <p style="margin-bottom:14px;">Al inicio del préstamo, la mayor parte de tu cuota va a pagar intereses. Progresivamente, a medida que el saldo disminuye, menos se destina a intereses y más va a reducir el capital. Por eso en los primeros meses sientes que "no baja el saldo" aunque estés pagando puntualmente.</p>
+        <p style="margin-bottom:14px;">La fórmula para la cuota mensual es: <strong style="color:#1C1917;">C = P × [r(1+r)^n] / [(1+r)^n − 1]</strong>, donde P es el monto del préstamo, r la tasa mensual (tasa anual ÷ 12), y n el número de cuotas.</p>
+        <p style="margin-bottom:14px;">En Colombia, las tasas de crédito de consumo oscilan entre 18% y 36% anual. En México entre 15% y 50%. En Argentina pueden superar el 100% en contexto inflacionario. Por eso siempre conviene simular antes de comprometerse con un crédito, comparar diferentes plazos y analizar el costo total real del préstamo.</p>
+        <p>Para hispanos en Estados Unidos, las tasas de préstamos personales típicamente están entre 6% y 36% dependiendo del score crediticio. Un buen score (700+) puede conseguir tasas del 8%-12%, mientras que un score bajo puede pagar 25%-36%, haciendo el préstamo significativamente más costoso en el tiempo.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Cómo se calcula la cuota mensual de un préstamo?', a: 'La fórmula es: C = P × [r(1+r)^n] / [(1+r)^n − 1], donde P es el monto, r la tasa mensual y n el número de cuotas. Esta es la base del sistema francés de amortización.' },
+          { q: '¿Qué es la tabla de amortización?', a: 'Es el desglose período a período de cada cuota, mostrando cuánto va a capital, cuánto a intereses y el saldo pendiente. Permite saber exactamente en qué estado estará el préstamo en cualquier momento.' },
+          { q: '¿Cuánto pago de intereses en un préstamo de $10.000 al 12% a 3 años?', a: 'La cuota sería aproximadamente $332/mes. En total pagarías $11.957, de los cuales $1.957 son intereses puros. El costo real del crédito sería del 19.6% sobre el capital original.' },
+          { q: '¿Conviene pagar el préstamo antes del plazo?', a: 'Generalmente sí si no hay penalización por prepago. Cada pago adicional reduce el capital directamente, disminuyendo los intereses futuros. En la tabla de amortización puedes ver cuánto ahorras anticipando pagos.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Internal links -->
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/hipoteca', label:'Hipoteca' },
+          { href:'/herramientas/calculadoras/pago-deuda', label:'Pago anticipado de deuda' },
+          { href:'/herramientas/calculadoras/fondo-emergencia', label:'Fondo de emergencia' },
+          { href:'/herramientas/comparar-brokers', label:'Comparar brokers' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+let chartP = null;
+
+function fmt(n) {
+  return '$' + Math.abs(n).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calcularPrestamo() {
+  const P = parseFloat(document.getElementById('monto').value) || 0;
+  const tasaAnual = parseFloat(document.getElementById('tasaP').value) || 0;
+  let plazo = parseFloat(document.getElementById('plazo').value) || 1;
+  const unidad = document.getElementById('unidadPlazo').value;
+  const n = unidad === 'anos' ? Math.round(plazo * 12) : Math.round(plazo);
+  const r = tasaAnual / 100 / 12;
+
+  let cuota;
+  if (r === 0) {
+    cuota = P / n;
+  } else {
+    cuota = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }
+
+  const totalPagado = cuota * n;
+  const totalIntereses = totalPagado - P;
+  const costo = P > 0 ? (totalIntereses / P * 100).toFixed(1) : '0';
+  const tasaMen = (tasaAnual / 12).toFixed(4);
+
+  document.getElementById('pres-cuota').textContent = fmt(cuota);
+  document.getElementById('pres-total').textContent = fmt(totalPagado);
+  document.getElementById('pres-intereses').textContent = fmt(totalIntereses);
+  document.getElementById('pres-costo').textContent = costo + '%';
+  document.getElementById('pres-tasamen').textContent = (tasaAnual / 12).toFixed(3) + '%';
+
+  // Tabla de amortización
+  const tbody = document.getElementById('tabla-body');
+  tbody.innerHTML = '';
+  let saldo = P;
+  const dataCap = [], dataInt = [], labels = [];
+  let capAnual = 0, intAnual = 0;
+
+  for (let i = 1; i <= n; i++) {
+    const interes = saldo * r;
+    const capital = cuota - interes;
+    saldo = Math.max(0, saldo - capital);
+    capAnual += capital;
+    intAnual += interes;
+
+    const tr = document.createElement('tr');
+    tr.style.cssText = 'border-bottom:1px solid #F0EDE7;';
+    tr.innerHTML = `
+      <td style="padding:8px 16px; color:#78716C; font-size:12px;">${i}</td>
+      <td style="padding:8px 16px; text-align:right; color:#1C1917; font-weight:600; font-size:13px;">${fmt(cuota)}</td>
+      <td style="padding:8px 16px; text-align:right; color:#15803D; font-size:13px;">${fmt(capital)}</td>
+      <td style="padding:8px 16px; text-align:right; color:#B91C1C; font-size:13px;">${fmt(interes)}</td>
+      <td style="padding:8px 16px; text-align:right; color:#57534E; font-size:13px;">${fmt(saldo)}</td>
+    `;
+    tbody.appendChild(tr);
+
+    if (i % 12 === 0 || i === n) {
+      labels.push(`Año ${Math.ceil(i / 12)}`);
+      dataCap.push(Math.round(capAnual));
+      dataInt.push(Math.round(intAnual));
+      capAnual = 0; intAnual = 0;
+    }
+  }
+
+  document.getElementById('tabla-info').textContent = `${n} períodos · ${fmt(cuota)}/mes`;
+
+  const ctx = document.getElementById('chart-prestamo').getContext('2d');
+  if (chartP) chartP.destroy();
+  chartP = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Capital', data: dataCap, backgroundColor: '#15803D' },
+        { label: 'Intereses', data: dataInt, backgroundColor: '#B91C1C' },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { font: { family: "'DM Sans', sans-serif", size: 12 }, color: '#57534E' } } },
+      scales: {
+        x: { stacked: true, ticks: { font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#78716C' }, grid: { display: false } },
+        y: { stacked: true, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k', font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#78716C' }, grid: { color: '#F0EDE7' } }
+      }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', calcularPrestamo);
+</script>
+</Layout>

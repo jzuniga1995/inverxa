@@ -1,0 +1,239 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Inflación y Poder Adquisitivo | Inversax</title>
+  <meta name="description" content="Calcula cómo la inflación erosiona tu dinero. Descubre cuánto vale hoy una suma del pasado o cuánto valdrá en el futuro. Herramienta gratis para latinoamericanos." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora inflacion, calcular poder adquisitivo, inflacion latinoamerica, como afecta inflacion, calculadora valor futuro inflacion, inflacion colombia, inflacion mexico, inflacion argentina, inflacion peru" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/inflacion" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/inflacion" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/inflacion" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/inflacion" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/inflacion" />
+  <meta property="og:title" content="Calculadora de Inflación y Poder Adquisitivo | Inversax" />
+  <meta property="og:description" content="Cuánto vale tu dinero con la inflación. Calcula el impacto real en tu poder de compra. Gratis." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/inflacion" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Inflación", "item": "https://inversax.com/herramientas/calculadoras/inflacion" }
+    ]
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "SoftwareApplication",
+    "name": "Calculadora de Inflación — Inversax", "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web", "url": "https://inversax.com/herramientas/calculadoras/inflacion",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }, "inLanguage": "es"
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Qué es la inflación?", "acceptedAnswer": { "@type": "Answer", "text": "La inflación es el aumento generalizado y sostenido de los precios de bienes y servicios en una economía. Implica que con el mismo dinero puedes comprar menos cosas con el tiempo, erosionando el poder adquisitivo." } },
+      { "@type": "Question", "name": "¿Cómo se calcula el efecto de la inflación?", "acceptedAnswer": { "@type": "Answer", "text": "El valor futuro de una suma bajo inflación es: VF = V₀ × (1 + i)^n, donde i es la tasa de inflación anual y n el número de años. Para saber el poder adquisitivo equivalente: VP = VF / (1 + i)^n." } },
+      { "@type": "Question", "name": "¿Cuál es la inflación promedio en Latinoamérica?", "acceptedAnswer": { "@type": "Answer", "text": "En Colombia ronda el 5%-10% anual. En México el 4%-8%. En Perú el 3%-8%. En Argentina ha superado el 100% anual en años recientes. Venezuela y otros países han experimentado hiperinflación. Por eso es vital invertir para superar la inflación." } },
+      { "@type": "Question", "name": "¿Cómo protejo mis ahorros de la inflación?", "acceptedAnswer": { "@type": "Answer", "text": "Las principales formas son: invertir en acciones (históricamente superan la inflación a largo plazo), comprar activos reales (inmuebles, oro), invertir en bonos indexados a la inflación, o mantener parte de los ahorros en monedas más estables como el dólar." } }
+    ]
+  })} />
+</slot>
+
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Inflación</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Inflación y Poder Adquisitivo
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Descubre cuánto vale tu dinero en el futuro y cómo la inflación erosiona tu patrimonio.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Tasas de referencia por país -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:20px; margin-bottom:20px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Tasas de inflación de referencia 2024-2025</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { p:'Colombia', t:'5.5', c:'CO' }, { p:'México', t:'4.5', c:'MX' }, { p:'Perú', t:'3.5', c:'PE' },
+          { p:'Chile', t:'4.0', c:'CL' }, { p:'Argentina', t:'120+', c:'AR' }, { p:'USA', t:'3.0', c:'US' },
+          { p:'España', t:'3.5', c:'ES' }, { p:'Ecuador', t:'2.5', c:'EC' },
+        ].map(p => (
+          <button onclick={`document.getElementById('infTasa').value='${p.t === '120+' ? '120' : p.t}'; calcInflacion();`}
+            style="font-size:12px; padding:6px 12px; background:#F5F1EC; border:1px solid #E5E0D8; color:#57534E; font-family:'DM Sans',sans-serif; cursor:pointer;"
+            onmouseover="this.style.background='#E5E0D8'; this.style.borderColor='#B91C1C'; this.style.color='#1C1917';"
+            onmouseout="this.style.background='#F5F1EC'; this.style.borderColor='#E5E0D8'; this.style.color='#57534E';">
+            {p.p} — {p.t}%
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Parámetros</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Monto actual</label>
+            <input id="infMonto" type="number" value="10000" min="1" step="100"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#B45309';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcInflacion();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Tasa de inflación anual (%)</label>
+            <input id="infTasa" type="number" value="5" min="0.1" max="500" step="0.5"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#B45309';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcInflacion();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Período (años)</label>
+            <input id="infAnos" type="number" value="10" min="1" max="50"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#B45309';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcInflacion();" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div style="background:#B45309; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.65); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Equivalente en poder adquisitivo</p>
+          <p id="inf-valor" style="font-size:36px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">$0</p>
+          <p id="inf-sub" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Valor nominal futuro</p>
+            <p id="inf-futuro" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Pérdida de valor</p>
+            <p id="inf-perdida" style="font-size:18px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">0%</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Para mantener valor</p>
+            <p id="inf-necesario" style="font-size:18px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+            <p style="font-size:10px; color:#A8A29E; font-family:'DM Sans',sans-serif;">Necesitas invertir esta suma</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Se divide por</p>
+            <p id="inf-factor" style="font-size:18px; font-weight:700; color:#B45309; font-family:'DM Sans',sans-serif;">×1</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#B45309; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Protege tu dinero</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">La única forma de vencer la inflación es invertir. Elige dónde hacerlo.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">Para superar la inflación necesitas rendimientos superiores a ella. Las acciones globales y ETFs han superado la inflación consistentemente a largo plazo. Empieza con estos brokers sin monto mínimo.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#B45309';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">ETFs · 0% comisión</p></div>
+          <span style="font-size:12px; color:#B45309; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://icmarkets.com/?camp=90874" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#B45309';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">IC Markets</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">4.8★ · $200 mín.</p></div>
+          <span style="font-size:12px; color:#B45309; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa →</a>
+    </div>
+
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">Por qué la inflación es el enemigo silencioso de tus ahorros</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">La <strong style="color:#1C1917;">inflación</strong> es el fenómeno económico más destructivo para quienes guardan dinero en efectivo o en cuentas de ahorro con tasas inferiores a la inflación. A diferencia de una pérdida de inversión que se ve inmediatamente, la inflación opera de forma gradual e invisible, erosionando el poder adquisitivo lentamente.</p>
+        <p style="margin-bottom:14px;">En Latinoamérica, el problema es especialmente grave. Colombia ha experimentado inflaciones de hasta 12% en 2022-2023. México ronda el 4%-8% anual. Argentina ha vivido episodios de inflación del 100%-200% anual, destruyendo el ahorro en moneda local en pocos meses. Perú y Chile tienen inflaciones más moderadas del 3%-6%.</p>
+        <p style="margin-bottom:14px;">El efecto acumulativo es brutal: con una inflación del 8% anual, en 9 años tu dinero pierde la mitad de su poder adquisitivo (regla del 72: 72÷8 = 9 años para reducir el valor a la mitad). Con el 12% anual, esto ocurre en solo 6 años.</p>
+        <p style="margin-bottom:14px;">La solución es invertir en activos que históricamente superan la inflación: acciones de empresas que pueden trasladar costos a precios, bienes raíces, materias primas, y activos denominados en monedas fuertes como el dólar. El S&P 500 ha producido un retorno real (por encima de la inflación estadounidense) de aproximadamente 7% anual en los últimos 100 años.</p>
+        <p>Para latinoamericanos, mantener parte del patrimonio en dólares o activos denominados en dólares ha sido históricamente la mejor protección contra la inflación local, ya que el dólar suele apreciarse frente a las monedas regionales en momentos de crisis económica.</p>
+      </div>
+    </div>
+
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Qué es la inflación?', a: 'Es el aumento generalizado de los precios en una economía. Una inflación del 10% significa que lo que costaba $100 el año pasado ahora cuesta $110. Tu dinero compra menos con el tiempo.' },
+          { q: '¿Cómo calculo el efecto de la inflación?', a: 'La fórmula es: Valor Futuro = Monto × (1 + tasa)^años. Para el poder adquisitivo equivalente: Poder Adquisitivo = Monto / (1 + tasa)^años.' },
+          { q: '¿Cuál es la inflación promedio en Latinoamérica?', a: 'Varía enormemente: Colombia 5%-10%, México 4%-8%, Perú 3%-6%, Chile 4%-6%, Argentina 50%-200% (variable). USA ronda el 3%-4% en años recientes.' },
+          { q: '¿Cómo protejo mis ahorros de la inflación?', a: 'Las principales estrategias son: invertir en acciones diversificadas, mantener ahorros en dólares, invertir en bienes raíces, comprar ETFs de commodities, o invertir en oro como reserva de valor histórica.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/interes-compuesto', label:'Interés compuesto' },
+          { href:'/herramientas/calculadoras/rentabilidad', label:'Rentabilidad de inversión' },
+          { href:'/herramientas/calculadoras/ahorro-retiro', label:'Ahorro para retiro' },
+          { href:'/herramientas/calculadoras/conversion-divisas', label:'Conversión de divisas' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
+function calcInflacion() {
+  const monto = parseFloat(document.getElementById('infMonto').value) || 0;
+  const tasa = parseFloat(document.getElementById('infTasa').value) || 0;
+  const anos = parseFloat(document.getElementById('infAnos').value) || 1;
+  const factor = Math.pow(1 + tasa / 100, anos);
+  const futuroNominal = monto * factor;
+  const poderAdquisitivo = monto / factor;
+  const perdida = ((1 - 1/factor) * 100).toFixed(1);
+  const necesario = futuroNominal;
+  document.getElementById('inf-valor').textContent = fmt(poderAdquisitivo);
+  document.getElementById('inf-sub').textContent = `Equivalente actual de ${fmt(monto)} en ${anos} años`;
+  document.getElementById('inf-futuro').textContent = fmt(futuroNominal);
+  document.getElementById('inf-perdida').textContent = perdida + '%';
+  document.getElementById('inf-necesario').textContent = fmt(necesario);
+  document.getElementById('inf-factor').textContent = factor.toFixed(2) + 'x';
+}
+document.addEventListener('DOMContentLoaded', calcInflacion);
+</script>
+</Layout>

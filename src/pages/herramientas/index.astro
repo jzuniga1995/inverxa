@@ -80,6 +80,15 @@ const herramientas = [
     badge: 'En Vivo',
     color: '#D4A843',
   },
+  {
+    icon: 'calculadoras',
+    nombre: 'Calculadoras Financieras',
+    descripcion: '12 calculadoras: interés compuesto, hipoteca, retiro, ROI, salario neto, conversión de divisas, cripto y más.',
+    href: '/herramientas/calculadoras',
+    disponible: true,
+    badge: 'Gratis',
+    color: '#B91C1C',
+  },
 ];
 ---
 
@@ -347,13 +356,14 @@ const herramientas = [
             <div class="flex items-start justify-between">
               <div class="w-10 h-10 flex items-center justify-center flex-shrink-0"
                    style={`background: ${h.color}25;`}>
-                {h.icon === 'calculator' && <Calculator  size={18} style={`color: ${h.color};`} />}
-                {h.icon === 'dollar'     && <DollarSign  size={18} style={`color: ${h.color};`} />}
-                {h.icon === 'chart'      && <BarChart2   size={18} style={`color: ${h.color};`} />}
-                {h.icon === 'forex'      && <TrendingUp  size={18} style={`color: ${h.color};`} />}
-                {h.icon === 'layers'     && <Layers      size={18} style={`color: ${h.color};`} />}
-                {h.icon === 'acciones'   && <Landmark    size={18} style={`color: ${h.color};`} />}
-                {h.icon === 'shield'     && <Shield      size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'calculator'   && <Calculator  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'calculadoras' && <Calculator  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'dollar'       && <DollarSign  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'chart'        && <BarChart2   size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'forex'        && <TrendingUp  size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'layers'       && <Layers      size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'acciones'     && <Landmark    size={18} style={`color: ${h.color};`} />}
+                {h.icon === 'shield'       && <Shield      size={18} style={`color: ${h.color};`} />}
               </div>
 
               <!-- Dato en vivo según tipo -->
@@ -398,7 +408,7 @@ const herramientas = [
                   <span class="font-bold text-sm" style="color: #9CA3AF; font-family: 'DM Sans', sans-serif;">16+</span>
                 </span>
               )}
-              {(h.icon === 'calculator' || h.icon === 'shield') && (
+              {(h.icon === 'calculator' || h.icon === 'calculadoras' || h.icon === 'shield') && (
                 <span class="text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider"
                       style={`background: ${h.color}20; color: ${h.color}; font-family: 'DM Sans', sans-serif;`}>
                   {h.badge}

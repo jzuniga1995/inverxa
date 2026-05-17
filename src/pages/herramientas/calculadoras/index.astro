@@ -1,0 +1,233 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadoras Financieras Gratis — Interés, Préstamos y Más | Inversax</title>
+  <meta name="description" content="12 calculadoras financieras gratuitas: interés compuesto, préstamos, hipoteca, retiro y más. Resultados al instante para hispanos y latinoamericanos." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora financiera gratis, calculadora interes compuesto, calculadora prestamo, calculadora hipoteca, calculadora retiro, calculadora ROI, calculadora inflacion, calculadora salario neto, calculadora divisas, calculadora cripto" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras" />
+  <meta name="geo.region" content="LATAM" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras" />
+  <meta property="og:title" content="Calculadoras Financieras Gratis | Inversax" />
+  <meta property="og:description" content="12 calculadoras financieras: interés compuesto, préstamos, hipoteca, retiro, ROI, divisas y más. Gratis para Latinoamérica." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Calculadoras Financieras Gratis | Inversax" />
+  <meta name="twitter:description" content="12 calculadoras financieras gratuitas para latinoamericanos e hispanos en USA." />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras Financieras", "item": "https://inversax.com/herramientas/calculadoras" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadoras Financieras — Inversax",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "url": "https://inversax.com/herramientas/calculadoras",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "12 calculadoras financieras gratuitas: interés compuesto, préstamos, hipoteca, ahorro para retiro, ROI, conversión de divisas y más.",
+    "inLanguage": "es",
+    "publisher": { "@type": "Organization", "name": "Inversax", "url": "https://inversax.com" }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Calculadoras financieras de Inversax",
+    "numberOfItems": 12,
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Calculadora de Interés Compuesto", "url": "https://inversax.com/herramientas/calculadoras/interes-compuesto" },
+      { "@type": "ListItem", "position": 2, "name": "Calculadora de Préstamo con Amortización", "url": "https://inversax.com/herramientas/calculadoras/prestamo" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadora de Hipoteca", "url": "https://inversax.com/herramientas/calculadoras/hipoteca" },
+      { "@type": "ListItem", "position": 4, "name": "Calculadora de Ahorro para Retiro", "url": "https://inversax.com/herramientas/calculadoras/ahorro-retiro" },
+      { "@type": "ListItem", "position": 5, "name": "Calculadora de Rentabilidad de Inversión", "url": "https://inversax.com/herramientas/calculadoras/rentabilidad" },
+      { "@type": "ListItem", "position": 6, "name": "Calculadora de Inflación y Poder Adquisitivo", "url": "https://inversax.com/herramientas/calculadoras/inflacion" },
+      { "@type": "ListItem", "position": 7, "name": "Calculadora de Salario Neto", "url": "https://inversax.com/herramientas/calculadoras/salario-neto" },
+      { "@type": "ListItem", "position": 8, "name": "Calculadora de Fondo de Emergencia", "url": "https://inversax.com/herramientas/calculadoras/fondo-emergencia" },
+      { "@type": "ListItem", "position": 9, "name": "Calculadora de Deuda y Pago Anticipado", "url": "https://inversax.com/herramientas/calculadoras/pago-deuda" },
+      { "@type": "ListItem", "position": 10, "name": "Calculadora de ROI de Inversión", "url": "https://inversax.com/herramientas/calculadoras/roi" },
+      { "@type": "ListItem", "position": 11, "name": "Calculadora de Conversión de Divisas", "url": "https://inversax.com/herramientas/calculadoras/conversion-divisas" },
+      { "@type": "ListItem", "position": 12, "name": "Calculadora de Ganancias en Cripto", "url": "https://inversax.com/herramientas/calculadoras/cripto-ganancias" }
+    ]
+  })} />
+</slot>
+
+<!-- Page header -->
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Herramientas</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Calculadoras</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-3" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(28px,4vw,48px);">
+      Calculadoras Financieras Gratuitas
+    </h1>
+    <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:16px; max-width:600px;">
+      12 herramientas de cálculo para planificar tu dinero — sin registros, sin costos, sin complicaciones.
+    </p>
+  </div>
+</div>
+
+<!-- Grid de calculadoras -->
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10 sm:py-14">
+  <div class="max-w-7xl mx-auto">
+
+    <p class="text-xs font-bold uppercase tracking-widest mb-8" style="color:#A8A29E; font-family:'DM Sans',sans-serif; letter-spacing:0.2em;">
+      12 calculadoras · Todo en el navegador · Resultado inmediato
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+
+      {[
+        {
+          href: '/herramientas/calculadoras/interes-compuesto',
+          icon: '📈', color: '#1D4ED8',
+          nombre: 'Interés Compuesto',
+          desc: 'Proyecta cómo crece tu dinero en el tiempo. Con aportaciones periódicas y gráfica de crecimiento.',
+          badge: 'Con gráfica'
+        },
+        {
+          href: '/herramientas/calculadoras/prestamo',
+          icon: '💳', color: '#B91C1C',
+          nombre: 'Préstamo y Amortización',
+          desc: 'Calcula tu cuota mensual y obtén la tabla de amortización completa con desglose de capital e intereses.',
+          badge: 'Tabla completa'
+        },
+        {
+          href: '/herramientas/calculadoras/hipoteca',
+          icon: '🏠', color: '#15803D',
+          nombre: 'Hipoteca',
+          desc: 'Simula tu crédito hipotecario. Cuota mensual, total de intereses y plazo en años.',
+          badge: 'Con gráfica'
+        },
+        {
+          href: '/herramientas/calculadoras/ahorro-retiro',
+          icon: '🎯', color: '#7C3AED',
+          nombre: 'Ahorro para Retiro',
+          desc: 'Calcula cuánto dinero tendrás al jubilarte según tu ahorro mensual y edad actual.',
+          badge: 'Con gráfica'
+        },
+        {
+          href: '/herramientas/calculadoras/rentabilidad',
+          icon: '💹', color: '#0891B2',
+          nombre: 'Rentabilidad de Inversión',
+          desc: 'Proyecta el valor final de tu inversión considerando rendimiento anual y tiempo.',
+          badge: 'Con gráfica'
+        },
+        {
+          href: '/herramientas/calculadoras/inflacion',
+          icon: '📊', color: '#B45309',
+          nombre: 'Inflación y Poder Adquisitivo',
+          desc: 'Descubre cuánto vale tu dinero hoy vs. en el futuro con la tasa de inflación de tu país.',
+          badge: 'Esencial'
+        },
+        {
+          href: '/herramientas/calculadoras/salario-neto',
+          icon: '💼', color: '#374151',
+          nombre: 'Salario Neto',
+          desc: 'Estima tu salario después de impuestos y deducciones en Colombia, México, Argentina y más.',
+          badge: 'Multi-país'
+        },
+        {
+          href: '/herramientas/calculadoras/fondo-emergencia',
+          icon: '🛡️', color: '#15803D',
+          nombre: 'Fondo de Emergencia',
+          desc: 'Calcula cuánto necesitas ahorrar para tener un colchón financiero seguro.',
+          badge: 'Básico'
+        },
+        {
+          href: '/herramientas/calculadoras/pago-deuda',
+          icon: '⏳', color: '#DC2626',
+          nombre: 'Deuda y Pago Anticipado',
+          desc: 'Cuánto tiempo tardarás en saldar tu deuda y cuánto ahorras pagando más cada mes.',
+          badge: 'Ahorrador'
+        },
+        {
+          href: '/herramientas/calculadoras/roi',
+          icon: '🏆', color: '#7C3AED',
+          nombre: 'ROI de Inversión',
+          desc: 'Calcula el retorno sobre la inversión (ROI) y el rendimiento anualizado de cualquier activo.',
+          badge: 'Para inversores'
+        },
+        {
+          href: '/herramientas/calculadoras/conversion-divisas',
+          icon: '💱', color: '#15803D',
+          nombre: 'Conversión de Divisas',
+          desc: 'Convierte entre USD, EUR, MXN, COP, ARS, CLP, PEN y más con tasas de referencia actualizadas.',
+          badge: 'Multi-moneda'
+        },
+        {
+          href: '/herramientas/calculadoras/cripto-ganancias',
+          icon: '₿', color: '#F59E0B',
+          nombre: 'Cripto: Ganancias y Pérdidas',
+          desc: 'Calcula tus ganancias, pérdidas y precio de equilibrio en Bitcoin, Ethereum y otras criptos.',
+          badge: 'Para cripto'
+        },
+      ].map((c) => (
+        <a href={c.href}
+           class="flex flex-col gap-4 no-underline transition-all duration-200 hover:-translate-y-0.5"
+           style="background:#fff; border:1px solid #E5E0D8; padding:24px; border-radius:2px;"
+           onmouseover={`this.style.borderColor='${c.color}'; this.style.boxShadow='0 4px 16px rgba(28,25,23,0.06)';`}
+           onmouseout="this.style.borderColor='#E5E0D8'; this.style.boxShadow='none';">
+
+          <div class="flex items-start justify-between">
+            <div class="w-10 h-10 flex items-center justify-center text-xl flex-shrink-0"
+                 style={`background:${c.color}15; border-radius:4px;`}>
+              {c.icon}
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider"
+                  style={`background:${c.color}15; color:${c.color}; font-family:'DM Sans',sans-serif; border-radius:2px;`}>
+              {c.badge}
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-1.5 flex-1">
+            <h2 class="font-bold text-base leading-snug" style="color:#1C1917; font-family:'DM Sans',sans-serif;">
+              {c.nombre}
+            </h2>
+            <p class="text-sm leading-relaxed" style="color:#78716C; font-family:'DM Sans',sans-serif;">
+              {c.desc}
+            </p>
+          </div>
+
+          <span class="text-sm font-semibold flex items-center gap-1.5 mt-auto"
+                style={`color:${c.color}; font-family:'DM Sans',sans-serif;`}>
+            Abrir calculadora →
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Disclaimer -->
+    <p class="text-center text-xs mt-10" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      Todos los cálculos son estimados y tienen fines educativos. No constituyen asesoramiento financiero.
+      <a href="/herramientas/comparar-brokers" style="color:#B91C1C; text-decoration:none; font-weight:600; margin-left:4px;">Comparar brokers →</a>
+    </p>
+  </div>
+</section>
+</Layout>

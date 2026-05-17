@@ -1,0 +1,542 @@
+---
+export const prerender = true;
+// src/pages/herramientas/calculadoras/cripto-ganancias.astro
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+  <title>Calculadora de Ganancias en Cripto — ROI y P&L | Inversax</title>
+  <meta name="description" content="Calcula tus ganancias o pérdidas en criptomonedas al instante. ROI, precio de equilibrio, impuestos estimados. Gratis para traders LATAM." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+
+  <meta name="keywords" content="calculadora ganancias criptomonedas, ROI crypto, calculadora pérdidas cripto, precio equilibrio bitcoin, ganancias ethereum, impuesto cripto latinoamerica" />
+
+  <meta name="geo.region" content="LATAM" />
+  <meta name="geo.placename" content="Latinoamérica" />
+  <meta name="language" content="Spanish" />
+  <meta name="content-language" content="es" />
+
+  <link rel="alternate" hreflang="es"    href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+
+  <meta property="og:site_name"   content="Inversax" />
+  <meta property="og:locale"      content="es_LA" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Calculadora de Ganancias en Cripto — ROI y P&L | Inversax" />
+  <meta property="og:description" content="Calcula al instante tus ganancias o pérdidas en criptomonedas. ROI, breakeven, impuestos estimados. Gratis." />
+  <meta property="og:url"         content="https://inversax.com/herramientas/calculadoras/cripto-ganancias" />
+  <meta property="og:image"       content="https://inversax.com/og/calculadoras.png" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Calculadora de Ganancias en Cripto — ROI y P&L | Inversax" />
+  <meta name="twitter:description" content="Calcula ganancias, pérdidas y ROI de tus inversiones en criptomonedas. Gratis para LATAM." />
+  <meta name="twitter:image"       content="https://inversax.com/og/calculadoras.png" />
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadora de Ganancias en Cripto",
+    "description": "Calcula ganancias, pérdidas, ROI y precio de equilibrio en tus inversiones de criptomonedas. Incluye estimación de impuestos.",
+    "url": "https://inversax.com/herramientas/calculadoras/cripto-ganancias",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Cálculo de ganancias y pérdidas en criptomonedas",
+      "ROI en porcentaje",
+      "Precio de equilibrio (breakeven)",
+      "Estimación de impuestos sobre ganancias de capital",
+      "Soporte para múltiples criptomonedas"
+    ],
+    "inLanguage": "es",
+    "creator": {
+      "@type": "Organization",
+      "name": "Inversax",
+      "url": "https://inversax.com"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio",        "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas",  "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras",  "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Ganancias en Cripto", "item": "https://inversax.com/herramientas/calculadoras/cripto-ganancias" }
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cómo se calcula el ROI de una inversión en criptomonedas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El ROI (Return on Investment) se calcula como: ROI% = ((Precio de venta − Precio de compra) / Precio de compra) × 100. Si compraste Bitcoin a $30,000 y lo vendiste a $45,000, tu ROI es del 50%. Esta calculadora incluye las comisiones para darte el ROI real neto."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es el precio de equilibrio o breakeven en cripto?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El precio de equilibrio o breakeven es el precio al que deberías vender tus criptomonedas para no ganar ni perder dinero, una vez cubiertas las comisiones de compra y venta. Es el punto mínimo de salida para que la operación sea rentable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Debo pagar impuestos por ganancias en criptomonedas en Latinoamérica?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "En la mayoría de países de Latinoamérica las ganancias en criptomonedas están sujetas al impuesto sobre la renta o ganancias de capital. En Colombia tributan como renta ordinaria (10%−39%), en México se reportan como ingreso, en Perú hay una tasa del 5% para personas naturales. Esta calculadora usa un estimado orientativo del 20% — consulta a un contador local para tu situación específica."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué incluyen las comisiones o fees en una operación de cripto?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Las comisiones en criptomonedas incluyen: la fee de maker/taker del exchange (típicamente 0.1%−0.5%), las comisiones de red o gas para transferencias on-chain, y en algunos casos costos de conversión. Binance cobra 0.1% spot, Coinbase hasta 1.5%. Esta calculadora aplica el porcentaje de fee tanto en la compra como en la venta."
+        }
+      }
+    ]
+  }
+  </script>
+</slot>
+
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" style="background: #F5F1EC; border-bottom: 1px solid #E5E0D8; padding: 10px 0;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <ol style="display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #78716C;">
+      <li><a href="/" style="color: #78716C; text-decoration: none;" onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#78716C'">Inicio</a></li>
+      <li style="color: #C7BFB5;">›</li>
+      <li><a href="/herramientas" style="color: #78716C; text-decoration: none;" onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#78716C'">Herramientas</a></li>
+      <li style="color: #C7BFB5;">›</li>
+      <li><a href="/herramientas/calculadoras" style="color: #78716C; text-decoration: none;" onmouseover="this.style.color='#B91C1C'" onmouseout="this.style.color='#78716C'">Calculadoras</a></li>
+      <li style="color: #C7BFB5;">›</li>
+      <li style="color: #1C1917; font-weight: 500;">Ganancias en Cripto</li>
+    </ol>
+  </div>
+</nav>
+
+<main style="background: #FAFAF8; min-height: 100vh; font-family: 'DM Sans', sans-serif;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+
+    <!-- Header -->
+    <div style="margin-bottom: 32px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span style="background: #1D4ED8; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 3px 8px; text-transform: uppercase;">Cripto</span>
+        <span style="color: #A8A29E; font-size: 13px;">Calculadora financiera gratuita</span>
+      </div>
+      <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: #1C1917; margin: 0 0 10px 0; line-height: 1.2;">
+        Calculadora de Ganancias en Criptomonedas
+      </h1>
+      <p style="color: #57534E; font-size: 16px; line-height: 1.6; margin: 0;">
+        Calcula al instante tu ganancia o pérdida real en cualquier criptomoneda: ROI, precio de equilibrio e impuestos estimados.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="calc-grid">
+
+      <!-- Panel izquierdo: inputs -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Crypto selector -->
+        <div style="background: #fff; border: 1px solid #E5E0D8; padding: 24px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: #78716C; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Criptomoneda</label>
+          <select id="cripto-select" style="width: 100%; border: 1px solid #E5E0D8; background: #FAFAF8; color: #1C1917; font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 12px; outline: none;">
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="SOL">Solana (SOL)</option>
+            <option value="BNB">BNB (BNB)</option>
+            <option value="ADA">Cardano (ADA)</option>
+            <option value="XRP">Ripple (XRP)</option>
+            <option value="DOGE">Dogecoin (DOGE)</option>
+            <option value="OTRO">Otra cripto</option>
+          </select>
+        </div>
+
+        <!-- Inputs -->
+        <div style="background: #fff; border: 1px solid #E5E0D8; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: #78716C; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Precio de compra (USD)</label>
+            <div style="position: relative;">
+              <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #A8A29E; font-weight: 600;">$</span>
+              <input id="precio-compra" type="number" value="30000" min="0" step="any"
+                style="width: 100%; border: 1px solid #E5E0D8; background: #FAFAF8; color: #1C1917; font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 12px 10px 28px; outline: none; box-sizing: border-box;"
+                onmouseover="this.style.borderColor='#B91C1C'" onmouseout="this.style.borderColor='#E5E0D8'" onfocus="this.style.borderColor='#B91C1C'" onblur="this.style.borderColor='#E5E0D8'" />
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: #78716C; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Precio de venta (USD)</label>
+            <div style="position: relative;">
+              <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #A8A29E; font-weight: 600;">$</span>
+              <input id="precio-venta" type="number" value="45000" min="0" step="any"
+                style="width: 100%; border: 1px solid #E5E0D8; background: #FAFAF8; color: #1C1917; font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 12px 10px 28px; outline: none; box-sizing: border-box;"
+                onmouseover="this.style.borderColor='#B91C1C'" onmouseout="this.style.borderColor='#E5E0D8'" onfocus="this.style.borderColor='#B91C1C'" onblur="this.style.borderColor='#E5E0D8'" />
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: #78716C; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Cantidad de tokens</label>
+            <input id="cantidad" type="number" value="0.5" min="0" step="any"
+              style="width: 100%; border: 1px solid #E5E0D8; background: #FAFAF8; color: #1C1917; font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 12px; outline: none; box-sizing: border-box;"
+              onmouseover="this.style.borderColor='#B91C1C'" onmouseout="this.style.borderColor='#E5E0D8'" onfocus="this.style.borderColor='#B91C1C'" onblur="this.style.borderColor='#E5E0D8'" />
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: #78716C; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Comisión del exchange (%)</label>
+            <div style="position: relative;">
+              <input id="fee" type="number" value="0.1" min="0" max="10" step="0.01"
+                style="width: 100%; border: 1px solid #E5E0D8; background: #FAFAF8; color: #1C1917; font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 36px 10px 12px; outline: none; box-sizing: border-box;"
+                onmouseover="this.style.borderColor='#B91C1C'" onmouseout="this.style.borderColor='#E5E0D8'" onfocus="this.style.borderColor='#B91C1C'" onblur="this.style.borderColor='#E5E0D8'" />
+              <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #A8A29E; font-weight: 600;">%</span>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+              {['0.1', '0.2', '0.5', '1.0'].map(v => (
+                <button class="fee-btn" data-fee={v}
+                  style="font-size: 11px; padding: 3px 8px; border: 1px solid #E5E0D8; background: #F0EDE7; color: #57534E; cursor: pointer; font-family: 'DM Sans', sans-serif;"
+                  onmouseover="this.style.borderColor='#B91C1C'; this.style.color='#B91C1C';"
+                  onmouseout="this.style.borderColor='#E5E0D8'; this.style.color='#57534E';">
+                  {v}%
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 600; color: #78716C; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Tasa de impuesto estimada (%)</label>
+            <div style="position: relative;">
+              <input id="impuesto" type="number" value="20" min="0" max="50" step="1"
+                style="width: 100%; border: 1px solid #E5E0D8; background: #FAFAF8; color: #1C1917; font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 36px 10px 12px; outline: none; box-sizing: border-box;"
+                onmouseover="this.style.borderColor='#B91C1C'" onmouseout="this.style.borderColor='#E5E0D8'" onfocus="this.style.borderColor='#B91C1C'" onblur="this.style.borderColor='#E5E0D8'" />
+              <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #A8A29E; font-weight: 600;">%</span>
+            </div>
+            <p style="font-size: 11px; color: #A8A29E; margin: 5px 0 0 0;">Estimado orientativo. CO≈10%, MX≈20%, US≈15-20%</p>
+          </div>
+
+          <button id="calcular-btn"
+            style="width: 100%; background: #B91C1C; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; padding: 13px; border: none; cursor: pointer; transition: background 0.2s;"
+            onmouseover="this.style.background='#991B1B'" onmouseout="this.style.background='#B91C1C'">
+            Calcular →
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel derecho: resultados -->
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+
+        <!-- Resultado principal -->
+        <div id="resultado-principal"
+          style="background: #15803D; color: #fff; padding: 28px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85;">Ganancia / Pérdida neta</span>
+          <span id="ganancia-neta" style="font-size: 36px; font-weight: 800; font-family: 'DM Sans', sans-serif; line-height: 1;">$0.00</span>
+          <span id="ganancia-label" style="font-size: 14px; opacity: 0.85;">después de comisiones</span>
+        </div>
+
+        <!-- ROI -->
+        <div style="background: #fff; border: 1px solid #E5E0D8; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A8A29E; margin-bottom: 4px;">ROI bruto</span>
+            <span id="roi-bruto" style="font-size: 22px; font-weight: 800; color: #1C1917;">0.00%</span>
+          </div>
+          <div>
+            <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A8A29E; margin-bottom: 4px;">ROI neto (con fees)</span>
+            <span id="roi-neto" style="font-size: 22px; font-weight: 800; color: #1C1917;">0.00%</span>
+          </div>
+        </div>
+
+        <!-- Desglose -->
+        <div style="background: #fff; border: 1px solid #E5E0D8; padding: 20px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: #1C1917; margin: 0 0 14px 0; text-transform: uppercase; letter-spacing: 0.06em;">Desglose de la operación</h3>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #E5E0D8;">
+              <span style="font-size: 13px; color: #78716C;">Inversión total</span>
+              <span id="inversion-total" style="font-size: 14px; font-weight: 600; color: #1C1917;">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #E5E0D8;">
+              <span style="font-size: 13px; color: #78716C;">Valor de venta</span>
+              <span id="valor-venta" style="font-size: 14px; font-weight: 600; color: #1C1917;">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #E5E0D8;">
+              <span style="font-size: 13px; color: #78716C;">Fees de compra</span>
+              <span id="fee-compra" style="font-size: 14px; font-weight: 600; color: #B91C1C;">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #E5E0D8;">
+              <span style="font-size: 13px; color: #78716C;">Fees de venta</span>
+              <span id="fee-venta" style="font-size: 14px; font-weight: 600; color: #B91C1C;">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #E5E0D8;">
+              <span style="font-size: 13px; color: #78716C;">Ganancia bruta</span>
+              <span id="ganancia-bruta" style="font-size: 14px; font-weight: 600; color: #1C1917;">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #E5E0D8;">
+              <span style="font-size: 13px; color: #78716C;">Impuesto estimado</span>
+              <span id="impuesto-monto" style="font-size: 14px; font-weight: 600; color: #B45309;">$0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 14px; font-weight: 700; color: #1C1917;">Ganancia neta final</span>
+              <span id="ganancia-final-row" style="font-size: 15px; font-weight: 800; color: #15803D;">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Precio de equilibrio -->
+        <div style="background: #F5F1EC; border: 1px solid #E5E0D8; padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #78716C;">Precio de equilibrio (breakeven)</span>
+          </div>
+          <span id="breakeven" style="font-size: 28px; font-weight: 800; color: #1C1917; font-family: 'DM Sans', sans-serif;">$0.00</span>
+          <p style="font-size: 12px; color: #78716C; margin: 6px 0 0 0;">Precio mínimo de venta para no perder dinero (incluyendo fees de compra).</p>
+        </div>
+
+        <!-- Multiplicador -->
+        <div style="background: #fff; border: 1px solid #E5E0D8; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A8A29E;">Multiplicador</span>
+            <div id="multiplicador" style="font-size: 24px; font-weight: 800; color: #1D4ED8; margin-top: 2px;">0.00×</div>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #A8A29E;">Variación precio</span>
+            <div id="variacion-precio" style="font-size: 24px; font-weight: 800; color: #1C1917; margin-top: 2px;">0.00%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Broker -->
+    <div style="margin-top: 40px; background: #1C1917; padding: 32px; border-left: 4px solid #1D4ED8;">
+      <div style="display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 260px;">
+          <span style="display: inline-block; background: #1D4ED8; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px; text-transform: uppercase; margin-bottom: 10px;">Opera cripto</span>
+          <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 8px 0;">
+            Ya calculaste tu potencial — ahora opera en el exchange correcto
+          </h3>
+          <p style="color: #A8A29E; font-size: 14px; line-height: 1.6; margin: 0;">
+            Las comisiones impactan directamente tus ganancias. Un exchange con bajas fees puede significar miles de dólares de diferencia al año para traders activos.
+          </p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; min-width: 220px;">
+          <a href="https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=en&ref=GRO_28502_ANDQ4&utm_source=default&utm_medium=web_share_copy"
+             target="_blank" rel="noopener noreferrer nofollow"
+             style="display: flex; align-items: center; justify-content: space-between; background: #F5B614; color: #1C1917; padding: 13px 18px; font-weight: 700; font-size: 14px; text-decoration: none; transition: opacity 0.2s;"
+             onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+            <span>Binance — 0.1% fees</span>
+            <span>→</span>
+          </a>
+          <a href="https://affs.click/nBBTT"
+             target="_blank" rel="noopener noreferrer nofollow"
+             style="display: flex; align-items: center; justify-content: space-between; background: #E8393A; color: #fff; padding: 13px 18px; font-weight: 700; font-size: 14px; text-decoration: none; transition: opacity 0.2s;"
+             onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+            <span>XM — hasta $30 bono</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculadoras relacionadas -->
+    <div style="margin-top: 32px; padding: 24px; background: #fff; border: 1px solid #E5E0D8;">
+      <h3 style="font-size: 14px; font-weight: 700; color: #1C1917; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 16px 0;">Calculadoras relacionadas</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+        {[
+          { label: 'ROI de inversión', href: '/herramientas/calculadoras/roi' },
+          { label: 'Conversión de divisas', href: '/herramientas/calculadoras/conversion-divisas' },
+          { label: 'Interés compuesto', href: '/herramientas/calculadoras/interes-compuesto' },
+          { label: 'Rentabilidad de inversión', href: '/herramientas/calculadoras/rentabilidad' },
+          { label: 'Ver todas las calculadoras', href: '/herramientas/calculadoras' },
+        ].map(l => (
+          <a href={l.href}
+             style="padding: 10px 14px; border: 1px solid #E5E0D8; font-size: 13px; color: #57534E; text-decoration: none; transition: all 0.15s; background: #FAFAF8;"
+             onmouseover="this.style.borderColor='#B91C1C'; this.style.color='#B91C1C'; this.style.background='#FEF2F2';"
+             onmouseout="this.style.borderColor='#E5E0D8'; this.style.color='#57534E'; this.style.background='#FAFAF8';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Editorial -->
+    <article style="margin-top: 40px;">
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1C1917; margin: 0 0 16px 0;">
+        Cómo calcular tus ganancias en criptomonedas correctamente
+      </h2>
+
+      <div style="background: #F5F1EC; border-left: 3px solid #E5E0D8; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; color: #57534E; line-height: 1.7;">
+        <strong style="color: #1C1917;">¿Qué necesitas saber?</strong> El precio de compra, el precio de venta, la cantidad de tokens y las comisiones del exchange son los cuatro datos esenciales para calcular tus ganancias reales en cripto.
+      </div>
+
+      <div style="font-size: 15px; color: #57534E; line-height: 1.8; display: flex; flex-direction: column; gap: 16px;">
+        <p>Invertir en criptomonedas puede ser muy lucrativo, pero muchos traders cometen el error de calcular sus ganancias sin tener en cuenta las comisiones y los impuestos. Esta calculadora de ganancias en cripto te da el panorama completo: ROI bruto, ROI neto, precio de equilibrio e impuesto estimado.</p>
+
+        <p>La fórmula básica de ganancia en cripto es simple: <strong style="color: #1C1917;">Ganancia = (Precio de venta × Cantidad) − (Precio de compra × Cantidad)</strong>. Sin embargo, el resultado real siempre será menor porque las plataformas cobran comisiones tanto al comprar como al vender. Binance cobra 0.1% por operación spot, mientras que Coinbase puede llegar al 1.5%. Para un trader activo, la diferencia es significativa.</p>
+
+        <p>El <strong style="color: #1C1917;">precio de equilibrio (breakeven)</strong> es crucial para cualquier estrategia de salida. Si compraste 1 BTC a $30,000 con una fee del 0.1%, tu precio de compra real es $30,030. Necesitas vender por encima de ese precio más la fee de venta para tener ganancias reales. Esta calculadora te da ese número exacto para que no te sorprendas.</p>
+
+        <p>En cuanto a los <strong style="color: #1C1917;">impuestos sobre criptomonedas en Latinoamérica</strong>, la situación varía por país. En Colombia, las ganancias por venta de activos digitales pueden estar sujetas al impuesto a las ganancias ocasionales (10% para personas naturales) o tratarse como renta ordinaria dependiendo de la frecuencia de las operaciones. En México, deben reportarse como otros ingresos. En Perú, la tasa para personas naturales sobre ganancias de capital es del 5%. En Chile, están sujetas al impuesto de primera categoría. Esta calculadora usa un 20% como estimado neutro — siempre consulta con un asesor fiscal local.</p>
+
+        <p>El <strong style="color: #1C1917;">ROI (Return on Investment)</strong> es el indicador más utilizado para medir el desempeño de una inversión cripto. Un ROI del 50% significa que por cada $100 invertidos, obtuviste $50 de ganancia. El multiplicador complementa esta lectura: un multiplicador de 1.5× significa que tu inversión se multiplicó 1.5 veces. En el bull market de 2020-2021, Bitcoin pasó de un multiplicador de 3× a más de 7× desde sus mínimos.</p>
+
+        <p>Para maximizar tus ganancias netas en cripto, presta atención a tres factores: elegir un exchange con bajas comisiones (0.1% o menos), planificar la salida en función de tu breakeven real, y reservar el monto correcto para impuestos antes de gastar las ganancias. Los traders profesionales siempre calculan primero, operan después.</p>
+
+        <p>Si estás comenzando en el mundo crypto, herramientas como nuestra <a href="/herramientas/calculadoras/roi" style="color: #B91C1C;">calculadora de ROI</a> y nuestra <a href="/herramientas/cripto" style="color: #B91C1C;">página de mercados cripto en vivo</a> complementan este análisis para que tomes decisiones más informadas.</p>
+      </div>
+
+      <!-- FAQs -->
+      <div style="margin-top: 40px;">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #1C1917; margin: 0 0 20px 0;">
+          Preguntas frecuentes sobre ganancias en cripto
+        </h2>
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          {[
+            {
+              q: '¿Cómo se calcula el ROI de una inversión en criptomonedas?',
+              a: 'El ROI se calcula como: ROI% = ((Precio de venta − Precio de compra) / Precio de compra) × 100. Si compraste Bitcoin a $30,000 y lo vendiste a $45,000, tu ROI es del 50%. Esta calculadora incluye las comisiones para darte el ROI real neto.'
+            },
+            {
+              q: '¿Qué es el precio de equilibrio o breakeven en cripto?',
+              a: 'El breakeven es el precio al que deberías vender tus criptomonedas para no ganar ni perder, una vez cubiertas las comisiones de compra y venta. Es el punto mínimo de salida para que la operación sea rentable. Por ejemplo, si compras 1 BTC a $30,000 con una fee del 0.1%, tu breakeven aproximado es $30,060 (incluyendo también la fee de venta).'
+            },
+            {
+              q: '¿Debo pagar impuestos por ganancias en criptomonedas en Latinoamérica?',
+              a: 'Sí, en la mayoría de países de LATAM las ganancias en criptomonedas están sujetas a impuestos. En Colombia pueden tributar como ganancias ocasionales (10%) o renta ordinaria. En México se reportan como otros ingresos. En Perú hay una tasa del 5% para personas naturales. Esta calculadora usa un 20% como estimado orientativo — consulta a un contador local para tu situación específica.'
+            },
+            {
+              q: '¿Qué incluyen las comisiones o fees en una operación de cripto?',
+              a: 'Las comisiones incluyen: la fee de maker/taker del exchange (Binance 0.1%, Coinbase hasta 1.5%), las comisiones de red o gas para transferencias on-chain, y en algunos casos costos de conversión. Esta calculadora aplica el porcentaje de fee tanto en la compra como en la venta, que es la forma más completa de calcular el costo real de una operación.'
+            }
+          ].map((item, i, arr) => (
+            <details style={`border: 1px solid #E5E0D8; border-top: ${i === 0 ? '1px solid #E5E0D8' : 'none'}; background: #fff;`}>
+              <summary style="padding: 18px 20px; font-size: 15px; font-weight: 600; color: #1C1917; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                {item.q}
+                <span style="font-size: 18px; color: #B91C1C; flex-shrink: 0; margin-left: 12px;">+</span>
+              </summary>
+              <div style="padding: 0 20px 18px 20px; font-size: 14px; color: #57534E; line-height: 1.7;">
+                {item.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+<style>
+  @media (max-width: 768px) {
+    .calc-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  function fmt(n) {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  }
+  function fmtPct(n) {
+    return (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+  }
+
+  function calcular() {
+    const pc  = parseFloat(document.getElementById('precio-compra').value) || 0;
+    const pv  = parseFloat(document.getElementById('precio-venta').value)  || 0;
+    const qty = parseFloat(document.getElementById('cantidad').value)      || 0;
+    const fee = parseFloat(document.getElementById('fee').value)           || 0;
+    const tax = parseFloat(document.getElementById('impuesto').value)      || 0;
+
+    const feeRate = fee / 100;
+    const taxRate = tax / 100;
+
+    const inversionBruta = pc * qty;
+    const feeCompra      = inversionBruta * feeRate;
+    const inversionTotal = inversionBruta + feeCompra;
+
+    const valorVentaBruto = pv * qty;
+    const feeVenta        = valorVentaBruto * feeRate;
+    const valorVentaNeto  = valorVentaBruto - feeVenta;
+
+    const gananciaBruta = valorVentaBruto - inversionBruta;
+    const gananciaNeta  = valorVentaNeto  - inversionTotal;
+    const impuestoMonto = gananciaNeta > 0 ? gananciaNeta * taxRate : 0;
+    const gananciaFinal = gananciaNeta - impuestoMonto;
+
+    const roiBruto = pc > 0 ? ((pv - pc) / pc) * 100 : 0;
+    const roiNeto  = inversionTotal > 0 ? (gananciaNeta / inversionTotal) * 100 : 0;
+
+    const breakeven = pc > 0 ? (pc * (1 + feeRate)) / (1 - feeRate) : 0;
+    const multiplicador = inversionTotal > 0 ? (valorVentaNeto / inversionTotal) : 0;
+    const varPrecio = pc > 0 ? ((pv - pc) / pc) * 100 : 0;
+
+    const isGain = gananciaFinal >= 0;
+    const color  = isGain ? '#15803D' : '#B91C1C';
+
+    document.getElementById('resultado-principal').style.background = color;
+    document.getElementById('ganancia-neta').textContent = fmt(gananciaFinal);
+    document.getElementById('ganancia-label').textContent = isGain ? 'ganancia neta después de fees e impuestos' : 'pérdida neta después de fees';
+
+    document.getElementById('roi-bruto').textContent = fmtPct(roiBruto);
+    document.getElementById('roi-bruto').style.color = roiBruto >= 0 ? '#15803D' : '#B91C1C';
+    document.getElementById('roi-neto').textContent = fmtPct(roiNeto);
+    document.getElementById('roi-neto').style.color = roiNeto >= 0 ? '#15803D' : '#B91C1C';
+
+    document.getElementById('inversion-total').textContent = fmt(inversionTotal);
+    document.getElementById('valor-venta').textContent     = fmt(valorVentaNeto);
+    document.getElementById('fee-compra').textContent      = fmt(feeCompra);
+    document.getElementById('fee-venta').textContent       = fmt(feeVenta);
+    document.getElementById('ganancia-bruta').textContent  = fmt(gananciaBruta);
+    document.getElementById('ganancia-bruta').style.color  = gananciaBruta >= 0 ? '#15803D' : '#B91C1C';
+    document.getElementById('impuesto-monto').textContent  = fmt(impuestoMonto);
+    document.getElementById('ganancia-final-row').textContent = fmt(gananciaFinal);
+    document.getElementById('ganancia-final-row').style.color = color;
+
+    document.getElementById('breakeven').textContent = fmt(breakeven);
+    document.getElementById('breakeven').style.color = breakeven <= pv ? '#15803D' : '#B91C1C';
+
+    document.getElementById('multiplicador').textContent = multiplicador.toFixed(2) + '×';
+    document.getElementById('variacion-precio').textContent = fmtPct(varPrecio);
+    document.getElementById('variacion-precio').style.color = varPrecio >= 0 ? '#15803D' : '#B91C1C';
+  }
+
+  document.getElementById('calcular-btn').addEventListener('click', calcular);
+  document.querySelectorAll('.fee-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('fee').value = btn.dataset.fee;
+    });
+  });
+  ['precio-compra','precio-venta','cantidad','fee','impuesto'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcular);
+  });
+
+  calcular();
+</script>
+</Layout>

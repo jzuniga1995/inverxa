@@ -1,0 +1,305 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Ahorro para Retiro — Jubilación | Inversax</title>
+  <meta name="description" content="Calcula cuánto dinero tendrás al jubilarte según tu edad, ahorro mensual y rendimiento esperado. Simulador de retiro gratis para latinoamericanos e hispanos en USA." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora ahorro retiro, simulador jubilacion, calculadora pension, cuanto necesito para retirarme, ahorro para la vejez, fondo de retiro, calculadora 401k en español, retiro anticipado latam" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <meta property="og:title" content="Calculadora de Ahorro para Retiro | Inversax" />
+  <meta property="og:description" content="Simula tu fondo de retiro según edad, ahorro y rendimiento. Con gráfica de crecimiento. Gratis." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/ahorro-retiro" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Ahorro para Retiro", "item": "https://inversax.com/herramientas/calculadoras/ahorro-retiro" }
+    ]
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadora de Ahorro para Retiro — Inversax",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "url": "https://inversax.com/herramientas/calculadoras/ahorro-retiro",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Simula el fondo acumulado para el retiro según edad actual, ahorro mensual y rendimiento esperado.",
+    "inLanguage": "es"
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Cuánto dinero necesito para retirarme?", "acceptedAnswer": { "@type": "Answer", "text": "Una regla general es la regla del 4%: necesitas 25 veces tus gastos anuales. Si gastas $2.000/mes ($24.000/año), necesitas $600.000 en tu fondo de retiro para sostenerlo indefinidamente con una tasa de retiro del 4% anual." } },
+      { "@type": "Question", "name": "¿A qué edad debo empezar a ahorrar para el retiro?", "acceptedAnswer": { "@type": "Answer", "text": "Lo antes posible. Empezar a los 25 en lugar de los 35 puede duplicar o triplicar el fondo final gracias al interés compuesto. Cada año que postergues el inicio tiene un costo enorme a largo plazo." } },
+      { "@type": "Question", "name": "¿Cuánto debo ahorrar mensualmente para el retiro?", "acceptedAnswer": { "@type": "Answer", "text": "La regla general es ahorrar entre el 10% y el 15% de tu ingreso bruto para el retiro. Si tienes más de 40 años y no has empezado, considera aumentar eso al 20%-25% para compensar el tiempo perdido." } },
+      { "@type": "Question", "name": "¿Qué rendimiento debo asumir para mi fondo de retiro?", "acceptedAnswer": { "@type": "Answer", "text": "Para proyecciones conservadoras, usa 5%-6% real (ajustado por inflación). Para un portafolio de acciones diversificado globalmente, 7%-8% real es un estimado histórico razonable. El S&P 500 ha promediado ~10% nominal en los últimos 100 años." } }
+    ]
+  })} />
+</slot>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" is:inline></script>
+
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Ahorro para Retiro</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Ahorro para el Retiro
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Proyecta tu fondo de jubilación según tu edad, ahorro mensual y rendimiento esperado.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Tu situación actual</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Edad actual</label>
+            <input id="edadActual" type="number" value="30" min="18" max="80"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcRetiro();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Edad de retiro</label>
+            <input id="edadRetiro" type="number" value="65" min="40" max="85"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcRetiro();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Ahorro actual (USD)</label>
+            <input id="ahorroActual" type="number" value="5000" min="0" step="500"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcRetiro();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Ahorro mensual (USD)</label>
+            <input id="ahorroMen" type="number" value="300" min="0" step="50"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcRetiro();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Rendimiento anual esperado (%)</label>
+            <input id="rendRetiro" type="number" value="7" min="0.1" max="30" step="0.5"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcRetiro();" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div style="background:#7C3AED; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.6); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Fondo al retiro</p>
+          <p id="ret-total" style="font-size:36px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">$0</p>
+          <p id="ret-anos" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total aportado</p>
+            <p id="ret-aportado" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Rendimientos</p>
+            <p id="ret-rendim" style="font-size:18px; font-weight:700; color:#7C3AED; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Renta mensual</p>
+            <p id="ret-renta" style="font-size:18px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+            <p style="font-size:10px; color:#A8A29E; font-family:'DM Sans',sans-serif;">Regla del 4% anual</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Años para retirarse</p>
+            <p id="ret-plazo" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:24px; margin-top:20px;">
+      <p class="text-sm font-semibold mb-4" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Crecimiento del fondo de retiro año a año</p>
+      <canvas id="chart-retiro" height="280"></canvas>
+    </div>
+
+    <!-- CTA brokers -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#7C3AED; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Para inversión a largo plazo</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">Ya tienes el plan. Estos brokers son ideales para inversión de largo plazo.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">Para un fondo de retiro, lo ideal son ETFs de índices de bajo costo. Estos brokers ofrecen 0% o comisión muy baja en acciones y ETFs, maximizando el efecto del interés compuesto.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#7C3AED';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">0% comisión · ETFs</p>
+          </div>
+          <span style="font-size:12px; color:#7C3AED; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://pepperstone.sjv.io/c/7061517/3194997/21941" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#7C3AED';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">Pepperstone</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">4.7★ · Sin mínimo</p>
+          </div>
+          <span style="font-size:12px; color:#7C3AED; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://icmarkets.com/?camp=90874" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#7C3AED';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">IC Markets</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">4.8★ Trustpilot</p>
+          </div>
+          <span style="font-size:12px; color:#7C3AED; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa de brokers →</a>
+    </div>
+
+    <!-- Editorial -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">Cómo planificar tu retiro desde Latinoamérica</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">La <strong style="color:#1C1917;">planificación del retiro</strong> es uno de los retos financieros más importantes para los latinoamericanos. Los sistemas de pensiones de la región son, en general, insuficientes: las tasas de reemplazo (proporción del último salario que cubre la pensión) suelen estar entre 30% y 50%, muy por debajo del 70%-80% que los expertos recomiendan para mantener el nivel de vida en el retiro.</p>
+        <p style="margin-bottom:14px;">En Colombia, el sistema pensional (Colpensiones + AFPs privadas) tiene serias limitaciones de cobertura. En México, el IMSS y el ISSSTE ofrecen pensiones bajo una reforma que afecta principalmente a trabajadores jóvenes. En Argentina, el sistema público está bajo presión fiscal crónica. Por eso, construir un ahorro voluntario adicional no es un lujo — es una necesidad.</p>
+        <p style="margin-bottom:14px;">Para hispanos en Estados Unidos, las herramientas disponibles son significativamente mejores: el 401(k) con contribuciones del empleador (match), el IRA tradicional y el Roth IRA ofrecen ventajas fiscales enormes. Aprovechar el match del empleador en el 401(k) es, básicamente, dinero gratis con un retorno del 100% instantáneo.</p>
+        <p style="margin-bottom:14px;">La <strong style="color:#1C1917;">regla del 4%</strong> (o regla de retirada segura) es un parámetro útil: si tu fondo de retiro genera al menos un 4% anual, puedes retirar ese porcentaje indefinidamente sin agotar el capital. Eso significa que para vivir con $2.000/mes ($24.000/año), necesitas un fondo de $600.000 USD.</p>
+        <p>Empezar a los 25 años en lugar de los 35 puede duplicar tu fondo final, todo lo demás igual. El tiempo es el activo más valioso en la planificación del retiro. Esta calculadora te permite visualizar ese impacto y tomar decisiones informadas hoy.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Cuánto dinero necesito para retirarme?', a: 'La regla del 4%: necesitas 25 veces tus gastos anuales en tu fondo. Si gastas $2.000/mes, necesitas $600.000. Esta fórmula histórica ha funcionado bien en mercados diversificados durante períodos de 30+ años.' },
+          { q: '¿A qué edad debo empezar a ahorrar para el retiro?', a: 'Lo antes posible. Comenzar a los 25 en lugar de los 35 puede resultar en un fondo 2-3 veces mayor al momento del retiro. Cada año de retraso es dinero compuesto que pierdes.' },
+          { q: '¿Cuánto debo ahorrar mensualmente para el retiro?', a: 'La regla general es entre 10% y 15% del ingreso bruto mensual. Si tienes más de 40 años y no has empezado, considera el 20%-25% para compensar. Empieza con lo que puedas y aumenta gradualmente.' },
+          { q: '¿Qué rendimiento anual es realista para proyectar?', a: 'Para proyecciones conservadoras: 5%-6% real. Para un portafolio diversificado en acciones globales: 7%-8% real. El S&P 500 ha promediado históricamente ~10% nominal, ~7% real ajustado por inflación.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/interes-compuesto', label:'Interés compuesto' },
+          { href:'/herramientas/calculadoras/rentabilidad', label:'Rentabilidad de inversión' },
+          { href:'/herramientas/calculadoras/inflacion', label:'Inflación y poder adquisitivo' },
+          { href:'/herramientas/calculadoras/roi', label:'ROI de inversión' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+let chartRetiro = null;
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
+
+function calcRetiro() {
+  const edadA = parseFloat(document.getElementById('edadActual').value) || 30;
+  const edadR = parseFloat(document.getElementById('edadRetiro').value) || 65;
+  const ahorroAct = parseFloat(document.getElementById('ahorroActual').value) || 0;
+  const ahorroMen = parseFloat(document.getElementById('ahorroMen').value) || 0;
+  const rend = parseFloat(document.getElementById('rendRetiro').value) || 7;
+  const anos = Math.max(0, edadR - edadA);
+  const r = rend / 100 / 12;
+  const n = anos * 12;
+  const cap = ahorroAct * Math.pow(1 + r, n);
+  const aportes = r > 0 ? ahorroMen * (Math.pow(1 + r, n) - 1) / r : ahorroMen * n;
+  const total = cap + aportes;
+  const aportado = ahorroAct + ahorroMen * n;
+  const rendimientos = total - aportado;
+  const rentaMen = total * 0.04 / 12;
+
+  document.getElementById('ret-total').textContent = fmt(total);
+  document.getElementById('ret-anos').textContent = `En ${anos} años · ${edadR} años`;
+  document.getElementById('ret-aportado').textContent = fmt(aportado);
+  document.getElementById('ret-rendim').textContent = fmt(rendimientos);
+  document.getElementById('ret-renta').textContent = fmt(rentaMen) + '/mes';
+  document.getElementById('ret-plazo').textContent = anos + ' años';
+
+  const labels = [], dataCap = [], dataTot = [];
+  for (let a = 0; a <= anos; a++) {
+    const nn = a * 12;
+    const c = ahorroAct * Math.pow(1 + r, nn);
+    const ap = r > 0 ? ahorroMen * (Math.pow(1 + r, nn) - 1) / r : ahorroMen * nn;
+    labels.push(edadA + a);
+    dataCap.push(Math.round(ahorroAct + ahorroMen * nn));
+    dataTot.push(Math.round(c + ap));
+  }
+
+  const ctx = document.getElementById('chart-retiro').getContext('2d');
+  if (chartRetiro) chartRetiro.destroy();
+  chartRetiro = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Total aportado', data: dataCap, borderColor: '#E5E0D8', backgroundColor: 'rgba(229,224,216,0.3)', fill: true, tension: 0.3, pointRadius: 0 },
+        { label: 'Fondo proyectado', data: dataTot, borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.12)', fill: true, tension: 0.3, pointRadius: 0 },
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { labels: { font: { family: "'DM Sans', sans-serif", size: 12 }, color: '#57534E' } } },
+      scales: {
+        y: { ticks: { callback: v => '$' + (v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : (v/1000).toFixed(0) + 'k'), font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#78716C' }, grid: { color: '#F0EDE7' } },
+        x: { title: { display: true, text: 'Edad', font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#A8A29E' }, ticks: { font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#78716C', maxTicksLimit: 10 }, grid: { display: false } }
+      }
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', calcRetiro);
+</script>
+</Layout>

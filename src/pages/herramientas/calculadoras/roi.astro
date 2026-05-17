@@ -1,0 +1,232 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de ROI de Inversión — Retorno sobre Inversión | Inversax</title>
+  <meta name="description" content="Calcula el ROI (retorno sobre inversión) y el rendimiento anualizado de cualquier activo. Compara inversiones de distinto plazo con el CAGR. Gratis." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora ROI, calcular retorno inversion, ROI formula, rendimiento anualizado, CAGR calculadora, calcular ganancia inversion, return on investment en español, calcular ROI activo" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/roi" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/roi" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/roi" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/roi" />
+  <meta property="og:title" content="Calculadora de ROI de Inversión | Inversax" />
+  <meta property="og:description" content="Calcula el ROI y rendimiento anualizado de cualquier inversión. CAGR, ganancia neta y multiplicador. Gratis." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/roi" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 3, "name": "ROI de Inversión", "item": "https://inversax.com/herramientas/calculadoras/roi" }
+    ]
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "SoftwareApplication",
+    "name": "Calculadora de ROI — Inversax", "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web", "url": "https://inversax.com/herramientas/calculadoras/roi",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }, "inLanguage": "es"
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Qué es el ROI?", "acceptedAnswer": { "@type": "Answer", "text": "ROI (Return on Investment) es el retorno sobre la inversión: la ganancia o pérdida neta expresada como porcentaje del capital invertido. Fórmula: ROI = (Valor Final - Inversión Inicial) / Inversión Inicial × 100." } },
+      { "@type": "Question", "name": "¿Cuál es la diferencia entre ROI y CAGR?", "acceptedAnswer": { "@type": "Answer", "text": "El ROI mide el retorno total sin considerar el tiempo. El CAGR (Tasa de Crecimiento Anual Compuesta) normaliza ese retorno por año, permitiendo comparar inversiones de diferente duración. Una inversión con ROI del 50% en 2 años tiene un CAGR del 22.5%, mientras que el mismo ROI en 5 años equivale al 8.4% CAGR." } },
+      { "@type": "Question", "name": "¿Qué es un buen ROI en una inversión?", "acceptedAnswer": { "@type": "Answer", "text": "Depende del tiempo. En acciones, el S&P 500 produce ~10% anual (ROI del 159% en 10 años). En bienes raíces, el 8%-12% anual es típico. Para inversiones a corto plazo (1 año), cualquier cosa superior al 10% después de impuestos se considera buena." } },
+      { "@type": "Question", "name": "¿Cómo se calcula el CAGR?", "acceptedAnswer": { "@type": "Answer", "text": "CAGR = (Valor Final / Inversión Inicial)^(1/años) − 1. Por ejemplo: invertiste $10.000, después de 4 años tienes $15.000. CAGR = (15000/10000)^(1/4) − 1 = 1.5^0.25 − 1 ≈ 10.67% anual." } }
+    ]
+  })} />
+</slot>
+
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">ROI de Inversión</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de ROI de Inversión
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Calcula el retorno sobre inversión (ROI), CAGR y ganancia neta de cualquier activo.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Datos de la inversión</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Inversión inicial</label>
+            <input id="roiInicial" type="number" value="10000" min="1" step="100"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcROI();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Valor final de la inversión</label>
+            <input id="roiFinal" type="number" value="16000" min="0" step="100"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcROI();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Duración (años)</label>
+            <input id="roiAnos" type="number" value="4" min="0.08" max="100" step="0.5"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcROI();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Impuestos sobre la ganancia (%)</label>
+            <input id="roiImpuesto" type="number" value="0" min="0" max="50" step="1"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#7C3AED';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcROI();" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div id="roi-card" style="padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.65); font-family:'DM Sans',sans-serif; margin-bottom:8px;">ROI Total</p>
+          <p id="roi-pct" style="font-size:40px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">0%</p>
+          <p id="roi-tipo" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Ganancia bruta</p>
+            <p id="roi-ganancia" style="font-size:18px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Ganancia neta</p>
+            <p id="roi-neta" style="font-size:18px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">CAGR anual</p>
+            <p id="roi-cagr" style="font-size:18px; font-weight:700; color:#7C3AED; font-family:'DM Sans',sans-serif;">0%</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Multiplicador</p>
+            <p id="roi-mult" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">×1</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#7C3AED; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Maximiza tu ROI</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">Las comisiones del broker impactan tu ROI neto. Elige el más eficiente.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">En inversiones a largo plazo, una diferencia de 0.5% en comisiones puede representar miles de dólares de diferencia en el resultado final. Estos brokers tienen las menores comisiones para inversores en Latinoamérica.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#7C3AED';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">0% comisión acciones</p></div>
+          <span style="font-size:12px; color:#7C3AED; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://icmarkets.com/?camp=90874" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#7C3AED';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">IC Markets</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">0.0 pips · 4.8★</p></div>
+          <span style="font-size:12px; color:#7C3AED; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa →</a>
+    </div>
+
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">ROI y CAGR: las métricas esenciales del inversor</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">El <strong style="color:#1C1917;">ROI (Return on Investment)</strong> es la métrica financiera más universal: mide el retorno de una inversión como porcentaje del capital invertido. La fórmula es simple: ROI = (Valor Final − Inversión Inicial) / Inversión Inicial × 100. Un ROI positivo significa ganancia; uno negativo, pérdida.</p>
+        <p style="margin-bottom:14px;">Sin embargo, el ROI tiene una limitación crítica: no considera el tiempo. Una inversión con 50% de ROI puede ser excelente (si tardó 2 años) o mediocre (si tardó 10 años). Por eso los inversores profesionales usan el <strong style="color:#1C1917;">CAGR</strong>: CAGR = (Valor Final / Inversión Inicial)^(1/años) − 1. El CAGR convierte cualquier retorno en una tasa anual comparable.</p>
+        <p style="margin-bottom:14px;">Para un inversor latinoamericano, el ROI debe evaluarse también contra la inflación local. Si tu inversión tuvo un ROI del 30% en 2 años pero la inflación acumulada fue del 40%, tu retorno real fue negativo. Siempre compara el ROI contra la inflación y contra las alternativas disponibles (tasa de depósito bancario, fondos de deuda, etc.).</p>
+        <p style="margin-bottom:14px;">En acciones e instrumentos financieros, el ROI también debe considerar los impuestos. En Colombia, las ganancias de capital en acciones nacionales cotizan con cierta exención si se cumplen condiciones específicas. En USA, las ganancias de capital a largo plazo (más de un año) tributan al 0%, 15% o 20% según el ingreso, mientras que las de corto plazo se gravan como ingreso ordinario (hasta 37%).</p>
+        <p>Esta calculadora incluye el campo de impuestos para que puedas calcular tu ROI neto real después de la carga tributaria, que es el número que verdaderamente importa para comparar inversiones alternativas.</p>
+      </div>
+    </div>
+
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Qué es el ROI?', a: 'El ROI (Return on Investment) es el porcentaje de ganancia o pérdida sobre el capital invertido: ROI = (Valor Final − Inversión) / Inversión × 100. Es la métrica más básica y universal para evaluar una inversión.' },
+          { q: '¿Cuál es la diferencia entre ROI y CAGR?', a: 'El ROI mide el retorno total; el CAGR lo normaliza por año. Una inversión con ROI del 50% en 2 años tiene CAGR del 22.5%. El mismo ROI en 5 años equivale al 8.4% CAGR. El CAGR es mejor para comparar inversiones de diferente duración.' },
+          { q: '¿Qué es un buen ROI?', a: 'El S&P 500 produce ~10% anual (CAGR), equivalente a un ROI del 159% en 10 años. Para inversiones a 1 año, superar el 10% neto de impuestos es muy bueno. Para bienes raíces, el 8%-12% anual es típico incluyendo valorización y arriendo.' },
+          { q: '¿Cómo calculo el CAGR?', a: 'CAGR = (Valor Final / Inversión)^(1/años) − 1. Ejemplo: $10.000 que se convierten en $15.000 en 4 años: CAGR = (1.5)^0.25 − 1 ≈ 10.67% anual.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/rentabilidad', label:'Rentabilidad de inversión' },
+          { href:'/herramientas/calculadoras/interes-compuesto', label:'Interés compuesto' },
+          { href:'/herramientas/calculadoras/ahorro-retiro', label:'Ahorro para retiro' },
+          { href:'/herramientas/calculadoras/cripto-ganancias', label:'Ganancias en cripto' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('es-CO'); }
+function calcROI() {
+  const inicial = parseFloat(document.getElementById('roiInicial').value) || 0;
+  const final = parseFloat(document.getElementById('roiFinal').value) || 0;
+  const anos = parseFloat(document.getElementById('roiAnos').value) || 1;
+  const impuesto = parseFloat(document.getElementById('roiImpuesto').value) || 0;
+
+  const ganancia = final - inicial;
+  const impuestos = Math.max(0, ganancia) * impuesto / 100;
+  const neta = ganancia - impuestos;
+  const roi = inicial > 0 ? (ganancia / inicial * 100).toFixed(2) : '0';
+  const cagr = inicial > 0 && final > 0 ? ((Math.pow(final / inicial, 1 / anos) - 1) * 100).toFixed(2) : '0';
+  const mult = inicial > 0 ? (final / inicial).toFixed(2) : '1';
+  const positivo = ganancia >= 0;
+
+  const card = document.getElementById('roi-card');
+  card.style.background = positivo ? '#15803D' : '#B91C1C';
+
+  document.getElementById('roi-pct').textContent = (positivo ? '+' : '') + roi + '%';
+  document.getElementById('roi-tipo').textContent = positivo ? `Ganancia en ${anos} año${anos !== 1 ? 's' : ''}` : `Pérdida en ${anos} año${anos !== 1 ? 's' : ''}`;
+  document.getElementById('roi-ganancia').textContent = (positivo ? '+' : '-') + fmt(ganancia);
+  document.getElementById('roi-ganancia').style.color = positivo ? '#15803D' : '#B91C1C';
+  document.getElementById('roi-neta').textContent = (neta >= 0 ? '+' : '-') + fmt(neta);
+  document.getElementById('roi-neta').style.color = neta >= 0 ? '#15803D' : '#B91C1C';
+  document.getElementById('roi-cagr').textContent = (positivo ? '+' : '') + cagr + '%';
+  document.getElementById('roi-mult').textContent = '×' + mult;
+}
+document.addEventListener('DOMContentLoaded', calcROI);
+</script>
+</Layout>

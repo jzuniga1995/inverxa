@@ -1,0 +1,246 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Deuda — Tiempo y Ahorro con Pago Anticipado | Inversax</title>
+  <meta name="description" content="Calcula cuánto tiempo tardarás en pagar tu deuda y cuánto ahorras pagando más cada mes. Simulador de pago anticipado de préstamos y tarjetas de crédito. Gratis." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora pago deuda, cuanto tiempo para pagar deuda, calculadora tarjeta credito, pago minimo tarjeta, salir de deudas calculadora, metodo avalancha deuda, tiempo pago credito" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/pago-deuda" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/pago-deuda" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/pago-deuda" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/pago-deuda" />
+  <meta property="og:title" content="Calculadora de Deuda y Tiempo de Pago | Inversax" />
+  <meta property="og:description" content="Cuánto tiempo y dinero ahorras pagando más de la cuota mínima. Simulador de salida de deudas." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/pago-deuda" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 3, "name": "Pago de Deuda", "item": "https://inversax.com/herramientas/calculadoras/pago-deuda" }
+    ]
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "SoftwareApplication",
+    "name": "Calculadora de Pago de Deuda — Inversax", "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web", "url": "https://inversax.com/herramientas/calculadoras/pago-deuda",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }, "inLanguage": "es"
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Cuánto tiempo tarda en pagarse una tarjeta de crédito pagando solo el mínimo?", "acceptedAnswer": { "@type": "Answer", "text": "Pagando solo el mínimo de una tarjeta de crédito con saldo de $5.000 al 28% anual, puede tomarte 25 a 30 años pagar y terminarías pagando más de 3 veces el saldo original en intereses." } },
+      { "@type": "Question", "name": "¿Qué es el método avalancha para pagar deudas?", "acceptedAnswer": { "@type": "Answer", "text": "El método avalancha consiste en pagar el mínimo a todas las deudas y destinar el excedente a la deuda con mayor tasa de interés. Matemáticamente es el más eficiente en ahorro de intereses." } },
+      { "@type": "Question", "name": "¿Cuánto ahorro pagando el doble de la cuota mínima?", "acceptedAnswer": { "@type": "Answer", "text": "Depende de la tasa y el saldo. En general, duplicar el pago mensual puede reducir el plazo de pago a la mitad o menos, y ahorrar entre el 30% y 60% de los intereses totales." } },
+      { "@type": "Question", "name": "¿Conviene pagar deudas antes de invertir?", "acceptedAnswer": { "@type": "Answer", "text": "Si la tasa de tu deuda es superior al rendimiento esperado de tu inversión (generalmente 7%-10% anual), es mejor pagar la deuda primero. Pagar una deuda al 25% es equivalente a una inversión con retorno del 25%." } }
+    ]
+  })} />
+</slot>
+
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Pago de Deuda</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Deuda y Tiempo de Pago
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Cuánto tiempo tardarás en salir de deudas y cuánto ahorras pagando más cada mes.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Datos de la deuda</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Saldo de la deuda</label>
+            <input id="pdSaldo" type="number" value="8000" min="1" step="100"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#DC2626';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcDeuda();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Tasa de interés anual (%)</label>
+            <input id="pdTasa" type="number" value="24" min="0.1" max="200" step="0.5"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#DC2626';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcDeuda();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Pago mensual actual</label>
+            <input id="pdPago" type="number" value="300" min="1" step="10"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#DC2626';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcDeuda();" />
+          </div>
+          <div style="padding-top:12px; border-top:1px solid #E5E0D8;">
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Pago mensual extra</label>
+            <input id="pdExtra" type="number" value="100" min="0" step="10"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#F5F1EC; color:#15803D; font-family:'DM Sans',sans-serif; font-size:16px; outline:none; font-weight:600;"
+              onfocus="this.style.borderColor='#15803D';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcDeuda();" />
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif; margin-top:4px;">Cuánto pagarías adicional cada mes</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div style="background:#DC2626; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.65); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Tiempo para salir de la deuda</p>
+          <p id="pd-tiempo" style="font-size:36px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">0 meses</p>
+          <p id="pd-tiempoExtra" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total pagado (sin extra)</p>
+            <p id="pd-sinTotal" style="font-size:16px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total pagado (con extra)</p>
+            <p id="pd-conTotal" style="font-size:16px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Intereses ahorrados</p>
+            <p id="pd-ahorro" style="font-size:16px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Meses ahorrados</p>
+            <p id="pd-mesesAhor" style="font-size:16px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:#FEF2F2; border:1px solid #FECACA; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#DC2626; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Una vez libre de deudas</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">El dinero que pagabas en intereses puede ahora generar retornos.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">Al salir de deudas, redirige esos pagos mensuales a inversiones. Estos brokers permiten empezar sin monto mínimo y construir riqueza desde cero.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#DC2626';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Sin mínimo · 0% comisión</p></div>
+          <span style="font-size:12px; color:#DC2626; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://pepperstone.sjv.io/c/7061517/3194997/21941" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#DC2626';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">Pepperstone</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Sin mínimo · 4.7★</p></div>
+          <span style="font-size:12px; color:#DC2626; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa →</a>
+    </div>
+
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">La matemática del pago anticipado de deudas</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">El impacto del <strong style="color:#1C1917;">pago anticipado de deudas</strong> es uno de los conceptos financieros más poderosos y menos comprendidos. Cuando pagas más del mínimo en una deuda, el exceso va directamente a reducir el capital. Menos capital significa menos intereses futuros. El efecto se multiplica exponencialmente.</p>
+        <p style="margin-bottom:14px;">Considera este ejemplo real: una tarjeta de crédito con $5.000 de saldo al 28% anual. Pagando solo el mínimo (digamos $100/mes), tardarías más de 15 años en saldar la deuda y pagarías más de $10.000 en intereses — el doble del saldo original. Pagando $300/mes, la deuda se elimina en menos de 2 años y pagarías solo $700 en intereses.</p>
+        <p style="margin-bottom:14px;">En Latinoamérica, donde las tasas de tarjetas de crédito pueden ser del 30%-60% nominal anual (en Colombia algunas llegan al límite de usura del 35%+ mensual; en México del 28%-50%), el costo de cargar deuda rotativa es enorme. Una deuda al 40% anual cuesta lo mismo que una inversión tendría que rendir para compensarla — pero casi ninguna inversión legal garantiza ese rendimiento de manera consistente.</p>
+        <p style="margin-bottom:14px;">La estrategia más eficiente matemáticamente es el <strong style="color:#1C1917;">método avalancha</strong>: paga el mínimo a todas las deudas y destina el dinero extra a la de mayor tasa de interés. Al saldar esa, mueve todo el pago a la siguiente de mayor tasa. Esto minimiza el total de intereses pagados.</p>
+        <p>La alternativa psicológicamente más motivadora es el <strong style="color:#1C1917;">método bola de nieve</strong>: pagar primero la deuda más pequeña en monto, independientemente de la tasa. Esto genera victorias rápidas que mantienen la motivación. Ambos métodos funcionan; la clave es ser consistente.</p>
+      </div>
+    </div>
+
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Cuánto tiempo tarda en pagarse una tarjeta pagando solo el mínimo?', a: 'Con un saldo de $5.000 al 28% anual pagando $100/mes, tomaría más de 15 años y pagarías $10.000+ en intereses. Pagando $300/mes, se salda en menos de 2 años con ~$700 en intereses.' },
+          { q: '¿Qué es el método avalancha para pagar deudas?', a: 'Pagas el mínimo a todas las deudas y destinas el excedente a la de mayor tasa. Al saldarla, pasas al siguiente. Es el método más eficiente en ahorro de intereses totales.' },
+          { q: '¿Cuánto ahorro pagando el doble de la cuota mínima?', a: 'Generalmente reduce el plazo a menos de la mitad y el ahorro en intereses puede ser del 40%-70%. El impacto es mayor en deudas con tasas altas (tarjetas) que en créditos con tasas bajas (hipotecas).' },
+          { q: '¿Conviene pagar deudas antes de invertir?', a: 'Si la tasa de tu deuda supera el rendimiento esperado de tu inversión (~7%-10% anual), paga la deuda primero. Una deuda al 25% annual = retorno de inversión garantizado del 25%. No existe inversión con ese rendimiento garantizado.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/prestamo', label:'Préstamo y amortización' },
+          { href:'/herramientas/calculadoras/hipoteca', label:'Hipoteca' },
+          { href:'/herramientas/calculadoras/fondo-emergencia', label:'Fondo de emergencia' },
+          { href:'/herramientas/calculadoras/interes-compuesto', label:'Interés compuesto' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
+function calcMeses(saldo, tasa, pago) {
+  const r = tasa / 100 / 12;
+  if (r === 0) return Math.ceil(saldo / pago);
+  if (pago <= saldo * r) return Infinity;
+  return Math.ceil(Math.log(pago / (pago - saldo * r)) / Math.log(1 + r));
+}
+function calcTotalPagado(saldo, tasa, pago) {
+  const r = tasa / 100 / 12;
+  const n = calcMeses(saldo, tasa, pago);
+  if (!isFinite(n)) return Infinity;
+  return pago * n;
+}
+
+function calcDeuda() {
+  const saldo = parseFloat(document.getElementById('pdSaldo').value) || 0;
+  const tasa = parseFloat(document.getElementById('pdTasa').value) || 0;
+  const pago = parseFloat(document.getElementById('pdPago').value) || 0;
+  const extra = parseFloat(document.getElementById('pdExtra').value) || 0;
+  const pagoExtra = pago + extra;
+
+  const mesesSin = calcMeses(saldo, tasa, pago);
+  const mesesCon = calcMeses(saldo, tasa, pagoExtra);
+  const totalSin = calcTotalPagado(saldo, tasa, pago);
+  const totalCon = calcTotalPagado(saldo, tasa, pagoExtra);
+
+  function fmtMeses(m) {
+    if (!isFinite(m)) return '∞ (pago insuficiente)';
+    const y = Math.floor(m / 12), mo = m % 12;
+    if (y === 0) return `${mo} mes${mo !== 1 ? 'es' : ''}`;
+    return `${y} año${y > 1 ? 's' : ''} y ${mo} mes${mo !== 1 ? 'es' : ''}`;
+  }
+
+  document.getElementById('pd-tiempo').textContent = fmtMeses(mesesCon);
+  document.getElementById('pd-tiempoExtra').textContent = `Sin pago extra: ${fmtMeses(mesesSin)}`;
+  document.getElementById('pd-sinTotal').textContent = isFinite(totalSin) ? fmt(totalSin) : '∞';
+  document.getElementById('pd-conTotal').textContent = isFinite(totalCon) ? fmt(totalCon) : '∞';
+  document.getElementById('pd-ahorro').textContent = (isFinite(totalSin) && isFinite(totalCon)) ? fmt(totalSin - totalCon) : '$0';
+  document.getElementById('pd-mesesAhor').textContent = (isFinite(mesesSin) && isFinite(mesesCon)) ? `${Math.max(0, mesesSin - mesesCon)} meses` : '0';
+}
+document.addEventListener('DOMContentLoaded', calcDeuda);
+</script>
+</Layout>

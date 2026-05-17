@@ -1,0 +1,349 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Salario Neto Después de Impuestos | Inversax</title>
+  <meta name="description" content="Calcula tu salario neto en Colombia, México, Perú, Chile y USA. Descuenta seguridad social, salud, pensión e impuestos. Estimación gratis al instante." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora salario neto, calcular sueldo neto, deducciones salariales colombia, cuanto me descuentan del sueldo, salario bruto neto mexico, nomina colombia, seguridad social nomina, impuesto renta trabajador" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <meta property="og:title" content="Calculadora de Salario Neto | Inversax" />
+  <meta property="og:description" content="¿Cuánto te queda del sueldo después de impuestos? Colombia, México, Perú, Chile y USA. Gratis." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/salario-neto" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Salario Neto", "item": "https://inversax.com/herramientas/calculadoras/salario-neto" }
+    ]
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "SoftwareApplication",
+    "name": "Calculadora de Salario Neto — Inversax", "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web", "url": "https://inversax.com/herramientas/calculadoras/salario-neto",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }, "inLanguage": "es"
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org", "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Cuánto descuentan del salario en Colombia?", "acceptedAnswer": { "@type": "Answer", "text": "En Colombia, el empleado paga: salud 4%, pensión 4%, y si tiene ingresos altos, retención en la fuente (entre 0% y 33%). Total típico: 8%-15% de descuento sobre el salario bruto." } },
+      { "@type": "Question", "name": "¿Cuánto descuentan del salario en México?", "acceptedAnswer": { "@type": "Answer", "text": "En México se descuentan cuotas al IMSS (~2.5%), ISR variable según salario (desde 1.92% hasta 35%), y FONACOT si aplica. Para un salario de $15.000 MXN, el descuento total suele ser 15%-22%." } },
+      { "@type": "Question", "name": "¿Cuánto es la retención en la fuente en Colombia?", "acceptedAnswer": { "@type": "Answer", "text": "La retención en la fuente en Colombia aplica sobre ingresos laborales mensuales superiores a 95 UVT (~$4.4M COP en 2025). Para salarios entre $4.4M y $10M COP, la retención va del 19% al 28%." } },
+      { "@type": "Question", "name": "¿Cómo se calcula el salario neto en USA?", "acceptedAnswer": { "@type": "Answer", "text": "En USA se descuentan: Federal Income Tax (0%-37% según bracket), Social Security (6.2%), Medicare (1.45%), y posiblemente State Income Tax (varía por estado, 0% en TX/FL hasta 13% en CA). El descuento total típico es 25%-40% para ingresos medios." } }
+    ]
+  })} />
+</slot>
+
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Salario Neto</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Salario Neto
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Estima cuánto recibes después de impuestos y deducciones. Colombia, México, Perú, Chile y USA.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+
+    <div style="background:#FEF2F2; border:1px solid #FECACA; padding:14px 16px; margin-bottom:20px; font-size:13px; color:#57534E; font-family:'DM Sans',sans-serif;">
+      ⚠️ <strong style="color:#1C1917;">Nota:</strong> Esta calculadora usa tasas de deducciones aproximadas con fines educativos. Para cálculos exactos, consulta con un contador o el simulador oficial de tu país.
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Datos salariales</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">País</label>
+            <select id="salPais"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; outline:none;"
+              onfocus="this.style.borderColor='#374151';" onblur="this.style.borderColor='#E5E0D8';" onchange="calcSalario();">
+              <option value="CO">Colombia</option>
+              <option value="MX">México</option>
+              <option value="PE">Perú</option>
+              <option value="CL">Chile</option>
+              <option value="US">Estados Unidos</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;" id="salario-label">Salario bruto mensual</label>
+            <input id="salBruto" type="number" value="3000000" min="0" step="100000"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#374151';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcSalario();" />
+          </div>
+        </div>
+
+        <!-- Desglose de deducciones -->
+        <div id="desglose" style="margin-top:20px; padding-top:16px; border-top:1px solid #E5E0D8;">
+          <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">Desglose de deducciones</p>
+          <div id="deducciones-lista" class="flex flex-col gap-2"></div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div style="background:#374151; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.65); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Salario neto mensual</p>
+          <p id="sal-neto" style="font-size:36px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">$0</p>
+          <p id="sal-pct" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total deducciones</p>
+            <p id="sal-deduc" style="font-size:18px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Salario neto anual</p>
+            <p id="sal-anual" style="font-size:18px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Por día</p>
+            <p id="sal-dia" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Por hora (160h/mes)</p>
+            <p id="sal-hora" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#374151; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Haz crecer tu sueldo</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">Cada peso que inviertes de tu salario trabaja para ti.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">Invertir aunque sea el 10% de tu salario neto en ETFs o acciones puede multiplicar significativamente tu patrimonio a largo plazo. Estos brokers no tienen comisión mínima.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#374151';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Sin mínimo · ETFs gratis</p></div>
+          <span style="font-size:12px; color:#374151; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://pepperstone.sjv.io/c/7061517/3194997/21941" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#374151';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div><p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">Pepperstone</p><p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Sin mínimo · 4.7★</p></div>
+          <span style="font-size:12px; color:#374151; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa →</a>
+    </div>
+
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">Cómo funcionan las deducciones salariales en Latinoamérica</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">Entender cuánto descuentan de tu salario es fundamental para planificar tu presupuesto. En todos los países de Latinoamérica, el sistema de deducciones funciona de forma similar pero con tasas y conceptos diferentes.</p>
+        <p style="margin-bottom:14px;"><strong style="color:#1C1917;">En Colombia:</strong> el empleado paga 4% a salud (EPS) y 4% a pensión (AFP). La empresa paga 8.5% a salud, 12% a pensión, más parafiscales. Para empleados con salarios altos (arriba de 95 UVT mensuales ≈ $4.5M COP en 2025), se aplica retención en la fuente que va del 19% al 33% según el ingreso.</p>
+        <p style="margin-bottom:14px;"><strong style="color:#1C1917;">En México:</strong> el descuento al trabajador incluye cuotas al IMSS (aproximadamente 2.5% sobre el salario base de cotización), más el Impuesto Sobre la Renta (ISR) que varía desde el 1.92% hasta el 35% según el nivel de ingresos. El SAT aplica subsidio para el empleo a los ingresos más bajos.</p>
+        <p style="margin-bottom:14px;"><strong style="color:#1C1917;">En Perú:</strong> el trabajador contribuye con 9% al sistema de salud (EsSalud lo paga el empleador) y el empleado aporta 10%-13% al sistema pensional (AFP o ONP). Además, se aplica el Impuesto a la Renta de quinta categoría para ingresos anuales superiores a 7 UIT.</p>
+        <p>Para <strong style="color:#1C1917;">hispanos en USA:</strong> los descuentos son significativos: 6.2% para Social Security, 1.45% Medicare, Federal Income Tax (bracket del 10% al 37%), y en muchos estados, State Income Tax adicional. En California puede llegar al 13.3% estatal.</p>
+      </div>
+    </div>
+
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Cuánto descuentan del salario en Colombia?', a: 'El empleado paga 4% a salud y 4% a pensión = 8% base. Si el salario supera ~$4.5M COP mensuales, también hay retención en la fuente (19%-33% sobre el exceso). Total: 8%-25% según salario.' },
+          { q: '¿Cuánto descuentan del salario en México?', a: 'Cuotas IMSS del trabajador (~2.5%) más ISR que varía del 1.92% al 35%. Para un salario de $15.000 MXN, el descuento total estimado es del 15%-20%.' },
+          { q: '¿Cuánto es la retención en la fuente en Colombia?', a: 'Solo aplica a salarios que superen 95 UVT mensuales (~$4.5M COP en 2025). Las tasas van del 19% al 33% sobre el ingreso que excede el mínimo exento.' },
+          { q: '¿Cómo se calcula el salario neto en USA?', a: 'Descuentan: Social Security (6.2%), Medicare (1.45%), Federal Income Tax (según bracket), y State Income Tax si aplica. El total puede ser del 25%-40% para ingresos medios-altos.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/fondo-emergencia', label:'Fondo de emergencia' },
+          { href:'/herramientas/calculadoras/interes-compuesto', label:'Interés compuesto' },
+          { href:'/herramientas/calculadoras/ahorro-retiro', label:'Ahorro para retiro' },
+          { href:'/herramientas/calculadoras/inflacion', label:'Inflación' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+const PAISES = {
+  CO: {
+    label: 'Salario bruto mensual (COP)',
+    default: 3000000,
+    moneda: 'COP',
+    deducciones: [
+      { nombre: 'Salud (empleado)', pct: 4 },
+      { nombre: 'Pensión (empleado)', pct: 4 },
+    ],
+    retencion: (salario) => {
+      const uvt = 47065;
+      const uvtMen = salario / uvt;
+      if (uvtMen <= 95) return 0;
+      if (uvtMen <= 150) return (salario - 95 * uvt) * 0.19;
+      if (uvtMen <= 360) return (salario - 150 * uvt) * 0.28 + 55 * uvt * 0.19;
+      return (salario - 360 * uvt) * 0.33 + 210 * uvt * 0.28 + 55 * uvt * 0.19;
+    }
+  },
+  MX: {
+    label: 'Salario bruto mensual (MXN)',
+    default: 15000,
+    moneda: 'MXN',
+    deducciones: [
+      { nombre: 'IMSS (cuotas obrero)', pct: 2.5 },
+    ],
+    retencion: (salario) => {
+      if (salario <= 746.04 * 30) return salario * 0.0192;
+      if (salario <= 6333.7 * 30) return (salario - 746.04 * 30) * 0.064 + 746.04 * 30 * 0.0192;
+      if (salario <= 11116 * 30) return (salario - 6333.7 * 30) * 0.1088 + ((6333.7 - 746.04) * 30 * 0.064) + 746.04 * 30 * 0.0192;
+      return salario * 0.20;
+    }
+  },
+  PE: {
+    label: 'Salario bruto mensual (PEN)',
+    default: 2500,
+    moneda: 'PEN',
+    deducciones: [
+      { nombre: 'AFP (pensión)', pct: 10 },
+      { nombre: 'Seguro de riesgo AFP', pct: 1.35 },
+    ],
+    retencion: (salario) => {
+      const anual = salario * 12;
+      const uit = 5150;
+      const exento = 7 * uit;
+      if (anual <= exento) return 0;
+      const base = anual - exento;
+      if (base <= 5 * uit) return (base * 0.08) / 12;
+      if (base <= 20 * uit) return ((5 * uit * 0.08 + (base - 5 * uit) * 0.14)) / 12;
+      return ((5 * uit * 0.08 + 15 * uit * 0.14 + (base - 20 * uit) * 0.17)) / 12;
+    }
+  },
+  CL: {
+    label: 'Salario bruto mensual (CLP)',
+    default: 800000,
+    moneda: 'CLP',
+    deducciones: [
+      { nombre: 'AFP (pensión)', pct: 10 },
+      { nombre: 'Salud (Fonasa/Isapre)', pct: 7 },
+    ],
+    retencion: (salario) => {
+      if (salario <= 852658) return 0;
+      if (salario <= 1893688) return (salario - 852658) * 0.04;
+      if (salario <= 3155472) return (salario - 1893688) * 0.08 + (1893688 - 852658) * 0.04;
+      return salario * 0.15;
+    }
+  },
+  US: {
+    label: 'Salario bruto mensual (USD)',
+    default: 5000,
+    moneda: 'USD',
+    deducciones: [
+      { nombre: 'Social Security (6.2%)', pct: 6.2 },
+      { nombre: 'Medicare (1.45%)', pct: 1.45 },
+    ],
+    retencion: (salario) => {
+      const anual = salario * 12;
+      if (anual <= 11600) return 0;
+      if (anual <= 47150) return ((anual - 11600) * 0.12 + 0) / 12;
+      if (anual <= 100525) return ((anual - 47150) * 0.22 + (47150 - 11600) * 0.12) / 12;
+      if (anual <= 191950) return ((anual - 100525) * 0.24 + (100525 - 47150) * 0.22 + (47150 - 11600) * 0.12) / 12;
+      return (anual * 0.32) / 12;
+    }
+  }
+};
+
+function fmtMoney(n, moneda) {
+  if (moneda === 'USD') return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return n.toLocaleString('es-CO', { maximumFractionDigits: 0 }) + ' ' + moneda;
+}
+
+function calcSalario() {
+  const pais = document.getElementById('salPais').value;
+  const config = PAISES[pais];
+  const bruto = parseFloat(document.getElementById('salBruto').value) || 0;
+  document.getElementById('salario-label').textContent = config.label.split(' (')[0];
+
+  let totalDeduc = 0;
+  const lista = document.getElementById('deducciones-lista');
+  lista.innerHTML = '';
+
+  config.deducciones.forEach(d => {
+    const monto = bruto * d.pct / 100;
+    totalDeduc += monto;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; justify-content:space-between; font-size:13px; padding:4px 0;';
+    row.innerHTML = `<span style="color:#57534E; font-family:'DM Sans',sans-serif;">${d.nombre}</span><span style="color:#B91C1C; font-family:'DM Sans',sans-serif; font-weight:600;">-${fmtMoney(monto, config.moneda)}</span>`;
+    lista.appendChild(row);
+  });
+
+  const ret = config.retencion(bruto);
+  if (ret > 0) {
+    totalDeduc += ret;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; justify-content:space-between; font-size:13px; padding:4px 0;';
+    row.innerHTML = `<span style="color:#57534E; font-family:'DM Sans',sans-serif;">Impuesto / Retención</span><span style="color:#B91C1C; font-family:'DM Sans',sans-serif; font-weight:600;">-${fmtMoney(ret, config.moneda)}</span>`;
+    lista.appendChild(row);
+  }
+
+  const neto = bruto - totalDeduc;
+  const pct = bruto > 0 ? ((neto / bruto) * 100).toFixed(1) : 100;
+
+  document.getElementById('sal-neto').textContent = fmtMoney(neto, config.moneda);
+  document.getElementById('sal-pct').textContent = `${pct}% del salario bruto`;
+  document.getElementById('sal-deduc').textContent = fmtMoney(totalDeduc, config.moneda);
+  document.getElementById('sal-anual').textContent = fmtMoney(neto * 12, config.moneda);
+  document.getElementById('sal-dia').textContent = fmtMoney(neto / 30, config.moneda);
+  document.getElementById('sal-hora').textContent = fmtMoney(neto / 160, config.moneda);
+}
+
+function actualizarDefault() {
+  const pais = document.getElementById('salPais').value;
+  document.getElementById('salBruto').value = PAISES[pais].default;
+  calcSalario();
+}
+
+document.getElementById('salPais').addEventListener('change', actualizarDefault);
+document.addEventListener('DOMContentLoaded', calcSalario);
+</script>
+</Layout>

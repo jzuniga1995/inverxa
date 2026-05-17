@@ -1,0 +1,351 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Interés Compuesto Gratis con Gráfica | Inversax</title>
+  <meta name="description" content="Calcula el interés compuesto gratis. Proyecta tus inversiones con aportaciones mensuales y visualiza el crecimiento en una gráfica interactiva. ¡Pruébalo ahora!" />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora interes compuesto, calcular interes compuesto, simulador inversion, calcular rendimiento inversion, interes compuesto mensual, interes compuesto anual, regla del 72" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <meta name="geo.region" content="LATAM" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <meta property="og:title" content="Calculadora de Interés Compuesto con Gráfica | Inversax" />
+  <meta property="og:description" content="Proyecta el crecimiento de tu inversión con interés compuesto y aportaciones periódicas. Gratis." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/interes-compuesto" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Interés Compuesto", "item": "https://inversax.com/herramientas/calculadoras/interes-compuesto" }
+    ]
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadora de Interés Compuesto — Inversax",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "url": "https://inversax.com/herramientas/calculadoras/interes-compuesto",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Calcula el crecimiento de una inversión bajo interés compuesto con aportaciones periódicas y visualización en gráfica.",
+    "inLanguage": "es"
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Qué es el interés compuesto?",
+        "acceptedAnswer": { "@type": "Answer", "text": "El interés compuesto es el proceso por el cual los intereses generados por una inversión se suman al capital y, a su vez, generan más intereses. Es decir, ganas intereses sobre los intereses previos. Albert Einstein lo llamó 'la octava maravilla del mundo'." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuál es la fórmula del interés compuesto?",
+        "acceptedAnswer": { "@type": "Answer", "text": "La fórmula es: VF = VP × (1 + r/n)^(n×t), donde VF es el valor futuro, VP es el capital inicial, r es la tasa de interés anual, n es el número de veces que se capitaliza por año, y t es el tiempo en años." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuánto crece $1.000 USD al 8% anual durante 30 años?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Con $1.000 USD al 8% anual capitalizado mensualmente durante 30 años, obtendrías aproximadamente $10.935 USD. Eso significa que tu dinero se multiplicó casi 11 veces solo por el efecto del interés compuesto, sin agregar ningún ahorro adicional." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué es la regla del 72?",
+        "acceptedAnswer": { "@type": "Answer", "text": "La regla del 72 es un método rápido para estimar en cuántos años se duplica una inversión. Simplemente divide 72 entre la tasa de interés anual. Por ejemplo, al 8% anual, 72 ÷ 8 = 9 años para duplicar tu dinero." }
+      }
+    ]
+  })} />
+</slot>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" is:inline></script>
+
+<!-- Breadcrumb -->
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Herramientas</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Interés Compuesto</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Interés Compuesto
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Proyecta el crecimiento de tu inversión con aportaciones periódicas y gráfica de evolución.
+    </p>
+  </div>
+</div>
+
+<!-- Calculadora -->
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- Inputs -->
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Parámetros de inversión</h2>
+
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Capital inicial (USD)</label>
+            <input id="capital" type="number" value="10000" min="0" step="100"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#1D4ED8';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcular();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Aportación mensual (USD)</label>
+            <input id="aporte" type="number" value="200" min="0" step="50"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#1D4ED8';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcular();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Tasa anual (%)</label>
+            <input id="tasa" type="number" value="8" min="0.1" max="100" step="0.5"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#1D4ED8';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcular();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Plazo (años)</label>
+            <input id="anos" type="number" value="20" min="1" max="60" step="1"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#1D4ED8';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcular();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Capitalización</label>
+            <select id="freq"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; outline:none;"
+              onfocus="this.style.borderColor='#1D4ED8';" onblur="this.style.borderColor='#E5E0D8';" onchange="calcular();">
+              <option value="12">Mensual</option>
+              <option value="4">Trimestral</option>
+              <option value="2">Semestral</option>
+              <option value="1">Anual</option>
+              <option value="365">Diaria</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultados -->
+      <div class="flex flex-col gap-4">
+        <div style="background:#1D4ED8; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.6); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Valor final</p>
+          <p id="res-total" style="font-size:36px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">$0</p>
+          <p id="res-mult" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Capital invertido</p>
+            <p id="res-capital" style="font-size:20px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Intereses ganados</p>
+            <p id="res-intereses" style="font-size:20px; font-weight:700; color:#15803D; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Regla del 72</p>
+            <p id="res-r72" style="font-size:20px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">—</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Rentabilidad total</p>
+            <p id="res-pct" style="font-size:20px; font-weight:700; color:#1D4ED8; font-family:'DM Sans',sans-serif;">0%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:24px; margin-top:20px;">
+      <p class="text-sm font-semibold mb-4" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Evolución del capital en el tiempo</p>
+      <canvas id="chart-ic" height="280"></canvas>
+    </div>
+
+    <!-- Broker CTA -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#1D4ED8; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Siguiente paso</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">Ya tienes el plan. Ahora elige el broker correcto para ejecutarlo.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">El interés compuesto funciona mejor con inversiones en ETFs de índices. Estos brokers tienen 0% de comisión en acciones y ETFs para que tus rendimientos no se erosionen.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#1D4ED8';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">0% comisión acciones y ETFs</p>
+          </div>
+          <span style="font-size:12px; color:#1D4ED8; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://icmarkets.com/?camp=90874" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#1D4ED8';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">IC Markets</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">4.8★ Trustpilot · ECN</p>
+          </div>
+          <span style="font-size:12px; color:#1D4ED8; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://pepperstone.sjv.io/c/7061517/3194997/21941" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#1D4ED8';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">Pepperstone</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">Top profesional · Sin mínimo</p>
+          </div>
+          <span style="font-size:12px; color:#1D4ED8; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos. No es asesoramiento financiero.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa de brokers →</a>
+    </div>
+
+    <!-- Contenido editorial -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">¿Qué es el interés compuesto y por qué importa?</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">El <strong style="color:#1C1917;">interés compuesto</strong> es el mecanismo más poderoso de generación de riqueza personal disponible para cualquier persona con acceso a una cuenta de inversión. A diferencia del interés simple, donde solo ganas intereses sobre el capital inicial, el interés compuesto genera intereses sobre los intereses previos. Este efecto acumulativo, conocido como "la bola de nieve financiera", transforma sumas modestas en fortunas significativas dado suficiente tiempo.</p>
+        <p style="margin-bottom:14px;">Para un latinoamericano o hispano en Estados Unidos que quiere construir patrimonio desde cero, entender el interés compuesto es el punto de partida. Supón que inviertes $5.000 USD hoy al 8% anual en un ETF de índice. Sin agregar nada más, en 30 años tendrías aproximadamente $50.000 USD. Pero si además aportas $200 USD mensuales, llegarías a cerca de $300.000 USD. La diferencia entre aportar y no aportar es enorme, pero el tiempo es el ingrediente más importante: el mismo ejercicio con 40 años en lugar de 30 te daría más de $650.000 USD.</p>
+        <p style="margin-bottom:14px;">La fórmula matemática es: <strong style="color:#1C1917;">VF = VP × (1 + r/n)^(n×t) + PMT × [((1 + r/n)^(n×t) − 1) / (r/n)]</strong>, donde VF es el valor futuro, VP el capital inicial, r la tasa anual, n las veces de capitalización por año, t el tiempo, y PMT las aportaciones periódicas.</p>
+        <p style="margin-bottom:14px;">En Colombia, México, Argentina y otros países de Latinoamérica, las tasas de los fondos de pensión obligatorios suelen estar entre 3% y 6% real anual. Sin embargo, accediendo a mercados globales a través de brokers regulados, es posible apuntar a rendimientos históricos del índice S&P 500, que ha promediado cerca del 10% anual (7% real ajustado por inflación) en los últimos 100 años. Esta calculadora te permite simular escenarios con cualquier tasa.</p>
+        <p>La clave es empezar temprano y ser consistente. Incluso $50 USD al mes durante 30 años al 8% generan más de $70.000 USD. El dinero que no inviertes hoy es dinero que no crece mañana.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Qué es el interés compuesto?', a: 'Es el proceso donde los intereses generados por una inversión se suman al capital y a su vez generan más intereses. Ganas intereses sobre los intereses previos, creando un efecto exponencial de crecimiento.' },
+          { q: '¿Cuál es la fórmula del interés compuesto?', a: 'VF = VP × (1 + r/n)^(n×t), donde VF es el valor futuro, VP el capital inicial, r la tasa anual decimal, n la frecuencia de capitalización por año, y t el tiempo en años.' },
+          { q: '¿Cuánto crece $10.000 USD al 8% anual en 20 años?', a: 'Sin aportes adicionales, $10.000 USD al 8% anual capitalizado mensualmente llegan a aproximadamente $49.268 USD en 20 años. Si además agregas $200/mes, el resultado sería aproximadamente $170.000 USD.' },
+          { q: '¿Qué es la regla del 72?', a: 'Es un método rápido para calcular en cuántos años se duplica una inversión: divide 72 entre la tasa de interés anual. Al 8%, 72÷8 = 9 años para duplicar tu dinero. Al 6%, serían 12 años.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Internal links -->
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/ahorro-retiro', label:'Ahorro para retiro' },
+          { href:'/herramientas/calculadoras/rentabilidad', label:'Rentabilidad de inversión' },
+          { href:'/herramientas/calculadoras/roi', label:'ROI de inversión' },
+          { href:'/herramientas/calculadoras/inflacion', label:'Inflación y poder adquisitivo' },
+          { href:'/herramientas/comparar-brokers', label:'Comparar brokers' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+let chartIC = null;
+
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString('es-CO');
+}
+
+function calcular() {
+  const capital = parseFloat(document.getElementById('capital').value) || 0;
+  const aporte  = parseFloat(document.getElementById('aporte').value)  || 0;
+  const tasa    = parseFloat(document.getElementById('tasa').value)    || 0;
+  const anos    = parseFloat(document.getElementById('anos').value)    || 1;
+  const freq    = parseInt(document.getElementById('freq').value)      || 12;
+
+  const r = tasa / 100 / freq;
+  const n = freq * anos;
+
+  const valorCapital = capital * Math.pow(1 + r, n);
+  const valorAportes = aporte * (Math.pow(1 + r, n) - 1) / r;
+  const total = valorCapital + (r > 0 ? valorAportes : aporte * n);
+  const capitalInvertido = capital + aporte * 12 * anos;
+  const intereses = total - capitalInvertido;
+  const mult = capitalInvertido > 0 ? (total / capitalInvertido).toFixed(1) : '—';
+  const pct = capitalInvertido > 0 ? ((total / capitalInvertido - 1) * 100).toFixed(1) : '0';
+  const r72 = tasa > 0 ? (72 / tasa).toFixed(1) + ' años' : '—';
+
+  document.getElementById('res-total').textContent = fmt(total);
+  document.getElementById('res-capital').textContent = fmt(capitalInvertido);
+  document.getElementById('res-intereses').textContent = fmt(intereses);
+  document.getElementById('res-mult').textContent = `× ${mult} tu dinero`;
+  document.getElementById('res-r72').textContent = r72;
+  document.getElementById('res-pct').textContent = pct + '%';
+
+  // Datos para gráfica por año
+  const labels = [], dataCap = [], dataInt = [];
+  for (let a = 0; a <= anos; a++) {
+    const nn = freq * a;
+    const vCap = capital * Math.pow(1 + r, nn);
+    const vAp = r > 0 ? aporte * (Math.pow(1 + r, nn) - 1) / r : aporte * nn;
+    const tot = vCap + vAp;
+    const inv = capital + aporte * 12 * a;
+    labels.push(a === 0 ? 'Inicio' : `Año ${a}`);
+    dataCap.push(Math.round(inv));
+    dataInt.push(Math.round(tot));
+  }
+
+  const ctx = document.getElementById('chart-ic').getContext('2d');
+  if (chartIC) chartIC.destroy();
+  chartIC = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Capital invertido', data: dataCap, borderColor: '#E5E0D8', backgroundColor: 'rgba(229,224,216,0.3)', fill: true, tension: 0.3, pointRadius: 2 },
+        { label: 'Valor total', data: dataInt, borderColor: '#1D4ED8', backgroundColor: 'rgba(29,78,216,0.15)', fill: true, tension: 0.3, pointRadius: 2 },
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { labels: { font: { family: "'DM Sans', sans-serif", size: 12 }, color: '#57534E' } } },
+      scales: {
+        y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k', font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#78716C' }, grid: { color: '#F0EDE7' } },
+        x: { ticks: { font: { family: "'DM Sans', sans-serif", size: 11 }, color: '#78716C', maxTicksLimit: 10 }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', calcular);
+</script>
+</Layout>

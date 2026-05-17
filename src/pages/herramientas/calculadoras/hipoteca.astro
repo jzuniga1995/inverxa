@@ -1,0 +1,278 @@
+---
+export const prerender = true;
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout>
+<slot name="head" slot="head">
+  <title>Calculadora de Hipoteca Gratis — Cuota Mensual y Total | Inversax</title>
+  <meta name="description" content="Calcula tu cuota hipotecaria mensual, total de intereses y costo real de tu crédito de vivienda. Simulador gratis para Colombia, México y Latinoamérica." />
+  <meta name="author" content="José Zúniga" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora hipoteca, calcular credito hipotecario, simulador hipoteca, cuota mensual hipoteca, credito vivienda latinoamerica, hipoteca colombia, hipoteca mexico, mortgage calculator en español" />
+  <link rel="canonical" href="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <link rel="alternate" hreflang="es" href="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <link rel="alternate" hreflang="es-US" href="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <link rel="alternate" hreflang="x-default" href="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <meta property="og:title" content="Calculadora de Hipoteca | Inversax" />
+  <meta property="og:description" content="Simula tu crédito hipotecario: cuota mensual, total de intereses y costo real del inmueble." />
+  <meta property="og:url" content="https://inversax.com/herramientas/calculadoras/hipoteca" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://inversax.com/og/herramientas.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Herramientas", "item": "https://inversax.com/herramientas" },
+      { "@type": "ListItem", "position": 3, "name": "Calculadoras", "item": "https://inversax.com/herramientas/calculadoras" },
+      { "@type": "ListItem", "position": 4, "name": "Hipoteca", "item": "https://inversax.com/herramientas/calculadoras/hipoteca" }
+    ]
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Calculadora de Hipoteca — Inversax",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "url": "https://inversax.com/herramientas/calculadoras/hipoteca",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Simulador de hipoteca: calcula cuota mensual, enganche, total pagado e intereses de un crédito de vivienda.",
+    "inLanguage": "es"
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "¿Cuánto es la cuota de una hipoteca de $150.000 al 7% a 30 años?", "acceptedAnswer": { "@type": "Answer", "text": "La cuota mensual sería aproximadamente $998 USD. En total pagarías $359.264 USD, de los cuales $209.264 son intereses. El inmueble te costará 2.4 veces su valor original." } },
+      { "@type": "Question", "name": "¿Cuánto enganche necesito para una hipoteca?", "acceptedAnswer": { "@type": "Answer", "text": "En la mayoría de países de Latinoamérica y en USA, el enganche mínimo recomendado es del 20% del valor del inmueble para evitar seguros de hipoteca adicionales (PMI en USA). Con menos del 20% aún puedes calificar, pero pagarás más." } },
+      { "@type": "Question", "name": "¿Es mejor hipoteca a 15 o 30 años?", "acceptedAnswer": { "@type": "Answer", "text": "A 15 años pagas el doble de cuota mensual pero ahorras enormemente en intereses totales. A 30 años la cuota es menor y tienes más liquidez mensual. Depende de tu situación: si puedes afrontar cuotas mayores, el plazo corto te ahorra decenas de miles de dólares." } },
+      { "@type": "Question", "name": "¿Puedo pagar una hipoteca antes de tiempo?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, en la mayoría de casos. Hacer pagos adicionales al capital reduce el saldo pendiente y con ello los intereses futuros. En una hipoteca de 30 años, agregar $100/mes extra desde el inicio puede recortar el plazo varios años." } }
+    ]
+  })} />
+</slot>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" is:inline></script>
+
+<div style="background:#FAFAF8; border-bottom:2px solid #1C1917;">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <div class="flex items-center gap-1.5 text-xs mb-4" style="color:#A8A29E; font-family:'DM Sans',sans-serif;">
+      <a href="/" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Inicio</a>
+      <span>›</span>
+      <a href="/herramientas" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Herramientas</a>
+      <span>›</span>
+      <a href="/herramientas/calculadoras" style="color:#A8A29E; text-decoration:none;" onmouseover="this.style.color='#B91C1C';" onmouseout="this.style.color='#A8A29E';">Calculadoras</a>
+      <span>›</span>
+      <span style="color:#1C1917; font-weight:600;">Hipoteca</span>
+    </div>
+    <h1 class="font-bold leading-tight mb-2" style="font-family:'Playfair Display',serif; color:#1C1917; font-size:clamp(26px,4vw,44px);">
+      Calculadora de Hipoteca
+    </h1>
+    <p style="color:#78716C; font-family:'DM Sans',sans-serif; font-size:15px;">
+      Simula tu crédito de vivienda: cuota mensual, total de intereses y costo real.
+    </p>
+  </div>
+</div>
+
+<section style="background:#FAFAF8;" class="px-4 sm:px-6 py-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <div style="background:#fff; border:1px solid #E5E0D8; padding:28px;">
+        <h2 class="font-bold text-base mb-5" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Datos de la hipoteca</h2>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Valor del inmueble</label>
+            <input id="hValor" type="number" value="200000" min="1000" step="1000"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#15803D';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcHipoteca();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Enganche / cuota inicial (%)</label>
+            <input id="hEnganche" type="number" value="20" min="0" max="99" step="1"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#15803D';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcHipoteca();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Tasa de interés anual (%)</label>
+            <input id="hTasa" type="number" value="7" min="0.1" max="50" step="0.25"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#15803D';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcHipoteca();" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:600; color:#57534E; font-family:'DM Sans',sans-serif; text-transform:uppercase; letter-spacing:0.08em;">Plazo (años)</label>
+            <input id="hPlazo" type="number" value="20" min="1" max="40" step="1"
+              style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #E5E0D8; background:#FAFAF8; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:16px; outline:none;"
+              onfocus="this.style.borderColor='#15803D';" onblur="this.style.borderColor='#E5E0D8';" oninput="calcHipoteca();" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div style="background:#15803D; padding:24px;">
+          <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.65); font-family:'DM Sans',sans-serif; margin-bottom:8px;">Cuota mensual</p>
+          <p id="hip-cuota" style="font-size:40px; font-weight:800; color:#fff; font-family:'Playfair Display',serif; line-height:1.1;">$0</p>
+          <p id="hip-prestamo" style="font-size:13px; color:rgba(255,255,255,0.7); font-family:'DM Sans',sans-serif; margin-top:6px;"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Enganche</p>
+            <p id="hip-enganche" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total pagado</p>
+            <p id="hip-total" style="font-size:18px; font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Total intereses</p>
+            <p id="hip-intereses" style="font-size:18px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">$0</p>
+          </div>
+          <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:16px;">
+            <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Costo real</p>
+            <p id="hip-costo" style="font-size:18px; font-weight:700; color:#B91C1C; font-family:'DM Sans',sans-serif;">×0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:24px; margin-top:20px; max-width:360px;">
+      <p class="text-sm font-semibold mb-4" style="color:#1C1917; font-family:'DM Sans',sans-serif;">Distribución del costo total</p>
+      <canvas id="chart-hip" height="260"></canvas>
+    </div>
+
+    <!-- CTA brokers -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:28px; margin-top:24px;">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;">
+        <div style="width:3px; height:32px; background:#15803D; flex-shrink:0; margin-top:2px;"></div>
+        <div>
+          <p style="font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:#78716C; font-family:'DM Sans',sans-serif; margin-bottom:4px;">Mientras esperas tu hipoteca</p>
+          <p style="font-size:18px; font-weight:700; color:#1C1917; font-family:'Playfair Display',serif; line-height:1.3;">Haz crecer tu enganche con inversiones inteligentes.</p>
+        </div>
+      </div>
+      <p style="font-size:14px; color:#57534E; font-family:'DM Sans',sans-serif; margin-bottom:20px;">Si estás ahorrando para el enganche, estos brokers te permiten invertir ese dinero en ETFs de bajo riesgo para que crezca más que en una cuenta de ahorros.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:16px;">
+        <a href="https://geolink.xtb.com/I0QSx" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#15803D';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">XTB</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">ETFs · Sin mínimo</p>
+          </div>
+          <span style="font-size:12px; color:#15803D; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+        <a href="https://icmarkets.com/?camp=90874" target="_blank" rel="noopener noreferrer nofollow"
+           style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #E5E0D8; padding:14px 16px; text-decoration:none;"
+           onmouseover="this.style.borderColor='#15803D';" onmouseout="this.style.borderColor='#E5E0D8';">
+          <div>
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:14px; margin-bottom:2px;">IC Markets</p>
+            <p style="font-size:11px; color:#78716C; font-family:'DM Sans',sans-serif;">4.8★ · Regulado</p>
+          </div>
+          <span style="font-size:12px; color:#15803D; font-weight:700; font-family:'DM Sans',sans-serif;">Abrir →</span>
+        </a>
+      </div>
+      <p style="font-size:11px; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:10px;">* Contiene enlaces de afiliado. Invertir implica riesgos.</p>
+      <a href="/herramientas/comparar-brokers" style="font-size:13px; font-weight:600; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none;">Ver comparativa completa →</a>
+    </div>
+
+    <!-- Editorial -->
+    <div style="background:#fff; border:1px solid #E5E0D8; padding:32px; margin-top:24px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:22px; font-weight:700; margin-bottom:16px;">Todo lo que debes saber antes de pedir una hipoteca</h2>
+      <div style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.75;">
+        <p style="margin-bottom:14px;">El <strong style="color:#1C1917;">crédito hipotecario</strong> es la deuda más grande que la mayoría de personas contraerá en su vida, por lo que calcular correctamente antes de comprometerse es fundamental. Esta calculadora te muestra el cuadro completo: no solo la cuota mensual, sino el costo real del inmueble incluyendo todos los intereses a pagar durante el plazo.</p>
+        <p style="margin-bottom:14px;">En Latinoamérica, las tasas hipotecarias varían enormemente por país. En Colombia los créditos en pesos están entre 12% y 16% nominal anual, aunque los créditos en UVR (indexados a inflación) pueden ser más bajos nominalmente pero tienen otro tipo de riesgo. En México, el INFONAVIT ofrece tasas desde 2.5% para ciertos trabajadores, mientras que los bancos privados van del 8% al 12%. En Argentina, con la inflación que hay, el mercado hipotecario es prácticamente inoperante para créditos convencionales.</p>
+        <p style="margin-bottom:14px;">Para hispanos en Estados Unidos, las tasas hipotecarias a 30 años fijas rondan el 6.5%-7.5% en 2024-2025. El plazo más común es 30 años, aunque hay opciones de 15 años con tasas ligeramente menores. El enganche mínimo para préstamos convencionales sin PMI es del 20%. Con el programa FHA, se puede bajar hasta 3.5% pero se paga un seguro mensual adicional.</p>
+        <p>Un aspecto crucial es el efecto del plazo en el costo total. Una hipoteca de $200.000 al 7% a 30 años te cuesta $279.017 en intereses — más del doble del inmueble. A 20 años, los intereses bajan a $167.982. La diferencia es enorme: $111.035 en intereses evitados a cambio de cuotas mensuales más altas.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="background:#F5F1EC; border:1px solid #E5E0D8; padding:32px; margin-top:16px;">
+      <h2 style="font-family:'Playfair Display',serif; color:#1C1917; font-size:20px; font-weight:700; margin-bottom:20px;">Preguntas frecuentes</h2>
+      <div class="flex flex-col gap-5">
+        {[
+          { q: '¿Cuánto es la cuota de una hipoteca de $150.000 al 7% a 30 años?', a: 'La cuota mensual sería aproximadamente $998 USD. En total pagarías $359.264 USD, pagando $209.264 en intereses durante 30 años.' },
+          { q: '¿Cuánto enganche necesito para una hipoteca?', a: 'Lo recomendado es 20% del valor del inmueble. Con menos puede haber seguros adicionales (PMI en USA). En países LATAM, los requisitos varían: en Colombia el banco financiará hasta el 70%-80% del avalúo.' },
+          { q: '¿Es mejor hipoteca a 15 o 30 años?', a: 'A 15 años: cuota mayor pero ahorras decenas de miles en intereses. A 30 años: cuota menor y mayor liquidez mensual. Si puedes pagar la cuota a 15 años cómodamente, es la mejor opción financieramente.' },
+          { q: '¿Puedo pagar una hipoteca antes de tiempo?', a: 'Sí, y es muy recomendable si no hay penalización. Cada pago extra va directamente al capital, reduciendo los intereses futuros. En una hipoteca a 30 años, un pago extra anual puede recortar 4-6 años del plazo.' },
+        ].map((faq) => (
+          <div style="border-bottom:1px solid #E5E0D8; padding-bottom:16px;">
+            <p style="font-weight:700; color:#1C1917; font-family:'DM Sans',sans-serif; font-size:15px; margin-bottom:6px;">{faq.q}</p>
+            <p style="color:#57534E; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6;">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style="padding:20px 0; margin-top:8px;">
+      <p style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#A8A29E; font-family:'DM Sans',sans-serif; margin-bottom:12px;">Calculadoras relacionadas</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {[
+          { href:'/herramientas/calculadoras/prestamo', label:'Préstamo y amortización' },
+          { href:'/herramientas/calculadoras/pago-deuda', label:'Pago anticipado de deuda' },
+          { href:'/herramientas/calculadoras/fondo-emergencia', label:'Fondo de emergencia' },
+          { href:'/herramientas/calculadoras/ahorro-retiro', label:'Ahorro para retiro' },
+        ].map(l => (
+          <a href={l.href} style="font-size:13px; color:#B91C1C; font-family:'DM Sans',sans-serif; text-decoration:none; background:#FEF2F2; padding:4px 10px; border-radius:2px;" onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEF2F2';">
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+let chartHip = null;
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
+
+function calcHipoteca() {
+  const valor = parseFloat(document.getElementById('hValor').value) || 0;
+  const pctEng = parseFloat(document.getElementById('hEnganche').value) || 0;
+  const tasa = parseFloat(document.getElementById('hTasa').value) || 0;
+  const plazo = parseFloat(document.getElementById('hPlazo').value) || 1;
+
+  const enganche = valor * pctEng / 100;
+  const P = valor - enganche;
+  const n = plazo * 12;
+  const r = tasa / 100 / 12;
+
+  let cuota;
+  if (r === 0) { cuota = P / n; } else {
+    cuota = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }
+  const total = cuota * n + enganche;
+  const intereses = cuota * n - P;
+  const costo = valor > 0 ? (total / valor).toFixed(2) : '1';
+
+  document.getElementById('hip-cuota').textContent = fmt(cuota);
+  document.getElementById('hip-prestamo').textContent = `Préstamo: ${fmt(P)} · ${plazo} años`;
+  document.getElementById('hip-enganche').textContent = fmt(enganche);
+  document.getElementById('hip-total').textContent = fmt(total);
+  document.getElementById('hip-intereses').textContent = fmt(intereses);
+  document.getElementById('hip-costo').textContent = `×${costo}`;
+
+  const ctx = document.getElementById('chart-hip').getContext('2d');
+  if (chartHip) chartHip.destroy();
+  chartHip = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Capital del préstamo', 'Intereses', 'Enganche'],
+      datasets: [{ data: [Math.round(P), Math.round(intereses), Math.round(enganche)], backgroundColor: ['#15803D', '#B91C1C', '#F0EDE7'], borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: "'DM Sans', sans-serif", size: 12 }, color: '#57534E', padding: 12 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}` } }
+      }
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', calcHipoteca);
+</script>
+</Layout>

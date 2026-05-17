@@ -930,6 +930,58 @@ const categoriaColores: Record<string, string> = {
     </div>
   </section>
 
+  <!-- ── CALCULADORAS FINANCIERAS ────────────────────────── -->
+  <section style="background: #F5F1EC; border-top: 1px solid #E5E0D8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-8 pb-4" style="border-bottom: 1px solid #E5E0D8;">
+        <div class="flex items-center gap-2.5">
+          <Calculator size={17} style="color: #B91C1C;" />
+          <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
+            Calculadoras Financieras
+          </h2>
+        </div>
+        <a href="/herramientas/calculadoras" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
+           style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+          Ver las 12 <ArrowRight size={14} />
+        </a>
+      </div>
+      <p class="mb-8 text-base" style="color: #57534E; font-family: 'DM Sans', sans-serif; max-width: 680px;">
+        Herramientas gratuitas para calcular interés compuesto, cuotas de hipoteca, ahorro para el retiro, ROI, salario neto y más. Sin registro, sin publicidad intrusiva.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[
+          { nombre: 'Interés Compuesto', desc: 'Proyecta el crecimiento de tu dinero con aportes periódicos y capitalización.', href: '/herramientas/calculadoras/interes-compuesto', badge: 'Con gráfica' },
+          { nombre: 'Préstamo / Amortización', desc: 'Calcula tu cuota mensual y la tabla completa de amortización.', href: '/herramientas/calculadoras/prestamo', badge: 'Con tabla' },
+          { nombre: 'Ahorro para el Retiro', desc: 'Proyecta tu fondo de retiro por edad y renta mensual estimada.', href: '/herramientas/calculadoras/ahorro-retiro', badge: 'Con gráfica' },
+          { nombre: 'ROI de Inversión', desc: 'Calcula el retorno real de cualquier inversión incluyendo impuestos.', href: '/herramientas/calculadoras/roi', badge: 'Fácil' },
+          { nombre: 'Ganancias en Cripto', desc: 'P&L, ROI, precio de equilibrio e impuesto estimado en cripto.', href: '/herramientas/calculadoras/cripto-ganancias', badge: 'Nuevo' },
+          { nombre: 'Conversión de Divisas', desc: 'Conversor de 10 divisas con tabla de montos comunes de referencia.', href: '/herramientas/calculadoras/conversion-divisas', badge: 'Gratis' },
+        ].map((c) => (
+          <a href={c.href}
+             class="group no-underline transition-all duration-200 hover:-translate-y-0.5"
+             style="background: #fff; border: 1px solid #E5E0D8; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5"
+                    style="background: #B91C1C14; color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+                {c.badge}
+              </span>
+              <Calculator size={14} style="color: #C7BFB5;" />
+            </div>
+            <div>
+              <span class="block font-bold text-[15px] mb-1 group-hover:opacity-70 transition-opacity"
+                    style="color: #1C1917; font-family: 'DM Sans', sans-serif;">{c.nombre}</span>
+              <span class="text-sm" style="color: #78716C; font-family: 'DM Sans', sans-serif; line-height: 1.5;">{c.desc}</span>
+            </div>
+            <span class="flex items-center gap-1 text-sm font-semibold mt-auto group-hover:gap-2 transition-all duration-200"
+                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
+              Calcular <ArrowRight size={12} />
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
 </Layout>
 
 <!-- ── TABS CATEGORÍAS JS ─────────────────────────────────── -->
