@@ -1,7 +1,7 @@
 // src/pages/sitemap-static.xml.ts
 export const prerender = false;
 import type { APIRoute } from 'astro';
-import { getCategorias, getPaises } from '../db/queries';
+import { getCategorias } from '../db/queries';
 
 const SITE = 'https://inversax.com';
 
@@ -94,12 +94,7 @@ const DOLAR_PAISES = [
 export const GET: APIRoute = async ({ locals }) => {
   const db = locals.db;
 
-  const [categorias, paises] = await Promise.all([
-    getCategorias(db),
-    getPaises(db),
-  ]);
-
-  const paisesLocales = paises.filter(p => p.codigo !== 'global');
+  const categorias = await getCategorias(db);
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -153,10 +148,6 @@ export const GET: APIRoute = async ({ locals }) => {
     url(`/${cat.slug}`, new Date(), 0.6, 'weekly')
   ).join('')}
 
-  <!-- ── Países ── -->
-  ${paisesLocales.map(p =>
-    url(`/pais/${p.codigo}`, new Date(), 0.5, 'weekly')
-  ).join('')}
 
 </urlset>`;
 

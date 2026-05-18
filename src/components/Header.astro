@@ -1,26 +1,17 @@
 ---
-// Header.astro - Inversax
-import { Search, Globe, Menu, ChevronDown } from 'lucide-astro';
-import { getCategorias, getPaises } from '../db/queries';
-
-interface CategoriaNav { nombre: string; slug: string; }
-interface PaisNav      { nombre: string; codigo: string; }
+// Header.astro — Inversax (diseño naranja, sin selector de país)
+import { Search, Menu } from 'lucide-astro';
+import { getCategorias } from '../db/queries';
 
 interface Props {
-  categorias?: CategoriaNav[];
-  paises?: PaisNav[];
+  categorias?: Array<{ nombre: string; slug: string }>;
+  paises?: unknown; // aceptado por compatibilidad, no se usa
 }
 
-// Si la página ya trajo estos datos, los reutilizamos — sin queries extra a Neon.
-// Si no los recibe, los consulta como antes.
-const { categorias: categoriasProp, paises: paisesProp } = Astro.props;
+const { categorias: categoriasProp } = Astro.props;
+const db         = Astro.locals.db;
+const categorias = categoriasProp ?? await getCategorias(db);
 
-const db            = Astro.locals.db;
-const categorias    = categoriasProp ?? await getCategorias(db);
-const paises        = paisesProp     ?? await getPaises(db);
-const paisesLocales = paises.filter(p => p.codigo !== 'global');
-
-// Colores de badge por tipo (tema claro editorial)
 const tipoBadge: Record<string, string> = {
   crypto: '#1D4ED8',
   forex:  '#15803D',
@@ -34,7 +25,6 @@ const tipoLabel: Record<string, string> = {
   stock:  'S',
 };
 
-// Skeleton: placeholders mientras el cliente carga el ticker real
 const TICKER_SKELETON = [
   { symbol: 'BTC',     tipo: 'crypto' },
   { symbol: 'ETH',     tipo: 'crypto' },
@@ -58,283 +48,184 @@ const TICKER_SKELETON = [
 ---
 
 <header class="fixed top-0 left-0 right-0 w-full z-[100]"
-        style="background: #FAFAF8; border-bottom: 2px solid #1C1917; font-family: 'DM Sans', sans-serif;">
+        style="background:#FFFFFF; border-bottom:1px solid #E2DDD8; font-family:'DM Sans',sans-serif; box-shadow:0 1px 4px rgba(0,0,0,0.06);">
 
-  <!-- TOP BAR: ticker mixto + selector de país -->
-  <div style="background: #F5F1EC; border-bottom: 1px solid #E5E0D8; height: 36px; overflow: hidden;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between">
-
-      <!-- Ticker (skeleton SSR → datos reales client-side) -->
-      <div class="flex-1 overflow-hidden" style="mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);">
+  <!-- TOP BAR: ticker de precios -->
+  <div style="background:#F5F2EE; border-bottom:1px solid #E2DDD8; height:34px; overflow:hidden;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center">
+      <div class="flex-1 overflow-hidden"
+           style="mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent);">
         <div id="ticker-track" class="ticker-track flex gap-7 whitespace-nowrap w-max">
           {[...TICKER_SKELETON, ...TICKER_SKELETON].map((item) => (
-            <span class="ticker-item inline-flex items-center gap-1.5 text-[11px]" data-symbol={item.symbol} data-tipo={item.tipo}>
+            <span class="ticker-item inline-flex items-center gap-1.5 text-[11px]"
+                  data-symbol={item.symbol} data-tipo={item.tipo}>
               <span class="text-[8px] font-bold tracking-widest"
-                    style={`color: ${tipoBadge[item.tipo]};`}>
-                {tipoLabel[item.tipo]}
-              </span>
-              <span class="font-semibold text-[10px] tracking-wide" style="color: #57534E;">{item.symbol}</span>
-              <span class="ticker-price font-medium animate-pulse" style="color: #A8A29E;">···</span>
-              <span class="ticker-change text-[10px] font-medium" style="color: transparent;"></span>
-              <span class="text-[10px]" style="color: #D6D0C8;">·</span>
+                    style={`color:${tipoBadge[item.tipo]};`}>{tipoLabel[item.tipo]}</span>
+              <span class="font-semibold text-[10px] tracking-wide" style="color:#555555;">{item.symbol}</span>
+              <span class="ticker-price font-medium animate-pulse" style="color:#AAAAAA;">···</span>
+              <span class="ticker-change text-[10px] font-medium" style="color:transparent;"></span>
+              <span class="text-[10px]" style="color:#D0C9C0;">·</span>
             </span>
           ))}
         </div>
       </div>
-
-      <!-- Selector de país (desktop) -->
-      <div class="hidden md:flex items-center gap-1.5 pl-4 flex-shrink-0">
-        <Globe size={12} style="color: #A8A29E;" />
-        <select
-          id="country-select"
-          class="bg-transparent border-none text-xs cursor-pointer outline-none max-w-[140px]"
-          style="color: #78716C; font-family: 'DM Sans', sans-serif;"
-        >
-          <option value="global" style="background: #FAFAF8; color: #1C1917;">Global</option>
-          {paisesLocales.map((p) => (
-            <option value={p.codigo} style="background: #FAFAF8; color: #1C1917;">{p.nombre}</option>
-          ))}
-        </select>
-      </div>
-
     </div>
   </div>
 
   <!-- MAIN NAV -->
-  <div style="background: #FAFAF8;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
+  <div style="background:#FFFFFF;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-4" style="height:60px;">
 
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-2.5 flex-shrink-0 no-underline">
-        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-          <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#B91C1C" stroke-width="2"/>
-          <polyline points="8,16 12,12 16,15 20,10" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <a href="/" class="flex items-center gap-2 flex-shrink-0 no-underline">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+          <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#FF8C42" stroke-width="2.5"/>
+          <polyline points="8,17 12,12 16,15 20,10" stroke="#FF8C42" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="font-extrabold text-[20px] tracking-tight leading-none" style="color: #1C1917; font-family: 'Playfair Display', serif;">
-          Inversax<span class="font-normal text-sm" style="color: #B91C1C;">.com</span>
+        <span class="font-bold leading-none" style="font-size:19px; color:#1A1A1A; font-family:'DM Sans',sans-serif;">
+          Inversax<span class="font-semibold text-sm" style="color:#FF8C42;">.com</span>
         </span>
       </a>
 
-      <!-- Divisor -->
-      <div class="hidden lg:block h-5 w-px flex-shrink-0" style="background: #E5E0D8;"></div>
+      <!-- Divisor desktop -->
+      <div class="hidden lg:block h-5 w-px flex-shrink-0" style="background:#E2DDD8;"></div>
 
       <!-- Nav desktop -->
       <nav class="hidden lg:flex items-center gap-0.5 flex-1">
-        {(() => {
-          const PRIORITY = ['criptomonedas', 'trading', 'bolsa', 'forex', 'economia'];
-          const top  = PRIORITY
-            .map(slug => categorias.find(c => c.slug === slug))
-            .filter(Boolean) as typeof categorias;
-          const extra = categorias.filter(c => !PRIORITY.includes(c.slug));
-          return (
-            <>
-              {top.map((cat) => (
-                <a
-                  href={`/${cat.slug}`}
-                  class="nav-cat-link flex-shrink-0 text-sm px-3 py-1.5 transition-colors duration-200 no-underline whitespace-nowrap"
-                  style="color: #57534E; border-radius: 4px;"
-                  onmouseover="this.style.color='#1C1917'; this.style.background='#F0EDE7';"
-                  onmouseout="this.style.background=''; this.style.color=this.dataset.active==='1'?'#B91C1C':'#57534E';"
-                >
-                  {cat.nombre}
-                </a>
-              ))}
-
-              {extra.length > 0 && (
-                <div class="relative flex-shrink-0" id="mas-wrapper">
-                  <button
-                    id="mas-toggle"
-                    class="flex items-center gap-1 text-sm px-3 py-1.5 transition-colors duration-200 cursor-pointer border-none whitespace-nowrap"
-                    style="color: #57534E; background: transparent; border-radius: 4px; font-family: 'DM Sans', sans-serif;"
-                    onmouseover="this.style.color='#1C1917'; this.style.background='#F0EDE7';"
-                    onmouseout="this.style.background=''; this.style.color='#57534E';"
-                  >
-                    Más <ChevronDown size={13} id="mas-chevron" class="transition-transform duration-200" />
-                  </button>
-                  <div
-                    id="mas-dropdown"
-                    class="absolute top-full left-0 mt-1 p-1.5 hidden"
-                    style="min-width: 200px; background: #FFFFFF; border: 1px solid #E5E0D8; border-radius: 8px; box-shadow: 0 8px 32px rgba(28,25,23,0.12); z-index:200;"
-                  >
-                    {extra.map((cat) => (
-                      <a
-                        href={`/${cat.slug}`}
-                        class="flex px-3 py-2 no-underline text-sm transition-colors duration-150"
-                        style="color: #57534E; border-radius: 4px;"
-                        onmouseover="this.style.background='#F5F1EC'; this.style.color='#1C1917';"
-                        onmouseout="this.style.background=''; this.style.color='#57534E';"
-                      >
-                        {cat.nombre}
-                      </a>
-                    ))}
-                    <div class="mt-1 pt-1" style="border-top: 1px solid #E5E0D8;">
-                      <a
-                        href="/noticias"
-                        class="flex px-3 py-2 no-underline text-xs transition-colors duration-150"
-                        style="color: #A8A29E; border-radius: 4px;"
-                        onmouseover="this.style.background='#F5F1EC'; this.style.color='#57534E';"
-                        onmouseout="this.style.background=''; this.style.color='#A8A29E';"
-                      >
-                        Ver todas las noticias →
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          );
-        })()}
-
-        <div class="h-4 w-px mx-1.5 flex-shrink-0" style="background: #E5E0D8;"></div>
-
-        <a
-          href="/herramientas"
-          class="nav-link flex-shrink-0 text-sm px-3 py-1.5 transition-colors duration-200 no-underline whitespace-nowrap font-semibold"
-          style="color: #B91C1C; border-radius: 4px;"
-          onmouseover="this.style.background='#FEF2F2';"
-          onmouseout="this.style.background='';"
-        >
+        <a href="/herramientas"
+           class="nav-link text-sm font-semibold px-3 py-1.5 rounded-md no-underline transition-colors duration-200 whitespace-nowrap"
+           style="color:#FF8C42;"
+           onmouseover="this.style.background='#FFF5EE';"
+           onmouseout="this.style.background='';">
           Herramientas
         </a>
-        <a
-          href="/herramientas/calculadoras"
-          class="nav-link flex-shrink-0 text-sm px-3 py-1.5 transition-colors duration-200 no-underline whitespace-nowrap"
-          style="color: #57534E; border-radius: 4px;"
-          onmouseover="this.style.background='#F0EDE7'; this.style.color='#1C1917';"
-          onmouseout="this.style.background=''; this.style.color='#57534E';"
-        >
+        <a href="/herramientas/calculadoras"
+           class="nav-link text-sm px-3 py-1.5 rounded-md no-underline transition-colors duration-200 whitespace-nowrap"
+           style="color:#555555;"
+           onmouseover="this.style.color='#1A1A1A'; this.style.background='#F5F2EE';"
+           onmouseout="this.style.color='#555555'; this.style.background='';">
           Calculadoras
+        </a>
+        <a href="/herramientas/comparar-brokers"
+           class="nav-link text-sm px-3 py-1.5 rounded-md no-underline transition-colors duration-200 whitespace-nowrap"
+           style="color:#555555;"
+           onmouseover="this.style.color='#1A1A1A'; this.style.background='#F5F2EE';"
+           onmouseout="this.style.color='#555555'; this.style.background='';">
+          Comparar Brokers
+        </a>
+        <a href="/noticias"
+           class="nav-link text-sm px-3 py-1.5 rounded-md no-underline transition-colors duration-200 whitespace-nowrap"
+           style="color:#555555;"
+           onmouseover="this.style.color='#1A1A1A'; this.style.background='#F5F2EE';"
+           onmouseout="this.style.color='#555555'; this.style.background='';">
+          Artículos
         </a>
       </nav>
 
-      <!-- Acciones (search + menu) -->
-      <div class="flex items-center gap-2 flex-shrink-0 ml-auto lg:ml-0">
-        <button
-          id="search-toggle"
-          class="w-9 h-9 flex items-center justify-center transition-colors duration-200 cursor-pointer"
-          style="background: #F0EDE7; border: 1px solid #E5E0D8; color: #78716C; border-radius: 6px;"
-          aria-label="Buscar"
-          onmouseover="this.style.color='#1C1917'; this.style.borderColor='#B91C1C';"
-          onmouseout="this.style.color='#78716C'; this.style.borderColor='#E5E0D8';"
-        >
-          <Search size={16} />
+      <!-- Acciones: CTA + búsqueda + menú móvil -->
+      <div class="flex items-center gap-2 ml-auto lg:ml-0 flex-shrink-0">
+        <a href="/herramientas/calculadoras"
+           class="hidden lg:inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg no-underline transition-all duration-200"
+           style="background:#FF8C42; color:white;"
+           onmouseover="this.style.background='#E87832';"
+           onmouseout="this.style.background='#FF8C42';">
+          Calcular ahora
+        </a>
+        <button id="search-toggle"
+                class="w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-200 cursor-pointer"
+                style="background:#F5F2EE; border-color:#E2DDD8; color:#909090;"
+                aria-label="Buscar"
+                onmouseover="this.style.color='#1A1A1A'; this.style.borderColor='#FF8C42';"
+                onmouseout="this.style.color='#909090'; this.style.borderColor='#E2DDD8';">
+          <Search size={15} />
         </button>
-        <button
-          id="menu-toggle"
-          class="lg:hidden w-9 h-9 flex items-center justify-center transition-colors duration-200 cursor-pointer"
-          style="color: #78716C; background: transparent; border: none;"
-          aria-label="Menú"
-          onmouseover="this.style.color='#1C1917';"
-          onmouseout="this.style.color='#78716C';"
-        >
+        <button id="menu-toggle"
+                class="lg:hidden w-9 h-9 flex items-center justify-center cursor-pointer border-none"
+                style="color:#555555; background:transparent;"
+                aria-label="Menú">
           <Menu size={20} />
         </button>
       </div>
     </div>
 
-    <!-- Search bar -->
-    <div id="search-bar" style="max-height: 0; transition: max-height 0.25s ease; overflow: hidden; border-top: 1px solid #E5E0D8; background: #F5F1EC;">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3" style="color: #A8A29E;">
+    <!-- Barra de búsqueda -->
+    <div id="search-bar"
+         style="max-height:0; transition:max-height 0.25s ease; overflow:hidden; border-top:1px solid #E2DDD8; background:#F5F2EE;">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3" style="color:#909090;">
         <Search size={16} class="flex-shrink-0" />
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Buscar noticias, criptos, indicadores..."
-          class="flex-1 bg-transparent border-none outline-none text-sm"
-          style="color: #1C1917; font-family: 'DM Sans', sans-serif;"
-          autocomplete="off"
-        />
+        <input id="search-input" type="text"
+               placeholder="Buscar artículos, criptos, herramientas..."
+               class="flex-1 bg-transparent border-none outline-none text-sm"
+               style="color:#1A1A1A; font-family:'DM Sans',sans-serif;"
+               autocomplete="off" />
         <kbd class="text-[10px] px-1.5 py-0.5 flex-shrink-0"
-             style="background: #E8E3DB; border: 1px solid #D6D0C8; color: #A8A29E; border-radius: 3px;">ESC</kbd>
+             style="background:#E2DDD8; border:1px solid #D0C9C0; color:#909090; border-radius:3px;">ESC</kbd>
       </div>
     </div>
 
-    <!-- Resultados búsqueda -->
-    <div
-      id="search-results"
-      class="hidden"
-      style="background: #FFFFFF; border-top: 1px solid #E5E0D8; box-shadow: 0 8px 32px rgba(28,25,23,0.1);"
-    >
+    <!-- Resultados de búsqueda -->
+    <div id="search-results" class="hidden"
+         style="background:#FFFFFF; border-top:1px solid #E2DDD8; box-shadow:0 8px 24px rgba(0,0,0,0.08);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div id="search-results-inner" class="flex flex-col gap-1"></div>
-        <div id="search-empty" class="hidden text-sm py-4 text-center" style="color: #A8A29E;">
+        <div id="search-empty" class="hidden text-sm py-4 text-center" style="color:#909090;">
           Sin resultados para esta búsqueda
         </div>
-        <div id="search-loading" class="hidden text-sm py-4 text-center" style="color: #A8A29E;">
+        <div id="search-loading" class="hidden text-sm py-4 text-center" style="color:#909090;">
           Buscando...
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="lg:hidden overflow-hidden" style="max-height: 0; transition: max-height 0.4s ease; background: #FAFAF8; border-bottom: 1px solid #E5E0D8;">
-    <nav class="flex flex-col px-4 sm:px-6 py-3 gap-0.5">
-
-      <span class="text-[10px] uppercase tracking-widest px-3 pt-2 pb-1" style="color: #A8A29E;">Noticias por categoría</span>
-      {categorias.map((cat) => (
-        <a
-          href={`/${cat.slug}`}
-          class="text-sm px-3 py-2 transition-colors duration-200 no-underline"
-          style="color: #57534E; border-radius: 4px;"
-          onmouseover="this.style.background='#F0EDE7'; this.style.color='#1C1917';"
-          onmouseout="this.style.background=''; this.style.color='#57534E';"
-        >
-          {cat.nombre}
-        </a>
-      ))}
-
-      <div class="my-2" style="border-top: 1px solid #E5E0D8;" />
-
-      <a href="/noticias"
-         class="text-sm px-3 py-2.5 transition-colors duration-200 no-underline"
-         style="color: #57534E; border-radius: 4px;"
-         onmouseover="this.style.background='#F0EDE7'; this.style.color='#1C1917';"
-         onmouseout="this.style.background=''; this.style.color='#57534E';">
-        Todas las noticias
-      </a>
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="lg:hidden overflow-hidden"
+       style="max-height:0; transition:max-height 0.4s ease; background:#FFFFFF; border-bottom:1px solid #E2DDD8;">
+    <nav class="flex flex-col px-4 py-3 gap-1">
       <a href="/herramientas"
-         class="text-sm px-3 py-2.5 transition-colors duration-200 no-underline font-semibold"
-         style="color: #B91C1C; border-radius: 4px;"
-         onmouseover="this.style.background='#FEF2F2';"
+         class="text-sm font-semibold px-3 py-2.5 rounded-md no-underline"
+         style="color:#FF8C42;"
+         onmouseover="this.style.background='#FFF5EE';"
          onmouseout="this.style.background='';">
         Herramientas
       </a>
       <a href="/herramientas/calculadoras"
-         class="text-sm px-3 py-2.5 transition-colors duration-200 no-underline"
-         style="color: #57534E; border-radius: 4px;"
-         onmouseover="this.style.background='#F0EDE7'; this.style.color='#1C1917';"
-         onmouseout="this.style.background=''; this.style.color='#57534E';">
+         class="text-sm px-3 py-2.5 rounded-md no-underline"
+         style="color:#555555;"
+         onmouseover="this.style.background='#F5F2EE'; this.style.color='#1A1A1A';"
+         onmouseout="this.style.background=''; this.style.color='#555555';">
         Calculadoras financieras
       </a>
-
-      <!-- Selector de país mobile -->
-      <div class="flex items-center gap-2 px-3 py-2.5 mt-1" style="border-top: 1px solid #E5E0D8;">
-        <Globe size={14} style="color: #A8A29E; flex-shrink: 0;" />
-        <select
-          id="country-select-mobile"
-          class="bg-transparent border-none text-sm outline-none flex-1 cursor-pointer"
-          style="color: #78716C; font-family: 'DM Sans', sans-serif;"
-        >
-          <option value="global" style="background: #FAFAF8; color: #1C1917;">Global</option>
-          {paisesLocales.map((p) => (
-            <option value={p.codigo} style="background: #FAFAF8; color: #1C1917;">{p.nombre}</option>
-          ))}
-        </select>
+      <a href="/herramientas/comparar-brokers"
+         class="text-sm px-3 py-2.5 rounded-md no-underline"
+         style="color:#555555;"
+         onmouseover="this.style.background='#F5F2EE'; this.style.color='#1A1A1A';"
+         onmouseout="this.style.background=''; this.style.color='#555555';">
+        Comparar Brokers
+      </a>
+      <a href="/noticias"
+         class="text-sm px-3 py-2.5 rounded-md no-underline"
+         style="color:#555555;"
+         onmouseover="this.style.background='#F5F2EE'; this.style.color='#1A1A1A';"
+         onmouseout="this.style.background=''; this.style.color='#555555';">
+        Artículos
+      </a>
+      <div class="pt-2 pb-1">
+        <a href="/herramientas/calculadoras"
+           class="flex items-center justify-center text-sm font-semibold px-4 py-2.5 rounded-lg no-underline"
+           style="background:#FF8C42; color:white;">
+          Calcular ahora →
+        </a>
       </div>
-
     </nav>
   </div>
 
 </header>
 
 <style>
-  .ticker-track {
-    animation: ticker-scroll 55s linear infinite;
-  }
-  .ticker-track:hover {
-    animation-play-state: paused;
-  }
+  .ticker-track { animation: ticker-scroll 55s linear infinite; }
+  .ticker-track:hover { animation-play-state: paused; }
   @keyframes ticker-scroll {
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -344,13 +235,7 @@ const TICKER_SKELETON = [
     50%       { opacity: 0.3; }
   }
   .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-  /* Items sin precio: ocultos */
-  .ticker-item[data-loaded="false"] {
-    display: none;
-  }
+  .ticker-item[data-loaded="false"] { display: none; }
 </style>
 
 <script>
@@ -375,42 +260,26 @@ const TICKER_SKELETON = [
     searchOpen = false;
     searchBar.style.maxHeight = '0px';
     searchResults.classList.add('hidden');
-    searchInput.value = '';
+    if (searchInput) searchInput.value = '';
   }
 
-  searchToggle?.addEventListener('click', () => {
-    searchOpen ? closeSearch() : openSearch();
+  searchToggle?.addEventListener('click', () => searchOpen ? closeSearch() : openSearch());
+  document.addEventListener('click', (e) => {
+    const header = document.querySelector('header');
+    if (!header?.contains(e.target as Node) && searchOpen) closeSearch();
   });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
 
-  // ── Búsqueda en tiempo real ────────────────────────────────
-  const categoriaColores: Record<string, string> = {
-    'Cripto':              '#F59E0B',
-    'Criptomonedas':       '#F59E0B',
-    'Trading':             '#3B82F6',
-    'Bolsa':               '#10B981',
-    'Economía':            '#8B5CF6',
-    'Forex':               '#EC4899',
-    'Inversión':           '#06B6D4',
-    'Inversiones':         '#06B6D4',
-    'Mercados':            '#D4A843',
-    'Finanzas Personales': '#14B8A6',
-    'Fintech':             '#F97316',
-    'Impuestos':           '#A78BFA',
-  };
-
-  function formatFecha(fecha: string) {
+  function formatFechaDiff(fecha: string) {
     const diff  = Date.now() - new Date(fecha).getTime();
-    const horas = Math.floor(diff / 1000 / 60 / 60);
-    if (horas < 1)  return 'Hace unos minutos';
+    const horas = Math.floor(diff / 3600000);
+    if (horas < 1)  return 'Hace unos min';
     if (horas < 24) return `Hace ${horas}h`;
     return `Hace ${Math.floor(horas / 24)}d`;
   }
 
   async function buscar(q: string) {
-    if (q.length < 2) {
-      searchResults.classList.add('hidden');
-      return;
-    }
+    if (q.length < 2) { searchResults.classList.add('hidden'); return; }
     searchLoading.classList.remove('hidden');
     searchEmpty.classList.add('hidden');
     searchResultsInner.innerHTML = '';
@@ -421,42 +290,26 @@ const TICKER_SKELETON = [
       searchLoading.classList.add('hidden');
       if (!json.ok || json.data.length === 0) {
         searchEmpty.classList.remove('hidden');
-        searchResultsInner.innerHTML = '';
         return;
       }
-      searchEmpty.classList.add('hidden');
-      searchResultsInner.innerHTML = json.data.map((n: any) => {
-        const color = n.categoria ? (categoriaColores[n.categoria.nombre] ?? '#B91C1C') : '#B91C1C';
-        return `
-          <a href="/noticias/${n.slug}"
-            class="flex items-center gap-3 px-3 py-2.5 no-underline transition-colors duration-150"
-            style="border-radius: 4px;"
-            onmouseover="this.style.background='#F5F1EC';"
-            onmouseout="this.style.background='';">
-            ${n.imagen
-              ? `<div class="w-10 h-10 rounded overflow-hidden flex-shrink-0" style="background:#F0EDE7;">
-                   <img src="${n.imagen}" alt="" class="w-full h-full object-cover" />
-                 </div>`
-              : `<div class="w-10 h-10 rounded flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7;">
-                   <span style="color:${color}; font-size:14px;">◈</span>
-                 </div>`
-            }
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-0.5">
-                ${n.categoria ? `<span class="text-[10px] font-bold uppercase tracking-wider" style="color:${color};">${n.categoria.nombre}</span>` : ''}
-                <span class="text-[10px] ml-auto" style="color:#A8A29E;">${n.creadoEn ? formatFecha(n.creadoEn) : ''}</span>
-              </div>
-              <p class="text-sm font-semibold leading-snug truncate" style="color:#1C1917; font-family:'DM Sans',sans-serif;">
-                ${n.titulo}
-              </p>
+      searchResultsInner.innerHTML = json.data.map((n: any) => `
+        <a href="/noticias/${n.slug}"
+           class="flex items-center gap-3 px-3 py-2.5 no-underline rounded-md transition-colors duration-150"
+           style="border-radius:6px;"
+           onmouseover="this.style.background='#F5F2EE';"
+           onmouseout="this.style.background='';">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              ${n.categoria ? `<span class="text-[10px] font-bold uppercase tracking-wider" style="color:#FF8C42;">${n.categoria.nombre}</span>` : ''}
+              <span class="text-[10px] ml-auto" style="color:#AAAAAA;">${n.creadoEn ? formatFechaDiff(n.creadoEn) : ''}</span>
             </div>
-          </a>
-        `;
-      }).join('');
-    } catch (e) {
+            <p class="text-sm font-medium leading-snug truncate" style="color:#1A1A1A; margin:0;">${n.titulo}</p>
+          </div>
+        </a>
+      `).join('');
+    } catch {
       searchLoading.classList.add('hidden');
       searchEmpty.classList.remove('hidden');
-      searchResultsInner.innerHTML = '';
     }
   }
 
@@ -467,68 +320,26 @@ const TICKER_SKELETON = [
     debounceTimer = setTimeout(() => buscar(q), 300);
   });
 
-  // ── Dropdown "Más" ───────────────────────────────────────────
-  const masToggle   = document.getElementById('mas-toggle');
-  const masDropdown = document.getElementById('mas-dropdown') as HTMLElement | null;
-  const masChevron  = document.getElementById('mas-chevron') as HTMLElement | null;
-  const masWrapper  = document.getElementById('mas-wrapper');
-
-  function openMas()  { masDropdown?.classList.remove('hidden'); if (masChevron) masChevron.style.transform = 'rotate(180deg)'; }
-  function closeMas() { masDropdown?.classList.add('hidden');    if (masChevron) masChevron.style.transform = 'rotate(0deg)';   }
-
-  masToggle?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    masDropdown?.classList.contains('hidden') ? openMas() : closeMas();
-  });
-  document.addEventListener('click', (e) => {
-    if (!masWrapper?.contains(e.target as Node)) closeMas();
-  });
-
   // ── Menú móvil ───────────────────────────────────────────────
   const menuToggle = document.getElementById('menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu') as HTMLElement;
-
   menuToggle?.addEventListener('click', () => {
     const isOpen = mobileMenu.style.maxHeight !== '0px' && mobileMenu.style.maxHeight !== '';
-    mobileMenu.style.maxHeight = isOpen ? '0px' : '600px';
+    mobileMenu.style.maxHeight = isOpen ? '0px' : '400px';
   });
 
-  // ── Cierre global ─────────────────────────────────────────────
-  document.addEventListener('click', (e) => {
-    const header = document.querySelector('header');
-    if (!header?.contains(e.target as Node) && searchOpen) closeSearch();
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
-
-  // ── Selector de país ─────────────────────────────────────────
-  function onCountryChange(codigo: string) {
-    window.location.href = codigo === 'global' ? '/' : `/pais/${codigo}`;
-  }
-  const pathParts = window.location.pathname.split('/');
-  const paisEnUrl = pathParts[1] === 'pais' ? pathParts[2] : 'global';
-
-  const selectDesktop = document.getElementById('country-select') as HTMLSelectElement | null;
-  const selectMobile  = document.getElementById('country-select-mobile') as HTMLSelectElement | null;
-  if (selectDesktop) selectDesktop.value = paisEnUrl;
-  if (selectMobile)  selectMobile.value  = paisEnUrl;
-  selectDesktop?.addEventListener('change', () => onCountryChange(selectDesktop.value));
-  selectMobile?.addEventListener('change',  () => onCountryChange(selectMobile.value));
-
-  // ── Active link ──────────────────────────────────────────────
+  // ── Active link highlight ────────────────────────────────────
   const path = window.location.pathname;
-  document.querySelectorAll<HTMLElement>('.nav-link, .nav-cat-link').forEach((link) => {
+  document.querySelectorAll<HTMLElement>('header .nav-link').forEach((link) => {
     const href = link.getAttribute('href');
-    if (href && (path === href || (href !== '/' && path.startsWith(href)))) {
-      link.style.color = '#B91C1C';
-      link.dataset.active = '1';
+    if (href && href !== '/' && path.startsWith(href)) {
+      link.style.color = '#FF8C42';
+      link.style.fontWeight = '600';
     }
   });
 
-  // ── CARGA Y POLLING DEL TICKER (client-side) ──────────────────
+  // ── TICKER (client-side) ─────────────────────────────────────
   const TICKER_COUNT = { crypto: 6, forex: 5, metal: 2, stock: 5 };
-
-  // Conjunto de símbolos que recibieron precio real
-  const loadedSymbols = new Set<string>();
 
   function fmtPrice(p: number): string {
     if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
@@ -541,12 +352,9 @@ const TICKER_SKELETON = [
     return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
   }
 
-  // Actualiza los nodos del ticker que coincidan con el símbolo dado
-  // y marca el símbolo como cargado
   function patchTicker(items: { symbol: string; price: string; change?: string; up?: boolean }[]) {
     const nodes = document.querySelectorAll<HTMLElement>('#ticker-track .ticker-item');
     items.forEach(({ symbol, price, change, up }) => {
-      loadedSymbols.add(symbol.toUpperCase());
       nodes.forEach((node) => {
         if (node.dataset.symbol?.toUpperCase() !== symbol.toUpperCase()) return;
         const priceEl  = node.querySelector('.ticker-price');
@@ -554,30 +362,20 @@ const TICKER_SKELETON = [
         if (priceEl) {
           priceEl.textContent = price;
           priceEl.classList.remove('animate-pulse');
-          (priceEl as HTMLElement).style.color = '#1C1917';
+          (priceEl as HTMLElement).style.color = '#1A1A1A';
         }
-        if (changeEl) {
-          if (change !== undefined) {
-            changeEl.textContent = change;
-            (changeEl as HTMLElement).style.color = up ? '#15803D' : '#DC2626';
-            changeEl.className = 'ticker-change text-[10px] font-medium';
-          } else {
-            changeEl.textContent = '';
-          }
+        if (changeEl && change !== undefined) {
+          changeEl.textContent = change;
+          (changeEl as HTMLElement).style.color = up ? '#15803D' : '#DC2626';
         }
-        // Marcar como cargado para mostrarlo
         node.dataset.loaded = 'true';
       });
     });
   }
 
-  // Oculta todos los items que aún no recibieron precio
   function ocultarSinPrecio() {
-    const nodes = document.querySelectorAll<HTMLElement>('#ticker-track .ticker-item');
-    nodes.forEach((node) => {
-      if (node.dataset.loaded !== 'true') {
-        node.dataset.loaded = 'false'; // dispara display:none via CSS
-      }
+    document.querySelectorAll<HTMLElement>('#ticker-track .ticker-item').forEach((node) => {
+      if (node.dataset.loaded !== 'true') node.dataset.loaded = 'false';
     });
   }
 
@@ -588,65 +386,45 @@ const TICKER_SKELETON = [
       fetch('/api/metales'),
       fetch('/api/acciones?limit=10'),
     ]);
-
-    // Cripto
     if (resCripto.status === 'fulfilled' && resCripto.value.ok) {
       const data = await resCripto.value.json() as any;
-      patchTicker(
-        data.slice(0, TICKER_COUNT.crypto).map((c: any) => ({
-          symbol: c.symbol.toUpperCase(),
-          price:  fmtPrice(c.price),
-          change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
-          up:     c.change24 >= 0,
-        }))
-      );
+      patchTicker(data.slice(0, TICKER_COUNT.crypto).map((c: any) => ({
+        symbol: c.symbol.toUpperCase(),
+        price:  fmtPrice(c.price),
+        change: `${c.change24 >= 0 ? '+' : ''}${c.change24.toFixed(2)}%`,
+        up:     c.change24 >= 0,
+      })));
     }
-
-    // Forex
     if (resForex.status === 'fulfilled' && resForex.value.ok) {
-      const data = await resForex.value.json() as any;
+      const data  = await resForex.value.json() as any;
       const forex = data.data ?? data;
-      patchTicker(
-        forex.slice(0, TICKER_COUNT.forex).map((f: any) => ({
-          symbol: f.par,
-          price:  fmtForex(f.precio),
-        }))
-      );
+      patchTicker(forex.slice(0, TICKER_COUNT.forex).map((f: any) => ({
+        symbol: f.par,
+        price:  fmtForex(f.precio),
+      })));
     }
-
-    // Metales
     if (resMetales.status === 'fulfilled' && resMetales.value.ok) {
-      const data = await resMetales.value.json() as any;
+      const data    = await resMetales.value.json() as any;
       const metales = data.data ?? data;
-      patchTicker(
-        metales.slice(0, TICKER_COUNT.metal).map((m: any) => ({
-          symbol: m.simbolo,
-          price:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-        }))
-      );
+      patchTicker(metales.slice(0, TICKER_COUNT.metal).map((m: any) => ({
+        symbol: m.simbolo,
+        price:  `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      })));
     }
-
-    // Acciones
     if (resAcciones.status === 'fulfilled' && resAcciones.value.ok) {
       const json = await resAcciones.value.json() as any;
       if (json.ok) {
-        patchTicker(
-          json.data.filter((a: any) => a.precio > 0).slice(0, TICKER_COUNT.stock).map((a: any) => ({
-            symbol: a.ticker,
-            price:  `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-            change: `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`,
-            up:     a.alza,
-          }))
-        );
+        patchTicker(json.data.filter((a: any) => a.precio > 0).slice(0, TICKER_COUNT.stock).map((a: any) => ({
+          symbol: a.ticker,
+          price:  `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          change: `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%`,
+          up:     a.alza,
+        })));
       }
     }
-
-    // Una vez que todas las APIs respondieron, ocultar los que no cargaron
     ocultarSinPrecio();
   }
 
-  // Carga inmediata + refresco cada 5 min
   cargarTicker();
   setInterval(cargarTicker, 300_000);
 </script>
-

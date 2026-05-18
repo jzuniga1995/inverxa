@@ -257,9 +257,15 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
     <!-- TABS -->
     <div class="flex gap-1 rounded-2xl p-1.5 mb-7 overflow-x-auto scrollbar-hide" style="background:#fff; border:1px solid #E5E0D8;">
       <button class="tab-btn flex-1 min-w-[120px]" data-tab="convertir">⇄ Convertir</button>
-      <button class="tab-btn flex-1 min-w-[120px]" data-tab="ganancias">📈 Ganancias</button>
-      <button class="tab-btn flex-1 min-w-[120px]" data-tab="ahorro">🔁 Ahorro DCA</button>
-      <button class="tab-btn flex-1 min-w-[120px]" data-tab="comisiones">💸 Comisiones</button>
+      <button class="tab-btn flex-1 min-w-[120px]" data-tab="ganancias">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Ganancias
+      </button>
+      <button class="tab-btn flex-1 min-w-[120px]" data-tab="ahorro">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Ahorro DCA
+      </button>
+      <button class="tab-btn flex-1 min-w-[120px]" data-tab="comisiones">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>Comisiones
+      </button>
     </div>
 
     <!-- ══ CONVERTIR ══ -->
@@ -363,7 +369,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
           </li>
         </ol>
         <div class="how-to-note">
-          💡 Las tasas de cambio de monedas locales (HNL, ARS, MXN…) se actualizan diariamente desde fuentes oficiales de cada país.
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;flex-shrink:0;"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.7-1.5 5-3.7 6.3L15 17H9l-.3-1.7C6.5 14 5 11.7 5 9a7 7 0 0 1 7-7z"/></svg>Las tasas de cambio de monedas locales (HNL, ARS, MXN…) se actualizan diariamente desde fuentes oficiales de cada país.
         </div>
       </div>
 
@@ -491,7 +497,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
           </li>
         </ol>
         <div class="how-to-note">
-          💡 El <strong>precio de recuperación</strong> es simplemente el precio al que compraste. Si el precio actual lo supera, estás en ganancia.
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;flex-shrink:0;"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.7-1.5 5-3.7 6.3L15 17H9l-.3-1.7C6.5 14 5 11.7 5 9a7 7 0 0 1 7-7z"/></svg>El <strong>precio de recuperación</strong> es simplemente el precio al que compraste. Si el precio actual lo supera, estás en ganancia.
         </div>
       </div>
 
@@ -530,7 +536,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
       <div class="card">
 
         <div class="info-banner mb-6">
-          <span class="text-amber-400 flex-shrink-0 text-base">💡</span>
+          <span class="flex-shrink-0" style="color:#F59E0B;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.7-1.5 5-3.7 6.3L15 17H9l-.3-1.7C6.5 14 5 11.7 5 9a7 7 0 0 1 7-7z"/></svg></span>
           <span class="text-sm leading-relaxed" style="color:#57534E;">El <strong style="color:#1C1917;">ahorro periódico (DCA)</strong> consiste en comprar una cantidad fija de cripto cada semana o mes sin importar el precio. Promediás el costo y reducís el riesgo.</span>
         </div>
 
@@ -650,7 +656,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
           </li>
         </ol>
         <div class="how-to-note">
-          💡 El DCA es especialmente útil en mercados volátiles como crypto: comprás más unidades cuando el precio baja y menos cuando sube, promediando tu costo de entrada.
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;flex-shrink:0;"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.7-1.5 5-3.7 6.3L15 17H9l-.3-1.7C6.5 14 5 11.7 5 9a7 7 0 0 1 7-7z"/></svg>El DCA es especialmente útil en mercados volátiles como crypto: comprás más unidades cuando el precio baja y menos cuando sube, promediando tu costo de entrada.
         </div>
       </div>
 
@@ -686,7 +692,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
       <div class="card">
 
         <div class="info-banner mb-6">
-          <span class="text-amber-400 flex-shrink-0 text-base">💡</span>
+          <span class="flex-shrink-0" style="color:#F59E0B;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.7-1.5 5-3.7 6.3L15 17H9l-.3-1.7C6.5 14 5 11.7 5 9a7 7 0 0 1 7-7z"/></svg></span>
           <span class="text-sm leading-relaxed" style="color:#57534E;">La <strong style="color:#1C1917;">comisión</strong> es el porcentaje que cobra el exchange. Binance 0.1%, Kraken 0.26%, Coinbase hasta 1.49%. Calculá cuánto te queda realmente.</span>
         </div>
 
@@ -781,7 +787,7 @@ import { Calculator, ArrowLeft } from 'lucide-astro';
           </li>
         </ol>
         <div class="how-to-note">
-          💡 En operaciones frecuentes, las comisiones se acumulan rápido. Un 0.1% de ida y vuelta equivale al 0.2% de tu capital por cada operación completa.
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;flex-shrink:0;"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 1 7 7c0 2.7-1.5 5-3.7 6.3L15 17H9l-.3-1.7C6.5 14 5 11.7 5 9a7 7 0 0 1 7-7z"/></svg>En operaciones frecuentes, las comisiones se acumulan rápido. Un 0.1% de ida y vuelta equivale al 0.2% de tu capital por cada operación completa.
         </div>
       </div>
 

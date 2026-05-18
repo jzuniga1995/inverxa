@@ -1,588 +1,242 @@
 ---
-// src/pages/noticias/index.astro
+// src/pages/noticias/index.astro — lista limpia, sin filtros de país/categoría
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
-import { getArticulos, getCategorias, getPaises } from '../../db/queries';
-import { Clock, ArrowRight } from 'lucide-astro';
-import { getCloudinaryUrl } from '../../lib/cloudinary';
-
-const LIMIT = 12;
+import { getArticulos, getCategorias } from '../../db/queries';
 
 Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=30');
 
-const db              = Astro.locals.db;
-const categoriaActiva = Astro.url.searchParams.get('categoria') ?? 'todas';
+const LIMIT = 15;
+const db    = Astro.locals.db;
 
-const [categorias, todosPaises, todosArticulos] = await Promise.all([
+const [categorias, todosArticulos] = await Promise.all([
   getCategorias(db),
-  getPaises(db),
   getArticulos(db, LIMIT + 1),
 ]);
 
-const articulosFiltrados = categoriaActiva === 'todas'
-  ? todosArticulos
-  : todosArticulos.filter(a => a.categoria?.slug === categoriaActiva);
-
-const hayMasInicial  = articulosFiltrados.length > LIMIT;
-const articulosInit  = articulosFiltrados.slice(0, LIMIT);
-const [principal, ...resto] = articulosInit;
+const hayMas    = todosArticulos.length > LIMIT;
+const articulos = todosArticulos.slice(0, LIMIT);
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
   const diff  = Date.now() - new Date(fecha).getTime();
-  const horas = Math.floor(diff / 1000 / 60 / 60);
+  const horas = Math.floor(diff / 3600000);
   if (horas < 1)  return 'Hace unos minutos';
   if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
   const dias = Math.floor(horas / 24);
   return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
 }
-
 ---
 
-<Layout categorias={categorias} paises={todosPaises}>
-
+<Layout categorias={categorias}>
 
 <slot name="head" slot="head">
-
-  <!-- ═══════════════════════════════════════
-       PRECONNECT
-  ═══════════════════════════════════════ -->
-  <link rel="preconnect" href="https://res.cloudinary.com" />
-  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 
-  <!-- ═══════════════════════════════════════
-       BASIC SEO
-  ═══════════════════════════════════════ -->
-  <title>Noticias de Finanzas, Cripto y Bolsa en Español — Inversax</title>
-  <meta name="description"    content="Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica. Actualizado cada día en español." />
-  <meta name="author"         content="José Zúniga" />
+  <title>Artículos de Finanzas, Cripto y Bolsa en Español — Inversax</title>
+  <meta name="description"    content="Artículos sobre criptomonedas, trading, forex, bolsa y economía para Latinoamérica. Actualizado cada día en español." />
   <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
-  <meta name="googlebot-news" content="index, follow" />
   <link rel="canonical"       href="https://inversax.com/noticias" />
+  <meta name="keywords"       content="noticias criptomonedas, noticias trading, noticias forex, bolsa de valores latinoamérica, finanzas en español, bitcoin hoy" />
 
-  <!-- ═══════════════════════════════════════
-       KEYWORDS
-  ═══════════════════════════════════════ -->
-  <meta name="keywords" content="noticias criptomonedas, noticias trading, noticias forex, bolsa de valores latinoamérica, economía latinoamericana, finanzas en español, bitcoin hoy, mercados financieros" />
-  <meta name="news_keywords"  content="criptomonedas, trading, forex, bolsa, economía, Inversax" />
-
-  <!-- ═══════════════════════════════════════
-       GEO
-  ═══════════════════════════════════════ -->
-  <meta name="geo.region"       content="LATAM" />
-  <meta name="geo.placename"    content="Latinoamérica" />
-  <meta name="language"         content="Spanish" />
-  <meta name="content-language" content="es" />
-
-  <!-- ═══════════════════════════════════════
-       HREFLANG — 36 países + genérico + x-default
-  ═══════════════════════════════════════ -->
-  <link rel="alternate" hreflang="es"    href="https://inversax.com/noticias" />
-  <!-- América Latina -->
-  <link rel="alternate" hreflang="es-MX" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-AR" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-CO" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-CL" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-PE" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-VE" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-EC" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-BO" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-PY" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-UY" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-CR" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-PA" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-DO" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-SV" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-HN" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-NI" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-GT" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-CU" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-PR" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com/noticias" />
-  <!-- Europa -->
-  <link rel="alternate" hreflang="es-ES" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-AD" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-DE" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-FR" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-IT" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-CH" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-NL" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-GB" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-PT" href="https://inversax.com/noticias" />
-  <!-- Resto del mundo -->
-  <link rel="alternate" hreflang="es-US" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-CA" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-AU" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-BR" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-PH" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="es-MA" href="https://inversax.com/noticias" />
-  <link rel="alternate" hreflang="x-default" href="https://inversax.com/noticias" />
-
-  <!-- ═══════════════════════════════════════
-       OPEN GRAPH
-  ═══════════════════════════════════════ -->
   <meta property="og:site_name"   content="Inversax" />
-  <meta property="og:locale"      content="es_LA" />
-  <meta property="og:locale:alternate" content="es_MX" />
-  <meta property="og:locale:alternate" content="es_AR" />
-  <meta property="og:locale:alternate" content="es_CO" />
-  <meta property="og:locale:alternate" content="es_ES" />
   <meta property="og:type"        content="website" />
-  <meta property="og:title"       content="Noticias de Finanzas, Cripto y Bolsa en Español — Inversax" />
-  <meta property="og:description" content="Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica. Actualizado cada día en español." />
+  <meta property="og:title"       content="Artículos de Finanzas, Cripto y Bolsa en Español — Inversax" />
+  <meta property="og:description" content="Las últimas noticias de criptomonedas, trading, forex y bolsa para Latinoamérica." />
   <meta property="og:url"         content="https://inversax.com/noticias" />
   <meta property="og:image"       content="https://inversax.com/og-noticias.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content="Noticias financieras en español — Inversax" />
+  <meta name="twitter:card"       content="summary_large_image" />
+  <meta name="twitter:site"       content="@inversax" />
+  <meta name="twitter:title"      content="Artículos de Finanzas, Cripto y Bolsa — Inversax" />
+  <meta name="twitter:image"      content="https://inversax.com/og-noticias.png" />
 
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:site"        content="@inversax" />
-  <meta name="twitter:creator"     content="@inversax" />
-  <meta name="twitter:title"       content="Noticias de Finanzas, Cripto y Bolsa — Inversax" />
-  <meta name="twitter:description" content="Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica." />
-  <meta name="twitter:image"       content="https://inversax.com/og-noticias.png" />
-  <meta name="twitter:image:alt"   content="Noticias financieras en español — Inversax" />
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebSite + SearchAction
-  ═══════════════════════════════════════ -->
-  <script type="application/ld+json">{JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Inversax",
-    "url": "https://inversax.com",
-    "description": "Noticias de cripto, trading, forex y bolsa en español para Latinoamérica",
-    "inLanguage": "es",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
-  })}</script>
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — CollectionPage
-       Le dice a Google que esta página es un
-       índice de artículos, no un artículo suelto
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json">{JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Noticias de Finanzas, Cripto y Bolsa en Español",
-    "description": "Las últimas noticias de criptomonedas, trading, forex, bolsa y economía para Latinoamérica.",
+    "name": "Artículos de Finanzas, Cripto y Bolsa en Español",
+    "description": "Artículos sobre criptomonedas, trading, forex y economía para Latinoamérica.",
     "url": "https://inversax.com/noticias",
     "inLanguage": "es",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Inversax",
-      "url": "https://inversax.com"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Inversax",
-      "url": "https://inversax.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://inversax.com/favicon.png",
-        "width": 200,
-        "height": 60
-      }
-    },
-    "about": [
-      { "@type": "Thing", "name": "Criptomonedas" },
-      { "@type": "Thing", "name": "Trading" },
-      { "@type": "Thing", "name": "Forex" },
-      { "@type": "Thing", "name": "Bolsa de valores" },
-      { "@type": "Thing", "name": "Economía latinoamericana" }
-    ]
+    "isPartOf": { "@type": "WebSite", "name": "Inversax", "url": "https://inversax.com" }
   })}</script>
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — BreadcrumbList
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json">{JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Inicio",
-        "item": "https://inversax.com"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Noticias",
-        "item": "https://inversax.com/noticias"
-      }
+      { "@type": "ListItem", "position": 1, "name": "Inicio",    "item": "https://inversax.com" },
+      { "@type": "ListItem", "position": 2, "name": "Artículos", "item": "https://inversax.com/noticias" }
     ]
   })}</script>
-
 </slot>
 
-  <!-- ── PAGE HEADER EDITORIAL ─────────────────────────────── -->
-  <div style="background: #FAFAF8; border-bottom: 2px solid #1C1917;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-      <span class="text-[10px] font-semibold uppercase tracking-[0.22em] mb-3 block"
-            style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-        Finanzas · Inversiones · Latinoamérica
-      </span>
-      <h1 class="font-bold leading-tight mb-2"
-          style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: clamp(28px, 4vw, 48px);">
-        Últimas Noticias
-      </h1>
-      <p class="text-sm sm:text-base" style="color: #78716C; font-family: 'DM Sans', sans-serif;">
-        Cripto, trading y economía actualizado cada día para Latinoamérica
-      </p>
-    </div>
+<!-- PAGE HEADER -->
+<div style="background:#FFFFFF; border-bottom:1px solid #E2DDD8;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+    <span class="text-xs font-bold uppercase tracking-widest mb-3 block"
+          style="color:#FF8C42; font-family:'DM Sans',sans-serif;">
+      Editorial
+    </span>
+    <h1 class="font-bold leading-tight mb-2"
+        style="font-family:'DM Sans',sans-serif; color:#1A1A1A; font-size:clamp(26px,4vw,42px);">
+      Artículos de finanzas e inversión
+    </h1>
+    <p class="text-sm sm:text-base" style="color:#888888; font-family:'DM Sans',sans-serif;">
+      Cripto, trading, forex y economía — actualizado cada día para Latinoamérica
+    </p>
   </div>
+</div>
 
-  <div style="background: #FAFAF8; min-height: 60vh;" class="px-4 sm:px-6 py-8">
-    <div class="max-w-7xl mx-auto">
+<!-- LISTA DE ARTÍCULOS -->
+<div style="background:#F7F7F5; min-height:60vh; padding:40px 0;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
 
-      <!-- NAVEGACIÓN DE CATEGORÍAS: línea activa editorial -->
-      <nav class="flex gap-0 overflow-x-auto scrollbar-hide mb-10 pb-0"
-           style="border-bottom: 1px solid #E5E0D8;">
-        <a href="/noticias"
-           class="flex-shrink-0 text-sm font-semibold px-5 py-3 no-underline transition-colors duration-200 whitespace-nowrap"
-           style={categoriaActiva === 'todas'
-             ? 'color: #1C1917; border-bottom: 2px solid #B91C1C; margin-bottom: -1px; font-family: DM Sans, sans-serif;'
-             : 'color: #6B7280; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: DM Sans, sans-serif;'}
-        >
-          Todas
-        </a>
-        {categorias.map((cat) => (
-          <a href={`/${cat.slug}`}
-             class="flex-shrink-0 text-sm px-5 py-3 no-underline transition-colors duration-200 whitespace-nowrap"
-             style={categoriaActiva === cat.slug
-               ? 'color: #1C1917; font-weight: 600; border-bottom: 2px solid #B91C1C; margin-bottom: -1px; font-family: DM Sans, sans-serif;'
-               : 'color: #6B7280; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: DM Sans, sans-serif;'}
-          >
-            {cat.nombre}
-          </a>
-        ))}
-      </nav>
-
-      {articulosFiltrados.length === 0 ? (
-        <div class="flex flex-col items-center justify-center py-24 gap-4 text-center border border-[#E5E0D8]"
-             style="background: #F0EDE7;">
-          <p class="text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-            No hay artículos en esta categoría todavía.
-          </p>
-        </div>
-      ) : (
-        <div class="flex flex-col">
-
-          <!-- HERO: primera noticia full-width con imagen grande -->
-          {principal && (
-            <a href={`/noticias/${principal.slug}`}
-               class="block group no-underline mb-10 pb-10"
-               style="border-bottom: 1px solid #E5E0D8;">
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <!-- Imagen prominente -->
-                <div class="overflow-hidden order-first" style="aspect-ratio: 3/2;">
-                  {principal.imagen
-                    ? <img src={getCloudinaryUrl(principal.imagen, 800)!}
-                           alt={principal.titulo}
-                           width="800" height="533"
-                           loading="eager"
-                           fetchpriority="high"
-                           class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                    : <div class="w-full h-full" style="background: #E8E3DB;"></div>
-                  }
-                </div>
-                <!-- Texto -->
-                <div class="flex flex-col justify-center gap-4 lg:py-6">
-                  {principal.categoria && (
-                    <span class="text-[11px] font-bold uppercase tracking-[0.2em]"
-                          style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                      {principal.categoria.nombre}
+    {articulos.length === 0 ? (
+      <div class="flex flex-col items-center justify-center py-24 gap-4 text-center rounded-xl"
+           style="background:#FFFFFF; border:1px solid #E2DDD8;">
+        <p class="text-sm" style="color:#888888; font-family:'DM Sans',sans-serif;">
+          No hay artículos disponibles todavía.
+        </p>
+      </div>
+    ) : (
+      <div id="articulos-lista" class="flex flex-col gap-0"
+           style="background:#FFFFFF; border:1px solid #E2DDD8; border-radius:12px; overflow:hidden;">
+        {articulos.map((art, i) => (
+          <a href={`/noticias/${art.slug}`}
+             class="block no-underline transition-colors duration-150"
+             style={`padding:20px 24px; ${i < articulos.length - 1 ? 'border-bottom:1px solid #E2DDD8;' : ''}`}
+             onmouseover="this.style.background='#F7F7F5';"
+             onmouseout="this.style.background='';">
+            <div class="flex items-start gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                  {art.categoria && (
+                    <span class="text-[10px] font-bold uppercase tracking-wider flex-shrink-0"
+                          style="color:#FF8C42; font-family:'DM Sans',sans-serif;">
+                      {art.categoria.nombre}
                     </span>
                   )}
-                  <h2 class="font-bold leading-[1.1] text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
-                      style="font-family: 'Playfair Display', serif; font-size: clamp(24px, 3vw, 40px);">
-                    {principal.titulo}
-                  </h2>
-                  {principal.resumen && (
-                    <p class="text-base leading-relaxed line-clamp-3"
-                       style="color: #57534E; font-family: 'DM Sans', sans-serif;">
-                      {principal.resumen}
-                    </p>
-                  )}
-                  <div class="flex items-center gap-2 text-xs" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                    <Clock size={11} />
-                    <span>{formatFecha(principal.creadoEn)}</span>
-                  </div>
-                  <span class="flex items-center gap-1.5 text-sm font-semibold mt-1"
-                        style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                    Leer artículo <ArrowRight size={13} />
+                  <span class="text-[11px]" style="color:#BBBBBB; font-family:'DM Sans',sans-serif;">
+                    {formatFecha(art.creadoEn)}
                   </span>
                 </div>
+                <h2 class="font-semibold leading-snug mb-1"
+                    style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:16px;">
+                  {art.titulo}
+                </h2>
+                {art.resumen && (
+                  <p class="text-sm leading-relaxed line-clamp-2"
+                     style="color:#666666; font-family:'DM Sans',sans-serif;">
+                    {art.resumen}
+                  </p>
+                )}
               </div>
-            </a>
-          )}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   class="flex-shrink-0 mt-1">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
 
-          <!-- RESTO: patrón 2 medianas → 2 mini sin imagen → hero → repite -->
-          <div id="noticias-grid">
-            {(() => {
-              const arts = resto;
-              const grupos: typeof arts[] = [];
-              for (let i = 0; i < arts.length; i += 5) grupos.push(arts.slice(i, i + 5));
-              return grupos.map((grupo) => (
-                <div class="mb-10 last:mb-0">
-
-                  {/* — 2 cards MEDIANAS — */}
-                  {grupo.slice(0, 2).length > 0 && (
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 pb-8"
-                         style="border-bottom: 1px solid #E5E0D8;">
-                      {grupo.slice(0, 2).map((n) => (
-                        <a href={`/noticias/${n.slug}`}
-                           class="group flex flex-col gap-3 no-underline">
-                          <div class="overflow-hidden" style="aspect-ratio: 4/3;">
-                            {n.imagen
-                              ? <img src={getCloudinaryUrl(n.imagen, 600)!}
-                                     alt={n.titulo}
-                                     width="600" height="450"
-                                     loading="lazy"
-                                     class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                              : <div class="w-full h-full" style="background: #E8E3DB;"></div>
-                            }
-                          </div>
-                          {n.categoria && (
-                            <span class="text-[10px] font-bold uppercase tracking-[0.18em]"
-                                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                              {n.categoria.nombre}
-                            </span>
-                          )}
-                          <h3 class="font-bold leading-snug line-clamp-2 text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
-                              style="font-family: 'Playfair Display', serif; font-size: 18px;">
-                            {n.titulo}
-                          </h3>
-                          {n.resumen && (
-                            <p class="text-sm leading-relaxed line-clamp-2"
-                               style="color: #78716C; font-family: 'DM Sans', sans-serif;">
-                              {n.resumen}
-                            </p>
-                          )}
-                          <span class="text-xs flex items-center gap-1"
-                                style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                            <Clock size={10} /> {formatFecha(n.creadoEn)}
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* — 2 cards MINI sin imagen — */}
-                  {grupo.slice(2, 4).length > 0 && (
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 pb-8"
-                         style="border-bottom: 1px solid #E5E0D8;">
-                      {grupo.slice(2, 4).map((n) => (
-                        <a href={`/noticias/${n.slug}`}
-                           class="group flex flex-col gap-2 no-underline py-2"
-                           style="border-left: 3px solid #B91C1C; padding-left: 16px;">
-                          {n.categoria && (
-                            <span class="text-[10px] font-bold uppercase tracking-[0.15em]"
-                                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                              {n.categoria.nombre}
-                            </span>
-                          )}
-                          <h4 class="font-bold leading-snug line-clamp-2 text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
-                              style="font-family: 'Playfair Display', serif; font-size: 15px;">
-                            {n.titulo}
-                          </h4>
-                          <span class="text-[11px]"
-                                style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                            {formatFecha(n.creadoEn)}
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* — card HERO (4/5 del grupo) — */}
-                  {grupo[4] && (
-                    <a href={`/noticias/${grupo[4].slug}`}
-                       class="block group no-underline">
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                        <div class="overflow-hidden" style="aspect-ratio: 16/9;">
-                          {grupo[4].imagen
-                            ? <img src={getCloudinaryUrl(grupo[4].imagen, 800)!}
-                                   alt={grupo[4].titulo}
-                                   width="800" height="450"
-                                   loading="lazy"
-                                   class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                            : <div class="w-full h-full" style="background: #E8E3DB;"></div>
-                          }
-                        </div>
-                        <div class="flex flex-col gap-3">
-                          {grupo[4].categoria && (
-                            <span class="text-[11px] font-bold uppercase tracking-[0.2em]"
-                                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                              {grupo[4].categoria.nombre}
-                            </span>
-                          )}
-                          <h3 class="font-bold leading-[1.15] text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
-                              style="font-family: 'Playfair Display', serif; font-size: clamp(20px, 2.2vw, 28px);">
-                            {grupo[4].titulo}
-                          </h3>
-                          {grupo[4].resumen && (
-                            <p class="text-sm leading-relaxed line-clamp-2"
-                               style="color: #78716C; font-family: 'DM Sans', sans-serif;">
-                              {grupo[4].resumen}
-                            </p>
-                          )}
-                          <span class="text-xs flex items-center gap-1"
-                                style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                            <Clock size={10} /> {formatFecha(grupo[4].creadoEn)}
-                          </span>
-                        </div>
-                      </div>
-                    </a>
-                  )}
-
-                </div>
-              ));
-            })()}
-          </div>
-
-          <!-- BOTÓN CARGAR MÁS -->
-          <div id="load-more-wrapper" class={`mt-10 ${hayMasInicial ? '' : 'hidden'}`}>
-            <button
-              id="btn-cargar-mas"
-              data-offset={LIMIT}
-              data-categoria={categoriaActiva === 'todas' ? '' : categoriaActiva}
-              class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-semibold transition-all duration-200 bg-transparent cursor-pointer"
-              style="border: 1.5px solid #1C1917; color: #1C1917; font-family: 'DM Sans', sans-serif;"
-              onmouseover="this.style.color='#B91C1C'; this.style.borderColor='#B91C1C';"
-              onmouseout="this.style.color='#1C1917'; this.style.borderColor='#1C1917';"
-            >
-              <span id="btn-texto">Cargar más noticias</span>
-              <ArrowRight size={14} id="btn-icon" />
-            </button>
-          </div>
-
-        </div>
-      )}
+    <!-- CARGAR MÁS -->
+    <div id="load-more-wrapper" class={`mt-6 ${hayMas ? '' : 'hidden'}`}>
+      <button
+        id="btn-cargar-mas"
+        data-offset={LIMIT}
+        class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-semibold transition-all duration-200 rounded-xl cursor-pointer border"
+        style="background:#FFFFFF; border-color:#E2DDD8; color:#555555; font-family:'DM Sans',sans-serif;"
+        onmouseover="this.style.borderColor='#FF8C42'; this.style.color='#FF8C42';"
+        onmouseout="this.style.borderColor='#E2DDD8'; this.style.color='#555555';"
+      >
+        <span id="btn-texto">Cargar más artículos</span>
+        <svg id="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
     </div>
+
   </div>
+</div>
+
 </Layout>
 
 <script>
   const btn      = document.getElementById('btn-cargar-mas') as HTMLButtonElement | null;
-  const grid     = document.getElementById('noticias-grid');
+  const lista    = document.getElementById('articulos-lista');
   const wrapper  = document.getElementById('load-more-wrapper');
   const btnTexto = document.getElementById('btn-texto');
-  const btnIcon  = document.getElementById('btn-icon');
-
-  function clUrl(url: string | null, w: number): string | null {
-    if (!url || !url.includes('/image/upload/')) return url;
-    const seg = url.split('/image/upload/')[1]?.split('/')[0] ?? '';
-    if (seg.includes('_')) return url;
-    return url.replace('/image/upload/', `/image/upload/w_${w},q_auto,f_auto/`);
-  }
 
   function formatFecha(fechaStr: string) {
-    const fecha = new Date(fechaStr);
-    const diff  = Date.now() - fecha.getTime();
-    const horas = Math.floor(diff / 1000 / 60 / 60);
+    const diff  = Date.now() - new Date(fechaStr).getTime();
+    const horas = Math.floor(diff / 3600000);
     if (horas < 1)  return 'Hace unos minutos';
     if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
     const dias = Math.floor(horas / 24);
     return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
   }
 
-  // Las nuevas cards se insertan como medianas (patrón 4/3)
-  function crearCard(a: any): string {
+  function crearFila(art: any, ultimo: boolean): string {
     return `
-      <a href="/noticias/${a.slug}"
-         class="group flex flex-col gap-3 no-underline">
-        <div class="overflow-hidden" style="aspect-ratio: 4/3;">
-          ${a.imagen
-            ? `<img src="${clUrl(a.imagen, 600)}" alt="${a.titulo}" width="600" height="450" class="w-full h-full object-cover" loading="lazy" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" />`
-            : `<div class="w-full h-full" style="background: #E8E3DB;"></div>`
-          }
+      <a href="/noticias/${art.slug}"
+         class="block no-underline transition-colors duration-150"
+         style="padding:20px 24px; ${!ultimo ? 'border-bottom:1px solid #E2DDD8;' : ''}"
+         onmouseover="this.style.background='#F7F7F5';"
+         onmouseout="this.style.background='';">
+        <div style="display:flex; align-items:flex-start; gap:16px;">
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+              ${art.categoria ? `<span style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#FF8C42; font-family:'DM Sans',sans-serif;">${art.categoria.nombre}</span>` : ''}
+              <span style="font-size:11px; color:#BBBBBB; font-family:'DM Sans',sans-serif;">${formatFecha(art.creadoEn)}</span>
+            </div>
+            <h2 style="font-weight:600; line-height:1.4; margin-bottom:4px; color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:16px;">
+              ${art.titulo}
+            </h2>
+            ${art.resumen ? `<p style="font-size:14px; line-height:1.5; color:#666666; font-family:'DM Sans',sans-serif; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${art.resumen}</p>` : ''}
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:4px;">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
         </div>
-        ${a.categoria ? `<span class="text-[10px] font-bold uppercase tracking-[0.18em]" style="color:#B91C1C;font-family:'DM Sans',sans-serif;">${a.categoria.nombre}</span>` : ''}
-        <h3 class="font-bold leading-snug line-clamp-2" style="font-family:'Playfair Display',serif;font-size:17px;color:#1C1917;">
-          ${a.titulo}
-        </h3>
-        ${a.resumen ? `<p class="text-sm line-clamp-2" style="color:#78716C;font-family:'DM Sans',sans-serif;line-height:1.5;">${a.resumen}</p>` : ''}
-        <span class="text-xs" style="color:#A8A29E;font-family:'DM Sans',sans-serif;">${formatFecha(a.creadoEn)}</span>
       </a>
     `;
   }
 
-  // Las cards cargadas dinámicamente van en pares dentro de un grid 2-col
-  function insertarCards(data: any[]) {
-    const grid = document.getElementById('noticias-grid');
-    if (!grid) return;
-    for (let i = 0; i < data.length; i += 2) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 pb-8';
-      wrapper.style.borderBottom = '1px solid #E5E0D8';
-      const items = data.slice(i, i + 2);
-      wrapper.innerHTML = items.map(crearCard).join('');
-      grid.appendChild(wrapper);
-    }
-  }
-
   btn?.addEventListener('click', async () => {
-    if (!btn || !grid) return;
-
-    const offset    = parseInt(btn.dataset.offset ?? '12');
-    const categoria = btn.dataset.categoria ?? '';
-
-    // Estado cargando
+    if (!btn || !lista) return;
+    const offset = parseInt(btn.dataset.offset ?? '15');
     if (btnTexto) btnTexto.textContent = 'Cargando...';
     btn.disabled = true;
-
     try {
-      const params = new URLSearchParams({ offset: String(offset), limit: '10' });
-      if (categoria) params.set('categoria', categoria);
-
-      const res  = await fetch(`/api/noticias?${params}`);
-     const json = await res.json() as any;
-
+      const res  = await fetch(`/api/noticias?offset=${offset}&limit=10`);
+      const json = await res.json() as any;
       if (!json.ok || !json.data.length) {
         if (wrapper) wrapper.classList.add('hidden');
         return;
       }
+      // Quitar el borde del último existente antes de añadir más
+      const lastRow = lista.lastElementChild as HTMLElement | null;
+      if (lastRow) lastRow.style.borderBottom = '1px solid #E2DDD8';
 
-      // Agregar cards al grid en pares
-      insertarCards(json.data);
-
-      // Actualizar offset
+      json.data.forEach((art: any, idx: number) => {
+        const ultimo = idx === json.data.length - 1 && !json.hayMas;
+        lista.insertAdjacentHTML('beforeend', crearFila(art, ultimo));
+      });
       btn.dataset.offset = String(offset + json.data.length);
-
-      // Ocultar botón si no hay más
-      if (!json.hayMas) {
-        if (wrapper) wrapper.classList.add('hidden');
-      }
-
+      if (!json.hayMas && wrapper) wrapper.classList.add('hidden');
     } catch (e) {
       console.error('[cargar más]', e);
     } finally {
-      if (btnTexto) btnTexto.textContent = 'Cargar más noticias';
+      if (btnTexto) btnTexto.textContent = 'Cargar más artículos';
       btn.disabled = false;
     }
   });
 </script>
 
 <style>
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -590,4 +244,3 @@ function formatFecha(fecha: Date | null) {
     overflow: hidden;
   }
 </style>
-

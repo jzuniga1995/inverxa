@@ -1,1272 +1,472 @@
 ---
 export const prerender = false;
-// src/pages/index.astro
+// src/pages/index.astro — Homepage enfocada en calculadoras y herramientas
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import { TrendingUp, ArrowRight, DollarSign, BarChart2,GitCompare, Clock, Flame, BookOpen, Layers, Landmark, Calculator } from 'lucide-astro';
-import { getArticulos, getArticulosDestacados, getCategorias, getArticulosPorCategorias, getPaises } from '../db/queries';
-import { getCloudinaryUrl } from '../lib/cloudinary';
+import { getArticulos, getCategorias } from '../db/queries';
 
-// ── Solo DB (rápido, local) ── no más fetchPrecios/obtenerForex/fetchMetales en SSR
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+
 const db = Astro.locals.db;
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=180, stale-while-revalidate=3600');
-
-const [todasNoticias, destacados, categorias, todosPaises] = await Promise.all([
-  getArticulos(db, 20),
-  getArticulosDestacados(db, 3),
+const [articulos, categorias] = await Promise.all([
+  getArticulos(db, 3),
   getCategorias(db),
-  getPaises(db),
 ]);
-
-const noticiaPrincipal    = destacados[0] ?? todasNoticias[0] ?? null;
-const noticiasSecundarias = todasNoticias
-  .filter(n => n.slug !== noticiaPrincipal?.slug);
-
-const noticiasPorCategoria = await getArticulosPorCategorias(db, categorias.map(c => c.slug), 4);
-const primeraConNoticias = categorias.find(c => (noticiasPorCategoria[c.slug]?.length ?? 0) > 0);
-
-const herramientas = [
-  { titulo: "Mercados Cripto",    desc: "Precios en vivo y gráficas de las principales criptomonedas.", href: "/herramientas/cripto",              icon: "chart"    },
-  { titulo: "Forex",              desc: "Tipos de cambio de divisas globales y monedas LATAM.",          href: "/herramientas/forex",               icon: "forex"    },
-  { titulo: "Metales Preciosos",  desc: "Precios de oro, plata, platino y paladio por onza troy.",       href: "/herramientas/metales",             icon: "layers"   },
-  { titulo: "Acciones",           desc: "Cotizaciones en tiempo real del mercado estadounidense.",        href: "/herramientas/acciones",            icon: "acciones" },
-  { titulo: "Precio del Dólar",   desc: "Dólar oficial y paralelo (blue en Argentina) por país.",        href: "/herramientas/dolar",               icon: "dollar"   },
- { titulo: "Calculadoras de Trading", desc: "Calcula pips, tamaño de posición, ganancias y margen para Forex.", href: "/herramientas/calculadora-trading", icon: "calc2" },
-  { titulo: "Calculadora Cripto", desc: "Convertí cripto a pesos, calculá ganancias y comisiones.",      href: "/herramientas/calculadora-cripto",  icon: "calc"     },
-  { titulo: "Comparar Brokers",   desc: "Compará spreads, depósitos, regulación y plataformas de los principales brokers para LATAM.", href: "/herramientas/comparar-brokers", icon: "compare"  },
-];
-// ── CONCEPTO DEL DÍA ─────────────────────────────────────────
-const conceptos = [
-  { termino: "Bitcoin (BTC)",           categoria: "Cripto",    definicion: "La primera criptomoneda descentralizada del mundo, creada en 2009 por Satoshi Nakamoto. Opera sin bancos ni gobiernos usando tecnología blockchain.", ejemplo: "Si hubieras invertido $100 en Bitcoin en 2010, hoy tendrías millones." },
-  { termino: "Blockchain",              categoria: "Cripto",    definicion: "Registro digital distribuido e inmutable donde se almacenan transacciones en bloques encadenados. Nadie puede modificar los datos sin consenso de la red.", ejemplo: "Cuando envías Bitcoin, la transacción queda grabada para siempre en la blockchain." },
-  { termino: "Halving",                 categoria: "Cripto",    definicion: "Evento que ocurre cada ~4 años y reduce a la mitad la recompensa que reciben los mineros de Bitcoin. Históricamente dispara el precio por la menor oferta.", ejemplo: "El halving de 2024 redujo la recompensa de 6.25 BTC a 3.125 BTC por bloque." },
-  { termino: "Spread",                  categoria: "Trading",   definicion: "Diferencia entre el precio de compra (ask) y el precio de venta (bid) de un activo. Es el costo implícito de cada operación en muchos brokers.", ejemplo: "Si el EUR/USD tiene un spread de 2 pips, pagas eso solo por abrir la operación." },
-  { termino: "Apalancamiento",          categoria: "Trading",   definicion: "Permite operar con más dinero del que tienes depositado. Un apalancamiento 1:10 significa que con $100 controlas $1,000 en el mercado.", ejemplo: "Con apalancamiento 1:100 y $500, puedes abrir una posición de $50,000 en forex." },
-  { termino: "Stop Loss",               categoria: "Trading",   definicion: "Orden automática que cierra tu posición al alcanzar un precio determinado, limitando tus pérdidas. Es la herramienta de gestión de riesgo más básica.", ejemplo: "Compras BTC a $95,000 y pones un stop loss en $90,000 para no perder más del 5%." },
-  { termino: "ETF",                     categoria: "Bolsa",     definicion: "Fondo cotizado en bolsa que replica el rendimiento de un índice, sector o activo. Permite diversificar comprando un solo instrumento.", ejemplo: "El ETF SPY replica el S&P 500, dándote exposición a las 500 empresas más grandes de EE.UU." },
-  { termino: "Capitalización bursátil", categoria: "Bolsa",     definicion: "Valor total de mercado de una empresa, calculado multiplicando el precio de la acción por el número de acciones en circulación.", ejemplo: "Apple tiene una capitalización de más de $3 billones, siendo la empresa más valiosa del mundo." },
-  { termino: "Inflación",               categoria: "Economía",  definicion: "Aumento sostenido del nivel general de precios con el tiempo, que reduce el poder adquisitivo del dinero. Se mide con el IPC.", ejemplo: "Con una inflación del 10%, lo que hoy cuesta $100 costará $110 el próximo año." },
-  { termino: "Staking",                 categoria: "Cripto",    definicion: "Proceso de bloquear criptomonedas en una red para validar transacciones y obtener recompensas. Similar a un depósito a plazo fijo.", ejemplo: "Al hacer staking de ETH puedes ganar entre 3% y 5% anual en recompensas." },
-  { termino: "DeFi",                    categoria: "Cripto",    definicion: "Finanzas descentralizadas: servicios financieros (préstamos, trading, ahorro) que funcionan en blockchain sin bancos ni intermediarios.", ejemplo: "En Uniswap puedes intercambiar tokens directamente sin crear cuenta ni verificar identidad." },
-  { termino: "Soporte y Resistencia",   categoria: "Trading",   definicion: "Niveles de precio donde históricamente el mercado ha rebotado (soporte) o frenado su subida (resistencia). Claves en análisis técnico.", ejemplo: "Si Bitcoin rebota tres veces en $90,000, ese nivel es un soporte fuerte." },
-  { termino: "Par de divisas",          categoria: "Forex",     definicion: "Cotización de dos monedas entre sí. El EUR/USD indica cuántos dólares cuesta un euro. La primera moneda es la base, la segunda es la cotizada.", ejemplo: "EUR/USD = 1.08 significa que 1 euro vale 1.08 dólares." },
-  { termino: "Vela japonesa",           categoria: "Trading",   definicion: "Representación gráfica del precio que muestra apertura, cierre, máximo y mínimo en un período. Verde significa subida, roja significa bajada.", ejemplo: "Una vela verde con cuerpo largo indica que los compradores dominaron toda la sesión." },
-  { termino: "Altcoin",                 categoria: "Cripto",    definicion: "Cualquier criptomoneda que no sea Bitcoin. El término viene de 'alternative coin'. Ethereum, Solana y XRP son ejemplos populares.", ejemplo: "Ethereum es la altcoin más grande del mercado por capitalización." },
-  { termino: "Diversificación",         categoria: "Inversión", definicion: "Estrategia de distribuir el capital en diferentes activos para reducir el riesgo. Si uno cae, los otros pueden compensar las pérdidas.", ejemplo: "En lugar de poner todo en Bitcoin, distribuyes 40% en BTC, 30% en ETH y 30% en acciones." },
-  { termino: "Liquidez",                categoria: "Mercados",  definicion: "Facilidad con la que un activo puede comprarse o venderse sin afectar significativamente su precio. Mayor volumen = mayor liquidez.", ejemplo: "Bitcoin tiene alta liquidez; una NFT rara puede tener muy poca y tardas semanas en venderla." },
-  { termino: "Whale",                   categoria: "Cripto",    definicion: "Término para referirse a inversores que poseen grandes cantidades de una criptomoneda y cuyas compras o ventas pueden mover el mercado.", ejemplo: "Cuando una wallet mueve 10,000 BTC, el mercado entra en alerta por el posible impacto." },
-  { termino: "IPO",                     categoria: "Bolsa",     definicion: "Oferta Pública Inicial: primera vez que una empresa vende acciones al público en bolsa. Es como la empresa 'debuta' en el mercado.", ejemplo: "Cuando Airbnb hizo su IPO en 2020, las acciones subieron un 113% el primer día." },
-  { termino: "Bull Market",             categoria: "Mercados",  definicion: "Período prolongado de tendencia alcista en los mercados financieros. Se considera bull market cuando los precios suben más del 20% desde mínimos.", ejemplo: "El bull market de Bitcoin en 2020-2021 llevó el precio de $10,000 a casi $70,000." },
-  { termino: "Bear Market",             categoria: "Mercados",  definicion: "Período prolongado de caída de precios, generalmente del 20% o más desde máximos recientes. Puede durar meses o años.", ejemplo: "El bear market cripto de 2022 hizo caer a Bitcoin de $69,000 a menos de $16,000." },
-  { termino: "HODL",                    categoria: "Cripto",    definicion: "Estrategia de mantener criptomonedas a largo plazo sin vender, independientemente de la volatilidad. Nació de un error tipográfico de 'hold'.", ejemplo: "Los HODLers que compraron BTC en 2017 y aguantaron el crash de 2018 obtuvieron grandes ganancias." },
-];
-const ahora       = new Date();
-const diaDelAno   = Math.floor((ahora.getTime() - new Date(ahora.getFullYear(), 0, 0).getTime()) / 86400000);
-const conceptoHoy = conceptos[diaDelAno % conceptos.length];
-
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=30');
-
 
 function formatFecha(fecha: Date | null) {
   if (!fecha) return '';
   const diff  = Date.now() - new Date(fecha).getTime();
-  const horas = Math.floor(diff / 1000 / 60 / 60);
+  const horas = Math.floor(diff / 3600000);
   if (horas < 1)  return 'Hace unos minutos';
-  if (horas < 24) return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+  if (horas < 24) return `Hace ${horas}h`;
   const dias = Math.floor(horas / 24);
-  return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
+  if (dias === 1) return 'Ayer';
+  return `Hace ${dias} días`;
 }
 
-const categoriaColores: Record<string, string> = {
-  'Cripto':              '#F59E0B',
-  'Criptomonedas':       '#F59E0B',
-  'Trading':             '#3B82F6',
-  'Bolsa':               '#10B981',
-  'Economía':            '#8B5CF6',
-  'Forex':               '#EC4899',
-  'Inversión':           '#06B6D4',
-  'Inversiones':         '#06B6D4',
-  'Mercados':            '#D4A843',
-  'Finanzas Personales': '#14B8A6',
-  'Fintech':             '#F97316',
-  'Impuestos':           '#A78BFA',
-};
+const calculadoras = [
+  {
+    href:  '/herramientas/calculadoras/interes-compuesto',
+    titulo: 'Interés Compuesto',
+    desc:   'Visualiza cómo crece tu dinero con el poder del tiempo',
+    svg:    `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
+  },
+  {
+    href:  '/herramientas/calculadoras/prestamo',
+    titulo: 'Calculadora de Préstamo',
+    desc:   'Calcula cuotas y el costo total de cualquier crédito',
+    svg:    `<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>`,
+  },
+  {
+    href:  '/herramientas/calculadoras/hipoteca',
+    titulo: 'Calculadora de Hipoteca',
+    desc:   'Simula la cuota mensual y amortización de tu vivienda',
+    svg:    `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`,
+  },
+  {
+    href:  '/herramientas/calculadoras/roi',
+    titulo: 'ROI de Inversión',
+    desc:   'Mide el retorno real de cualquier inversión fácilmente',
+    svg:    `<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>`,
+  },
+  {
+    href:  '/herramientas/calculadoras/conversion-divisas',
+    titulo: 'Conversión de Divisas',
+    desc:   'Convierte entre USD, EUR, ARS, COP, MXN y más al instante',
+    svg:    `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
+  },
+  {
+    href:  '/herramientas/calculadoras/cripto-ganancias',
+    titulo: 'Ganancias en Cripto',
+    desc:   'Calcula tus ganancias o pérdidas en cualquier criptomoneda',
+    svg:    `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`,
+  },
+];
+
+const herramientas = [
+  {
+    href:   '/herramientas/cripto',
+    titulo: 'Mercados Cripto',
+    desc:   'BTC, ETH, SOL y más en tiempo real',
+    color:  '#1D4ED8',
+    svg:    `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`,
+  },
+  {
+    href:   '/herramientas/forex',
+    titulo: 'Divisas Forex',
+    desc:   'EUR/USD, GBP/USD y todos los pares principales',
+    color:  '#15803D',
+    svg:    `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
+  },
+  {
+    href:   '/herramientas/dolar',
+    titulo: 'Precio del Dólar',
+    desc:   'Tasas oficiales y paralelas en toda Latam',
+    color:  '#B45309',
+    svg:    `<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
+  },
+  {
+    href:   '/herramientas/acciones',
+    titulo: 'Acciones',
+    desc:   'AAPL, NVDA, MSFT, TSLA y más',
+    color:  '#374151',
+    svg:    `<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>`,
+  },
+  {
+    href:   '/herramientas/metales',
+    titulo: 'Metales Preciosos',
+    desc:   'Oro, plata, platino y paladio al instante',
+    color:  '#B45309',
+    svg:    `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
+  },
+];
 ---
 
-<Layout categorias={categorias} paises={todosPaises}>
-
+<Layout categorias={categorias}>
 
 <slot name="head" slot="head">
+  <title>Inversax — Calculadoras Financieras y Herramientas de Trading en Español</title>
+  <meta name="description" content="Calculadoras de interés compuesto, préstamos, hipotecas y ROI. Precios en tiempo real de cripto, forex y acciones. Comparador de brokers para Latinoamérica." />
+  <meta name="author"  content="José Zúniga" />
+  <meta name="robots"  content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="keywords" content="calculadora financiera, calculadora interés compuesto, calculadora hipoteca, calculadora préstamo, herramientas trading, precio bitcoin, forex latinoamerica, comparar brokers" />
+  <link rel="canonical" href="https://inversax.com" />
 
-  <!-- ═══════════════════════════════════════
-       PRECONNECT
-  ═══════════════════════════════════════ -->
-  <link rel="preconnect" href="https://res.cloudinary.com" />
-  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-
-  <!-- ═══════════════════════════════════════
-       BASIC SEO
-  ═══════════════════════════════════════ -->
-  <title>Inversax — Cripto, Trading y Finanzas en Español</title>
-  <meta name="description"    content="Noticias, precios en vivo y herramientas de cripto, forex, bolsa y metales en español para inversores y traders en Latinoamérica." />
-  <meta name="author"         content="José Zúniga" />
-  <meta name="robots"         content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="googlebot"      content="index, follow, max-snippet:-1, max-image-preview:large" />
-  <meta name="googlebot-news" content="index, follow" />
-  <link rel="canonical"       href="https://inversax.com" />
-
-  <!-- ═══════════════════════════════════════
-       KEYWORDS
-  ═══════════════════════════════════════ -->
-  <meta name="keywords"      content="cripto latinoamerica, trading en español, bolsa latam, forex latino, precio bitcoin hoy, finanzas personales latam, inversiones latinoamerica, noticias financieras español" />
-  <meta name="news_keywords" content="criptomonedas, trading, forex, bolsa, bitcoin hoy, finanzas latinoamérica, Inversax" />
-
-  <!-- ═══════════════════════════════════════
-       GEO
-  ═══════════════════════════════════════ -->
-  <meta name="geo.region"       content="LATAM" />
-  <meta name="geo.placename"    content="Latinoamérica" />
-  <meta name="language"         content="Spanish" />
-  <meta name="content-language" content="es" />
-  <meta name="coverage"         content="Worldwide" />
-  <meta name="target"           content="all" />
-  <meta name="rating"           content="general" />
-  <meta name="category"         content="finance, crypto, trading, investing" />
-
-  <!-- ═══════════════════════════════════════
-       HREFLANG — homepage aplican los 36
-  ═══════════════════════════════════════ -->
-  <link rel="alternate" hreflang="es"    href="https://inversax.com" />
-  <!-- América Latina -->
-  <link rel="alternate" hreflang="es-MX" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-AR" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-CO" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-CL" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-PE" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-VE" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-EC" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-BO" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-PY" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-UY" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-CR" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-PA" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-DO" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-SV" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-HN" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-NI" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-GT" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-CU" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-PR" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-BZ" href="https://inversax.com" />
-  <!-- Europa -->
-  <link rel="alternate" hreflang="es-ES" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-AD" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-DE" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-FR" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-IT" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-CH" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-NL" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-GB" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-PT" href="https://inversax.com" />
-  <!-- Resto del mundo -->
-  <link rel="alternate" hreflang="es-US" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-CA" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-AU" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-BR" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-PH" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-GQ" href="https://inversax.com" />
-  <link rel="alternate" hreflang="es-MA" href="https://inversax.com" />
+  <link rel="alternate" hreflang="es"       href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-MX"    href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-AR"    href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-CO"    href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-CL"    href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-PE"    href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-VE"    href="https://inversax.com" />
+  <link rel="alternate" hreflang="es-ES"    href="https://inversax.com" />
   <link rel="alternate" hreflang="x-default" href="https://inversax.com" />
 
-  <!-- ═══════════════════════════════════════
-       OPEN GRAPH
-  ═══════════════════════════════════════ -->
-  <meta property="og:site_name"   content="Inversax" />
-  <meta property="og:locale"      content="es_LA" />
-  <meta property="og:locale:alternate" content="es_MX" />
-  <meta property="og:locale:alternate" content="es_AR" />
-  <meta property="og:locale:alternate" content="es_CO" />
-  <meta property="og:locale:alternate" content="es_ES" />
-  <meta property="og:type"        content="website" />
-  <meta property="og:title"       content="Inversax — Cripto, Trading y Finanzas en Español" />
-  <meta property="og:description" content="Precios en vivo, noticias y herramientas de cripto, forex, bolsa y metales. Todo en español, para toda Latinoamérica." />
-  <meta property="og:url"         content="https://inversax.com" />
-  <meta property="og:image"       content="https://inversax.com/og/home.png" />
+  <meta property="og:site_name"    content="Inversax" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:title"        content="Inversax — Calculadoras Financieras y Herramientas de Trading" />
+  <meta property="og:description"  content="Calculadoras financieras precisas, precios en tiempo real y comparador de brokers en español para inversores latinoamericanos." />
+  <meta property="og:url"          content="https://inversax.com" />
+  <meta property="og:image"        content="https://inversax.com/og/home.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"   content="Inversax — Cripto, Trading y Finanzas en Español" />
-  <meta property="og:image:type"  content="image/png" />
-
-  <!-- ═══════════════════════════════════════
-       TWITTER CARD
-  ═══════════════════════════════════════ -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@inversax" />
-  <meta name="twitter:creator"     content="@inversax" />
-  <meta name="twitter:title"       content="Inversax — Cripto, Trading y Finanzas en Español" />
-  <meta name="twitter:description" content="Precios en vivo, noticias y herramientas de cripto, forex, bolsa y metales para Latinoamérica." />
+  <meta name="twitter:title"       content="Inversax — Calculadoras Financieras y Herramientas de Trading" />
+  <meta name="twitter:description" content="Calculadoras financieras, precios en tiempo real y comparador de brokers en español para Latinoamérica." />
   <meta name="twitter:image"       content="https://inversax.com/og/home.png" />
-  <meta name="twitter:image:alt"   content="Inversax — Finanzas en Español" />
 
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebSite + SearchAction
-       SearchAction correctamente formateado con EntryPoint
-  ═══════════════════════════════════════ -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Inversax",
-    "alternateName": "Inversax.com",
-    "description": "Noticias, precios en vivo y herramientas de cripto, forex, bolsa y metales en español para Latinoamérica.",
     "url": "https://inversax.com",
+    "description": "Calculadoras financieras y herramientas de trading en español para Latinoamérica",
     "inLanguage": "es",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
-      },
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://inversax.com/noticias?q={search_term_string}" },
       "query-input": "required name=search_term_string"
     }
   })} />
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — Organization
-       Añadido contactPoint editorial
-  ═══════════════════════════════════════ -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Inversax",
-    "url": "https://inversax.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://inversax.com/favicon.png",
-      "width": 512,
-      "height": 512
-    },
-    "sameAs": [
-      "https://twitter.com/inversax",
-      "https://www.instagram.com/inversax",
-      "https://www.youtube.com/@inversax"
-    ],
-    "areaServed": [
-      "AR","BO","BR","CL","CO","CU","EC","MX","PY","PE","UY","VE",
-      "BZ","CR","SV","GT","HN","NI","PA",
-      "DO","PR",
-      "US","CA",
-      "ES","AD","DE","FR","GB","IT","NL","PT","CH",
-      "GQ","MA",
-      "AU","PH"
-    ],
-    "knowsLanguage": "es",
-    "description": "Fuente de información financiera en español. Cripto, trading, bolsa y economía actualizado cada día para toda la comunidad hispanohablante.",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "editorial",
-      "email": "codezun@gmail.com",
-      "availableLanguage": "Spanish"
-    },
-    "founder": {
-      "@type": "Person",
-      "name": "José Zúniga",
-      "url": "https://inversax.com/autor/jose-zuniga"
-    }
-  })} />
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — WebPage
-  ═══════════════════════════════════════ -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Inversax — Cripto, Trading y Finanzas en Español",
-    "description": "Noticias, precios en vivo y herramientas de cripto, forex, bolsa y metales en español para Latinoamérica.",
-    "url": "https://inversax.com",
-    "inLanguage": "es",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Inversax",
-      "url": "https://inversax.com"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Inversax",
-      "url": "https://inversax.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://inversax.com/favicon.png",
-        "width": 512,
-        "height": 512
-      }
-    },
-    "about": [
-      { "@type": "Thing", "name": "Criptomonedas" },
-      { "@type": "Thing", "name": "Trading" },
-      { "@type": "Thing", "name": "Bolsa de valores" },
-      { "@type": "Thing", "name": "Forex" },
-      { "@type": "Thing", "name": "Metales preciosos" },
-      { "@type": "Thing", "name": "Finanzas personales" }
-    ]
-  })} />
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — ItemList de herramientas
-  ═══════════════════════════════════════ -->
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Herramientas financieras de Inversax",
-  "url": "https://inversax.com/herramientas",
-  "numberOfItems": 8,
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Mercados Cripto",    "url": "https://inversax.com/herramientas/cripto"             },
-    { "@type": "ListItem", "position": 2, "name": "Forex",              "url": "https://inversax.com/herramientas/forex"              },
-    { "@type": "ListItem", "position": 3, "name": "Metales Preciosos",  "url": "https://inversax.com/herramientas/metales"            },
-    { "@type": "ListItem", "position": 8, "name": "Calculadoras de Trading", "url": "https://inversax.com/herramientas/calculadora-trading" },
-    { "@type": "ListItem", "position": 4, "name": "Acciones",           "url": "https://inversax.com/herramientas/acciones"           },
-    { "@type": "ListItem", "position": 5, "name": "Precio del Dólar",   "url": "https://inversax.com/herramientas/dolar"              },
-    { "@type": "ListItem", "position": 6, "name": "Calculadora Cripto", "url": "https://inversax.com/herramientas/calculadora-cripto" },
-    { "@type": "ListItem", "position": 7, "name": "Comparar Brokers",   "url": "https://inversax.com/herramientas/comparar-brokers"   }
-  ]
-})} />
-
-  <!-- ═══════════════════════════════════════
-       JSON-LD — SiteLinksSearchBox
-       Duplica la señal de búsqueda para Google
-  ═══════════════════════════════════════ -->
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://inversax.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://inversax.com/noticias?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
-  })} />
-
 </slot>
 
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section style="background:#FFFFFF; border-bottom:1px solid #E2DDD8;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 lg:py-24">
+    <div class="max-w-3xl">
 
-  <Hero noticiaPrincipal={noticiaPrincipal} noticiasSecundarias={noticiasSecundarias} />
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
+           style="background:#FFF5EE; border:1px solid #FFD4A8;">
+        <span class="w-2 h-2 rounded-full" style="background:#FF8C42;"></span>
+        <span class="text-xs font-semibold" style="color:#FF8C42; font-family:'DM Sans',sans-serif;">
+          Herramientas gratuitas en español
+        </span>
+      </div>
 
-  <!-- ── 1. ÚLTIMAS NOTICIAS ───────────────────────────────── -->
-  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#E5E0D8]">
-        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
-          Últimas Noticias
-        </h2>
-        <a href="/noticias" class="flex items-center gap-1.5 text-sm no-underline transition-colors duration-200 hover:opacity-70"
-           style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-          Ver todas <ArrowRight size={14} />
+      <h1 class="font-bold leading-[1.1] mb-5"
+          style="font-family:'DM Sans',sans-serif; color:#1A1A1A; font-size:clamp(32px,5vw,60px);">
+        Calcula, analiza<br class="hidden sm:block" />
+        e invierte mejor
+      </h1>
+
+      <p class="text-lg leading-relaxed mb-8"
+         style="color:#555555; font-family:'DM Sans',sans-serif; max-width:560px;">
+        Calculadoras financieras precisas, precios en tiempo real de cripto y forex,
+        y el mejor comparador de brokers para el inversor latinoamericano.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <a href="/herramientas/calculadoras"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm no-underline transition-all duration-200"
+           style="background:#FF8C42; color:white;"
+           onmouseover="this.style.background='#E87832'; this.style.transform='translateY(-1px)';"
+           onmouseout="this.style.background='#FF8C42'; this.style.transform='translateY(0)';">
+          Ver calculadoras
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="/herramientas/comparar-brokers"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm no-underline transition-all duration-200"
+           style="background:#F5F2EE; color:#1A1A1A; border:1px solid #E2DDD8;"
+           onmouseover="this.style.background='#E8E3DB'; this.style.transform='translateY(-1px)';"
+           onmouseout="this.style.background='#F5F2EE'; this.style.transform='translateY(0)';">
+          Comparar Brokers
         </a>
       </div>
 
-      {noticiasSecundarias.slice(3).length === 0 ? (
-        <div class="flex flex-col items-center justify-center py-20 border border-[#E5E0D8]" style="background: #F0EDE7;">
-          <p class="text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Aún no hay noticias publicadas</p>
-        </div>
-      ) : (
-        <>
-          {/* Patrón: hero → 2 medianas → 2 mini → repite */}
-          {(() => {
-            const arts = noticiasSecundarias.slice(3);
-            const grupos: typeof arts[] = [];
-            for (let i = 0; i < arts.length; i += 5) grupos.push(arts.slice(i, i + 5));
-            return grupos.map((grupo) => (
-              <div class="mb-10 last:mb-0">
+      <!-- Stats rápidos -->
+      <div class="flex flex-wrap gap-6 mt-10 pt-8" style="border-top:1px solid #E2DDD8;">
+        {[
+          { n: '12+',   label: 'Calculadoras'        },
+          { n: '5',     label: 'Herramientas de mercado' },
+          { n: '100%',  label: 'Gratis en español'   },
+        ].map(({ n, label }) => (
+          <div class="flex flex-col gap-0.5">
+            <span class="font-bold text-2xl" style="color:#1A1A1A; font-family:'DM Sans',sans-serif;">{n}</span>
+            <span class="text-sm" style="color:#888888; font-family:'DM Sans',sans-serif;">{label}</span>
+          </div>
+        ))}
+      </div>
 
-                {/* — Card HERO (full width) — */}
-                {grupo[0] && (
-                  <a href={`/noticias/${grupo[0].slug}`}
-                     class="block group no-underline mb-6 pb-6 border-b border-[#E5E0D8]">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div class="overflow-hidden" style="aspect-ratio: 16/9;">
-                        {grupo[0].imagen
-                          ? <img src={getCloudinaryUrl(grupo[0].imagen, 800)!}
-                                 alt={grupo[0].titulo}
-                                 width="800" height="450"
-                                 loading="lazy"
-                                 class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                          : <div class="w-full h-full" style="background: #E8E3DB;"></div>
-                        }
-                      </div>
-                      <div class="flex flex-col justify-center gap-3">
-                        {grupo[0].categoria && (
-                          <span class="text-[11px] font-bold uppercase tracking-[0.2em]"
-                                style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                            {grupo[0].categoria.nombre}
-                          </span>
-                        )}
-                        <h3 class="font-bold leading-[1.15] text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200"
-                            style="font-family: 'Playfair Display', serif; font-size: clamp(22px, 2.4vw, 32px);">
-                          {grupo[0].titulo}
-                        </h3>
-                        {grupo[0].resumen && (
-                          <p class="text-sm leading-relaxed line-clamp-3"
-                             style="color: #78716C; font-family: 'DM Sans', sans-serif;">
-                            {grupo[0].resumen}
-                          </p>
-                        )}
-                        <span class="text-xs flex items-center gap-1.5"
-                              style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                          <Clock size={11} />{formatFecha(grupo[0].creadoEn)}
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                )}
-
-                {/* — 2 cards MEDIANAS — */}
-                {grupo.slice(1, 3).length > 0 && (
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6 pb-6 border-b border-[#E5E0D8]">
-                    {grupo.slice(1, 3).map((n) => (
-                      <a href={`/noticias/${n.slug}`}
-                         class="group no-underline flex flex-col gap-3">
-                        <div class="overflow-hidden" style="aspect-ratio: 4/3;">
-                          {n.imagen
-                            ? <img src={getCloudinaryUrl(n.imagen, 600)!}
-                                   alt={n.titulo}
-                                   width="600" height="450"
-                                   loading="lazy"
-                                   class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                            : <div class="w-full h-full" style="background: #E8E3DB;"></div>
-                          }
-                        </div>
-                        {n.categoria && (
-                          <span class="text-[10px] font-bold uppercase tracking-[0.18em]"
-                                style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                            {n.categoria.nombre}
-                          </span>
-                        )}
-                        <h4 class="font-bold leading-snug text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200 line-clamp-3"
-                            style="font-family: 'Playfair Display', serif; font-size: 18px;">
-                          {n.titulo}
-                        </h4>
-                        <span class="text-xs" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                          {formatFecha(n.creadoEn)}
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                )}
-
-                {/* — 2 cards MINI (sin imagen) — */}
-                {grupo.slice(3, 5).length > 0 && (
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {grupo.slice(3, 5).map((n) => (
-                      <a href={`/noticias/${n.slug}`}
-                         class="group no-underline flex gap-4 items-start py-2"
-                         style="border-left: 3px solid #B91C1C; padding-left: 14px;">
-                        <div class="flex flex-col gap-1.5 min-w-0">
-                          {n.categoria && (
-                            <span class="text-[10px] font-bold uppercase tracking-[0.15em]"
-                                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                              {n.categoria.nombre}
-                            </span>
-                          )}
-                          <h4 class="font-bold leading-snug text-[#1C1917] group-hover:text-[#B91C1C] transition-colors duration-200 line-clamp-2"
-                              style="font-family: 'Playfair Display', serif; font-size: 15px;">
-                            {n.titulo}
-                          </h4>
-                          <span class="text-[11px]" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                            {formatFecha(n.creadoEn)}
-                          </span>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                )}
-
-              </div>
-            ));
-          })()}
-        </>
-      )}
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ── 2. EXPLORA POR CATEGORÍA ──────────────────────────── -->
-  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#E5E0D8]">
-        <Layers size={17} style="color: #B91C1C;" />
-        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
-          Explora por Categoría
+<!-- ════════════════════════════════════════════════
+     CALCULADORAS FINANCIERAS (6 cards)
+════════════════════════════════════════════════ -->
+<section style="background:#F7F7F5; padding:64px 0;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <span class="block text-xs font-bold uppercase tracking-widest mb-2"
+              style="color:#FF8C42; font-family:'DM Sans',sans-serif;">
+          Calculadoras financieras
+        </span>
+        <h2 class="font-bold"
+            style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:clamp(22px,3vw,30px);">
+          Toma mejores decisiones financieras
         </h2>
       </div>
-      <div class="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
-        {categorias.map((cat) => {
-          const color  = categoriaColores[cat.nombre] ?? '#B91C1C';
-          const activa = cat.slug === primeraConNoticias?.slug;
-          return (
-            <button
-              data-tab={cat.slug}
-              data-color={color}
-              class={`tab-btn flex-shrink-0 text-xs font-semibold px-4 py-2 border transition-all duration-200 cursor-pointer whitespace-nowrap uppercase tracking-wider ${
-                activa ? '' : 'bg-transparent hover:opacity-70'
-              }`}
-              style={activa
-                ? `background: ${color}15; border-color: ${color}; color: ${color}; font-family: 'DM Sans', sans-serif;`
-                : `background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;`}
-            >
-              {cat.nombre}
-            </button>
-          );
-        })}
-      </div>
-      <div id="cat-panels">
-        {categorias.map((cat) => {
-          const noticias = noticiasPorCategoria[cat.slug] ?? [];
-          const activa   = cat.slug === primeraConNoticias?.slug;
-          const color    = categoriaColores[cat.nombre] ?? '#B91C1C';
-          return (
-            <div data-panel={cat.slug} class={`cat-panel ${activa ? '' : 'hidden'}`}>
-              {noticias.length > 0 ? (
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {noticias.map((n) => (
-                    <a href={`/noticias/${n.slug}`}
-                       class="group flex flex-col no-underline transition-all duration-200 hover:-translate-y-0.5"
-                       style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-                      <div class="w-full overflow-hidden flex-shrink-0" style="aspect-ratio: 4/3;">
-                        {n.imagen
-                          ? <img src={getCloudinaryUrl(n.imagen, 400)!}
-                                 alt={n.titulo}
-                                 width="400" height="300"
-                                 loading="lazy"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                          : <div class="w-full h-full" style={`background: ${color}12;`}></div>
-                        }
-                      </div>
-                      <div class="flex flex-col gap-2 p-4">
-                        <span class="text-[10px] flex items-center gap-1"
-                              style={`color: ${color}; font-family: 'DM Sans', sans-serif;`}>
-                          <Clock size={9} />{formatFecha(n.creadoEn)}
-                        </span>
-                        <h4 class="font-bold leading-snug line-clamp-2 group-hover:opacity-70 transition-opacity duration-200"
-                            style="font-family: 'Playfair Display', serif; color: #1C1917; font-size: 15px;">
-                          {n.titulo}
-                        </h4>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                <div class="flex flex-col items-center justify-center py-16 border border-[#E5E0D8]" style="background: #F0EDE7;">
-                  <p class="text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-                    Próximamente noticias de {cat.nombre}
-                  </p>
-                </div>
-              )}
-              <div class="flex justify-end mt-5">
-                <a href={`/${cat.slug}`}
-                   class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity duration-200"
-                   style={`color: ${color}; font-family: 'DM Sans', sans-serif;`}>
-                  Ver todo en {cat.nombre} <ArrowRight size={14} />
-                </a>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <a href="/herramientas/calculadoras"
+         class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold no-underline transition-colors duration-200"
+         style="color:#FF8C42;"
+         onmouseover="this.style.color='#E87832';"
+         onmouseout="this.style.color='#FF8C42';">
+        Ver todas las calculadoras
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
     </div>
-  </section>
 
-  <!-- ── 3. CONCEPTO DEL DÍA ───────────────────────────────── -->
-  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center gap-3 mb-8 pb-4 border-b border-[#E5E0D8]">
-        <BookOpen size={17} style="color: #B91C1C;" />
-        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
-          Concepto del Día
-        </h2>
-      </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {calculadoras.map((calc) => (
+        <a href={calc.href}
+           class="group flex flex-col gap-4 p-6 rounded-xl no-underline transition-all duration-200"
+           style="background:#FFFFFF; border:1px solid #E2DDD8;"
+           onmouseover="this.style.borderColor='#FF8C42'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(255,140,66,0.10)';"
+           onmouseout="this.style.borderColor='#E2DDD8'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
 
-      <!-- Tarjeta oscura tipo colección -->
-      <div class="relative overflow-hidden" style="background: #1C1917;">
-        <!-- Textura sutil de fondo -->
-        <div class="absolute inset-0 pointer-events-none opacity-[0.04]"
-             style="background-image: repeating-linear-gradient(0deg, #F5F0E8 0px, #F5F0E8 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #F5F0E8 0px, #F5F0E8 1px, transparent 1px, transparent 60px);"></div>
+          <!-- Ícono -->
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+               style="background:#FFF5EE;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="#FF8C42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 set:html={calc.svg} />
+          </div>
 
-        <div class="relative flex flex-col lg:flex-row">
-
-          <!-- Columna izquierda: término -->
-          <div class="flex flex-col justify-between gap-5 p-7 sm:p-10 lg:w-72 xl:w-80 flex-shrink-0"
-               style="border-bottom: 1px solid rgba(245,240,232,0.1);"
-               class="lg:border-b-0 lg:border-r-[1px] lg:border-r-[rgba(245,240,232,0.1)]">
-            <div>
-              <span class="inline-block text-[10px] font-bold uppercase tracking-[0.22em] mb-4 px-2.5 py-1"
-                    style="background: #B91C1C; color: #F5F0E8; font-family: 'DM Sans', sans-serif;">
-                {conceptoHoy.categoria}
-              </span>
-              <h3 class="font-bold leading-[1.1] mt-1"
-                  style="font-family: 'Playfair Display', serif; color: #F5F0E8; font-size: clamp(28px, 3vw, 42px);">
-                {conceptoHoy.termino}
-              </h3>
-            </div>
-            <p class="text-[11px] uppercase tracking-[0.18em]"
-               style="color: rgba(245,240,232,0.3); font-family: 'DM Sans', sans-serif;">
-              Actualizado cada día
+          <!-- Texto -->
+          <div class="flex-1">
+            <h3 class="font-semibold mb-1"
+                style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:16px;">
+              {calc.titulo}
+            </h3>
+            <p class="text-sm leading-relaxed" style="color:#888888; font-family:'DM Sans',sans-serif;">
+              {calc.desc}
             </p>
           </div>
 
-          <!-- Columna derecha: definición + ejemplo -->
-          <div class="flex flex-col gap-6 p-7 sm:p-10 flex-1"
-               style="border-top: 1px solid rgba(245,240,232,0.1);"
-               class="lg:border-t-0">
-            <div>
-              <span class="block text-[10px] font-bold uppercase tracking-[0.22em] mb-3"
-                    style="color: rgba(245,240,232,0.35); font-family: 'DM Sans', sans-serif;">
-                Definición
-              </span>
-              <p class="text-base leading-relaxed"
-                 style="color: rgba(245,240,232,0.85); font-family: 'DM Sans', sans-serif;">
-                {conceptoHoy.definicion}
-              </p>
-            </div>
-            <div class="p-5" style="border-left: 3px solid #B91C1C; background: rgba(245,240,232,0.04);">
-              <span class="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
-                    style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                Ejemplo práctico
-              </span>
-              <p class="text-sm leading-relaxed"
-                 style="color: rgba(245,240,232,0.6); font-family: 'DM Sans', sans-serif; font-style: italic;">
-                {conceptoHoy.ejemplo}
-              </p>
-            </div>
+          <!-- CTA -->
+          <div class="flex items-center gap-1 text-sm font-semibold" style="color:#FF8C42;">
+            Calcular
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
           </div>
-        </div>
-      </div>
+        </a>
+      ))}
     </div>
-  </section>
 
-  <!-- ── 4. PRECIOS DEL MERCADO (todo client-side) ─────────── -->
-  <section style="background: #FAFAF8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
-    <div class="max-w-7xl mx-auto">
+    <!-- Ver todas (mobile) -->
+    <div class="sm:hidden mt-6 text-center">
+      <a href="/herramientas/calculadoras"
+         class="inline-flex items-center gap-1.5 text-sm font-semibold no-underline"
+         style="color:#FF8C42;">
+        Ver todas las calculadoras →
+      </a>
+    </div>
 
-      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#E5E0D8]">
-        <BarChart2 size={17} style="color: #B91C1C;" />
-        <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
-          Precios del Mercado
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     HERRAMIENTAS DE MERCADO
+════════════════════════════════════════════════ -->
+<section style="background:#FFFFFF; border-top:1px solid #E2DDD8; border-bottom:1px solid #E2DDD8; padding:64px 0;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <span class="block text-xs font-bold uppercase tracking-widest mb-2"
+              style="color:#FF8C42; font-family:'DM Sans',sans-serif;">
+          Datos en tiempo real
+        </span>
+        <h2 class="font-bold"
+            style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:clamp(22px,3vw,30px);">
+          Herramientas de mercado
         </h2>
       </div>
-
-      <div class="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
-        <button id="tab-cripto"
-          class="market-tab flex-shrink-0 text-xs font-bold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
-          style="background: #1D4ED815; border-color: #1D4ED8; color: #1D4ED8; font-family: 'DM Sans', sans-serif;">
-          Cripto
-        </button>
-        <button id="tab-forex"
-          class="market-tab flex-shrink-0 text-xs font-semibold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
-          style="background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;">
-          Forex
-        </button>
-        <button id="tab-metales"
-          class="market-tab flex-shrink-0 text-xs font-semibold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
-          style="background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;">
-          Metales
-        </button>
-        <button id="tab-acciones"
-          class="market-tab flex-shrink-0 text-xs font-semibold px-4 py-2 border cursor-pointer transition-all duration-200 uppercase tracking-wider"
-          style="background: transparent; border-color: #D6D0C8; color: #78716C; font-family: 'DM Sans', sans-serif;">
-          Acciones
-        </button>
-      </div>
-
-      <!-- ── PANEL CRIPTO ── -->
-      <div id="panel-cripto" class="mkt-panel">
-        <div id="cripto-skeleton" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          {[...Array(6)].map(() => (
-            <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
-                <div class="flex flex-col gap-1.5">
-                  <div class="w-12 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
-                  <div class="w-20 h-2.5 rounded animate-pulse" style="background: #E5E0D8;"></div>
-                </div>
-              </div>
-              <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-              <div class="flex items-center justify-end"><div class="w-14 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-              <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-            </div>
-          ))}
-        </div>
-        <div id="cripto-content" class="hidden" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
-            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Activo</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">24h</span>
-            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Cap. Mercado</span>
-          </div>
-          <div id="cripto-rows"></div>
-        </div>
-        <div class="flex justify-end mt-3">
-          <a href="/herramientas/cripto" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
-             style="color: #1D4ED8; font-family: 'DM Sans', sans-serif;">
-            Ver todos <ArrowRight size={14} />
-          </a>
-        </div>
-      </div>
-
-      <!-- ── PANEL FOREX ── -->
-      <div id="panel-forex" class="mkt-panel hidden">
-        <div id="forex-skeleton" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          {[...Array(6)].map(() => (
-            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
-                <div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
-              </div>
-              <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-              <div class="hidden sm:flex items-center justify-end"><div class="w-24 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-            </div>
-          ))}
-        </div>
-        <div id="forex-content" class="hidden" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
-            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Par</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio</span>
-            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Descripción</span>
-          </div>
-          <div id="forex-rows"></div>
-        </div>
-        <div class="flex justify-end mt-3">
-          <a href="/herramientas/forex" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
-             style="color: #15803D; font-family: 'DM Sans', sans-serif;">
-            Ver todos <ArrowRight size={14} />
-          </a>
-        </div>
-      </div>
-
-      <!-- ── PANEL METALES ── -->
-      <div id="panel-metales" class="mkt-panel hidden">
-        <div id="metales-skeleton" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          {[...Array(4)].map(() => (
-            <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
-                <div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
-              </div>
-              <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-              <div class="hidden sm:flex items-center justify-end"><div class="w-12 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-            </div>
-          ))}
-        </div>
-        <div id="metales-content" class="hidden" style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          <div class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
-            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Metal</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio / oz</span>
-            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Símbolo</span>
-          </div>
-          <div id="metales-rows"></div>
-        </div>
-        <div class="flex justify-end mt-3">
-          <a href="/herramientas/metales" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
-             style="color: #B45309; font-family: 'DM Sans', sans-serif;">
-            Ver todos <ArrowRight size={14} />
-          </a>
-        </div>
-      </div>
-
-      <!-- ── PANEL ACCIONES ── -->
-      <div id="panel-acciones" class="mkt-panel hidden">
-        <div style="border: 1px solid #E5E0D8; background: #FFFFFF;">
-          <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-3" style="border-bottom: 1px solid #E5E0D8;">
-            <span class="text-xs font-semibold uppercase tracking-wider" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Empresa</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Precio</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Cambio</span>
-            <span class="hidden sm:block text-xs font-semibold uppercase tracking-wider text-right" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Sector</span>
-          </div>
-          <div id="acciones-loading">
-            {[...Array(6)].map(() => (
-              <div class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4" style="border-bottom: 1px solid #E5E0D8;">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full animate-pulse flex-shrink-0" style="background: #E5E0D8;"></div>
-                  <div class="flex flex-col gap-1.5">
-                    <div class="w-12 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div>
-                    <div class="w-20 h-2.5 rounded animate-pulse" style="background: #E5E0D8;"></div>
-                  </div>
-                </div>
-                <div class="flex items-center justify-end"><div class="w-16 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-                <div class="flex items-center justify-end"><div class="w-14 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-                <div class="hidden sm:flex items-center justify-end"><div class="w-20 h-3 rounded animate-pulse" style="background: #E5E0D8;"></div></div>
-              </div>
-            ))}
-          </div>
-          <div id="acciones-content" class="hidden"></div>
-          <div id="acciones-error" class="hidden px-6 py-10 text-center text-sm" style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">
-            No se pudieron cargar las cotizaciones
-          </div>
-        </div>
-        <div class="flex justify-end mt-3">
-          <a href="/herramientas/acciones" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
-             style="color: #374151; font-family: 'DM Sans', sans-serif;">
-            Ver todas <ArrowRight size={14} />
-          </a>
-        </div>
-      </div>
-
+      <a href="/herramientas"
+         class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold no-underline"
+         style="color:#FF8C42;"
+         onmouseover="this.style.color='#E87832';"
+         onmouseout="this.style.color='#FF8C42';">
+        Ver todas
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
     </div>
-  </section>
 
-  <!-- ── 6. HERRAMIENTAS ───────────────────────────────────── -->
-  <section style="background: #FAFAF8;" class="px-4 sm:px-6 py-12">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#E5E0D8]">
-        <div class="flex items-center gap-2.5">
-          <BarChart2 size={17} style="color: #B91C1C;" />
-          <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
-            Herramientas
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {herramientas.map((h) => (
+        <a href={h.href}
+           class="flex flex-col gap-3 p-5 rounded-xl no-underline transition-all duration-200"
+           style="background:#F7F7F5; border:1px solid #E2DDD8;"
+           onmouseover="this.style.background='#FFFFFF'; this.style.borderColor='#D0C9C0'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.06)';"
+           onmouseout="this.style.background='#F7F7F5'; this.style.borderColor='#E2DDD8'; this.style.boxShadow='none';">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+               style={`background:${h.color}18;`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke={h.color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 set:html={h.svg} />
+          </div>
+          <div>
+            <h3 class="font-semibold text-sm mb-0.5"
+                style="color:#1A1A1A; font-family:'DM Sans',sans-serif;">
+              {h.titulo}
+            </h3>
+            <p class="text-xs leading-relaxed" style="color:#888888; font-family:'DM Sans',sans-serif;">
+              {h.desc}
+            </p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     COMPARAR BROKERS — CTA
+════════════════════════════════════════════════ -->
+<section style="background:#F7F7F5; padding:64px 0;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-8 rounded-2xl"
+         style="background:#FFFFFF; border:1px solid #E2DDD8;">
+      <div class="flex-1">
+        <span class="block text-xs font-bold uppercase tracking-widest mb-2" style="color:#FF8C42;">
+          Comparador de brokers
+        </span>
+        <h2 class="font-bold mb-2"
+            style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:clamp(20px,2.5vw,28px);">
+          Encuentra el mejor broker para ti
+        </h2>
+        <p class="text-sm leading-relaxed" style="color:#555555; font-family:'DM Sans',sans-serif; max-width:480px;">
+          Compara spreads, comisiones, regulación, depósito mínimo y plataformas de los principales
+          brokers disponibles en Latinoamérica.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 flex-shrink-0 w-full sm:w-auto">
+        <a href="/herramientas/comparar-brokers"
+           class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm no-underline transition-all duration-200 whitespace-nowrap"
+           style="background:#FF8C42; color:white;"
+           onmouseover="this.style.background='#E87832';"
+           onmouseout="this.style.background='#FF8C42';">
+          Comparar brokers ahora
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <div class="flex items-center gap-4 text-xs" style="color:#888888; font-family:'DM Sans',sans-serif;">
+          <span class="flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Regulados y verificados
+          </span>
+          <span class="flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Actualizado mensualmente
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     ÚLTIMOS ARTÍCULOS (3, lista minimalista)
+════════════════════════════════════════════════ -->
+{articulos.length > 0 && (
+  <section style="background:#FFFFFF; border-top:1px solid #E2DDD8; padding:64px 0;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <span class="block text-xs font-bold uppercase tracking-widest mb-2"
+                style="color:#888888; font-family:'DM Sans',sans-serif;">
+            Contenido editorial
+          </span>
+          <h2 class="font-bold"
+              style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:clamp(20px,2.5vw,28px);">
+            Últimos artículos
           </h2>
         </div>
-        <a href="/herramientas" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
-           style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-          Ver todas <ArrowRight size={14} />
+        <a href="/noticias"
+           class="text-sm font-semibold no-underline transition-colors duration-200"
+           style="color:#888888;"
+           onmouseover="this.style.color='#1A1A1A';"
+           onmouseout="this.style.color='#888888';">
+          Ver todos →
         </a>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {herramientas.map((h) => (
-          <a href={h.href}
-             class="group flex flex-col gap-4 no-underline transition-all duration-200 hover:-translate-y-0.5"
-             style="border: 1px solid #E5E0D8; background: #FFFFFF; padding: 24px;">
 
-            <!-- Cabecera: ícono + dato vivo -->
-            <div class="flex items-start justify-between">
-              <div class="w-9 h-9 flex items-center justify-center flex-shrink-0"
-                   style="background: #B91C1C14; color: #B91C1C;">
-                {h.icon === "chart"    && <BarChart2   size={17} />}
-                {h.icon === "forex"    && <TrendingUp  size={17} />}
-                {h.icon === "layers"   && <Layers      size={17} />}
-                {h.icon === "acciones" && <Landmark    size={17} />}
-                {h.icon === "dollar"   && <DollarSign  size={17} />}
-                {h.icon === "calc"     && <Calculator  size={17} />}
-                {h.icon === "compare"  && <GitCompare  size={17} />}
-                {h.icon === "calc2"    && <Calculator  size={17} />}
+      <div class="flex flex-col" style="border-top:1px solid #E2DDD8;">
+        {articulos.map((art) => (
+          <a href={`/noticias/${art.slug}`}
+             class="flex items-center justify-between gap-4 py-4 no-underline rounded-lg transition-all duration-150"
+             style="border-bottom:1px solid #E2DDD8; padding-left:0; padding-right:0;"
+             onmouseover="this.style.paddingLeft='12px'; this.style.paddingRight='12px'; this.style.marginLeft='-12px'; this.style.marginRight='-12px'; this.style.background='#F7F7F5';"
+             onmouseout="this.style.paddingLeft='0'; this.style.paddingRight='0'; this.style.marginLeft='0'; this.style.marginRight='0'; this.style.background='';">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
+                {art.categoria && (
+                  <span class="text-[10px] font-bold uppercase tracking-wider flex-shrink-0"
+                        style="color:#FF8C42; font-family:'DM Sans',sans-serif;">
+                    {art.categoria.nombre}
+                  </span>
+                )}
+                <span class="text-[11px]"
+                      style="color:#BBBBBB; font-family:'DM Sans',sans-serif;">
+                  {formatFecha(art.creadoEn)}
+                </span>
               </div>
-              <!-- Dato vivo según tipo de herramienta -->
-              {h.icon === "chart" && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">BTC</span>
-                  <span data-live="btc-price"
-                        class="font-bold text-sm animate-pulse"
-                        style="color: #1D4ED8; font-family: 'DM Sans', sans-serif;">···</span>
-                </span>
-              )}
-              {h.icon === "forex" && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">EUR/USD</span>
-                  <span data-live="eurusd-rate"
-                        class="font-bold text-sm animate-pulse"
-                        style="color: #15803D; font-family: 'DM Sans', sans-serif;">···</span>
-                </span>
-              )}
-              {h.icon === "layers" && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Oro / oz</span>
-                  <span data-live="gold-price"
-                        class="font-bold text-sm animate-pulse"
-                        style="color: #B45309; font-family: 'DM Sans', sans-serif;">···</span>
-                </span>
-              )}
-              {h.icon === "acciones" && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">NYSE · NASDAQ</span>
-                  <span class="inline-block w-12 h-1.5 mt-1" style="background: linear-gradient(90deg, #374151 60%, #D6D0C8 60%);"></span>
-                </span>
-              )}
-              {h.icon === "dollar" && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">16 países</span>
-                  <span class="font-bold text-sm" style="color: #374151; font-family: 'DM Sans', sans-serif;">USD</span>
-                </span>
-              )}
-              {(h.icon === "calc" || h.icon === "calc2") && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Riesgo</span>
-                  <span class="font-bold text-sm" style="color: #374151; font-family: 'DM Sans', sans-serif;">%</span>
-                </span>
-              )}
-              {h.icon === "compare" && (
-                <span class="text-right flex-shrink-0">
-                  <span class="block text-[10px] uppercase tracking-widest mb-0.5"
-                        style="color: #A8A29E; font-family: 'DM Sans', sans-serif;">Brokers</span>
-                  <span class="font-bold text-sm" style="color: #374151; font-family: 'DM Sans', sans-serif;">12+</span>
-                </span>
-              )}
+              <h3 class="font-semibold leading-snug"
+                  style="color:#1A1A1A; font-family:'DM Sans',sans-serif; font-size:15px;">
+                {art.titulo}
+              </h3>
             </div>
-
-            <!-- Título + descripción -->
-            <div class="flex flex-col gap-1 flex-1">
-              <span class="font-bold text-[15px] group-hover:opacity-70 transition-opacity duration-200"
-                    style="color: #1C1917; font-family: 'DM Sans', sans-serif;">
-                {h.titulo}
-              </span>
-              <span class="text-sm leading-relaxed" style="color: #78716C; font-family: 'DM Sans', sans-serif;">
-                {h.desc}
-              </span>
-            </div>
-
-            <!-- CTA -->
-            <span class="flex items-center gap-1 text-sm font-semibold mt-auto group-hover:gap-2 transition-all duration-200"
-                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-              Abrir <ArrowRight size={13} />
-            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 class="flex-shrink-0">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
           </a>
         ))}
       </div>
-    </div>
-  </section>
 
-  <!-- ── CALCULADORAS FINANCIERAS ────────────────────────── -->
-  <section style="background: #F5F1EC; border-top: 1px solid #E5E0D8; border-bottom: 1px solid #E5E0D8;" class="px-4 sm:px-6 py-12">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-8 pb-4" style="border-bottom: 1px solid #E5E0D8;">
-        <div class="flex items-center gap-2.5">
-          <Calculator size={17} style="color: #B91C1C;" />
-          <h2 class="font-bold text-2xl sm:text-3xl" style="font-family: 'Playfair Display', serif; color: #1C1917;">
-            Calculadoras Financieras
-          </h2>
-        </div>
-        <a href="/herramientas/calculadoras" class="flex items-center gap-1.5 text-sm no-underline hover:opacity-70 transition-opacity"
-           style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-          Ver las 12 <ArrowRight size={14} />
-        </a>
-      </div>
-      <p class="mb-8 text-base" style="color: #57534E; font-family: 'DM Sans', sans-serif; max-width: 680px;">
-        Herramientas gratuitas para calcular interés compuesto, cuotas de hipoteca, ahorro para el retiro, ROI, salario neto y más. Sin registro, sin publicidad intrusiva.
-      </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[
-          { nombre: 'Interés Compuesto', desc: 'Proyecta el crecimiento de tu dinero con aportes periódicos y capitalización.', href: '/herramientas/calculadoras/interes-compuesto', badge: 'Con gráfica' },
-          { nombre: 'Préstamo / Amortización', desc: 'Calcula tu cuota mensual y la tabla completa de amortización.', href: '/herramientas/calculadoras/prestamo', badge: 'Con tabla' },
-          { nombre: 'Ahorro para el Retiro', desc: 'Proyecta tu fondo de retiro por edad y renta mensual estimada.', href: '/herramientas/calculadoras/ahorro-retiro', badge: 'Con gráfica' },
-          { nombre: 'ROI de Inversión', desc: 'Calcula el retorno real de cualquier inversión incluyendo impuestos.', href: '/herramientas/calculadoras/roi', badge: 'Fácil' },
-          { nombre: 'Ganancias en Cripto', desc: 'P&L, ROI, precio de equilibrio e impuesto estimado en cripto.', href: '/herramientas/calculadoras/cripto-ganancias', badge: 'Nuevo' },
-          { nombre: 'Conversión de Divisas', desc: 'Conversor de 10 divisas con tabla de montos comunes de referencia.', href: '/herramientas/calculadoras/conversion-divisas', badge: 'Gratis' },
-        ].map((c) => (
-          <a href={c.href}
-             class="group no-underline transition-all duration-200 hover:-translate-y-0.5"
-             style="background: #fff; border: 1px solid #E5E0D8; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5"
-                    style="background: #B91C1C14; color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-                {c.badge}
-              </span>
-              <Calculator size={14} style="color: #C7BFB5;" />
-            </div>
-            <div>
-              <span class="block font-bold text-[15px] mb-1 group-hover:opacity-70 transition-opacity"
-                    style="color: #1C1917; font-family: 'DM Sans', sans-serif;">{c.nombre}</span>
-              <span class="text-sm" style="color: #78716C; font-family: 'DM Sans', sans-serif; line-height: 1.5;">{c.desc}</span>
-            </div>
-            <span class="flex items-center gap-1 text-sm font-semibold mt-auto group-hover:gap-2 transition-all duration-200"
-                  style="color: #B91C1C; font-family: 'DM Sans', sans-serif;">
-              Calcular <ArrowRight size={12} />
-            </span>
-          </a>
-        ))}
-      </div>
     </div>
   </section>
+)}
 
 </Layout>
-
-<!-- ── TABS CATEGORÍAS JS ─────────────────────────────────── -->
-<script>
-  const tabs   = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
-  const panels = document.querySelectorAll<HTMLElement>('.cat-panel');
-
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      const target = tab.dataset.tab!;
-      const color  = tab.dataset.color ?? '#B91C1C';
-      tabs.forEach((t) => {
-        t.style.background  = 'transparent';
-        t.style.borderColor = '#D6D0C8';
-        t.style.color       = '#78716C';
-      });
-      tab.style.background  = `${color}15`;
-      tab.style.borderColor = color;
-      tab.style.color       = color;
-      panels.forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== target));
-    });
-  });
-</script>
-
-<!-- ── MERCADO: TABS + CARGA CLIENT-SIDE ─────────────────── -->
-<script>
-  // ── Helpers de formato ───────────────────────────────────
-  const fmtPrice = (p: number) => {
-    if (!p) return '—';
-    if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (p >= 1)    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    return `$${p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
-  };
-  const fmtCap = (n: number) => {
-    if (!n) return '—';
-    if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-    if (n >= 1e9)  return `$${(n / 1e9).toFixed(0)}B`;
-    return `$${(n / 1e6).toFixed(0)}M`;
-  };
-  const fmtForex = (p: number) => {
-    if (!p) return '—';
-    if (p >= 100) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return p.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
-  };
-
-  const nombreForex: Record<string, string> = {
-    'EUR/USD': 'Euro / Dólar', 'GBP/USD': 'Libra / Dólar', 'USD/JPY': 'Dólar / Yen',
-    'USD/MXN': 'Dólar / Peso Mexicano', 'USD/ARS': 'Dólar / Peso Argentino',
-    'USD/COP': 'Dólar / Peso Colombiano', 'USD/CLP': 'Dólar / Peso Chileno',
-    'USD/BRL': 'Dólar / Real Brasileño', 'USD/PEN': 'Dólar / Sol Peruano',
-  };
-
-  const dominiosAcciones: Record<string, string> = {
-    AAPL: 'apple.com', MSFT: 'microsoft.com', GOOGL: 'google.com',
-    AMZN: 'amazon.com', NVDA: 'nvidia.com', META: 'meta.com',
-    TSLA: 'tesla.com', JPM: 'jpmorganchase.com', BAC: 'bankofamerica.com',
-    GS: 'goldmansachs.com', XOM: 'exxonmobil.com', CVX: 'chevron.com',
-    KO: 'coca-cola.com', MCD: 'mcdonalds.com', SPY: 'ssga.com', QQQ: 'invesco.com',
-  };
-
-  // ── Estado de carga por panel ─────────────────────────────
-  const loaded: Record<string, boolean> = { cripto: false, forex: false, metales: false, acciones: false };
-
-  // ── Loaders ───────────────────────────────────────────────
-  async function cargarCripto() {
-    if (loaded.cripto) return;
-    loaded.cripto = true;
-    try {
-      const HOME_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano'];
-      const res  = await fetch('/api/precios');
-      const data = await res.json() as any[];
-      const rows = document.getElementById('cripto-rows')!;
-      rows.innerHTML = data.filter((c: any) => HOME_IDS.includes(c.id)).map((coin: any) => {
-        const up = coin.change24 >= 0;
-        return `
-          <a href="/herramientas/cripto/${coin.id}" data-coin-id="${coin.id}"
-            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
-            style="border-bottom: 1px solid #E5E0D8;"
-            onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
-            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center" style="background: #F0EDE7;">
-                ${coin.image ? `<img src="${coin.image}" alt="${coin.name}" class="w-full h-full object-cover" loading="lazy" />` : `<span class="text-[10px] font-bold" style="color:#78716C">${coin.symbol.slice(0,2)}</span>`}
-              </div>
-              <div class="min-w-0">
-                <div class="font-bold text-sm" style="color:#1C1917">${coin.symbol.toUpperCase()}</div>
-                <div class="text-xs truncate" style="color:#78716C">${coin.name}</div>
-              </div>
-            </div>
-            <div class="flex items-center justify-end">
-              <span class="font-semibold text-sm" style="color:#1C1917">${fmtPrice(coin.price)}</span>
-            </div>
-            <div class="flex items-center justify-end">
-              <span class="flex items-center gap-1 text-sm font-medium" style="color:${up ? '#15803D' : '#B91C1C'}">
-                ${up ? '▲' : '▼'} ${up ? '+' : ''}${coin.change24.toFixed(2)}%
-              </span>
-            </div>
-            <div class="hidden sm:flex items-center justify-end">
-              <span class="text-sm" style="color:#A8A29E">${fmtCap(coin.marketCap)}</span>
-            </div>
-          </a>`;
-      }).join('');
-      document.getElementById('cripto-skeleton')!.classList.add('hidden');
-      document.getElementById('cripto-content')!.classList.remove('hidden');
-      // Actualiza datos en vivo en cards de herramientas
-      const btc = data.find((c: any) => c.id === 'bitcoin');
-      if (btc) {
-        document.querySelectorAll<HTMLElement>('[data-live="btc-price"]').forEach(el => {
-          el.textContent = fmtPrice(btc.price);
-          el.classList.remove('animate-pulse');
-        });
-      }
-    } catch { /* muestra skeleton */ }
-  }
-
-  async function cargarForex() {
-    if (loaded.forex) return;
-    loaded.forex = true;
-    try {
-      const res  = await fetch('/api/forex');
-      const json = await res.json() as any;
-      const data = json.ok ? json.data.slice(0, 6) : [];
-      const rows = document.getElementById('forex-rows')!;
-      rows.innerHTML = data.map((f: any) => `
-        <a href="/herramientas/forex/${f.par.replace('/', '-').toLowerCase()}"
-          class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
-          style="border-bottom: 1px solid #E5E0D8;"
-          onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
-          <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div class="relative w-8 h-8 flex-shrink-0">
-              <img src="https://flagcdn.com/w40/${f.banderaBase.toLowerCase()}.png" class="absolute top-0 left-0 w-5 h-5 rounded-full object-cover" style="border:1px solid #E5E0D8" onerror="this.style.display='none'" />
-              <img src="https://flagcdn.com/w40/${f.banderaCotizada.toLowerCase()}.png" class="absolute bottom-0 right-0 w-5 h-5 rounded-full object-cover" style="border:1px solid #E5E0D8" onerror="this.style.display='none'" />
-            </div>
-            <div class="font-bold text-sm" style="color:#1C1917">${f.par}</div>
-          </div>
-          <div class="flex items-center justify-end">
-            <span class="font-semibold text-sm" style="color:#1C1917">${fmtForex(f.precio)}</span>
-          </div>
-          <div class="hidden sm:flex items-center justify-end">
-            <span class="text-xs truncate" style="color:#78716C">${nombreForex[f.par] ?? f.par}</span>
-          </div>
-        </a>`).join('');
-      document.getElementById('forex-skeleton')!.classList.add('hidden');
-      document.getElementById('forex-content')!.classList.remove('hidden');
-      // Actualiza EUR/USD en cards de herramientas
-      const eurusd = data.find((f: any) => f.par === 'EUR/USD');
-      if (eurusd) {
-        document.querySelectorAll<HTMLElement>('[data-live="eurusd-rate"]').forEach(el => {
-          el.textContent = fmtForex(eurusd.precio);
-          el.classList.remove('animate-pulse');
-        });
-      }
-    } catch { /* muestra skeleton */ }
-  }
-
-  async function cargarMetales() {
-    if (loaded.metales) return;
-    loaded.metales = true;
-    try {
-      const res  = await fetch('/api/metales');
-      const json = await res.json() as any;
-      const data = json.ok ? json.data.slice(0, 4) : [];
-      const rows = document.getElementById('metales-rows')!;
-      rows.innerHTML = data.map((m: any) => {
-        const precio = m.precio > 0
-          ? `$${m.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-          : '—';
-        return `
-          <a href="/herramientas/metales/${m.slug}"
-            class="grid grid-cols-2 sm:grid-cols-3 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
-            style="border-bottom: 1px solid #E5E0D8;"
-            onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
-            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7; border:1px solid #E5E0D8;">
-                <span class="text-xs font-bold" style="color:#B45309">${m.simbolo.slice(1,3)}</span>
-              </div>
-              <div class="min-w-0">
-                <div class="font-bold text-sm" style="color:#1C1917">${m.nombre}</div>
-                <div class="text-xs" style="color:#78716C">${m.unidad} troy</div>
-              </div>
-            </div>
-            <div class="flex items-center justify-end">
-              <span class="font-semibold text-sm" style="color:#1C1917">${precio}</span>
-            </div>
-            <div class="hidden sm:flex items-center justify-end">
-              <span class="text-xs" style="color:#A8A29E">${m.simbolo}</span>
-            </div>
-          </a>`;
-      }).join('');
-      document.getElementById('metales-skeleton')!.classList.add('hidden');
-      document.getElementById('metales-content')!.classList.remove('hidden');
-      // Actualiza Oro en cards de herramientas
-      const oro = data.find((m: any) => m.slug === 'oro' || m.simbolo === 'XAU');
-      if (oro && oro.precio > 0) {
-        document.querySelectorAll<HTMLElement>('[data-live="gold-price"]').forEach(el => {
-          el.textContent = `$${oro.precio.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-          el.classList.remove('animate-pulse');
-        });
-      }
-    } catch { /* muestra skeleton */ }
-  }
-
-  async function cargarAcciones() {
-    if (loaded.acciones) return;
-    loaded.acciones = true;
-    try {
-      const res  = await fetch('/api/acciones?limit=6');
-      const json = await res.json() as any;
-      if (!json.ok) throw new Error();
-      const content = document.getElementById('acciones-content')!;
-      content.innerHTML = json.data.map((a: any) => {
-        const precio    = a.precio > 0 ? `$${a.precio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
-        const cambio    = a.precio > 0 ? `${a.cambioPct >= 0 ? '+' : ''}${a.cambioPct.toFixed(2)}%` : '—';
-        const colorC    = a.alza ? 'text-emerald-400' : 'text-red-400';
-        const dominio   = dominiosAcciones[a.ticker] ?? '';
-        const logo      = dominio
-          ? `<img src="https://www.google.com/s2/favicons?domain=${dominio}&sz=64" alt="${a.nombre}" class="w-5 h-5 object-contain" onerror="this.style.display='none'" />`
-          : `<span class="text-[9px] font-bold" style="color:#78716C;">${a.ticker.slice(0,2)}</span>`;
-        const colorCambio = a.alza ? '#15803D' : '#DC2626';
-        return `
-          <a href="/herramientas/acciones/${a.slug}"
-            class="grid grid-cols-3 sm:grid-cols-4 px-4 sm:px-6 py-4 no-underline transition-colors duration-200"
-            style="border-bottom: 1px solid #E5E0D8;"
-            onmouseover="this.style.background='#F5F1EC'" onmouseout="this.style.background=''">
-            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center" style="background:#F0EDE7; border:1px solid #E5E0D8;">${logo}</div>
-              <div class="min-w-0">
-                <div class="font-bold text-sm" style="color:#1C1917;">${a.ticker}</div>
-                <div class="text-xs truncate" style="color:#78716C;">${a.nombre}</div>
-              </div>
-            </div>
-            <div class="flex items-center justify-end">
-              <span class="font-semibold text-sm" style="color:#1C1917;">${precio}</span>
-            </div>
-            <div class="flex items-center justify-end">
-              ${precio === '—' ? '<span class="text-sm" style="color:#A8A29E;">—</span>' : `<span class="flex items-center gap-1 text-sm font-medium" style="color:${colorCambio};">${a.alza ? '▲' : '▼'} ${cambio}</span>`}
-            </div>
-            <div class="hidden sm:flex items-center justify-end">
-              <span class="text-xs" style="color:#A8A29E;">${a.sector}</span>
-            </div>
-          </a>`;
-      }).join('');
-      document.getElementById('acciones-loading')!.classList.add('hidden');
-      content.classList.remove('hidden');
-    } catch {
-      document.getElementById('acciones-loading')!.classList.add('hidden');
-      document.getElementById('acciones-error')!.classList.remove('hidden');
-    }
-  }
-
-// ── Tabs lógica + carga lazy ──────────────────────────────
-  const mktTabs   = document.querySelectorAll<HTMLButtonElement>('.market-tab');
-  const mktPanels = document.querySelectorAll<HTMLElement>('.mkt-panel');
-  const loaders   = [cargarCripto, cargarForex, cargarMetales, cargarAcciones];
-
-  const mktActiveColors = ['#1D4ED8', '#15803D', '#B45309', '#374151'];
-
-  mktTabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => {
-      mktTabs.forEach(t => {
-        t.style.background  = 'transparent';
-        t.style.borderColor = '#D6D0C8';
-        t.style.color       = '#78716C';
-      });
-      const c = mktActiveColors[i] ?? '#B91C1C';
-      tab.style.background  = `${c}15`;
-      tab.style.borderColor = c;
-      tab.style.color       = c;
-      mktPanels.forEach((p, j) => p.classList.toggle('hidden', i !== j));
-      loaders[i]?.();
-    });
-  });
-
-  // Carga cripto al inicio (tab activo por defecto)
-  cargarCripto();
-
-</script>
-
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
-

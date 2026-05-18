@@ -6,14 +6,13 @@ import NavProgress from '../components/NavProgress.astro';
 import BrokerBanner from '../components/BrokerBanner.astro';
 
 interface Props {
-  bodyClass?: string;
+  bodyClass?:      string;
   mostrarBrokers?: boolean;
-  categorias?: Array<{ nombre: string; slug: string }>;
-  paises?: Array<{ nombre: string; codigo: string }>;
+  categorias?:     Array<{ nombre: string; slug: string }>;
+  paises?:         unknown; // aceptado por compatibilidad, no se usa
 }
 
-const { bodyClass = '', mostrarBrokers = true, categorias, paises } = Astro.props;
-
+const { bodyClass = '', mostrarBrokers = true, categorias } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -21,7 +20,8 @@ const { bodyClass = '', mostrarBrokers = true, categorias, paises } = Astro.prop
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name='impact-site-verification' value='583936fd-55de-4e95-be9e-bc478ae7ef56'>
+  <meta name='impact-site-verification' content='583936fd-55de-4e95-be9e-bc478ae7ef56'>
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
@@ -29,37 +29,38 @@ const { bodyClass = '', mostrarBrokers = true, categorias, paises } = Astro.prop
   <!-- Sitemap -->
   <link rel="sitemap" href="/sitemap.xml" />
 
-  <!-- Fuentes -->
+  <!-- DM Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E8YH3R6PPW"></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-E8YH3R6PPW');
-</script>
+  <!-- Google Analytics -->
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-E8YH3R6PPW"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E8YH3R6PPW');
+  </script>
 
-  <!-- Barra de progreso de navegación -->
   <NavProgress />
 
   <!-- SEO de cada página -->
   <slot name="head" />
 </head>
 
-<body class={`min-h-screen ${bodyClass}`} style="background: #FAFAF8; font-family: 'DM Sans', sans-serif;">
+<body class={`min-h-screen ${bodyClass}`}
+      style="background:#F7F7F5; font-family:'DM Sans',sans-serif;">
 
-  <Header categorias={categorias} paises={paises} />
+  <Header categorias={categorias} />
 
-  <!-- pt-[100px] compensa el header fijo: 36px topbar + 64px nav = 100px -->
-  <main class="pt-[100px]">
+  <!-- pt-[94px] = 34px topbar + 60px nav -->
+  <main class="pt-[94px]">
     <slot />
   </main>
-<BrokerBanner mostrar={mostrarBrokers} />  
+
+  <BrokerBanner mostrar={mostrarBrokers} />
   <Footer />
 
 </body>
@@ -71,26 +72,23 @@ const { bodyClass = '', mostrarBrokers = true, categorias, paises } = Astro.prop
     margin: 0;
     padding: 0;
   }
-
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
   }
-
   body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #F0EDE7; }
-  ::-webkit-scrollbar-thumb { background: #D6D0C8; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #B91C1C; }
+  ::-webkit-scrollbar        { width: 6px; }
+  ::-webkit-scrollbar-track  { background: #F0EDE9; }
+  ::-webkit-scrollbar-thumb  { background: #D0C9C0; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #FF8C42; }
 
   ::selection {
-    background: rgba(185, 28, 28, 0.15);
-    color: #1C1917;
+    background: rgba(255, 140, 66, 0.15);
+    color: #1A1A1A;
   }
 </style>
-
